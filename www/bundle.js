@@ -17257,10 +17257,10 @@
 	      }).then(function (response) {
 	        // console.log(response.result.lines[0].points);
 	        var flattenedResult = response.result.lines[0].points.map(function (p, i) {
-	          return [p.date, p.value];
+	          return p.date + ',' + p.value;
 	        });
 	        // console.log(flattenedResult);
-	        callback(response.result);
+	        callback(flattenedResult);
 	      }, function (reason) {
 	        console.log('Error: ' + reason.result.error.message);
 	      });
