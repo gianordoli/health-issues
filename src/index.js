@@ -33,21 +33,25 @@ app.main = (function (){
     })
 
     function updateData(data) {
-      // console.log('From Google Trends: ', data);
-      parseRData(dummyData);
+      console.log('From Google Trends: ', data);
 
-      Shiny.onInputChange("mydata", data);
-      Shiny.addCustomMessageHandler("myCallbackHandler", function(message) {
-        console.log('From R: ', message);
-        parseRData(message);
-      });      
+      const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
+      const dates = data.lines[0].points.map((p, i) => p.date);
+      parseRData(dummyData, dates);
+
+      Shiny.onInputChange("mydata", dataToR);
+      Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
+        console.log('From R: ', dataFromR);
+        parseRData(dataFromR, dates);
+      });
     }
 
-    function parseRData(message) {
+    function parseRData(dataFromR, dates) {
 
-      let seasonal = message.substring(message.indexOf(':') + 1, message.indexOf('trend:'));
-      seasonal = seasonal.split(',');//.map((n, i) => Number(n.trim()))
-      seasonal = seasonal.map((n, i) => Number(n.trim()));
+      let seasonal = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
+      seasonal = (seasonal.split(',')).map((n, i) => {
+        return{ date: dates[i], value: Number(n.trim())}
+      });
       console.log(seasonal);
       // let data = message.substring(message.indexOf('(') + 1, message.lastIndexOf(')'));
       // data = data.split(',');

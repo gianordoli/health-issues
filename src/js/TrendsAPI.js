@@ -29,9 +29,7 @@ export class TrendsAPI {
           })
         }).then(function(response) {
           // console.log(response.result.lines[0].points);
-          const flattenedResult = response.result.lines[0].points.map((p, i) => p.date+','+p.value);
-          // console.log(flattenedResult);
-          callback(flattenedResult);
+          callback(response.result);
         }, function(reason) {
           console.log('Error: ' + reason.result.error.message);
         });      
