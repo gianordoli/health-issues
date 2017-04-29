@@ -72,11 +72,10 @@ export class Explore {
   }
 
   loadCurated(filter: Filter) {
-    // this.updateData({ prevDiseases: diseases, prevGeo: geo });
-    // const { diseases, geo } = self.data;
-    // self.confirmNav.classList.add('hidden');
-    // self.updateData({ prevDiseases: diseases, prevGeo: geo });
-    // self.callTrendsApi();
+    const { terms, geo } = filter;
+    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo });
+    this.confirmNav.classList.add('hidden');
+    this.callTrendsApi();
   }
 
   callTrendsApi(){
