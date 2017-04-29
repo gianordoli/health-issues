@@ -30,6 +30,7 @@ export class TrendsAPI {
   }
 
   getTrends(data, callback) {
+    console.log('Requesting data for:', data);
     this.gapi.client.request({
       'path': 'https://www.googleapis.com/trends/v1beta/graph?terms='+data,
     })

@@ -2,7 +2,7 @@
 
 import * as d3 from 'd3';
 
-export class ChartTrend {
+export class LineChart {
 
   data: [];
   svg: () => {};
@@ -12,9 +12,9 @@ export class ChartTrend {
   yAxis: () => {};
   line: () => {};
 
-  constructor(parentContainer: HTMLElement, data: []) {
-    this.data = data;
-    this.createElements(parentContainer, data);
+  constructor(parentContainer: HTMLElement) {
+    this.data = [];
+    this.createElements(parentContainer);
   }
 
   updateData(data: []) {

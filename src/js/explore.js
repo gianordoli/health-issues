@@ -1,7 +1,7 @@
 // @flow weak
 
 import { FiltersMenu } from './FiltersMenu';
-import { ChartTrend } from './ChartTrend';
+import { LineChart } from './LineChart';
 import { dummyData, diseases, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
 import * as d3 from 'd3';
@@ -12,7 +12,9 @@ export class Explore {
     diseases: string[]
   };
   diseaseSelect: HTMLElement;
-  chartTrend: ChartTrend;
+  seasonalChart: LineChart;
+  trendChart: LineChart;
+  totalChart: LineChart;
   trendsAPI: TrendsAPI;
 
   constructor(parentContainer: HTMLElement, data) {
@@ -28,19 +30,9 @@ export class Explore {
     this.createElements(parentContainer);
   }
 
-  generateRandomData(n) {
-    var data = [];
-    // for(var i=0; i<100; i++){
-    //   data.push({
-    //     x: i,
-    //     y: Math.round(Math.random() * 100)
-    //   });
-    // };
-    return data;
-  }
-
   callTrendsApi(event, self){
-    self.trendsAPI.getTrends('flu', function(val){
+    const { diseases } = self.data;
+    self.trendsAPI.getTrends(diseases[0], function(val){
       self.sendDataToR(val);
     });
   }
@@ -67,11 +59,12 @@ export class Explore {
     seasonal = (seasonal.split(',')).map((n, i) => {
       return{ date: parseTime(dates[i]), value: Number(n.trim())}
     });
-    this.chartTrend.updateData(seasonal);
+    // this.chartTrend.updateData(seasonal);
   }
 
   handleSelectDiseaseChange(event, self) {
-    self.chartTrend.updateData(this.generateRandomData());
+    const value = event.target.value;
+    this.updateData({diseases: [value]});
   }
 
   createElements(parentContainer: HTMLElement) {
@@ -120,7 +113,7 @@ export class Explore {
     doneButton.addEventListener('click', bindButtonEvent);    
     filtersMenu.appendChild(doneButton);
 
-    this.chartTrend = new ChartTrend(elementsContainer, this.generateRandomData());
+    this.totalChart = new LineChart(elementsContainer);
 
     parentContainer.appendChild(elementsContainer);
   }
@@ -130,10 +123,11 @@ export class Explore {
       ...obj
     }
     this.updateElements();
+    console.log(this.data);
   }
 
   updateElements() {
-    const { data, diseaseSelect, chartTrend } = this;
+    const { data, diseaseSelect } = this;
     
     const options = diseaseSelect.children;
     for (const o of options) {
@@ -141,7 +135,5 @@ export class Explore {
         o.selected = true;
       }
     }
-
-    chartTrend.updateData(this.generateRandomData());
   }
 }
