@@ -2,7 +2,6 @@
 
 import { Explore } from './js/Explore';
 import { TrendsAPI } from './js/TrendsAPI';
-import { Shiny } from 'shiny-server-client/dist/shiny-server-client.min';
 import './sass/app.scss';
 
 var app = app || {};

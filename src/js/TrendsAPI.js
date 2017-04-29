@@ -28,7 +28,9 @@ export class TrendsAPI {
             'path': 'https://www.googleapis.com/trends/v1beta/graph?terms=flu',
           })
         }).then(function(response) {
-          // console.log(response.result);
+          // console.log(response.result.lines[0].points);
+          const flattenedResult = response.result.lines[0].points.map((p, i) => [p.date, p.value]);
+          // console.log(flattenedResult);
           callback(response.result);
         }, function(reason) {
           console.log('Error: ' + reason.result.error.message);

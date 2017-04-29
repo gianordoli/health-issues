@@ -62,3 +62,4 @@ build/Release
 node_modules
 
 src/auth
+.Rproj.user
