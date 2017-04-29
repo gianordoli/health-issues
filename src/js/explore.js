@@ -104,7 +104,7 @@ export class Explore {
     const { total } = this.data;
 
     const seasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
-    const seasonal = (seasonalString.split(',')).map((n, i) => {
+    const seasonal = (seasonalString.split(',')).slice(0, 13).map((n, i) => {
       return{ date: total[i].date, value: Number(n.trim())}
     });
     
@@ -185,8 +185,8 @@ export class Explore {
 
 
     // Charts
-    this.seasonalChart = new LineChart(elementsContainer);
-    this.trendChart = new LineChart(elementsContainer);
+    this.seasonalChart = new LineChart(elementsContainer, 'seasonal');
+    this.trendChart = new LineChart(elementsContainer, 'trend');
 
     parentContainer.appendChild(elementsContainer);
   }

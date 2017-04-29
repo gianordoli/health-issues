@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 export class LineChart {
 
   data: {date: Date, value: number}[];
+  type: string;
   svg: () => {};
   x: () => {};
   y: () => {};
@@ -12,8 +13,9 @@ export class LineChart {
   yAxis: () => {};
   line: () => {};
 
-  constructor(parentContainer: HTMLElement) {
+  constructor(parentContainer: HTMLElement, type: string) {
     this.data = [];
+    this.type = type;
     this.createElements(parentContainer);
   }
 
@@ -35,6 +37,12 @@ export class LineChart {
     
     const { x, y } = this;
     this.xAxis = d3.axisBottom(x);
+
+    // Displaying months for seasonal chart
+    if (this.type == 'seasonal') {
+      this.xAxis = this.xAxis.tickFormat(d3.timeFormat("%b"));
+    }
+    
     this.yAxis = d3.axisLeft(y);
 
     this.line = d3.line()
