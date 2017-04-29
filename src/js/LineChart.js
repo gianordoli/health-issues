@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 export class LineChart {
 
-  data: [];
+  data: {date: Date, value: number}[];
   svg: () => {};
   x: () => {};
   y: () => {};
@@ -17,7 +17,7 @@ export class LineChart {
     this.createElements(parentContainer);
   }
 
-  updateData(data: []) {
+  updateData(data: {date: Date, value: number}[]) {
     this.data = data;
     this.updateElements();
   }

@@ -9,12 +9,19 @@ import * as d3 from 'd3';
 export class Explore {
 
   data: {
+    prevDiseases: string[],
     diseases: string[],
+    prevCountry: string,
+    country: string,
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[]
   };
+  
   diseaseSelect: HTMLElement;
+  countrySelect: HTMLElement;
+  confirmNav: HTMLElement;
+
   seasonalChart: LineChart;
   trendChart: LineChart;
   trendsAPI: TrendsAPI;
@@ -24,7 +31,10 @@ export class Explore {
       this.data = data;
     } else {
       this.data = {
-        diseases: [],
+        prevDiseases: ['Acne'],
+        diseases: ['Acne'],
+        prevCountry: 'AD',
+        country: 'AD',
         seasonal: [],
         trend: [],
         total: []
@@ -35,8 +45,34 @@ export class Explore {
     this.createElements(parentContainer);
   }
 
-  callTrendsApi(event, self){
-    const { diseases } = self.data;
+  handleSelectDiseaseChange(event, self) {
+    const value = event.target.value;
+    this.updateData({diseases: [value]});
+    self.confirmNav.classList.remove('hidden');
+  }
+
+  handleSelectCountryChange(event, self) {
+    const value = event.target.value;
+    this.updateData({country: value});
+    self.confirmNav.classList.remove('hidden');
+  }    
+
+  cancelFilters(event, self) {
+    const { prevDiseases, prevCountry } = self.data;
+    self.confirmNav.classList.add('hidden');
+    self.updateData({ diseases: prevDiseases, country: prevCountry });
+  }
+
+  confirmFilters(event, self) {
+    const { diseases, country } = self.data;
+    self.confirmNav.classList.add('hidden');
+    self.updateData({ prevDiseases: diseases, prevCountry: country });
+    self.callTrendsApi();
+  }  
+
+  callTrendsApi(){
+    const { diseases } = this.data;
+    const self = this;
     self.trendsAPI.getTrends(diseases[0], function(val){
       self.sendDataToR(val);
     });
@@ -79,13 +115,8 @@ export class Explore {
     this.updateData({seasonal: seasonal, trend: trend});
   }
 
-  handleSelectDiseaseChange(event, self) {
-    const value = event.target.value;
-    this.updateData({diseases: [value]});
-  }
-
   createElements(parentContainer: HTMLElement) {
-    var elementsContainer = document.createElement('div');
+    const elementsContainer = document.createElement('div');
     elementsContainer.id = 'explore';
 
     const filtersMenu = document.createElement('div');
@@ -96,6 +127,8 @@ export class Explore {
     text1.innerHTML = 'Search interest for ';
     filtersMenu.appendChild(text1);
 
+
+    // Diseases
     this.diseaseSelect = document.createElement('select');
     const { diseaseSelect } = this;
     diseaseSelect.name = 'disease-select';
@@ -106,30 +139,52 @@ export class Explore {
       option.innerHTML = d;
       diseaseSelect.appendChild(option);
     });
-    const bindHandleChange = evt => this.handleSelectDiseaseChange(evt, this);    
-    diseaseSelect.addEventListener('change', bindHandleChange);    
+    let bindHandleChange = evt => this.handleSelectDiseaseChange(evt, this);
+    diseaseSelect.addEventListener('change', bindHandleChange);
     filtersMenu.appendChild(diseaseSelect);
 
     const text2 = document.createElement('span');
     text2.innerHTML = ' in the ';
     filtersMenu.appendChild(text2);
 
-    const countrySelect = document.createElement('select');
-    diseaseSelect.name = 'country-select';    
+
+    // Countries
+    this.countrySelect = document.createElement('select');
+    const { countrySelect } = this;
+    countrySelect.name = 'country-select';    
     countries.forEach((c, i) => {
       const option = document.createElement('option');
       option.setAttribute('value', c.iso);
       option.innerHTML = c.name;
       countrySelect.appendChild(option);
     });
+    bindHandleChange = evt => this.handleSelectCountryChange(evt, this);
+    countrySelect.addEventListener('change', bindHandleChange);
     filtersMenu.appendChild(countrySelect);
 
-    var doneButton = document.createElement('button');
-    doneButton.innerHTML = 'Done';
-    const bindButtonEvent = evt => this.callTrendsApi(evt, this);    
-    doneButton.addEventListener('click', bindButtonEvent);    
-    filtersMenu.appendChild(doneButton);
 
+    // Cancel / Done
+    this.confirmNav = document.createElement('div');
+    const { confirmNav } = this;
+    confirmNav.id = 'confirm-nav';
+    confirmNav.classList.add('hidden');   
+
+    const cancelButton = document.createElement('button');
+    cancelButton.innerHTML = 'Cancel';
+    bindHandleChange = evt => this.cancelFilters(evt, this);
+    cancelButton.addEventListener('click', bindHandleChange);
+    confirmNav.appendChild(cancelButton);
+
+    const doneButton = document.createElement('button');
+    doneButton.innerHTML = 'Done';
+    bindHandleChange = evt => this.confirmFilters(evt, this);
+    doneButton.addEventListener('click', bindHandleChange);
+    confirmNav.appendChild(doneButton);
+
+    filtersMenu.appendChild(confirmNav);
+
+
+    // Charts
     this.seasonalChart = new LineChart(elementsContainer);
     this.trendChart = new LineChart(elementsContainer);
 
@@ -147,15 +202,23 @@ export class Explore {
   }
 
   updateElements() {
-    const { data, diseaseSelect, seasonalChart, trendChart } = this;
-    const { diseases, seasonal, trend, total } = data;
+    const { data, diseaseSelect, countrySelect, seasonalChart, trendChart } = this;
+    const { diseases, country, seasonal, trend, total } = data;
     
-    const options = diseaseSelect.children;
-    for (const o of options) {
+    const diseaseOptions = diseaseSelect.children;
+    for (const o of diseaseOptions) {
       if (o.value === data.diseases[0]) {
         o.selected = true;
       }
     }
+
+    const countryOptions = countrySelect.children;
+    for (const o of countryOptions) {
+      if (o.value === data.country) {
+        o.selected = true;
+      }
+    }
+
     if(seasonal && trend && total) {
       seasonalChart.updateData(seasonal);  
       trendChart.updateData(trend);
