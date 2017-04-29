@@ -4,22 +4,23 @@ import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
 import { dummyData, diseases, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
+import type { Disease, Geo, Filter } from './types'
 import * as d3 from 'd3';
 
 export class Explore {
 
   data: {
-    prevDiseases: string[],
-    diseases: string[],
-    prevCountry: string,
-    country: string,
+    prevDiseases: Disease[],
+    diseases: Disease[],
+    prevGeo: Geo,
+    geo: Geo,
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[]
   };
   
   diseaseSelect: HTMLElement;
-  countrySelect: HTMLElement;
+  geoSelect: HTMLElement;
   confirmNav: HTMLElement;
 
   seasonalChart: LineChart;
@@ -31,10 +32,10 @@ export class Explore {
       this.data = data;
     } else {
       this.data = {
-        prevDiseases: ['Acne'],
-        diseases: ['Acne'],
-        prevCountry: 'AD',
-        country: 'AD',
+        prevDiseases: diseases[0],
+        diseases: diseases[0],
+        prevGeo: countries[0],
+        geo: countries[0],
         seasonal: [],
         trend: [],
         total: []
@@ -51,29 +52,37 @@ export class Explore {
     self.confirmNav.classList.remove('hidden');
   }
 
-  handleSelectCountryChange(event, self) {
-    const value = event.target.value;
-    this.updateData({country: value});
+  handleSelectGeoChange(event, self) {
+    const { value, name } = event.target;
+    this.updateData({geo: {iso: value, name: name}});
     self.confirmNav.classList.remove('hidden');
   }    
 
   cancelFilters(event, self) {
-    const { prevDiseases, prevCountry } = self.data;
+    const { prevDiseases, prevGeo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ diseases: prevDiseases, country: prevCountry });
+    self.updateData({ diseases: prevDiseases, geo: prevGeo });
   }
 
   confirmFilters(event, self) {
-    const { diseases, country } = self.data;
+    const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ prevDiseases: diseases, prevCountry: country });
+    self.updateData({ prevDiseases: diseases, prevGeo: geo });
     self.callTrendsApi();
-  }  
+  }
+
+  loadCurated(filter: Filter) {
+    // this.updateData({ prevDiseases: diseases, prevGeo: geo });
+    // const { diseases, geo } = self.data;
+    // self.confirmNav.classList.add('hidden');
+    // self.updateData({ prevDiseases: diseases, prevGeo: geo });
+    // self.callTrendsApi();
+  }
 
   callTrendsApi(){
-    const { diseases, country } = this.data;
+    const { diseases, geo } = this.data;
     const self = this;
-    self.trendsAPI.getTrends({terms: diseases, geo: country}, function(val){
+    self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
       self.sendDataToR(val);
     });
   }
@@ -148,19 +157,19 @@ export class Explore {
     filtersMenu.appendChild(text2);
 
 
-    // Countries
-    this.countrySelect = document.createElement('select');
-    const { countrySelect } = this;
-    countrySelect.name = 'country-select';    
+    // Geo
+    this.geoSelect = document.createElement('select');
+    const { geoSelect } = this;
+    geoSelect.name = 'geo-select';    
     countries.forEach((c, i) => {
       const option = document.createElement('option');
       option.setAttribute('value', c.iso);
       option.innerHTML = c.name;
-      countrySelect.appendChild(option);
+      geoSelect.appendChild(option);
     });
-    bindHandleChange = evt => this.handleSelectCountryChange(evt, this);
-    countrySelect.addEventListener('change', bindHandleChange);
-    filtersMenu.appendChild(countrySelect);
+    bindHandleChange = evt => this.handleSelectGeoChange(evt, this);
+    geoSelect.addEventListener('change', bindHandleChange);
+    filtersMenu.appendChild(geoSelect);
 
 
     // Cancel / Done
@@ -197,13 +206,13 @@ export class Explore {
       data[key] = obj[key];
     }
     this.data = data;
-    console.log(this.data);    
+    console.log(this.data);
     this.updateElements();
   }
 
   updateElements() {
-    const { data, diseaseSelect, countrySelect, seasonalChart, trendChart } = this;
-    const { diseases, country, seasonal, trend, total } = data;
+    const { data, diseaseSelect, geoSelect, seasonalChart, trendChart } = this;
+    const { diseases, geo, seasonal, trend, total } = data;
     
     const diseaseOptions = diseaseSelect.children;
     for (const o of diseaseOptions) {
@@ -212,9 +221,9 @@ export class Explore {
       }
     }
 
-    const countryOptions = countrySelect.children;
-    for (const o of countryOptions) {
-      if (o.value === data.country) {
+    const geoOptions = geoSelect.children;
+    for (const o of geoOptions) {
+      if (o.value === data.geo.iso) {
         o.selected = true;
       }
     }

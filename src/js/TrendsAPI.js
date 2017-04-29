@@ -1,5 +1,7 @@
 // @flow weak
 
+import type { Disease, Country, Filter } from './types'
+
 export class TrendsAPI {
 
   gapi: () => {};
@@ -29,11 +31,11 @@ export class TrendsAPI {
       });
   }
 
-  getTrends(data: {terms: string[], geo: string}, callback) {
-    console.log('Requesting data for:', data);
-    const { geo, terms } = data;
+  getTrends(filter: Filter, callback) {
+    console.log('Requesting data for:', filter);
+    const { geo, terms } = filter;
     this.gapi.client.request({
-      'path': 'https://www.googleapis.com/trends/v1beta/graph?restrictions.geo='+geo+'&terms='+terms[0],
+      'path': 'https://www.googleapis.com/trends/v1beta/graph?restrictions.geo='+geo.iso+'&terms='+terms[0],
     })
     .then(function(response) {
         callback(response.result);
