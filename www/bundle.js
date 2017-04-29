@@ -88,7 +88,21 @@
 	      Shiny.onInputChange("mydata", data);
 	      Shiny.addCustomMessageHandler("myCallbackHandler", function (message) {
 	        console.log('From R: ' + message);
+	        parseRData(message);
 	      });
+	    }
+
+	    function parseRData(message) {
+	      var data = message.substring(message.indexOf('(') + 1, message.lastIndexOf(')'));
+	      data = data.split(',');
+	      var seasonal = [];
+	      var trend = [];
+	      for (var i = 0; i < data.length; i += 3) {
+	        seasonal.push(data[i]);
+	        trend.push(data[i + 1]);
+	      }
+	      console.log('seasonal', seasonal);
+	      console.log('trend', trend);
 	    }
 
 	    container.appendChild(test2);

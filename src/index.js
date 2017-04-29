@@ -2,6 +2,7 @@
 
 import { Explore } from './js/Explore';
 import { TrendsAPI } from './js/TrendsAPI';
+import { dummyData } from './js/util'
 import './sass/app.scss';
 
 var app = app || {};
@@ -32,11 +33,32 @@ app.main = (function (){
     })
 
     function updateData(data) {
-      console.log(data);
+      // console.log('From Google Trends: ', data);
+      parseRData(dummyData);
+
       Shiny.onInputChange("mydata", data);
       Shiny.addCustomMessageHandler("myCallbackHandler", function(message) {
-        console.log('From R: ' + message);
+        console.log('From R: ', message);
+        parseRData(message);
       });      
+    }
+
+    function parseRData(message) {
+
+      let seasonal = message.substring(message.indexOf(':') + 1, message.indexOf('trend:'));
+      seasonal = seasonal.split(',');//.map((n, i) => Number(n.trim()))
+      seasonal = seasonal.map((n, i) => Number(n.trim()));
+      console.log(seasonal);
+      // let data = message.substring(message.indexOf('(') + 1, message.lastIndexOf(')'));
+      // data = data.split(',');
+      // let seasonal = [];
+      // let trend = [];
+      // for(let i = 0; i < data.length; i += 3) {
+      //   seasonal.push(data[i]);
+      //   trend.push(data[i+1]);
+      // }
+      // console.log('seasonal', seasonal);
+      // console.log('trend', trend);
     }
 
     container.appendChild(test2);

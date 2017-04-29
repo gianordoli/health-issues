@@ -30,14 +30,15 @@ shinyServer(function(input, output, session) {
 
       # Run stl script
       mySTL <- stl(myTS, t.window=15, s.window="periodic", robust=TRUE)
-
+      print(mySTL$time.series)
+      
       # Convert to data frame
       mySTL.DF <- as.data.frame(mySTL$time.series)
+      print(mySTL.DF$seasonal)
       
-      print(mySTL$time.series)
-      print(typeof(mySTL$time.series))
+      response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
 
-      session$sendCustomMessage(type = "myCallbackHandler", toString(mySTL.DF))
+      session$sendCustomMessage(type = "myCallbackHandler", response)
     }
   })
 
