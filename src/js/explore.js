@@ -9,12 +9,14 @@ import * as d3 from 'd3';
 export class Explore {
 
   data: {
-    diseases: string[]
+    diseases: string[],
+    seasonal: {date: Date, value: number}[],
+    trend: {date: Date, value: number}[],
+    total: {date: Date, value: number}[]
   };
   diseaseSelect: HTMLElement;
   seasonalChart: LineChart;
   trendChart: LineChart;
-  totalChart: LineChart;
   trendsAPI: TrendsAPI;
 
   constructor(parentContainer: HTMLElement, data) {
@@ -22,7 +24,10 @@ export class Explore {
       this.data = data;
     } else {
       this.data = {
-        diseases: []
+        diseases: [],
+        seasonal: [],
+        trend: [],
+        total: []
       }
     }
     this.trendsAPI = new TrendsAPI();
@@ -40,26 +45,38 @@ export class Explore {
   sendDataToR(data) {
     console.log('From Google Trends: ', data);
 
+    const parseTime = d3.timeParse('%Y-%m-%d');
+
+    // Storing original data 
+    this.data.total = data.lines[0].points.map((p, i) => {
+      return{ date: parseTime(p.date), value: p.value}
+    });
+
+    // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
-    const dates = data.lines[0].points.map((p, i) => p.date);
-    this.parseRData(dummyData, dates);
+    
+    this.parseRData(dummyData);    
 
     Shiny.onInputChange("mydata", dataToR);
     Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
       console.log('From R: ', dataFromR);
-      this.parseRData(dataFromR, dates);
+      this.parseRData(dataFromR);
     });
   }
 
-  parseRData(dataFromR, dates) {
+  parseRData(dataFromR) {
+    const { total } = this.data;
 
-    const parseTime = d3.timeParse('%Y-%m-%d');
-
-    let seasonal = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
-    seasonal = (seasonal.split(',')).map((n, i) => {
-      return{ date: parseTime(dates[i]), value: Number(n.trim())}
+    const seasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
+    const seasonal = (seasonalString.split(',')).map((n, i) => {
+      return{ date: total[i].date, value: Number(n.trim())}
     });
-    // this.chartTrend.updateData(seasonal);
+    
+    const trendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
+    const trend = (trendString.split(',')).map((n, i) => {
+      return{ date: total[i].date, value: Number(n.trim())}
+    });
+    this.updateData({seasonal: seasonal, trend: trend});
   }
 
   handleSelectDiseaseChange(event, self) {
@@ -113,21 +130,25 @@ export class Explore {
     doneButton.addEventListener('click', bindButtonEvent);    
     filtersMenu.appendChild(doneButton);
 
-    this.totalChart = new LineChart(elementsContainer);
+    this.seasonalChart = new LineChart(elementsContainer);
+    this.trendChart = new LineChart(elementsContainer);
 
     parentContainer.appendChild(elementsContainer);
   }
 
   updateData(obj) {
-    this.data = {
-      ...obj
+    let { data } = this;
+    for (const key in obj) {
+      data[key] = obj[key];
     }
+    this.data = data;
+    console.log(this.data);    
     this.updateElements();
-    console.log(this.data);
   }
 
   updateElements() {
-    const { data, diseaseSelect } = this;
+    const { data, diseaseSelect, seasonalChart, trendChart } = this;
+    const { diseases, seasonal, trend, total } = data;
     
     const options = diseaseSelect.children;
     for (const o of options) {
@@ -135,5 +156,9 @@ export class Explore {
         o.selected = true;
       }
     }
+    if(seasonal && trend && total) {
+      seasonalChart.updateData(seasonal);  
+      trendChart.updateData(trend);
+    }    
   }
 }
