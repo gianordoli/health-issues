@@ -15,25 +15,36 @@ app.main = (function (){
     console.log('render');
     
     const container = document.createElement('div');
-    const explore = new Explore(container);
-    
-    var test1 = document.createElement('button');
+
+    // Curated
+    const curatedNav = document.createElement('div');
+    const curatedTitle = document.createElement('h3');
+    curatedTitle.innerHTML = 'Curated';
+    curatedNav.appendChild(curatedTitle);
+
+    const test1 = document.createElement('button');
     test1.innerHTML = diseases[10] + ' in ' + countries[30].name;
     test1.addEventListener('click', e => explore.loadCurated({terms: [diseases[10]], geo: countries[30]}));
-    container.appendChild(test1);
+    curatedNav.appendChild(test1);
 
-    // var test2 = document.createElement('button');
-    // test2.innerHTML = 'Andropause';
-    // test2.addEventListener('click', e => explore.updateData({diseases: ['Andropause']}));
-    // container.appendChild(test2);
+    const test2 = document.createElement('button');
+    test2.innerHTML = diseases[2] + ' in ' + countries[234].name;
+    test2.addEventListener('click', e => explore.loadCurated({terms: [diseases[2]], geo: countries[234]}));
+    curatedNav.appendChild(test2);
 
-    var body = document.querySelector('body');
+    container.appendChild(curatedNav);
+
+
+    // Explore
+    const explore = new Explore(container);
+
+    const body = document.querySelector('body');
     if(body){
       body.appendChild(container);
     }
   }
 
-  var init = function(){
+  const init = function(){
     console.log('Initializing app.');
     render();
   };
