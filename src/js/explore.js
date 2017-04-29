@@ -71,9 +71,9 @@ export class Explore {
   }  
 
   callTrendsApi(){
-    const { diseases } = this.data;
+    const { diseases, country } = this.data;
     const self = this;
-    self.trendsAPI.getTrends(diseases[0], function(val){
+    self.trendsAPI.getTrends({terms: diseases, geo: country}, function(val){
       self.sendDataToR(val);
     });
   }

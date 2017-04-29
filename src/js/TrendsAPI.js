@@ -29,10 +29,11 @@ export class TrendsAPI {
       });
   }
 
-  getTrends(data, callback) {
+  getTrends(data: {terms: string[], geo: string}, callback) {
     console.log('Requesting data for:', data);
+    const { geo, terms } = data;
     this.gapi.client.request({
-      'path': 'https://www.googleapis.com/trends/v1beta/graph?terms='+data,
+      'path': 'https://www.googleapis.com/trends/v1beta/graph?restrictions.geo='+geo+'&terms='+terms[0],
     })
     .then(function(response) {
         callback(response.result);
