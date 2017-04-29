@@ -26,11 +26,11 @@ export class ChartTrend {
     const parentContainer = d3.select(_parentContainer);
     const { data } = this;
 
-    const margin = {top: 10, right: 0, bottom: 10, left: 30};
+    const margin = {top: 10, right: 0, bottom: 30, left: 30};
     const width  = 800;
     const height = 400;
     const obj = {};
-    this.x = d3.scaleLinear().range([0, width]);
+    this.x = d3.scaleTime().range([0, width]);
     this.y = d3.scaleLinear().range([height, 0]);
     
     const { x, y } = this;
@@ -38,8 +38,8 @@ export class ChartTrend {
     this.yAxis = d3.axisLeft(y);
 
     this.line = d3.line()
-      .x(function(d) { return x(d.x); })
-      .y(function(d) { return y(d.y); });
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.value); });
 
     this.svg = parentContainer.append('svg')
       .attr('width', width + margin.left + margin.right)
@@ -47,8 +47,8 @@ export class ChartTrend {
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    this.x.domain(d3.extent(data, function(d) { return d.x; }));
-    this.y.domain(d3.extent(data, function(d) { return d.y; }));
+    this.x.domain(d3.extent(data, function(d) { return d.date; }));
+    this.y.domain(d3.extent(data, function(d) { return d.value; }));
 
     this.svg.append('g')
       .attr('class', 'x axis')
@@ -70,8 +70,8 @@ export class ChartTrend {
     const { data } = this;
     let { svg, x, y, xAxis, yAxis, line  } = this;
 
-    x.domain(d3.extent(data, function(d) { return d.x; }));
-    y.domain(d3.extent(data, function(d) { return d.y; }));        
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain(d3.extent(data, function(d) { return d.value; }));        
 
     svg.select('g.y')
       .transition()

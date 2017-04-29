@@ -2,15 +2,18 @@
 
 import { FiltersMenu } from './FiltersMenu';
 import { ChartTrend } from './ChartTrend';
-import { diseases, countries } from './util.js';
+import { dummyData, diseases, countries } from './util.js';
+import { TrendsAPI } from './TrendsAPI';
+import * as d3 from 'd3';
 
 export class Explore {
 
   data: {
-    diseases: []
+    diseases: string[]
   };
   diseaseSelect: HTMLElement;
   chartTrend: ChartTrend;
+  trendsAPI: TrendsAPI;
 
   constructor(parentContainer: HTMLElement, data) {
     if (data) {
@@ -20,23 +23,56 @@ export class Explore {
         diseases: []
       }
     }
+    this.trendsAPI = new TrendsAPI();
+    console.log(this.trendsAPI);
     this.createElements(parentContainer);
   }
 
   generateRandomData(n) {
     var data = [];
-    for(var i=0; i<100; i++){
-      data.push({
-        x: i,
-        y: Math.round(Math.random() * 100)
-      });
-    };
+    // for(var i=0; i<100; i++){
+    //   data.push({
+    //     x: i,
+    //     y: Math.round(Math.random() * 100)
+    //   });
+    // };
     return data;
-  };  
+  }
+
+  callTrendsApi(event, self){
+    self.trendsAPI.getTrends('flu', function(val){
+      self.sendDataToR(val);
+    });
+  }
+
+  sendDataToR(data) {
+    console.log('From Google Trends: ', data);
+
+    const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
+    const dates = data.lines[0].points.map((p, i) => p.date);
+    this.parseRData(dummyData, dates);
+
+    Shiny.onInputChange("mydata", dataToR);
+    Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
+      console.log('From R: ', dataFromR);
+      this.parseRData(dataFromR, dates);
+    });
+  }
+
+  parseRData(dataFromR, dates) {
+
+    const parseTime = d3.timeParse('%Y-%m-%d');
+
+    let seasonal = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
+    seasonal = (seasonal.split(',')).map((n, i) => {
+      return{ date: parseTime(dates[i]), value: Number(n.trim())}
+    });
+    this.chartTrend.updateData(seasonal);
+  }
 
   handleSelectDiseaseChange(event, self) {
     self.chartTrend.updateData(this.generateRandomData());
-  }  
+  }
 
   createElements(parentContainer: HTMLElement) {
     var elementsContainer = document.createElement('div');
@@ -77,6 +113,12 @@ export class Explore {
       countrySelect.appendChild(option);
     });
     filtersMenu.appendChild(countrySelect);
+
+    var doneButton = document.createElement('button');
+    doneButton.innerHTML = 'Done';
+    const bindButtonEvent = evt => this.callTrendsApi(evt, this);    
+    doneButton.addEventListener('click', bindButtonEvent);    
+    filtersMenu.appendChild(doneButton);
 
     this.chartTrend = new ChartTrend(elementsContainer, this.generateRandomData());
 
