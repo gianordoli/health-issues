@@ -157,6 +157,12 @@
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
 	    console.log(this.trendsAPI);
 	    this.createElements(parentContainer);
+
+	    var self = this;
+	    Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
+	      console.log('From R: ', dataFromR);
+	      self.parseRData(dataFromR);
+	    });
 	  }
 
 	  _createClass(Explore, [{
@@ -246,14 +252,7 @@
 	      });
 
 	      // this.parseRData(dummyData);
-
-	      var self = this;
-
 	      Shiny.onInputChange("mydata", dataToR);
-	      Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
-	        console.log('From R: ', dataFromR);
-	        self.parseRData(dataFromR);
-	      });
 	    }
 	  }, {
 	    key: 'parseRData',

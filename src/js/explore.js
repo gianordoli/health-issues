@@ -47,6 +47,12 @@ export class Explore {
     this.trendsAPI = new TrendsAPI();
     console.log(this.trendsAPI);
     this.createElements(parentContainer);
+
+    const self = this;
+    Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
+      console.log('From R: ', dataFromR);
+      self.parseRData(dataFromR);
+    });    
   }
 
   handleSelectDiseaseChange(event, self) {
@@ -110,14 +116,7 @@ export class Explore {
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
     // this.parseRData(dummyData);
-
-    const self = this;
-
     Shiny.onInputChange("mydata", dataToR);
-    Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
-      console.log('From R: ', dataFromR);
-      self.parseRData(dataFromR);
-    });
   }
 
   parseRData(dataFromR) {
