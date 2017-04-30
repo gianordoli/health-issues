@@ -1,7 +1,5 @@
 // @flow
 
-export type Disease = string;
-
 export type Term = {
   entity: string,
   name: string

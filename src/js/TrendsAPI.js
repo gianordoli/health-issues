@@ -34,7 +34,10 @@ export class TrendsAPI {
   getTrends(filter: Filter, callback) {
     console.log('Requesting data for:', filter);
     const { geo, terms } = filter;
-    const path = 'https://www.googleapis.com/trends/v1beta/graph?restrictions.geo='+geo.iso+'&terms='+terms[0].entity;
+    let path = 'https://www.googleapis.com/trends/v1beta/graph?terms='+encodeURIComponent(terms[0].entity);
+    if (geo.iso !== '') {
+      path += '&restrictions.geo='+geo.iso;
+    }
     console.log(path);
     this.gapi.client.request({
       'path': path

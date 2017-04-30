@@ -2,7 +2,7 @@
 
 import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
-import { dummyData, terms, diseases, countries } from './util.js';
+import { dummyData, terms, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
 import type { Disease, Geo, Filter } from './types'
 import * as d3 from 'd3';

@@ -1,7 +1,7 @@
 // @flow weak 
 
 import { Explore } from './js/Explore';
-import { diseases, countries } from './js/util.js';
+import { terms, countries } from './js/util.js';
 import './sass/app.scss';
 
 var app = app || {};
@@ -23,13 +23,13 @@ app.main = (function (){
     curatedNav.appendChild(curatedTitle);
 
     const test1 = document.createElement('button');
-    test1.innerHTML = diseases[10] + ' in ' + countries[30].name;
-    test1.addEventListener('click', e => explore.loadCurated({terms: [diseases[10]], geo: countries[30]}));
+    test1.innerHTML = terms[18].name + ' in ' + countries[10].name;
+    test1.addEventListener('click', e => explore.loadCurated({terms: [terms[18]], geo: countries[10]}));
     curatedNav.appendChild(test1);
 
     const test2 = document.createElement('button');
-    test2.innerHTML = diseases[2] + ' in ' + countries[234].name;
-    test2.addEventListener('click', e => explore.loadCurated({terms: [diseases[2]], geo: countries[234]}));
+    test2.innerHTML = terms[12].name + ' in ' + countries[234].name;
+    test2.addEventListener('click', e => explore.loadCurated({terms: [terms[12]], geo: countries[234]}));
     curatedNav.appendChild(test2);
 
     elementsContainer.appendChild(curatedNav);
