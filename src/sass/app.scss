@@ -7,14 +7,27 @@ body {
   }
 }
 
+.hidden {
+  display: none;
+}
+
 svg {
+  
+  &.chart {
+    width: 840px;
+    height: 430px;
+    transition: opacity 1s linear, height 1s linear;  
+
+    &.hidden-chart {
+      display: block;
+      opacity: 0;
+      height: 0;
+    }    
+  }
+
   path {
     &.line {
       fill: none;
     }
   }
-}
-
-.hidden {
-  display: none;
 }

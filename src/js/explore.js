@@ -16,12 +16,14 @@ export class Explore {
     geo: Geo,
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
-    total: {date: Date, value: number}[]
+    total: {date: Date, value: number}[],
+    merged: boolean
   };
   
   diseaseSelect: HTMLElement;
   geoSelect: HTMLElement;
   confirmNav: HTMLElement;
+  mergeButton: HTMLElement;
 
   seasonalChart: LineChart;
   trendChart: LineChart;
@@ -38,7 +40,8 @@ export class Explore {
         geo: countries[0],
         seasonal: [],
         trend: [],
-        total: []
+        total: [],
+        merged: false
       }
     }
     this.trendsAPI = new TrendsAPI();
@@ -56,7 +59,7 @@ export class Explore {
     const { value, name } = event.target;
     this.updateData({geo: {iso: value, name: name}});
     self.confirmNav.classList.remove('hidden');
-  }    
+  }
 
   cancelFilters(event, self) {
     const { prevDiseases, prevGeo } = self.data;
@@ -69,6 +72,13 @@ export class Explore {
     self.confirmNav.classList.add('hidden');
     self.updateData({ prevDiseases: diseases, prevGeo: geo });
     self.callTrendsApi();
+  }
+
+  toggleChartMerge(event, self) {
+    let { merged } = self.data;
+    merged = merged ? false : true;
+    this.seasonalChart.hide();
+    this.updateData({ merged: merged });
   }
 
   loadCurated(filter: Filter) {
@@ -192,6 +202,15 @@ export class Explore {
     filtersMenu.appendChild(confirmNav);
 
 
+    // Merge
+    this.mergeButton = document.createElement('button');
+    const { mergeButton } = this;
+    mergeButton.innerHTML = 'Merge Charts';
+    bindHandleChange = evt => this.toggleChartMerge(evt, this);
+    mergeButton.addEventListener('click', bindHandleChange);
+    elementsContainer.appendChild(mergeButton);
+
+
     // Charts
     this.seasonalChart = new LineChart(elementsContainer, 'seasonal');
     this.trendChart = new LineChart(elementsContainer, 'trend');
@@ -210,8 +229,8 @@ export class Explore {
   }
 
   updateElements() {
-    const { data, diseaseSelect, geoSelect, seasonalChart, trendChart } = this;
-    const { diseases, geo, seasonal, trend, total } = data;
+    const { data, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
+    const { diseases, geo, seasonal, trend, total, merged } = data;
     
     const diseaseOptions = diseaseSelect.children;
     for (const o of diseaseOptions) {
@@ -227,9 +246,11 @@ export class Explore {
       }
     }
 
+    mergeButton.innerHTML = merged ? 'Split Charts' : 'Merge Charts';
+
     if(seasonal && trend && total) {
-      seasonalChart.updateData(seasonal);  
-      trendChart.updateData(trend);
+      seasonalChart.updateData(seasonal);
+      merged ? trendChart.updateData(total) : trendChart.updateData(trend);
     }    
   }
 }

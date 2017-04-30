@@ -14,7 +14,7 @@ app.main = (function (){
     
     console.log('render');
     
-    const container = document.createElement('div');
+    const elementsContainer = document.createElement('div');
 
     // Curated
     const curatedNav = document.createElement('div');
@@ -32,15 +32,15 @@ app.main = (function (){
     test2.addEventListener('click', e => explore.loadCurated({terms: [diseases[2]], geo: countries[234]}));
     curatedNav.appendChild(test2);
 
-    container.appendChild(curatedNav);
+    elementsContainer.appendChild(curatedNav);
 
 
     // Explore
-    const explore = new Explore(container);
+    const explore = new Explore(elementsContainer);
 
     const body = document.querySelector('body');
     if(body){
-      body.appendChild(container);
+      body.appendChild(elementsContainer);
     }
   }
 

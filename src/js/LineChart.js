@@ -19,6 +19,10 @@ export class LineChart {
     this.createElements(parentContainer);
   }
 
+  hide() {
+    this.svg.classed('hidden-chart', !this.svg.classed('hidden-chart'));
+  }
+
   updateData(data: {date: Date, value: number}[]) {
     this.data = data;
     this.updateElements();
@@ -52,22 +56,25 @@ export class LineChart {
     this.svg = parentContainer.append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
+      .classed('chart', true);
+
+    const chart = this.svg
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     this.x.domain(d3.extent(data, function(d) { return d.date; }));
     this.y.domain(d3.extent(data, function(d) { return d.value; }));
 
-    this.svg.append('g')
+    chart.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
       .call(this.xAxis);
 
-    this.svg.append('g')
+    chart.append('g')
       .attr('class', 'y axis')
       .call(this.yAxis)
 
-    this.svg.append('path')
+    chart.append('path')
       .datum(data)
       .attr('class', 'line')
       .attr('stroke', 'black')
