@@ -123,8 +123,8 @@ export class Explore {
     // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
-    this.parseRData(dummyData);
-    // Shiny.onInputChange("mydata", dataToR);
+    // this.parseRData(dummyData);
+    Shiny.onInputChange("mydata", dataToR);
   }
 
   parseRData(dataFromR) {
