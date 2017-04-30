@@ -109,12 +109,14 @@ export class Explore {
     // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
-    this.parseRData(dummyData);    
+    // this.parseRData(dummyData);
+
+    const self = this;
 
     Shiny.onInputChange("mydata", dataToR);
     Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
       console.log('From R: ', dataFromR);
-      this.parseRData(dataFromR);
+      self.parseRData(dataFromR);
     });
   }
 

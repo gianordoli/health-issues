@@ -48,7 +48,7 @@
 
 	var _Explore = __webpack_require__(1);
 
-	var _TrendsAPI = __webpack_require__(6);
+	var _util = __webpack_require__(3);
 
 	__webpack_require__(18);
 
@@ -62,54 +62,36 @@
 
 	    console.log('render');
 
-	    var container = document.createElement('div');
-	    var explore = new _Explore.Explore(container);
+	    var elementsContainer = document.createElement('div');
+
+	    // Curated
+	    var curatedNav = document.createElement('div');
+	    var curatedTitle = document.createElement('h3');
+	    curatedTitle.innerHTML = 'Curated';
+	    curatedNav.appendChild(curatedTitle);
 
 	    var test1 = document.createElement('button');
-	    test1.innerHTML = 'Allergy';
+	    test1.innerHTML = _util.diseases[10] + ' in ' + _util.countries[30].name;
 	    test1.addEventListener('click', function (e) {
-	      return explore.updateData({ diseases: ['Allergy'] });
+	      return explore.loadCurated({ terms: [_util.diseases[10]], geo: _util.countries[30] });
 	    });
-	    container.appendChild(test1);
+	    curatedNav.appendChild(test1);
 
 	    var test2 = document.createElement('button');
-	    test2.innerHTML = 'Andropause';
+	    test2.innerHTML = _util.diseases[2] + ' in ' + _util.countries[234].name;
 	    test2.addEventListener('click', function (e) {
-	      return explore.updateData({ diseases: ['Andropause'] });
+	      return explore.loadCurated({ terms: [_util.diseases[2]], geo: _util.countries[234] });
 	    });
-	    test2.addEventListener('click', function () {
-	      var trendsAPI = new _TrendsAPI.TrendsAPI(function (data) {
-	        updateData(data);
-	      });
-	    });
+	    curatedNav.appendChild(test2);
 
-	    function updateData(data) {
-	      console.log(data);
-	      Shiny.onInputChange("mydata", data);
-	      Shiny.addCustomMessageHandler("myCallbackHandler", function (message) {
-	        console.log('From R: ' + message);
-	        parseRData(message);
-	      });
-	    }
+	    elementsContainer.appendChild(curatedNav);
 
-	    function parseRData(message) {
-	      var data = message.substring(message.indexOf('(') + 1, message.lastIndexOf(')'));
-	      data = data.split(',');
-	      var seasonal = [];
-	      var trend = [];
-	      for (var i = 0; i < data.length; i += 3) {
-	        seasonal.push(data[i]);
-	        trend.push(data[i + 1]);
-	      }
-	      console.log('seasonal', seasonal);
-	      console.log('trend', trend);
-	    }
-
-	    container.appendChild(test2);
+	    // Explore
+	    var explore = new _Explore.Explore(elementsContainer);
 
 	    var body = document.querySelector('body');
 	    if (body) {
-	      body.appendChild(container);
+	      body.appendChild(elementsContainer);
 	    }
 	  }
 
@@ -125,17 +107,6 @@
 
 	window.addEventListener('DOMContentLoaded', app.main.init);
 
-	// class App extends React.Component {
-	// 	render() {
-	// 		return <div className="test">
-	// 			<h1>This is my AWESOME App</h1>
-	// 			<p>This is Eves app created with React, webpack and magic!</p>
-	// 		</div>
-	// 	}
-	// }
-
-	// ReactDOM.render(<App />, document.getElementById('react-container'));
-
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -147,15 +118,21 @@
 	});
 	exports.Explore = undefined;
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
 	var _FiltersMenu = __webpack_require__(2);
 
-	var _ChartTrend = __webpack_require__(4);
+	var _LineChart = __webpack_require__(4);
 
 	var _util = __webpack_require__(3);
+
+	var _TrendsAPI = __webpack_require__(6);
+
+	var _d = __webpack_require__(5);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -167,28 +144,133 @@
 	      this.data = data;
 	    } else {
 	      this.data = {
-	        diseases: []
+	        prevDiseases: _util.diseases[0],
+	        diseases: _util.diseases[0],
+	        prevGeo: _util.countries[0],
+	        geo: _util.countries[0],
+	        seasonal: [],
+	        trend: [],
+	        total: [],
+	        merged: false
 	      };
 	    }
+	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
+	    console.log(this.trendsAPI);
 	    this.createElements(parentContainer);
 	  }
 
 	  _createClass(Explore, [{
-	    key: 'generateRandomData',
-	    value: function generateRandomData(n) {
-	      var data = [];
-	      for (var i = 0; i < 100; i++) {
-	        data.push({
-	          x: i,
-	          y: Math.round(Math.random() * 100)
-	        });
-	      };
-	      return data;
-	    }
-	  }, {
 	    key: 'handleSelectDiseaseChange',
 	    value: function handleSelectDiseaseChange(event, self) {
-	      self.chartTrend.updateData(this.generateRandomData());
+	      var value = event.target.value;
+	      this.updateData({ diseases: [value] });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'handleSelectGeoChange',
+	    value: function handleSelectGeoChange(event, self) {
+	      var _event$target = event.target,
+	          value = _event$target.value,
+	          name = _event$target.name;
+
+	      this.updateData({ geo: { iso: value, name: name } });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'cancelFilters',
+	    value: function cancelFilters(event, self) {
+	      var _self$data = self.data,
+	          prevDiseases = _self$data.prevDiseases,
+	          prevGeo = _self$data.prevGeo;
+
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({ diseases: prevDiseases, geo: prevGeo });
+	    }
+	  }, {
+	    key: 'confirmFilters',
+	    value: function confirmFilters(event, self) {
+	      var _self$data2 = self.data,
+	          diseases = _self$data2.diseases,
+	          geo = _self$data2.geo;
+
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({ prevDiseases: diseases, prevGeo: geo });
+	      self.callTrendsApi();
+	    }
+	  }, {
+	    key: 'toggleChartMerge',
+	    value: function toggleChartMerge(event, self) {
+	      var merged = self.data.merged;
+
+	      merged = merged ? false : true;
+	      this.seasonalChart.hide();
+	      this.updateData({ merged: merged });
+	    }
+	  }, {
+	    key: 'loadCurated',
+	    value: function loadCurated(filter) {
+	      var terms = filter.terms,
+	          geo = filter.geo;
+
+	      this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo });
+	      this.confirmNav.classList.add('hidden');
+	      this.callTrendsApi();
+	    }
+	  }, {
+	    key: 'callTrendsApi',
+	    value: function callTrendsApi() {
+	      var _data = this.data,
+	          diseases = _data.diseases,
+	          geo = _data.geo;
+
+	      var self = this;
+	      self.trendsAPI.getTrends({ terms: diseases, geo: geo }, function (val) {
+	        self.sendDataToR(val);
+	      });
+	    }
+	  }, {
+	    key: 'sendDataToR',
+	    value: function sendDataToR(data) {
+	      console.log('From Google Trends: ', data);
+
+	      var parseTime = d3.timeParse('%Y-%m-%d');
+
+	      // Storing original data 
+	      this.data.total = data.lines[0].points.map(function (p, i) {
+	        return { date: parseTime(p.date), value: p.value };
+	      });
+
+	      // Stringifying data to R
+	      var dataToR = data.lines[0].points.map(function (p, i) {
+	        return p.date + ',' + p.value;
+	      });
+
+	      // this.parseRData(dummyData);
+
+	      var self = this;
+
+	      Shiny.onInputChange("mydata", dataToR);
+	      Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
+	        console.log('From R: ', dataFromR);
+	        self.parseRData(dataFromR);
+	      });
+	    }
+	  }, {
+	    key: 'parseRData',
+	    value: function parseRData(dataFromR) {
+	      var total = this.data.total;
+
+
+	      var seasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
+	      var seasonal = seasonalString.split(',').slice(0, 13).map(function (n, i) {
+	        return { date: total[i].date, value: Number(n.trim()) };
+	      });
+
+	      var trendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
+	      var trend = trendString.split(',').map(function (n, i) {
+	        return { date: total[i].date, value: Number(n.trim()) };
+	      });
+	      this.updateData({ seasonal: seasonal, trend: trend });
 	    }
 	  }, {
 	    key: 'createElements',
@@ -206,6 +288,7 @@
 	      text1.innerHTML = 'Search interest for ';
 	      filtersMenu.appendChild(text1);
 
+	      // Diseases
 	      this.diseaseSelect = document.createElement('select');
 	      var diseaseSelect = this.diseaseSelect;
 
@@ -227,24 +310,75 @@
 	      text2.innerHTML = ' in the ';
 	      filtersMenu.appendChild(text2);
 
-	      var countrySelect = document.createElement('select');
-	      diseaseSelect.name = 'country-select';
+	      // Geo
+	      this.geoSelect = document.createElement('select');
+	      var geoSelect = this.geoSelect;
+
+	      geoSelect.name = 'geo-select';
 	      _util.countries.forEach(function (c, i) {
 	        var option = document.createElement('option');
 	        option.setAttribute('value', c.iso);
 	        option.innerHTML = c.name;
-	        countrySelect.appendChild(option);
+	        geoSelect.appendChild(option);
 	      });
-	      filtersMenu.appendChild(countrySelect);
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.handleSelectGeoChange(evt, _this);
+	      };
+	      geoSelect.addEventListener('change', bindHandleChange);
+	      filtersMenu.appendChild(geoSelect);
 
-	      this.chartTrend = new _ChartTrend.ChartTrend(elementsContainer, this.generateRandomData());
+	      // Cancel / Done
+	      this.confirmNav = document.createElement('div');
+	      var confirmNav = this.confirmNav;
+
+	      confirmNav.id = 'confirm-nav';
+	      confirmNav.classList.add('hidden');
+
+	      var cancelButton = document.createElement('button');
+	      cancelButton.innerHTML = 'Cancel';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.cancelFilters(evt, _this);
+	      };
+	      cancelButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(cancelButton);
+
+	      var doneButton = document.createElement('button');
+	      doneButton.innerHTML = 'Done';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.confirmFilters(evt, _this);
+	      };
+	      doneButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(doneButton);
+
+	      filtersMenu.appendChild(confirmNav);
+
+	      // Merge
+	      this.mergeButton = document.createElement('button');
+	      var mergeButton = this.mergeButton;
+
+	      mergeButton.innerHTML = 'Merge Charts';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.toggleChartMerge(evt, _this);
+	      };
+	      mergeButton.addEventListener('click', bindHandleChange);
+	      elementsContainer.appendChild(mergeButton);
+
+	      // Charts
+	      this.seasonalChart = new _LineChart.LineChart(elementsContainer, 'seasonal');
+	      this.trendChart = new _LineChart.LineChart(elementsContainer, 'trend');
 
 	      parentContainer.appendChild(elementsContainer);
 	    }
 	  }, {
 	    key: 'updateData',
 	    value: function updateData(obj) {
-	      this.data = _extends({}, obj);
+	      var data = this.data;
+
+	      for (var key in obj) {
+	        data[key] = obj[key];
+	      }
+	      this.data = data;
+	      console.log(this.data);
 	      this.updateElements();
 	    }
 	  }, {
@@ -252,16 +386,25 @@
 	    value: function updateElements() {
 	      var data = this.data,
 	          diseaseSelect = this.diseaseSelect,
-	          chartTrend = this.chartTrend;
+	          geoSelect = this.geoSelect,
+	          mergeButton = this.mergeButton,
+	          seasonalChart = this.seasonalChart,
+	          trendChart = this.trendChart;
+	      var diseases = data.diseases,
+	          geo = data.geo,
+	          seasonal = data.seasonal,
+	          trend = data.trend,
+	          total = data.total,
+	          merged = data.merged;
 
 
-	      var options = diseaseSelect.children;
+	      var diseaseOptions = diseaseSelect.children;
 	      var _iteratorNormalCompletion = true;
 	      var _didIteratorError = false;
 	      var _iteratorError = undefined;
 
 	      try {
-	        for (var _iterator = options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	        for (var _iterator = diseaseOptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	          var o = _step.value;
 
 	          if (o.value === data.diseases[0]) {
@@ -283,7 +426,40 @@
 	        }
 	      }
 
-	      chartTrend.updateData(this.generateRandomData());
+	      var geoOptions = geoSelect.children;
+	      var _iteratorNormalCompletion2 = true;
+	      var _didIteratorError2 = false;
+	      var _iteratorError2 = undefined;
+
+	      try {
+	        for (var _iterator2 = geoOptions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	          var _o = _step2.value;
+
+	          if (_o.value === data.geo.iso) {
+	            _o.selected = true;
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError2 = true;
+	        _iteratorError2 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	            _iterator2.return();
+	          }
+	        } finally {
+	          if (_didIteratorError2) {
+	            throw _iteratorError2;
+	          }
+	        }
+	      }
+
+	      mergeButton.innerHTML = merged ? 'Split Charts' : 'Merge Charts';
+
+	      if (seasonal && trend && total) {
+	        seasonalChart.updateData(seasonal);
+	        merged ? trendChart.updateData(total) : trendChart.updateData(trend);
+	      }
 	    }
 	  }]);
 
@@ -372,6 +548,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var dummyData = exports.dummyData = "seasonal: 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252, -3.18612818802182, -3.89743932448122, -4.37499526602228, -3.65363561774542, -0.686480387754851, 4.54240542830846, 2.73201580997007, 3.03045133921252, 2.37263502514153, 4.30657893342439, 0.677967901184848, -1.8633757568252 trend: 7.21790482156164, 7.11856646184706, 7.01922810213247, 6.94795717001788, 6.8766862379033, 6.84306603135029, 6.80944582479728, 6.96614972358897, 7.12285362238065, 7.31686225388064, 7.51087088538064, 7.64061724335883, 7.77036360133702, 7.87393051286943, 7.97749742440184, 8.10947206316905, 8.24144670193626, 8.58039898682091, 8.91935127170556, 9.58693952445866, 10.2545277772118, 11.0141555447714, 11.773783312331, 12.2818877600105, 12.78999220769, 12.6689665325011, 12.5479408573123, 11.9593813109, 11.3708217644876, 10.8017807171563, 10.232739669825, 9.62347673099186, 9.01421379215878, 8.56918709596123, 8.12416039976369, 7.8754630557467, 7.62676571172972, 7.47828975168461, 7.3298137916395, 7.2395297573835, 7.1492457231275, 7.18903275482903, 7.22881978653055, 7.21320224590624, 7.19758470528192, 7.17108474887752, 7.14458479247311, 7.14125144148877, 7.13791809050443, 7.16019366370689, 7.18246923690935, 7.21570498919263, 7.24894074147591, 7.32948795231759, 7.41003516315928, 7.53209648225835, 7.65415780135742, 7.90700620057981, 8.15985459980221, 12.3810792402549, 16.6023038807075, 21.8020839601187, 27.0018640395299, 31.2618333483277, 35.5218026571255, 35.8763182983257, 36.2308339395259, 32.5031642153337, 28.7754944911414, 24.7975477703457, 20.81960104955, 17.8172290545934, 14.8148570596367, 13.2952132811134, 11.7755695025901, 10.609313541217, 9.44305757984386, 8.86982694738349, 8.29659631492311, 8.30630669116416, 8.31601706740521, 8.21482394813845, 8.11363082887168, 8.00752214566934, 7.901413462467, 7.85966077988896, 7.81790809731093, 7.81540828320901, 7.81290846910708, 7.7501167230969, 7.68732497708672, 7.46917819550625, 7.25103141392578, 7.03727375614998, 6.82351609837418, 6.79760866071652, 6.77170122305886, 6.90901198200128, 7.0463227409437, 7.33799662646265, 7.6296705119816, 7.90165165495852, 8.17363279793543, 8.31518247682774, 8.45673215572006, 8.52641500096415, 8.59609784620823, 8.63792587712559, 8.67975390804294, 8.73439903768847, 8.789044167334, 8.81278938530706, 8.83653460328011, 8.81383078302955, 8.79112696277899, 8.76121821061039, 8.73130945844178, 8.62647158007799, 8.5216337017142, 8.51129689357229, 8.50096008543039, 8.52428127537915, 8.54760246532791, 8.65271057027481, 8.75781867522171, 9.09650889300466, 9.43519911078761, 9.9130371499743, 10.390875189161, 10.7576899807969, 11.1245047724327, 11.2044183684068, 11.2843319643809, 11.27798784723, 11.271643730079, 11.0581049746535, 10.8445662192279, 10.3792708649795, 9.91397551073102, 9.52361831040128, 9.13326111007154, 9.01316452586334, 8.89306794165515, 9.00505078812941, 9.11703363460367, 9.24211251966252, 9.36719140472137, 9.62805656043914, 9.88892171615692, 10.0470880828981, 10.2052544496392, 10.2372724083489, 10.2692903670586, 10.4634504533666, 10.6576105396746, 10.811218923762, 10.9648273078494, 11.1394725094136, 11.3141177109778, 11.5027423499328";
 	var diseases = exports.diseases = ['Acne', 'Acute bronchitis', 'Allergy', 'Alopecia', 'Altitude sickness', 'Alzheimer\'s disease', 'Andropause', 'Anorexia nervosa', 'Antisocial personality disorder', 'Arthritis', 'Asperger syndrome', 'Asthma', 'Attention deficit hyperactivity disorder', 'Autism', 'Avoidant personality disorder', 'Back Pain', 'Bad Breath', 'Bedwetting', 'Bipolar disorder', 'Bladder cancer', 'Body dysmorphic disorder', 'Bone Cancer', 'Borderline personality disorder', 'Brain Cancer', 'Brain tumor', 'Breast cancer', 'Burns', 'Bursitis', 'Cancer', 'Canker Sores', 'Carpal tunnel syndrome', 'Celiac disease', 'Cervical cancer', 'Cholesterol', 'Chronic Obstructive Pulmonary Disease', 'Colorectal cancer', 'Cradle cap', 'Crohn\'s disease', 'Dandruff', 'Deep vein thrombosis', 'Dehydration', 'Dependent personality disorder', 'Depression', 'Diabetes mellitus', 'Diarrhea', 'Disabilities', 'Gastroesophageal reflux disease', 'Heart failure', 'Irritant diaper dermatitis', 'Traumatic brain injury'];
 	var countries = exports.countries = [{ iso: "AD", name: "Andorra" }, { iso: "AE", name: "United Arab Emirates" }, { iso: "AF", name: "Afghanistan" }, { iso: "AG", name: "Antigua and Barbuda" }, { iso: "AI", name: "Anguilla" }, { iso: "AL", name: "Albania" }, { iso: "AM", name: "Armenia" }, { iso: "AN", name: "Netherlands Antilles" }, { iso: "AO", name: "Angola" }, { iso: "AQ", name: "Antarctica" }, { iso: "AR", name: "Argentina" }, { iso: "AS", name: "American Samoa" }, { iso: "AT", name: "Austria" }, { iso: "AU", name: "Australia" }, { iso: "AW", name: "Aruba" }, { iso: "AX", name: "Åland" }, { iso: "AZ", name: "Azerbaijan" }, { iso: "BA", name: "Bosnia and Herzegovina" }, { iso: "BB", name: "Barbados" }, { iso: "BD", name: "Bangladesh" }, { iso: "BE", name: "Belgium" }, { iso: "BF", name: "Burkina Faso" }, { iso: "BG", name: "Bulgaria" }, { iso: "BH", name: "Bahrain" }, { iso: "BI", name: "Burundi" }, { iso: "BJ", name: "Benin" }, { iso: "BL", name: "Saint Barthélemy" }, { iso: "BM", name: "Bermuda" }, { iso: "BN", name: "Brunei" }, { iso: "BO", name: "Bolivia" }, { iso: "BQ", name: "Bonaire" }, { iso: "BR", name: "Brazil" }, { iso: "BS", name: "Bahamas" }, { iso: "BT", name: "Bhutan" }, { iso: "BV", name: "Bouvet Island" }, { iso: "BW", name: "Botswana" }, { iso: "BY", name: "Belarus" }, { iso: "BZ", name: "Belize" }, { iso: "CA", name: "Canada" }, { iso: "CC", name: "Cocos [Keeling] Islands" }, { iso: "CD", name: "Democratic Republic of the Congo" }, { iso: "CF", name: "Central African Republic" }, { iso: "CG", name: "Republic of the Congo" }, { iso: "CH", name: "Switzerland" }, { iso: "CI", name: "Ivory Coast" }, { iso: "CK", name: "Cook Islands" }, { iso: "CL", name: "Chile" }, { iso: "CM", name: "Cameroon" }, { iso: "CN", name: "China" }, { iso: "CO", name: "Colombia" }, { iso: "CR", name: "Costa Rica" }, { iso: "CS", name: "Serbia and Montenegro" }, { iso: "CU", name: "Cuba" }, { iso: "CV", name: "Cape Verde" }, { iso: "CW", name: "Curacao" }, { iso: "CX", name: "Christmas Island" }, { iso: "CY", name: "Cyprus" }, { iso: "CZ", name: "Czechia" }, { iso: "DE", name: "Germany" }, { iso: "DJ", name: "Djibouti" }, { iso: "DK", name: "Denmark" }, { iso: "DM", name: "Dominica" }, { iso: "DO", name: "Dominican Republic" }, { iso: "DZ", name: "Algeria" }, { iso: "EC", name: "Ecuador" }, { iso: "EE", name: "Estonia" }, { iso: "EG", name: "Egypt" }, { iso: "EH", name: "Western Sahara" }, { iso: "ER", name: "Eritrea" }, { iso: "ES", name: "Spain" }, { iso: "ET", name: "Ethiopia" }, { iso: "FI", name: "Finland" }, { iso: "FJ", name: "Fiji" }, { iso: "FK", name: "Falkland Islands" }, { iso: "FM", name: "Micronesia" }, { iso: "FO", name: "Faroe Islands" }, { iso: "FR", name: "France" }, { iso: "GA", name: "Gabon" }, { iso: "GB", name: "United Kingdom" }, { iso: "GD", name: "Grenada" }, { iso: "GE", name: "Georgia" }, { iso: "GF", name: "French Guiana" }, { iso: "GG", name: "Guernsey" }, { iso: "GH", name: "Ghana" }, { iso: "GI", name: "Gibraltar" }, { iso: "GL", name: "Greenland" }, { iso: "GM", name: "Gambia" }, { iso: "GN", name: "Guinea" }, { iso: "GP", name: "Guadeloupe" }, { iso: "GQ", name: "Equatorial Guinea" }, { iso: "GR", name: "Greece" }, { iso: "GS", name: "South Georgia and the South Sandwich Islands" }, { iso: "GT", name: "Guatemala" }, { iso: "GU", name: "Guam" }, { iso: "GW", name: "Guinea-Bissau" }, { iso: "GY", name: "Guyana" }, { iso: "HK", name: "Hong Kong" }, { iso: "HM", name: "Heard Island and McDonald Islands" }, { iso: "HN", name: "Honduras" }, { iso: "HR", name: "Croatia" }, { iso: "HT", name: "Haiti" }, { iso: "HU", name: "Hungary" }, { iso: "ID", name: "Indonesia" }, { iso: "IE", name: "Ireland" }, { iso: "IL", name: "Israel" }, { iso: "IM", name: "Isle of Man" }, { iso: "IN", name: "India" }, { iso: "IO", name: "British Indian Ocean Territory" }, { iso: "IQ", name: "Iraq" }, { iso: "IR", name: "Iran" }, { iso: "IS", name: "Iceland" }, { iso: "IT", name: "Italy" }, { iso: "JE", name: "Jersey" }, { iso: "JM", name: "Jamaica" }, { iso: "JO", name: "Jordan" }, { iso: "JP", name: "Japan" }, { iso: "KE", name: "Kenya" }, { iso: "KG", name: "Kyrgyzstan" }, { iso: "KH", name: "Cambodia" }, { iso: "KI", name: "Kiribati" }, { iso: "KM", name: "Comoros" }, { iso: "KN", name: "Saint Kitts and Nevis" }, { iso: "KP", name: "North Korea" }, { iso: "KR", name: "South Korea" }, { iso: "KW", name: "Kuwait" }, { iso: "KY", name: "Cayman Islands" }, { iso: "KZ", name: "Kazakhstan" }, { iso: "LA", name: "Laos" }, { iso: "LB", name: "Lebanon" }, { iso: "LC", name: "Saint Lucia" }, { iso: "LI", name: "Liechtenstein" }, { iso: "LK", name: "Sri Lanka" }, { iso: "LR", name: "Liberia" }, { iso: "LS", name: "Lesotho" }, { iso: "LT", name: "Lithuania" }, { iso: "LU", name: "Luxembourg" }, { iso: "LV", name: "Latvia" }, { iso: "LY", name: "Libya" }, { iso: "MA", name: "Morocco" }, { iso: "MC", name: "Monaco" }, { iso: "MD", name: "Moldova" }, { iso: "ME", name: "Montenegro" }, { iso: "MF", name: "Saint Martin" }, { iso: "MG", name: "Madagascar" }, { iso: "MH", name: "Marshall Islands" }, { iso: "MK", name: "Macedonia" }, { iso: "ML", name: "Mali" }, { iso: "MM", name: "Myanmar [Burma]" }, { iso: "MN", name: "Mongolia" }, { iso: "MO", name: "Macao" }, { iso: "MP", name: "Northern Mariana Islands" }, { iso: "MQ", name: "Martinique" }, { iso: "MR", name: "Mauritania" }, { iso: "MS", name: "Montserrat" }, { iso: "MT", name: "Malta" }, { iso: "MU", name: "Mauritius" }, { iso: "MV", name: "Maldives" }, { iso: "MW", name: "Malawi" }, { iso: "MX", name: "Mexico" }, { iso: "MY", name: "Malaysia" }, { iso: "MZ", name: "Mozambique" }, { iso: "NA", name: "Namibia" }, { iso: "NC", name: "New Caledonia" }, { iso: "NE", name: "Niger" }, { iso: "NF", name: "Norfolk Island" }, { iso: "NG", name: "Nigeria" }, { iso: "NI", name: "Nicaragua" }, { iso: "NL", name: "Netherlands" }, { iso: "NO", name: "Norway" }, { iso: "NP", name: "Nepal" }, { iso: "NR", name: "Nauru" }, { iso: "NU", name: "Niue" }, { iso: "NZ", name: "New Zealand" }, { iso: "OM", name: "Oman" }, { iso: "PA", name: "Panama" }, { iso: "PE", name: "Peru" }, { iso: "PF", name: "French Polynesia" }, { iso: "PG", name: "Papua New Guinea" }, { iso: "PH", name: "Philippines" }, { iso: "PK", name: "Pakistan" }, { iso: "PL", name: "Poland" }, { iso: "PM", name: "Saint Pierre and Miquelon" }, { iso: "PN", name: "Pitcairn Islands" }, { iso: "PR", name: "Puerto Rico" }, { iso: "PS", name: "Palestine" }, { iso: "PT", name: "Portugal" }, { iso: "PW", name: "Palau" }, { iso: "PY", name: "Paraguay" }, { iso: "QA", name: "Qatar" }, { iso: "RE", name: "Réunion" }, { iso: "RO", name: "Romania" }, { iso: "RS", name: "Serbia" }, { iso: "RU", name: "Russia" }, { iso: "RW", name: "Rwanda" }, { iso: "SA", name: "Saudi Arabia" }, { iso: "SB", name: "Solomon Islands" }, { iso: "SC", name: "Seychelles" }, { iso: "SD", name: "Sudan" }, { iso: "SE", name: "Sweden" }, { iso: "SG", name: "Singapore" }, { iso: "SH", name: "Saint Helena" }, { iso: "SI", name: "Slovenia" }, { iso: "SJ", name: "Svalbard and Jan Mayen" }, { iso: "SK", name: "Slovakia" }, { iso: "SL", name: "Sierra Leone" }, { iso: "SM", name: "San Marino" }, { iso: "SN", name: "Senegal" }, { iso: "SO", name: "Somalia" }, { iso: "SR", name: "Suriname" }, { iso: "SS", name: "South Sudan" }, { iso: "ST", name: "São Tomé and Príncipe" }, { iso: "SV", name: "El Salvador" }, { iso: "SX", name: "Sint Maarten" }, { iso: "SY", name: "Syria" }, { iso: "SZ", name: "Swaziland" }, { iso: "TC", name: "Turks and Caicos Islands" }, { iso: "TD", name: "Chad" }, { iso: "TF", name: "French Southern Territories" }, { iso: "TG", name: "Togo" }, { iso: "TH", name: "Thailand" }, { iso: "TJ", name: "Tajikistan" }, { iso: "TK", name: "Tokelau" }, { iso: "TL", name: "East Timor" }, { iso: "TM", name: "Turkmenistan" }, { iso: "TN", name: "Tunisia" }, { iso: "TO", name: "Tonga" }, { iso: "TR", name: "Turkey" }, { iso: "TT", name: "Trinidad and Tobago" }, { iso: "TV", name: "Tuvalu" }, { iso: "TW", name: "Taiwan" }, { iso: "TZ", name: "Tanzania" }, { iso: "UA", name: "Ukraine" }, { iso: "UG", name: "Uganda" }, { iso: "UM", name: "U.S. Minor Outlying Islands" }, { iso: "US", name: "United States" }, { iso: "UY", name: "Uruguay" }, { iso: "UZ", name: "Uzbekistan" }, { iso: "VA", name: "Vatican City" }, { iso: "VC", name: "Saint Vincent and the Grenadines" }, { iso: "VE", name: "Venezuela" }, { iso: "VG", name: "British Virgin Islands" }, { iso: "VI", name: "U.S. Virgin Islands" }, { iso: "VN", name: "Vietnam" }, { iso: "VU", name: "Vanuatu" }, { iso: "WF", name: "Wallis and Futuna" }, { iso: "WS", name: "Samoa" }, { iso: "XK", name: "Kosovo" }, { iso: "YE", name: "Yemen" }, { iso: "YT", name: "Mayotte" }, { iso: "ZA", name: "South Africa" }, { iso: "ZM", name: "Zambia" }, { iso: "ZW", name: "Zimbabwe" }];
 
@@ -384,7 +561,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.ChartTrend = undefined;
+	exports.LineChart = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
@@ -396,15 +573,21 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ChartTrend = exports.ChartTrend = function () {
-	  function ChartTrend(parentContainer, data) {
-	    _classCallCheck(this, ChartTrend);
+	var LineChart = exports.LineChart = function () {
+	  function LineChart(parentContainer, type) {
+	    _classCallCheck(this, LineChart);
 
-	    this.data = data;
-	    this.createElements(parentContainer, data);
+	    this.data = [];
+	    this.type = type;
+	    this.createElements(parentContainer);
 	  }
 
-	  _createClass(ChartTrend, [{
+	  _createClass(LineChart, [{
+	    key: 'hide',
+	    value: function hide() {
+	      this.svg.classed('hidden-chart', !this.svg.classed('hidden-chart'));
+	    }
+	  }, {
 	    key: 'updateData',
 	    value: function updateData(data) {
 	      this.data = data;
@@ -417,39 +600,47 @@
 	      var data = this.data;
 
 
-	      var margin = { top: 10, right: 0, bottom: 10, left: 30 };
+	      var margin = { top: 10, right: 0, bottom: 30, left: 30 };
 	      var width = 800;
 	      var height = 400;
 	      var obj = {};
-	      this.x = d3.scaleLinear().range([0, width]);
+	      this.x = d3.scaleTime().range([0, width]);
 	      this.y = d3.scaleLinear().range([height, 0]);
 
 	      var x = this.x,
 	          y = this.y;
 
 	      this.xAxis = d3.axisBottom(x);
+
+	      // Displaying months for seasonal chart
+	      if (this.type == 'seasonal') {
+	        this.xAxis = this.xAxis.tickFormat(d3.timeFormat("%b"));
+	      }
+
 	      this.yAxis = d3.axisLeft(y);
 
 	      this.line = d3.line().x(function (d) {
-	        return x(d.x);
+	        return x(d.date);
 	      }).y(function (d) {
-	        return y(d.y);
+	        return y(d.value);
 	      });
 
-	      this.svg = parentContainer.append('svg').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+	      this.svg = parentContainer.append('svg').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).classed('chart', true);
+
+	      var chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 	      this.x.domain(d3.extent(data, function (d) {
-	        return d.x;
+	        return d.date;
 	      }));
 	      this.y.domain(d3.extent(data, function (d) {
-	        return d.y;
+	        return d.value;
 	      }));
 
-	      this.svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(this.xAxis);
+	      chart.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(this.xAxis);
 
-	      this.svg.append('g').attr('class', 'y axis').call(this.yAxis);
+	      chart.append('g').attr('class', 'y axis').call(this.yAxis);
 
-	      this.svg.append('path').datum(data).attr('class', 'line').attr('stroke', 'black').attr('d', this.line);
+	      chart.append('path').datum(data).attr('class', 'line').attr('stroke', 'black').attr('d', this.line);
 	    }
 	  }, {
 	    key: 'updateElements',
@@ -464,10 +655,10 @@
 
 
 	      x.domain(d3.extent(data, function (d) {
-	        return d.x;
+	        return d.date;
 	      }));
 	      y.domain(d3.extent(data, function (d) {
-	        return d.y;
+	        return d.value;
 	      }));
 
 	      svg.select('g.y').transition().duration(1000).call(yAxis);
@@ -478,76 +669,8 @@
 	    }
 	  }]);
 
-	  return ChartTrend;
+	  return LineChart;
 	}();
-
-	// render() {
-
-	//   const { parentContainer, data } = this;
-
-	//   const margin = {top: 10, right: 0, bottom: 10, left: 30};
-	//   const width  = 800;
-	//   const height = 400;
-	//   const obj = {};
-	//   const x = d3.scaleLinear().range([0, width]);
-	//   const y = d3.scaleLinear().range([height, 0]);
-	//   const xAxis = d3.axisBottom(x);
-	//   const yAxis = d3.axisLeft(y);
-
-	//   const line = d3.line()
-	//     .x(function(d) { return x(d.x); })
-	//     .y(function(d) { return y(d.y); });
-
-	//   if(!this.svg){
-	//     console.log('setup');
-
-	//     this.svg = parentContainer.append('svg')
-	//       .attr('width', width + margin.left + margin.right)
-	//       .attr('height', height + margin.top + margin.bottom)
-	//       .append('g')
-	//       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-	//     x.domain(d3.extent(data, function(d) { return d.x; }));
-	//     y.domain(d3.extent(data, function(d) { return d.y; }));
-
-	//     this.svg.append('g')
-	//       .attr('class', 'x axis')
-	//       .attr('transform', 'translate(0,' + height + ')')
-	//       .call(xAxis);
-
-	//     this.svg.append('g')
-	//       .attr('class', 'y axis')
-	//       .call(yAxis)
-
-	//     this.svg.append('path')
-	//       .datum(data)
-	//       .attr('class', 'line')
-	//       .attr('stroke', 'black')
-	//       .attr('d', line);
-
-	//   } else {
-	//     console.log('update');
-
-	//     x.domain(d3.extent(data, function(d) { return d.x; }));
-	//     y.domain(d3.extent(data, function(d) { return d.y; }));        
-
-	//     this.svg.select('g.y')
-	//       .transition()
-	//       .duration(1000)
-	//       .call(yAxis);
-
-	//     this.svg.select('g.x')
-	//       .transition()
-	//       .duration(1000)
-	//       .call(xAxis);
-
-	//     this.svg.selectAll('path.line')
-	//       .datum(data)
-	//       .transition()
-	//       .duration(1000)
-	//       .attr('d', line);
-	//   };
-	// }
 
 /***/ }),
 /* 5 */
@@ -17238,49 +17361,54 @@
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	//  weak
+	var TrendsAPI = exports.TrendsAPI = function () {
+	  function TrendsAPI(callback) {
+	    _classCallCheck(this, TrendsAPI);
 
-	var TrendsAPI = exports.TrendsAPI = function TrendsAPI(callback) {
-	  _classCallCheck(this, TrendsAPI);
+	    console.log('TrendsAPI');
+	    var self = this;
 
-	  console.log('TrendAPI');
+	    __webpack_require__(7)().then(function (gapi) {
+	      console.log('GoogleAPI library loaded');
+	      gapi.load('client', start);
 
-	  __webpack_require__(7)().then(function (gapi) {
-
-	    console.log('GoogleAPI library loaded');
-
-	    // 1. Load the JavaScript client library.
-	    gapi.load('client', start);
-
-	    function start() {
-	      var apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
-	      var id = 'diseases';
-
-	      // 2. Initialize the JavaScript client library.
-	      gapi.client.init({
-	        'apiKey': apiKey,
-	        // clientId and scope are optional if auth is not required.
-	        'clientId': 'diseases.apps.googleusercontent.com'
-	      }).then(function () {
-	        // 3. Initialize and make the API request.
-	        return gapi.client.request({
-	          'path': 'https://www.googleapis.com/trends/v1beta/graph?terms=flu'
+	      function start() {
+	        var apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
+	        var id = 'diseases';
+	        gapi.client.init({
+	          'apiKey': apiKey,
+	          'clientId': 'diseases.apps.googleusercontent.com'
+	        }).then(function () {
+	          console.log('GoogleAPI client initialized');
+	          self.gapi = gapi;
 	        });
+	      }
+	    });
+	  }
+
+	  _createClass(TrendsAPI, [{
+	    key: 'getTrends',
+	    value: function getTrends(filter, callback) {
+	      console.log('Requesting data for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      this.gapi.client.request({
+	        'path': 'https://www.googleapis.com/trends/v1beta/graph?restrictions.geo=' + geo.iso + '&terms=' + terms[0]
 	      }).then(function (response) {
-	        // console.log(response.result.lines[0].points);
-	        var flattenedResult = response.result.lines[0].points.map(function (p, i) {
-	          return p.date + ',' + p.value;
-	        });
-	        // console.log(flattenedResult);
-	        callback(flattenedResult);
+	        callback(response.result);
 	      }, function (reason) {
 	        console.log('Error: ' + reason.result.error.message);
 	      });
 	    }
-	  });
-	};
+	  }]);
+
+	  return TrendsAPI;
+	}(); //  weak
 
 /***/ }),
 /* 7 */
@@ -18402,7 +18530,7 @@
 
 
 	// module
-	exports.push([module.id, "body .test h1 {\n  color: white; }\n\nsvg path.line {\n  fill: none; }\n", ""]);
+	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s linear; }\n  svg.chart.hidden-chart {\n    display: block;\n    opacity: 0;\n    height: 0; }\n\nsvg path.line {\n  fill: none; }\n", ""]);
 
 	// exports
 

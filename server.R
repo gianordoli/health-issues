@@ -1,6 +1,5 @@
 library(shiny)
 library(fpp2)
-library(reshape)
 
 shinyServer(function(input, output, session) {
   
