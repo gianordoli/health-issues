@@ -251,15 +251,15 @@
 	        return p.date + ',' + p.value;
 	      });
 
-	      var checkShinyConnection = setInterval(function () {
-	        if (Shiny) {
-	          console.log('Shiny connected');
-	          clearTimeout(checkShinyConnection);
-	          Shiny.onInputChange("mydata", dataToR);
-	        } else {
-	          console.log('Can\'t find Shiny');
-	        }
-	      }, 500);
+	      // let checkShinyConnection = setInterval(function(){
+	      //   if (Shiny) {
+	      //     console.log('Shiny connected');
+	      //     clearTimeout(checkShinyConnection);
+	      Shiny.onInputChange("mydata", dataToR);
+	      //   } else {
+	      //     console.log('Can\'t find Shiny');
+	      //   }
+	      // }, 500);
 	    }
 	  }, {
 	    key: 'parseRData',

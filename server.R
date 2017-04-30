@@ -1,5 +1,5 @@
 library(shiny)
-library(fpp2)
+library(stlplus)
 
 shinyServer(function(input, output, session) {
   
@@ -29,11 +29,11 @@ shinyServer(function(input, output, session) {
 
       # Run stl script
       mySTL <- stl(myTS, t.window=15, s.window="periodic", robust=TRUE)
-      print(mySTL$time.series)
+      # print(mySTL$time.series)
       
       # Convert to data frame
       mySTL.DF <- as.data.frame(mySTL$time.series)
-      print(mySTL.DF$seasonal)
+      # print(mySTL.DF$seasonal)
       
       response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
 

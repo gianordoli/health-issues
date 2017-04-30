@@ -115,15 +115,15 @@ export class Explore {
     // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
-    let checkShinyConnection = setInterval(function(){
-      if (Shiny) {
-        console.log('Shiny connected');
-        clearTimeout(checkShinyConnection);
+    // let checkShinyConnection = setInterval(function(){
+    //   if (Shiny) {
+    //     console.log('Shiny connected');
+    //     clearTimeout(checkShinyConnection);
         Shiny.onInputChange("mydata", dataToR);
-      } else {
-        console.log('Can\'t find Shiny');
-      }
-    }, 500);
+    //   } else {
+    //     console.log('Can\'t find Shiny');
+    //   }
+    // }, 500);
   }
 
   parseRData(dataFromR) {
