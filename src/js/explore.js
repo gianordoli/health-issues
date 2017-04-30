@@ -2,7 +2,7 @@
 
 import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
-import { dummyData, diseases, countries } from './util.js';
+import { dummyData, terms, diseases, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
 import type { Disease, Geo, Filter } from './types'
 import * as d3 from 'd3';
@@ -10,8 +10,8 @@ import * as d3 from 'd3';
 export class Explore {
 
   data: {
-    prevDiseases: Disease[],
-    diseases: Disease[],
+    prevDiseases: Term[],
+    diseases: Term[],
     prevGeo: Geo,
     geo: Geo,
     seasonal: {date: Date, value: number}[],
@@ -34,8 +34,8 @@ export class Explore {
       this.data = data;
     } else {
       this.data = {
-        prevDiseases: diseases[0],
-        diseases: diseases[0],
+        prevDiseases: [terms[0]],
+        diseases: [terms[0]],
         prevGeo: countries[0],
         geo: countries[0],
         seasonal: [],
@@ -56,16 +56,24 @@ export class Explore {
   }
 
   handleSelectDiseaseChange(event, self) {
-    const value = event.target.value;
-    this.updateData({diseases: [value]});
+    const { value } = event.target;
+    const name = this.getSelectedText(event.target);
+    this.updateData({diseases: [{entity: value, name: name}]});
     self.confirmNav.classList.remove('hidden');
   }
 
   handleSelectGeoChange(event, self) {
-    const { value, name } = event.target;
+    const { value } = event.target;
+    const name = this.getSelectedText(event.target);
     this.updateData({geo: {iso: value, name: name}});
     self.confirmNav.classList.remove('hidden');
   }
+
+  getSelectedText(el) {
+    if (el.selectedIndex == -1)
+      return null;
+    return el.options[el.selectedIndex].text;
+  }  
 
   cancelFilters(event, self) {
     const { prevDiseases, prevGeo } = self.data;
@@ -115,15 +123,8 @@ export class Explore {
     // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
-    // let checkShinyConnection = setInterval(function(){
-    //   if (Shiny) {
-    //     console.log('Shiny connected');
-    //     clearTimeout(checkShinyConnection);
-        Shiny.onInputChange("mydata", dataToR);
-    //   } else {
-    //     console.log('Can\'t find Shiny');
-    //   }
-    // }, 500);
+    this.parseRData(dummyData);
+    // Shiny.onInputChange("mydata", dataToR);
   }
 
   parseRData(dataFromR) {
@@ -158,11 +159,11 @@ export class Explore {
     this.diseaseSelect = document.createElement('select');
     const { diseaseSelect } = this;
     diseaseSelect.name = 'disease-select';
-    diseases.forEach((d, i) => {
+    terms.forEach((d, i) => {
       const option = document.createElement('option');
-      option.setAttribute('value', d);
-      option.setAttribute('key', i);      
-      option.innerHTML = d;
+      option.setAttribute('value', d.entity);
+      option.setAttribute('key', i);
+      option.innerHTML = d.name;
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = evt => this.handleSelectDiseaseChange(evt, this);
@@ -242,7 +243,7 @@ export class Explore {
     
     const diseaseOptions = diseaseSelect.children;
     for (const o of diseaseOptions) {
-      if (o.value === data.diseases[0]) {
+      if (o.value === data.diseases[0].entity) {
         o.selected = true;
       }
     }

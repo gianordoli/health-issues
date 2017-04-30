@@ -2,12 +2,17 @@
 
 export type Disease = string;
 
+export type Term = {
+  entity: string,
+  name: string
+}
+
 export type Geo = {
   iso: string,
   name: string
 }
 
 export type Filter = {
-  terms: Disease[],
+  terms: Term[],
   geo: Geo
 }
