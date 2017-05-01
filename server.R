@@ -7,6 +7,8 @@ shinyServer(function(input, output, session) {
   
   observe({
     
+    print(input$ping)    
+    
     input$mydata
 
     if (!is.null(input$mydata)) {
@@ -35,7 +37,7 @@ shinyServer(function(input, output, session) {
       
       # Convert to data frame
       mySTL.DF <- as.data.frame(mySTL$time.series)
-      print(mySTL.DF$seasonal)
+      # print(mySTL.DF$seasonal)
       
       response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
 

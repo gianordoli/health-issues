@@ -156,7 +156,6 @@
 	      };
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
-	    console.log(this.trendsAPI);
 	    this.createElements(parentContainer);
 
 	    var self = this;
@@ -167,6 +166,11 @@
 
 	    $(document).on('shiny:sessioninitialized', function (event) {
 	      console.log('Shiny session initialized');
+
+	      var keepShinyAlive = setInterval(function () {
+	        var timestamp = Date.now();
+	        Shiny.onInputChange("ping", timestamp);
+	      }, 10000);
 
 	      Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
 	        console.log('From R: ', dataFromR);

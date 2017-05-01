@@ -47,7 +47,6 @@ export class Explore {
       }
     }
     this.trendsAPI = new TrendsAPI();
-    console.log(this.trendsAPI);
     this.createElements(parentContainer);
 
     const self = this;
@@ -58,6 +57,11 @@ export class Explore {
 
     $(document).on('shiny:sessioninitialized', function(event) {
       console.log('Shiny session initialized');
+
+      const keepShinyAlive = setInterval(function() {
+        const timestamp = Date.now();
+        Shiny.onInputChange("ping", timestamp);
+      }, 10000);
 
       Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
         console.log('From R: ', dataFromR);
