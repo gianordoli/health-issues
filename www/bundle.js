@@ -155,40 +155,46 @@
 	      };
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
+	    this.addShinyListeners();
 	    this.createElements(parentContainer);
-
-	    var self = this;
-
-	    $(document).on('shiny:connected', function (event) {
-	      console.log('Connected to Shiny server');
-	    });
-
-	    $(document).on('shiny:sessioninitialized', function (event) {
-	      console.log('Shiny session initialized');
-
-	      clearInterval(self.keepShinyAlive);
-	      self.keepShinyAlive = setInterval(function () {
-	        var timestamp = Date.now();
-	        console.log(timestamp);
-	        Shiny.onInputChange("ping", timestamp);
-	      }, 10000);
-
-	      Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
-	        console.log('From R: ', dataFromR);
-	        self.parseRData(dataFromR);
-	      });
-	    });
-
-	    $(document).on('shiny:idle', function (event) {
-	      console.log('Shiny session idle');
-	    });
-
-	    $(document).on('shiny:disconnected', function (event) {
-	      console.log('Disconnected from Shiny server');
-	    });
 	  }
 
 	  _createClass(Explore, [{
+	    key: 'addShinyListeners',
+	    value: function addShinyListeners() {
+	      var self = this;
+
+	      $(document).on('shiny:connected', function (event) {
+	        console.log('Connected to Shiny server');
+	      });
+
+	      $(document).on('shiny:sessioninitialized', function (event) {
+	        console.log('Shiny session initialized');
+
+	        // Create a loop to ping the Shiny server and keep the websocket connection on
+	        clearInterval(self.keepShinyAlive);
+	        self.keepShinyAlive = setInterval(pingShiny, 10000);
+	        function pingShiny() {
+	          var timestamp = Date.now();
+	          Shiny.onInputChange("ping", timestamp);
+	        }
+
+	        // Add listener for stl data
+	        Shiny.addCustomMessageHandler("stl", function (dataFromR) {
+	          console.log('From R: ', dataFromR);
+	          self.parseRData(dataFromR);
+	        });
+	      });
+
+	      $(document).on('shiny:idle', function (event) {
+	        console.log('Shiny session idle');
+	      });
+
+	      $(document).on('shiny:disconnected', function (event) {
+	        console.log('Disconnected from Shiny server');
+	      });
+	    }
+	  }, {
 	    key: 'handleSelectDiseaseChange',
 	    value: function handleSelectDiseaseChange(event, self) {
 	      var value = event.target.value;
@@ -260,7 +266,16 @@
 	          geo = _data.geo;
 
 	      var self = this;
+
 	      self.trendsAPI.getTrends({ terms: diseases, geo: geo }, function (val) {
+
+	        var parseTime = d3.timeParse('%Y-%m-%d');
+	        self.updateData({
+	          total: val.lines[0].points.map(function (p, i) {
+	            return { date: parseTime(p.date), value: p.value };
+	          })
+	        });
+
 	        self.sendDataToR(val);
 	      });
 	    }
@@ -269,18 +284,9 @@
 	    value: function sendDataToR(data) {
 	      console.log('From Google Trends: ', data);
 
-	      var parseTime = d3.timeParse('%Y-%m-%d');
-
-	      // Storing original data 
-	      this.data.total = data.lines[0].points.map(function (p, i) {
-	        return { date: parseTime(p.date), value: p.value };
-	      });
-
-	      // Stringifying data to R
 	      var dataToR = data.lines[0].points.map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
-
 	      // this.parseRData(dummyData);    
 	      Shiny.onInputChange("mydata", dataToR);
 	    }

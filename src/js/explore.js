@@ -61,13 +61,16 @@ export class Explore {
     $(document).on('shiny:sessioninitialized', function(event) {
       console.log('Shiny session initialized');
 
+      // Create a loop to ping the Shiny server and keep the websocket connection on
       clearInterval(self.keepShinyAlive);
-      self.keepShinyAlive = setInterval(function() {
-        let timestamp = Date.now();
-        Shiny.onInputChange("ping", timestamp);
-      }, 10000);
+      self.keepShinyAlive = setInterval(pingShiny, 10000);
+      function pingShiny() {
+        const timestamp = Date.now();
+        Shiny.onInputChange("ping", timestamp);      
+      }
 
-      Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
+      // Add listener for stl data
+      Shiny.addCustomMessageHandler("stl", function(dataFromR) {
         console.log('From R: ', dataFromR);
         self.parseRData(dataFromR);
       });      
@@ -132,7 +135,16 @@ export class Explore {
   callTrendsApi(){
     const { diseases, geo } = this.data;
     const self = this;
+
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
+      
+      const parseTime = d3.timeParse('%Y-%m-%d');
+      self.updateData({
+        total: val.lines[0].points.map((p, i) => {
+          return{ date: parseTime(p.date), value: p.value}
+        })
+      });
+
       self.sendDataToR(val);
     });
   }
@@ -140,16 +152,7 @@ export class Explore {
   sendDataToR(data) {
     console.log('From Google Trends: ', data);
 
-    const parseTime = d3.timeParse('%Y-%m-%d');
-
-    // Storing original data 
-    this.data.total = data.lines[0].points.map((p, i) => {
-      return{ date: parseTime(p.date), value: p.value}
-    });
-
-    // Stringifying data to R
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
-
     // this.parseRData(dummyData);    
     Shiny.onInputChange("mydata", dataToR);
   }

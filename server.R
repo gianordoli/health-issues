@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
       
       response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
 
-      session$sendCustomMessage(type = "myCallbackHandler", response)
+      session$sendCustomMessage(type = "stl", response)
     }
   })
 
