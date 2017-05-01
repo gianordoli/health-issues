@@ -192,6 +192,7 @@
 
 	      $(document).on('shiny:disconnected', function (event) {
 	        console.log('Disconnected from Shiny server');
+	        location.reload();
 	      });
 	    }
 	  }, {
