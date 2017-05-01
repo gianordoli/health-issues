@@ -151,7 +151,8 @@
 	        seasonal: [],
 	        trend: [],
 	        total: [],
-	        merged: false
+	        merged: false,
+	        dataToR: ''
 	      };
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
@@ -159,9 +160,26 @@
 	    this.createElements(parentContainer);
 
 	    var self = this;
-	    Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
-	      console.log('From R: ', dataFromR);
-	      self.parseRData(dataFromR);
+
+	    $(document).on('shiny:connected', function (event) {
+	      console.log('Connected to Shiny server');
+	    });
+
+	    $(document).on('shiny:sessioninitialized', function (event) {
+	      console.log('Shiny session initialized');
+
+	      Shiny.addCustomMessageHandler("myCallbackHandler", function (dataFromR) {
+	        console.log('From R: ', dataFromR);
+	        self.parseRData(dataFromR);
+	      });
+	    });
+
+	    $(document).on('shiny:idle', function (event) {
+	      console.log('Shiny session idle');
+	    });
+
+	    $(document).on('shiny:disconnected', function (event) {
+	      console.log('Disconnected from Shiny server');
 	    });
 	  }
 
@@ -246,6 +264,8 @@
 	    value: function sendDataToR(data) {
 	      console.log('From Google Trends: ', data);
 
+	      var dataToR = this.data.dataToR;
+
 	      var parseTime = d3.timeParse('%Y-%m-%d');
 
 	      // Storing original data 
@@ -254,12 +274,14 @@
 	      });
 
 	      // Stringifying data to R
-	      var dataToR = data.lines[0].points.map(function (p, i) {
+	      dataToR = data.lines[0].points.map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
 
-	      // this.parseRData(dummyData);
 	      Shiny.onInputChange("mydata", dataToR);
+
+	      this.updateData({ dataToR: dataToR });
+	      // this.parseRData(dummyData);
 	    }
 	  }, {
 	    key: 'parseRData',

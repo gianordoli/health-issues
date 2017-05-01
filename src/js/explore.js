@@ -4,7 +4,7 @@ import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
 import { dummyData, terms, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
-import type { Disease, Geo, Filter } from './types'
+import type { Term, Geo, Filter } from './types'
 import * as d3 from 'd3';
 
 export class Explore {
@@ -17,7 +17,8 @@ export class Explore {
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[],
-    merged: boolean
+    merged: boolean,
+    dataToR: string
   };
   
   diseaseSelect: HTMLElement;
@@ -41,7 +42,8 @@ export class Explore {
         seasonal: [],
         trend: [],
         total: [],
-        merged: false
+        merged: false,
+        dataToR: ''
       }
     }
     this.trendsAPI = new TrendsAPI();
@@ -49,10 +51,27 @@ export class Explore {
     this.createElements(parentContainer);
 
     const self = this;
-    Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
-      console.log('From R: ', dataFromR);
-      self.parseRData(dataFromR);
-    });    
+
+    $(document).on('shiny:connected', function(event) {
+      console.log('Connected to Shiny server');
+    });
+
+    $(document).on('shiny:sessioninitialized', function(event) {
+      console.log('Shiny session initialized');
+
+      Shiny.addCustomMessageHandler("myCallbackHandler", function(dataFromR) {
+        console.log('From R: ', dataFromR);
+        self.parseRData(dataFromR);
+      });      
+    });
+
+    $(document).on('shiny:idle', function(event) {
+      console.log('Shiny session idle');
+    });
+
+    $(document).on('shiny:disconnected', function(event) {
+      console.log('Disconnected from Shiny server');
+    });
   }
 
   handleSelectDiseaseChange(event, self) {
@@ -113,6 +132,7 @@ export class Explore {
   sendDataToR(data) {
     console.log('From Google Trends: ', data);
 
+    let { dataToR } = this.data;
     const parseTime = d3.timeParse('%Y-%m-%d');
 
     // Storing original data 
@@ -121,10 +141,12 @@ export class Explore {
     });
 
     // Stringifying data to R
-    const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
+    dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
     
-    // this.parseRData(dummyData);
     Shiny.onInputChange("mydata", dataToR);
+
+    this.updateData({dataToR: dataToR});
+    // this.parseRData(dummyData);
   }
 
   parseRData(dataFromR) {
