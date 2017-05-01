@@ -6,9 +6,7 @@ shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE);
   
   observe({
-    
-    print(input$ping)    
-    
+
     input$mydata
 
     if (!is.null(input$mydata)) {

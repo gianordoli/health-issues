@@ -169,6 +169,9 @@
 
 	      var keepShinyAlive = setInterval(function () {
 	        var timestamp = Date.now();
+	        timestamp = timestamp.toString();
+	        timestamp = timestamp.substring(timestamp.length - 3);
+	        console.log(timestamp);
 	        Shiny.onInputChange("ping", timestamp);
 	      }, 10000);
 

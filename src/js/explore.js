@@ -59,7 +59,10 @@ export class Explore {
       console.log('Shiny session initialized');
 
       const keepShinyAlive = setInterval(function() {
-        const timestamp = Date.now();
+        let timestamp = Date.now();
+        timestamp = timestamp.toString()
+        timestamp = timestamp.substring(timestamp.length - 3);
+        console.log(timestamp);
         Shiny.onInputChange("ping", timestamp);
       }, 10000);
 
