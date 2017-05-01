@@ -47,8 +47,11 @@ export class Explore {
       }
     }
     this.trendsAPI = new TrendsAPI();
+    this.addShinyListeners();
     this.createElements(parentContainer);
+  }
 
+  addShinyListeners() {
     const self = this;
 
     $(document).on('shiny:connected', function(event) {
@@ -61,7 +64,6 @@ export class Explore {
       clearInterval(self.keepShinyAlive);
       self.keepShinyAlive = setInterval(function() {
         let timestamp = Date.now();
-        console.log(timestamp);
         Shiny.onInputChange("ping", timestamp);
       }, 10000);
 
