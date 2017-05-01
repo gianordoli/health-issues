@@ -17,9 +17,10 @@ export class Explore {
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[],
-    merged: boolean,
-    dataToR: string
+    merged: boolean
   };
+
+  keepShinyAlive: () => {};
   
   diseaseSelect: HTMLElement;
   geoSelect: HTMLElement;
@@ -42,8 +43,7 @@ export class Explore {
         seasonal: [],
         trend: [],
         total: [],
-        merged: false,
-        dataToR: ''
+        merged: false
       }
     }
     this.trendsAPI = new TrendsAPI();
@@ -58,10 +58,9 @@ export class Explore {
     $(document).on('shiny:sessioninitialized', function(event) {
       console.log('Shiny session initialized');
 
-      const keepShinyAlive = setInterval(function() {
+      clearInterval(self.keepShinyAlive);
+      self.keepShinyAlive = setInterval(function() {
         let timestamp = Date.now();
-        timestamp = timestamp.toString()
-        timestamp = timestamp.substring(timestamp.length - 3);
         console.log(timestamp);
         Shiny.onInputChange("ping", timestamp);
       }, 10000);
@@ -139,7 +138,6 @@ export class Explore {
   sendDataToR(data) {
     console.log('From Google Trends: ', data);
 
-    let { dataToR } = this.data;
     const parseTime = d3.timeParse('%Y-%m-%d');
 
     // Storing original data 
@@ -148,12 +146,10 @@ export class Explore {
     });
 
     // Stringifying data to R
-    dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
-    
-    Shiny.onInputChange("mydata", dataToR);
+    const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
 
-    this.updateData({dataToR: dataToR});
-    // this.parseRData(dummyData);
+    // this.parseRData(dummyData);    
+    Shiny.onInputChange("mydata", dataToR);
   }
 
   parseRData(dataFromR) {

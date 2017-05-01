@@ -151,8 +151,7 @@
 	        seasonal: [],
 	        trend: [],
 	        total: [],
-	        merged: false,
-	        dataToR: ''
+	        merged: false
 	      };
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
@@ -167,10 +166,9 @@
 	    $(document).on('shiny:sessioninitialized', function (event) {
 	      console.log('Shiny session initialized');
 
-	      var keepShinyAlive = setInterval(function () {
+	      clearInterval(self.keepShinyAlive);
+	      self.keepShinyAlive = setInterval(function () {
 	        var timestamp = Date.now();
-	        timestamp = timestamp.toString();
-	        timestamp = timestamp.substring(timestamp.length - 3);
 	        console.log(timestamp);
 	        Shiny.onInputChange("ping", timestamp);
 	      }, 10000);
@@ -271,8 +269,6 @@
 	    value: function sendDataToR(data) {
 	      console.log('From Google Trends: ', data);
 
-	      var dataToR = this.data.dataToR;
-
 	      var parseTime = d3.timeParse('%Y-%m-%d');
 
 	      // Storing original data 
@@ -281,14 +277,12 @@
 	      });
 
 	      // Stringifying data to R
-	      dataToR = data.lines[0].points.map(function (p, i) {
+	      var dataToR = data.lines[0].points.map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
 
+	      // this.parseRData(dummyData);    
 	      Shiny.onInputChange("mydata", dataToR);
-
-	      this.updateData({ dataToR: dataToR });
-	      // this.parseRData(dummyData);
 	    }
 	  }, {
 	    key: 'parseRData',
