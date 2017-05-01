@@ -3,6 +3,8 @@ library(stlplus)
 
 shinyServer(function(input, output, session) {
   
+  session$allowReconnect(TRUE);
+  
   observe({
     
     input$mydata
