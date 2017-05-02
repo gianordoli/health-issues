@@ -5,7 +5,10 @@ import { LineChart } from './LineChart';
 import { dummyData, terms, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
 import type { Term, Geo, Filter } from './types'
-import * as d3 from 'd3';
+import d3 from 'd3';
+import selectize from 'selectize';
+import 'selectize/dist/css/selectize.css';
+import $ from 'jquery'; 
 
 export class Explore {
 
@@ -154,8 +157,8 @@ export class Explore {
     console.log('From Google Trends: ', data);
 
     const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
-    // this.parseRData(dummyData);    
-    Shiny.onInputChange("mydata", dataToR);
+    this.parseRData(dummyData);
+    // Shiny.onInputChange("mydata", dataToR);
   }
 
   parseRData(dataFromR) {
@@ -189,6 +192,7 @@ export class Explore {
     // Diseases
     this.diseaseSelect = document.createElement('select');
     const { diseaseSelect } = this;
+    diseaseSelect.id = 'disease-select';
     diseaseSelect.name = 'disease-select';
     terms.forEach((d, i) => {
       const option = document.createElement('option');
@@ -200,6 +204,22 @@ export class Explore {
     let bindHandleChange = evt => this.handleSelectDiseaseChange(evt, this);
     diseaseSelect.addEventListener('change', bindHandleChange);
     filtersMenu.appendChild(diseaseSelect);
+    
+    const test = $('<select></select>');
+    terms.forEach((d, i) => {
+      const option = $('<option value="'+d.entity+'" key="'+i+'">'+d.name+'</option>');
+      $(test).append(option);
+    });    
+    $(diseaseSelect).selectize({
+      maxItems: 3
+    });
+    $('body').append(test);
+
+    $('body').append($('<div>Hi</div>'));
+    $('#disease-select').prepend('<option>Hello</option>')
+
+
+
 
     const text2 = document.createElement('span');
     text2.innerHTML = ' in the ';

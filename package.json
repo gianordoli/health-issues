@@ -29,6 +29,8 @@
   "dependencies": {
     "d3": "^4.8.0",
     "d3-scale": "^1.0.5",
-    "google-client-api": "^1.0.4"
+    "google-client-api": "^1.0.4",
+    "jquery": "^3.2.1",
+    "selectize": "^0.12.4"
   }
 }
