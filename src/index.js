@@ -15,6 +15,7 @@ app.main = (function (){
     console.log('render');
     
     const elementsContainer = document.createElement('div');
+    document.querySelector('body').appendChild(elementsContainer);
 
     // Curated
     const curatedNav = document.createElement('div');
@@ -37,11 +38,6 @@ app.main = (function (){
 
     // Explore
     const explore = new Explore(elementsContainer);
-
-    const body = document.querySelector('body');
-    if(body){
-      body.appendChild(elementsContainer);
-    }
   }
 
   const init = function(){

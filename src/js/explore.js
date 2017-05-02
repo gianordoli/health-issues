@@ -1,14 +1,23 @@
 // @flow weak
 
+// Components
 import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
-import { dummyData, terms, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
+
+// Types
 import type { Term, Geo, Filter } from './types'
+
+// Data
+import { dummyData, terms, countries } from './util.js';
+
+// Libraries
 import * as d3 from 'd3';
 import selectize from 'selectize';
-import 'selectize/dist/css/selectize.css';
 import $ from 'jquery'; 
+
+//Styles
+import 'selectize/dist/css/selectize.css';
 
 export class Explore {
 
@@ -20,13 +29,15 @@ export class Explore {
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[],
-    merged: boolean
+    isMerged: boolean,
+    isLoading: boolean
   };
 
   keepShinyAlive: () => {};
   
   diseaseSelect: HTMLElement;
   geoSelect: HTMLElement;
+  loaderContainer: HTMLElement;
   confirmNav: HTMLElement;
   mergeButton: HTMLElement;
 
@@ -46,7 +57,8 @@ export class Explore {
         seasonal: [],
         trend: [],
         total: [],
-        merged: false
+        isMerged: false,
+        isLoading: false
       }
     }
     this.trendsAPI = new TrendsAPI();
@@ -123,13 +135,14 @@ export class Explore {
     self.confirmNav.classList.add('hidden');
     self.updateData({ prevDiseases: diseases, prevGeo: geo });
     self.callTrendsApi();
+    this.updateData({ isLoading: true });
   }
 
   toggleChartMerge(event, self) {
-    let { merged } = self.data;
-    merged = merged ? false : true;
+    let { isMerged } = self.data;
+    isMerged = isMerged ? false : true;
     this.seasonalChart.hide();
-    this.updateData({ merged: merged });
+    this.updateData({ isMerged: isMerged });
   }
 
   loadCurated(filter: Filter) {
@@ -180,78 +193,94 @@ export class Explore {
   }
 
   createElements(parentContainer: HTMLElement) {
+
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'explore';
+    parentContainer.appendChild(elementsContainer);
 
+
+    // Loader
+    this.loaderContainer = document.createElement('div');
+    const { loaderContainer } = this;
+    loaderContainer.id = 'loader-container';
+    loaderContainer.style.top = elementsContainer.offsetTop + 'px';
+    loaderContainer.style.left = elementsContainer.offsetLeft + 'px';
+    const loader = document.createElement('span');
+    loader.classList.add('loader');
+    loaderContainer.appendChild(loader);
+    elementsContainer.appendChild(loaderContainer);
+
+
+    // filtersMenu
     const filtersMenu = document.createElement('div');
     filtersMenu.id = 'filters-menu'
     elementsContainer.appendChild(filtersMenu);
       
-    const text1 = document.createElement('span');
-    text1.innerHTML = 'Search interest for ';
-    filtersMenu.appendChild(text1);
+      const text1 = document.createElement('span');
+      text1.innerHTML = 'Search interest for ';
+      filtersMenu.appendChild(text1);
 
 
-    // Diseases
-    const diseaseSelect = document.createElement('select');
-    diseaseSelect.id = 'disease-select';
-    terms.forEach((d, i) => {
-      const option = document.createElement('option');
-      option.setAttribute('value', d.entity);
-      option.setAttribute('key', i);
-      option.innerHTML = d.name;
-      diseaseSelect.appendChild(option);
-    });
-    let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
-    filtersMenu.appendChild(diseaseSelect);
-    const diseaseSelectize = $(diseaseSelect).selectize({
-      maxItems: 3,
-      onChange: bindHandleChange,
-      placeholder: 'Select'
-    });
-    this.diseaseSelect = diseaseSelectize[0].selectize;
-    console.log(this.diseaseSelect);
+      // Diseases
+      const diseaseSelect = document.createElement('select');
+      diseaseSelect.id = 'disease-select';
+      terms.forEach((d, i) => {
+        const option = document.createElement('option');
+        option.setAttribute('value', d.entity);
+        option.setAttribute('key', i);
+        option.innerHTML = d.name;
+        diseaseSelect.appendChild(option);
+      });
+      let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
+      filtersMenu.appendChild(diseaseSelect);
+      const diseaseSelectize = $(diseaseSelect).selectize({
+        maxItems: 3,
+        onChange: bindHandleChange,
+        placeholder: 'Select'
+      });
+      this.diseaseSelect = diseaseSelectize[0].selectize;
 
 
-    const text2 = document.createElement('span');
-    text2.innerHTML = ' in the ';
-    filtersMenu.appendChild(text2);
+      const text2 = document.createElement('span');
+      text2.innerHTML = ' in the ';
+      filtersMenu.appendChild(text2);
 
 
-    // Geo
-    this.geoSelect = document.createElement('select');
-    const { geoSelect } = this;
-    geoSelect.name = 'geo-select';    
-    countries.forEach((c, i) => {
-      const option = document.createElement('option');
-      option.setAttribute('value', c.iso);
-      option.innerHTML = c.name;
-      geoSelect.appendChild(option);
-    });
-    bindHandleChange = evt => this.handleSelectGeoChange(evt, this);
-    geoSelect.addEventListener('change', bindHandleChange);
-    filtersMenu.appendChild(geoSelect);
+      // Geo
+      this.geoSelect = document.createElement('select');
+      const { geoSelect } = this;
+      geoSelect.name = 'geo-select';    
+      countries.forEach((c, i) => {
+        const option = document.createElement('option');
+        option.setAttribute('value', c.iso);
+        option.innerHTML = c.name;
+        geoSelect.appendChild(option);
+      });
+      bindHandleChange = evt => this.handleSelectGeoChange(evt, this);
+      geoSelect.addEventListener('change', bindHandleChange);
+      filtersMenu.appendChild(geoSelect);
 
 
-    // Cancel / Done
-    this.confirmNav = document.createElement('div');
-    const { confirmNav } = this;
-    confirmNav.id = 'confirm-nav';
-    confirmNav.classList.add('hidden');   
+      // Cancel / Done
+      this.confirmNav = document.createElement('div');
+      const { confirmNav } = this;
+      confirmNav.id = 'confirm-nav';
+      confirmNav.classList.add('hidden');   
 
-    const cancelButton = document.createElement('button');
-    cancelButton.innerHTML = 'Cancel';
-    bindHandleChange = evt => this.cancelFilters(evt, this);
-    cancelButton.addEventListener('click', bindHandleChange);
-    confirmNav.appendChild(cancelButton);
+      const cancelButton = document.createElement('button');
+      cancelButton.innerHTML = 'Cancel';
+      bindHandleChange = evt => this.cancelFilters(evt, this);
+      cancelButton.addEventListener('click', bindHandleChange);
+      confirmNav.appendChild(cancelButton);
 
-    const doneButton = document.createElement('button');
-    doneButton.innerHTML = 'Done';
-    bindHandleChange = evt => this.confirmFilters(evt, this);
-    doneButton.addEventListener('click', bindHandleChange);
-    confirmNav.appendChild(doneButton);
+      const doneButton = document.createElement('button');
+      doneButton.innerHTML = 'Done';
+      bindHandleChange = evt => this.confirmFilters(evt, this);
+      doneButton.addEventListener('click', bindHandleChange);
+      confirmNav.appendChild(doneButton);
 
-    filtersMenu.appendChild(confirmNav);
+      filtersMenu.appendChild(confirmNav);
+    // End filtersMenu
 
 
     // Merge
@@ -267,8 +296,6 @@ export class Explore {
     this.seasonalChart = new LineChart(elementsContainer, 'seasonal');
     this.trendChart = new LineChart(elementsContainer, 'trend');
 
-    parentContainer.appendChild(elementsContainer);
-
     this.updateElements();
   }
 
@@ -283,9 +310,15 @@ export class Explore {
   }
 
   updateElements() {
-    const { data, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
-    const { geo, seasonal, trend, total, merged } = data;
+    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
+    const { geo, seasonal, trend, total, isMerged, isLoading } = data;
     let { diseases } = data;
+
+    // if (isLoading) {
+    //   loaderContainer.classList.remove('hidden');
+    // } else {
+    //   loaderContainer.classList.add('hidden');
+    // }
 
     diseases = diseases.map(d => d.entity);
     diseaseSelect.setValue(diseases, true);
@@ -297,11 +330,11 @@ export class Explore {
       }
     }
 
-    mergeButton.innerHTML = merged ? 'Split Charts' : 'Merge Charts';
+    mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
     if(seasonal && trend && total) {
       seasonalChart.updateData(seasonal);
-      merged ? trendChart.updateData(total) : trendChart.updateData(trend);
+      isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
     }    
   }
 }
