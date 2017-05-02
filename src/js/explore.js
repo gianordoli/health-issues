@@ -29,6 +29,7 @@ export class Explore {
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[],
+    rIndex: number,
     isMerged: boolean,
     isLoading: boolean
   };
@@ -57,6 +58,7 @@ export class Explore {
         seasonal: [],
         trend: [],
         total: [],
+        rIndex: 0,
         isMerged: false,
         isLoading: false
       }
@@ -88,7 +90,7 @@ export class Explore {
       Shiny.addCustomMessageHandler("stl", function(dataFromR) {
         console.log('From R: ', dataFromR);
         self.parseRData(dataFromR);
-      });      
+      });
     });
 
     $(document).on('shiny:idle', function(event) {
@@ -154,31 +156,36 @@ export class Explore {
 
   callTrendsApi(){
     const { diseases, geo } = this.data;
+    let total = [];
     const self = this;
 
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
-      console.log(val);
-      const parseTime = d3.timeParse('%Y-%m-%d');
-      self.updateData({
-        total: val.lines[0].points.map((p, i) => {
-          return{ date: parseTime(p.date), value: p.value}
-        })
-      });
+      console.log('From Google Trends: ', val);
 
-      // self.sendDataToR(val);
+      const parseTime = d3.timeParse('%Y-%m-%d');
+      for (const l of val.lines) {
+        total.push(
+          val.lines[0].points.map((p, i) => {
+            return{ date: parseTime(p.date), value: p.value}
+          })
+        );
+      }
+      self.updateData({ total: total });
+      self.sendDataToR(val);
     });
   }
 
   sendDataToR(data) {
-    console.log('From Google Trends: ', data);
+    const { rIndex } = this.data;
 
-    const dataToR = data.lines[0].points.map((p, i) => p.date+','+p.value);
-    this.parseRData(dummyData);
-    // Shiny.onInputChange("mydata", dataToR);
+    const dataToR = data.lines[rIndex].points.map((p, i) => p.date+','+p.value);
+    // this.parseRData(dummyData);
+    Shiny.onInputChange("mydata", dataToR);
   }
 
   parseRData(dataFromR) {
-    const { total } = this.data;
+    const { diseases, total } = this.data;
+    let { rIndex } = this.data;
 
     const seasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
     const seasonal = (seasonalString.split(',')).slice(0, 13).map((n, i) => {
@@ -189,7 +196,14 @@ export class Explore {
     const trend = (trendString.split(',')).map((n, i) => {
       return{ date: total[i].date, value: Number(n.trim())}
     });
-    this.updateData({seasonal: seasonal, trend: trend});
+
+
+    if (rIndex < diseases.length) {
+      rIndex ++;
+      sendDataToR()
+    }
+    this.updateData({rIndex: rIndex, seasonal: seasonal, trend: trend});
+
   }
 
   createElements(parentContainer: HTMLElement) {
