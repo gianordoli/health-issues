@@ -34,23 +34,22 @@ export class TrendsAPI {
   getTrends(filter: Filter, callback) {
     console.log('Requesting data for:', filter);
     const { geo } = filter;
-    let { terms } = filter;
-    terms = terms.map((t, i) => {
-      'terms=' + encodeURIComponent(t.entity) + '&'
-    });
-    let path = 'https://www.googleapis.com/trends/v1beta/graph?' + terms;
-
+    const { terms } = filter;
+    let path = 'https://www.googleapis.com/trends/v1beta/graph?';
+    for (const t of terms) {
+      path += 'terms=' + encodeURIComponent(t.entity) + '&';
+    }
     if (geo.iso !== '') {
       path += 'restrictions.geo='+geo.iso;
     }
     console.log(path);
-    // this.gapi.client.request({
-    //   'path': path
-    // })
-    // .then(function(response) {
-    //     callback(response.result);
-    //   }, function(reason) {
-    //     console.log('Error: ' + reason.result.error.message);
-    //   });
+    this.gapi.client.request({
+      'path': path
+    })
+    .then(function(response) {
+        callback(response.result);
+      }, function(reason) {
+        console.log('Error: ' + reason.result.error.message);
+      });
   }
 }

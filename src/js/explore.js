@@ -5,7 +5,7 @@ import { LineChart } from './LineChart';
 import { dummyData, terms, countries } from './util.js';
 import { TrendsAPI } from './TrendsAPI';
 import type { Term, Geo, Filter } from './types'
-import d3 from 'd3';
+import * as d3 from 'd3';
 import selectize from 'selectize';
 import 'selectize/dist/css/selectize.css';
 import $ from 'jquery'; 
@@ -110,7 +110,7 @@ export class Explore {
     if (el.selectedIndex == -1)
       return null;
     return el.options[el.selectedIndex].text;
-  }  
+  }
 
   cancelFilters(event, self) {
     const { prevDiseases, prevGeo } = self.data;
@@ -144,7 +144,7 @@ export class Explore {
     const self = this;
 
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
-      
+      console.log(val);
       const parseTime = d3.timeParse('%Y-%m-%d');
       self.updateData({
         total: val.lines[0].points.map((p, i) => {
@@ -152,7 +152,7 @@ export class Explore {
         })
       });
 
-      self.sendDataToR(val);
+      // self.sendDataToR(val);
     });
   }
 
@@ -268,6 +268,8 @@ export class Explore {
     this.trendChart = new LineChart(elementsContainer, 'trend');
 
     parentContainer.appendChild(elementsContainer);
+
+    this.updateElements();
   }
 
   updateData(obj) {
@@ -284,7 +286,7 @@ export class Explore {
     const { data, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
     const { geo, seasonal, trend, total, merged } = data;
     let { diseases } = data;
-    
+
     diseases = diseases.map(d => d.entity);
     diseaseSelect.setValue(diseases, true);
 
