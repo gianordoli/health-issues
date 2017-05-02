@@ -39,8 +39,8 @@ export class Explore {
       this.data = data;
     } else {
       this.data = {
-        prevDiseases: [terms[0]],
-        diseases: [terms[0]],
+        prevDiseases: [],
+        diseases: [],
         prevGeo: countries[0],
         geo: countries[0],
         seasonal: [],
@@ -193,10 +193,8 @@ export class Explore {
 
 
     // Diseases
-    this.diseaseSelect = document.createElement('select');
-    const { diseaseSelect } = this;
+    const diseaseSelect = document.createElement('select');
     diseaseSelect.id = 'disease-select';
-    diseaseSelect.name = 'disease-select';
     terms.forEach((d, i) => {
       const option = document.createElement('option');
       option.setAttribute('value', d.entity);
@@ -205,12 +203,14 @@ export class Explore {
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
-    diseaseSelect.addEventListener('change', bindHandleChange);
     filtersMenu.appendChild(diseaseSelect);
-    $(diseaseSelect).selectize({
+    const diseaseSelectize = $(diseaseSelect).selectize({
       maxItems: 3,
-      onChange: bindHandleChange
+      onChange: bindHandleChange,
+      placeholder: 'Select'
     });
+    this.diseaseSelect = diseaseSelectize[0].selectize;
+    console.log(this.diseaseSelect);
 
 
     const text2 = document.createElement('span');
@@ -282,14 +282,11 @@ export class Explore {
 
   updateElements() {
     const { data, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
-    const { diseases, geo, seasonal, trend, total, merged } = data;
+    const { geo, seasonal, trend, total, merged } = data;
+    let { diseases } = data;
     
-    const diseaseOptions = diseaseSelect.children;
-    for (const o of diseaseOptions) {
-      if (o.value === data.diseases[0].entity) {
-        o.selected = true;
-      }
-    }
+    diseases = diseases.map(d => d.entity);
+    diseaseSelect.setValue(diseases, true);
 
     const geoOptions = geoSelect.children;
     for (const o of geoOptions) {
