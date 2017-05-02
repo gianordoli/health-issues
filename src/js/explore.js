@@ -89,10 +89,9 @@ export class Explore {
     });
   }
 
-  handleSelectDiseaseChange(event, self) {
-    const { value } = event.target;
-    const name = this.getSelectedText(event.target);
-    this.updateData({diseases: [{entity: value, name: name}]});
+  handleSelectDiseaseChange(value: string[], self) {
+    const diseases = value.map(v => self.getDiseaseByEntity(v));
+    this.updateData({diseases: diseases});
     self.confirmNav.classList.remove('hidden');
   }
 
@@ -101,6 +100,10 @@ export class Explore {
     const name = this.getSelectedText(event.target);
     this.updateData({geo: {iso: value, name: name}});
     self.confirmNav.classList.remove('hidden');
+  }
+
+  getDiseaseByEntity(entity: string): Term {
+    return terms.find(t => t.entity === entity);
   }
 
   getSelectedText(el) {
@@ -201,24 +204,13 @@ export class Explore {
       option.innerHTML = d.name;
       diseaseSelect.appendChild(option);
     });
-    let bindHandleChange = evt => this.handleSelectDiseaseChange(evt, this);
+    let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
     diseaseSelect.addEventListener('change', bindHandleChange);
     filtersMenu.appendChild(diseaseSelect);
-    
-    const test = $('<select></select>');
-    terms.forEach((d, i) => {
-      const option = $('<option value="'+d.entity+'" key="'+i+'">'+d.name+'</option>');
-      $(test).append(option);
-    });    
     $(diseaseSelect).selectize({
-      maxItems: 3
+      maxItems: 3,
+      onChange: bindHandleChange
     });
-    $('body').append(test);
-
-    $('body').append($('<div>Hi</div>'));
-    $('#disease-select').prepend('<option>Hello</option>')
-
-
 
 
     const text2 = document.createElement('span');
