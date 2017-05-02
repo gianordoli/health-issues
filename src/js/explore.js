@@ -314,11 +314,11 @@ export class Explore {
     const { geo, seasonal, trend, total, isMerged, isLoading } = data;
     let { diseases } = data;
 
-    // if (isLoading) {
-    //   loaderContainer.classList.remove('hidden');
-    // } else {
-    //   loaderContainer.classList.add('hidden');
-    // }
+    if (isLoading) {
+      loaderContainer.classList.remove('hidden');
+    } else {
+      loaderContainer.classList.add('hidden');
+    }
 
     diseases = diseases.map(d => d.entity);
     diseaseSelect.setValue(diseases, true);
