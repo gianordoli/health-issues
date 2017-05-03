@@ -38,7 +38,8 @@ shinyServer(function(input, output, session) {
       # print(mySTL.DF$seasonal)
       
       response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
-
+      print(response)
+      
       session$sendCustomMessage(type = "stl", response)
     }
   })

@@ -1,4 +1,4 @@
-// @flow weak
+// @flow
 
 // Components
 import { FiltersMenu } from './FiltersMenu';
@@ -28,7 +28,6 @@ export class Explore {
     seasonal: {date: Date, value: number}[],
     trend: {date: Date, value: number}[],
     total: {date: Date, value: number}[],
-    rIndex: number,
     isMerged: boolean,
     isLoading: boolean
   };
@@ -57,7 +56,6 @@ export class Explore {
         seasonal: [],
         trend: [],
         total: [],
-        rIndex: 0,
         isMerged: false,
         isLoading: false
       }
@@ -82,11 +80,11 @@ export class Explore {
       self.keepShinyAlive = setInterval(pingShiny, 10000);
       function pingShiny() {
         const timestamp = Date.now();
-        Shiny.onInputChange("ping", timestamp);      
+        Shiny.onInputChange('ping', timestamp);      
       }
 
       // Add listener for stl data
-      Shiny.addCustomMessageHandler("stl", function(dataFromR) {
+      Shiny.addCustomMessageHandler('stl', function(dataFromR) {
         console.log('From R: ', dataFromR);
         self.parseRData(dataFromR);
       });
@@ -161,49 +159,41 @@ export class Explore {
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
       console.log('From Google Trends: ', val);
       const total = val.lines.map(l => l.points);
-
-      
-      // for (const l of val.lines) {
-      //   total.push(
-      //     val.lines[0].points.map((p, i) => {
-      //       return{ date: parseTime(p.date), value: p.value}
-      //     })
-      //   );
-      // }
-      self.updateData({ total: total });
-      // self.sendDataToR(val);
+      self.updateData({ total: total, seasonal: [], trends: [] });
+      self.sendDataToR();
     });
   }
 
-  sendDataToR(data) {
-    const { rIndex } = this.data;
-
-    const dataToR = data.lines[rIndex].points.map((p, i) => p.date+','+p.value);
+  sendDataToR() {
+    const { total, seasonal } = this.data;
+    const index = seasonal.length;
+    const dataToR = total[index].map((p, i) => p.date+','+p.value);
     // this.parseRData(dummyData);
-    Shiny.onInputChange("mydata", dataToR);
+    Shiny.onInputChange('mydata', dataToR);
   }
 
   parseRData(dataFromR) {
-    const { diseases, total } = this.data;
-    let { rIndex } = this.data;
+    const { total, seasonal, trend } = this.data;
+    let { isLoading } = this.data;
 
-    const seasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
-    const seasonal = (seasonalString.split(',')).slice(0, 13).map((n, i) => {
-      return{ date: total[i].date, value: Number(n.trim())}
+    const currSeasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
+    const currSeasonal = (currSeasonalString.split(',')).slice(0, 13).map((n, i) => {
+      return{ date: total[0][i].date, value: Number(n.trim())}
     });
-    
-    const trendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
-    const trend = (trendString.split(',')).map((n, i) => {
-      return{ date: total[i].date, value: Number(n.trim())}
+    seasonal.push(currSeasonal);
+
+    const currTrendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
+    const currTrend = (currTrendString.split(',')).map((n, i) => {
+      return{ date: total[0][i].date, value: Number(n.trim())}
     });
+    trend.push(currTrend);
 
-
-    if (rIndex < diseases.length) {
-      rIndex ++;
+    if (seasonal.length < total.length) {
       sendDataToR()
+    } else {
+      isLoading = false;
     }
-    this.updateData({rIndex: rIndex, seasonal: seasonal, trend: trend});
-
+    this.updateData({seasonal: seasonal, trend: trend, isLoading: isLoading});
   }
 
   createElements(parentContainer: HTMLElement) {
@@ -346,7 +336,7 @@ export class Explore {
 
     mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    if(seasonal && trend && total) {
+    if(!isLoading && seasonal && trend && total) {
       seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
     }    
