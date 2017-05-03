@@ -8,7 +8,7 @@ export class ShinyAPI {
     console.log('ShinyAPI');
   }
 
-  addListeners(callback) {
+  addListeners(explore, callback) {
     console.log('addShinyListeners');
     const self = this;
 
@@ -30,7 +30,7 @@ export class ShinyAPI {
       // Add listener for stl data
       Shiny.addCustomMessageHandler('myCallbackHandler', function(dataFromR) {
         console.log('From R: ', dataFromR);
-        callback(dataFromR);
+        callback(explore, dataFromR);
       });
     });
 

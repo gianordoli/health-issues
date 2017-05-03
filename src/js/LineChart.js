@@ -39,6 +39,9 @@ export class LineChart {
     this.x = d3.scaleTime().range([0, width]);
     this.y = d3.scaleLinear().range([height, 0]);
     
+    // TO-DO
+    // Parse time: const parseTime = d3.timeParse('%Y-%m-%d');
+
     const { x, y } = this;
     this.xAxis = d3.axisBottom(x);
 

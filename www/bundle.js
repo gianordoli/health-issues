@@ -176,7 +176,7 @@
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
 	    this.shinyAPI = new _ShinyAPI.ShinyAPI();
-	    this.shinyAPI.addListeners(this.parseDataFromR);
+	    this.shinyAPI.addListeners(this, this.parseDataFromR);
 	    this.createElements(parentContainer);
 	  }
 
@@ -288,12 +288,13 @@
 	    }
 	  }, {
 	    key: 'parseDataFromR',
-	    value: function parseDataFromR(dataFromR) {
-	      var _data3 = this.data,
-	          total = _data3.total,
-	          seasonal = _data3.seasonal,
-	          trend = _data3.trend;
-	      var isLoading = this.data.isLoading;
+	    value: function parseDataFromR(explore, dataFromR) {
+	      var self = explore;
+	      var _self$data3 = self.data,
+	          total = _self$data3.total,
+	          seasonal = _self$data3.seasonal,
+	          trend = _self$data3.trend;
+	      var isLoading = self.data.isLoading;
 
 
 	      var currSeasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
@@ -309,11 +310,11 @@
 	      trend.push(currTrend);
 
 	      if (seasonal.length < total.length) {
-	        this.parseDataToR();
+	        self.parseDataToR();
 	      } else {
 	        isLoading = false;
 	      }
-	      this.updateData({ seasonal: seasonal, trend: trend, isLoading: isLoading });
+	      self.updateData({ seasonal: seasonal, trend: trend, isLoading: isLoading });
 	    }
 	  }, {
 	    key: 'createElements',
@@ -18599,7 +18600,7 @@
 
 	  _createClass(ShinyAPI, [{
 	    key: 'addListeners',
-	    value: function addListeners(callback) {
+	    value: function addListeners(explore, callback) {
 	      console.log('addShinyListeners');
 	      var self = this;
 
@@ -18621,7 +18622,7 @@
 	        // Add listener for stl data
 	        Shiny.addCustomMessageHandler('myCallbackHandler', function (dataFromR) {
 	          console.log('From R: ', dataFromR);
-	          callback(dataFromR);
+	          callback(explore, dataFromR);
 	        });
 	      });
 

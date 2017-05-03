@@ -62,7 +62,7 @@ export class Explore {
     }
     this.trendsAPI = new TrendsAPI();
     this.shinyAPI = new ShinyAPI();
-    this.shinyAPI.addListeners(this.parseDataFromR);
+    this.shinyAPI.addListeners(this, this.parseDataFromR);
     this.createElements(parentContainer);
   }
 
@@ -139,9 +139,10 @@ export class Explore {
     shinyAPI.updateData(dataToR);
   }
 
-  parseDataFromR(dataFromR) {
-    const { total, seasonal, trend } = this.data;
-    let { isLoading } = this.data;
+  parseDataFromR(explore, dataFromR) {
+    const self = explore;
+    const { total, seasonal, trend } = self.data;
+    let { isLoading } = self.data;
 
     const currSeasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
     const currSeasonal = (currSeasonalString.split(',')).slice(0, 13).map((n, i) => {
@@ -156,11 +157,11 @@ export class Explore {
     trend.push(currTrend);
 
     if (seasonal.length < total.length) {
-      this.parseDataToR();
+      self.parseDataToR();
     } else {
       isLoading = false;
     }
-    this.updateData({seasonal: seasonal, trend: trend, isLoading: isLoading});
+    self.updateData({seasonal: seasonal, trend: trend, isLoading: isLoading});
   }
 
   createElements(parentContainer: HTMLElement) {
