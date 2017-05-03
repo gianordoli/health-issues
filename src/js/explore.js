@@ -12,7 +12,6 @@ import type { Term, Geo, Filter } from './types'
 import { dummyData, terms, countries } from './util.js';
 
 // Libraries
-import * as d3 from 'd3';
 import selectize from 'selectize';
 import $ from 'jquery'; 
 
@@ -161,17 +160,18 @@ export class Explore {
 
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
       console.log('From Google Trends: ', val);
+      const total = val.lines.map(l => l.points);
 
-      const parseTime = d3.timeParse('%Y-%m-%d');
-      for (const l of val.lines) {
-        total.push(
-          val.lines[0].points.map((p, i) => {
-            return{ date: parseTime(p.date), value: p.value}
-          })
-        );
-      }
+      
+      // for (const l of val.lines) {
+      //   total.push(
+      //     val.lines[0].points.map((p, i) => {
+      //       return{ date: parseTime(p.date), value: p.value}
+      //     })
+      //   );
+      // }
       self.updateData({ total: total });
-      self.sendDataToR(val);
+      // self.sendDataToR(val);
     });
   }
 
