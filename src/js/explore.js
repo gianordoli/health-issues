@@ -135,8 +135,8 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
     const dataToR = total[index].map((p, i) => p.date+','+p.value);
-    // this.parseDataFromR(dummyData);
-    shinyAPI.updateData(dataToR);
+    this.parseDataFromR(this, dummyData);
+    // shinyAPI.updateData(dataToR);
   }
 
   parseDataFromR(explore, dataFromR) {
