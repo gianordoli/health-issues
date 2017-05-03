@@ -4,6 +4,7 @@
 import { FiltersMenu } from './FiltersMenu';
 import { LineChart } from './LineChart';
 import { TrendsAPI } from './TrendsAPI';
+import { ShinyAPI } from './ShinyAPI';
 
 // Types
 import type { Term, Geo, Filter } from './types'
@@ -31,8 +32,6 @@ export class Explore {
     isMerged: boolean,
     isLoading: boolean
   };
-
-  keepShinyAlive: () => {};
   
   diseaseSelect: HTMLElement;
   geoSelect: HTMLElement;
@@ -43,6 +42,7 @@ export class Explore {
   seasonalChart: LineChart;
   trendChart: LineChart;
   trendsAPI: TrendsAPI;
+  shinyAPI: ShinyAPI;
 
   constructor(parentContainer: HTMLElement, data) {
     if (data) {
@@ -61,43 +61,9 @@ export class Explore {
       }
     }
     this.trendsAPI = new TrendsAPI();
-    this.addShinyListeners();
+    this.shinyAPI = new ShinyAPI();
+    this.shinyAPI.addListeners(this.parseDataFromR);
     this.createElements(parentContainer);
-  }
-
-  addShinyListeners() {
-    const self = this;
-
-    $(document).on('shiny:connected', function(event) {
-      console.log('Connected to Shiny server');
-    });
-
-    $(document).on('shiny:sessioninitialized', function(event) {
-      console.log('Shiny session initialized');
-
-      // Create a loop to ping the Shiny server and keep the websocket connection on
-      clearInterval(self.keepShinyAlive);
-      self.keepShinyAlive = setInterval(pingShiny, 10000);
-      function pingShiny() {
-        const timestamp = Date.now();
-        Shiny.onInputChange('ping', timestamp);      
-      }
-
-      // Add listener for stl data
-      Shiny.addCustomMessageHandler('stl', function(dataFromR) {
-        console.log('From R: ', dataFromR);
-        self.parseRData(dataFromR);
-      });
-    });
-
-    $(document).on('shiny:idle', function(event) {
-      console.log('Shiny session idle');
-    });
-
-    $(document).on('shiny:disconnected', function(event) {
-      console.log('Disconnected from Shiny server');
-      location.reload();
-    });
   }
 
   handleSelectDiseaseChange(value: string[], self) {
@@ -160,19 +126,20 @@ export class Explore {
       console.log('From Google Trends: ', val);
       const total = val.lines.map(l => l.points);
       self.updateData({ total: total, seasonal: [], trends: [] });
-      self.sendDataToR();
+      self.parseDataToR();
     });
   }
 
-  sendDataToR() {
+  parseDataToR() {
     const { total, seasonal } = this.data;
+    const { shinyAPI } = this;
     const index = seasonal.length;
     const dataToR = total[index].map((p, i) => p.date+','+p.value);
-    // this.parseRData(dummyData);
-    Shiny.onInputChange('mydata', dataToR);
+    // this.parseDataFromR(dummyData);
+    shinyAPI.updateData(dataToR);
   }
 
-  parseRData(dataFromR) {
+  parseDataFromR(dataFromR) {
     const { total, seasonal, trend } = this.data;
     let { isLoading } = this.data;
 
@@ -189,7 +156,7 @@ export class Explore {
     trend.push(currTrend);
 
     if (seasonal.length < total.length) {
-      sendDataToR()
+      this.parseDataToR();
     } else {
       isLoading = false;
     }

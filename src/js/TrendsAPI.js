@@ -6,7 +6,7 @@ export class TrendsAPI {
 
   gapi: () => {};
 
-  constructor(callback) {
+  constructor() {
     
     console.log('TrendsAPI');
     const self = this;

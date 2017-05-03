@@ -50,7 +50,7 @@
 
 	var _util = __webpack_require__(3);
 
-	__webpack_require__(26);
+	__webpack_require__(27);
 
 	var app = app || {}; //  weak 
 
@@ -137,17 +137,19 @@
 
 	var _TrendsAPI = __webpack_require__(6);
 
+	var _ShinyAPI = __webpack_require__(18);
+
 	var _util = __webpack_require__(3);
 
-	var _selectize = __webpack_require__(18);
+	var _selectize = __webpack_require__(19);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
-	var _jquery = __webpack_require__(19);
+	var _jquery = __webpack_require__(20);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(22);
+	__webpack_require__(23);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -173,47 +175,12 @@
 	      };
 	    }
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
-	    this.addShinyListeners();
+	    this.shinyAPI = new _ShinyAPI.ShinyAPI();
+	    this.shinyAPI.addListeners(this.parseDataFromR);
 	    this.createElements(parentContainer);
 	  }
 
 	  _createClass(Explore, [{
-	    key: 'addShinyListeners',
-	    value: function addShinyListeners() {
-	      var self = this;
-
-	      (0, _jquery2.default)(document).on('shiny:connected', function (event) {
-	        console.log('Connected to Shiny server');
-	      });
-
-	      (0, _jquery2.default)(document).on('shiny:sessioninitialized', function (event) {
-	        console.log('Shiny session initialized');
-
-	        // Create a loop to ping the Shiny server and keep the websocket connection on
-	        clearInterval(self.keepShinyAlive);
-	        self.keepShinyAlive = setInterval(pingShiny, 10000);
-	        function pingShiny() {
-	          var timestamp = Date.now();
-	          Shiny.onInputChange("ping", timestamp);
-	        }
-
-	        // Add listener for stl data
-	        Shiny.addCustomMessageHandler("stl", function (dataFromR) {
-	          console.log('From R: ', dataFromR);
-	          self.parseRData(dataFromR);
-	        });
-	      });
-
-	      (0, _jquery2.default)(document).on('shiny:idle', function (event) {
-	        console.log('Shiny session idle');
-	      });
-
-	      (0, _jquery2.default)(document).on('shiny:disconnected', function (event) {
-	        console.log('Disconnected from Shiny server');
-	        location.reload();
-	      });
-	    }
-	  }, {
 	    key: 'handleSelectDiseaseChange',
 	    value: function handleSelectDiseaseChange(value, self) {
 	      var diseases = value.map(function (v) {
@@ -301,26 +268,27 @@
 	          return l.points;
 	        });
 	        self.updateData({ total: total, seasonal: [], trends: [] });
-	        self.sendDataToR();
+	        self.parseDataToR();
 	      });
 	    }
 	  }, {
-	    key: 'sendDataToR',
-	    value: function sendDataToR() {
+	    key: 'parseDataToR',
+	    value: function parseDataToR() {
 	      var _data2 = this.data,
 	          total = _data2.total,
 	          seasonal = _data2.seasonal;
+	      var shinyAPI = this.shinyAPI;
 
 	      var index = seasonal.length;
 	      var dataToR = total[index].map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
-	      // this.parseRData(dummyData);
-	      Shiny.onInputChange("mydata", dataToR);
+	      // this.parseDataFromR(dummyData);
+	      shinyAPI.updateData(dataToR);
 	    }
 	  }, {
-	    key: 'parseRData',
-	    value: function parseRData(dataFromR) {
+	    key: 'parseDataFromR',
+	    value: function parseDataFromR(dataFromR) {
 	      var _data3 = this.data,
 	          total = _data3.total,
 	          seasonal = _data3.seasonal,
@@ -341,7 +309,7 @@
 	      trend.push(currTrend);
 
 	      if (seasonal.length < total.length) {
-	        sendDataToR();
+	        this.parseDataToR();
 	      } else {
 	        isLoading = false;
 	      }
@@ -17447,7 +17415,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var TrendsAPI = exports.TrendsAPI = function () {
-	  function TrendsAPI(callback) {
+	  function TrendsAPI() {
 	    _classCallCheck(this, TrendsAPI);
 
 	    console.log('TrendsAPI');
@@ -18608,6 +18576,76 @@
 
 /***/ }),
 /* 18 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	//  weak
+
+	var ShinyAPI = exports.ShinyAPI = function () {
+	  function ShinyAPI() {
+	    _classCallCheck(this, ShinyAPI);
+
+	    console.log('ShinyAPI');
+	  }
+
+	  _createClass(ShinyAPI, [{
+	    key: 'addListeners',
+	    value: function addListeners(callback) {
+	      console.log('addShinyListeners');
+	      var self = this;
+
+	      $(document).on('shiny:connected', function (event) {
+	        console.log('Connected to Shiny server');
+	      });
+
+	      $(document).on('shiny:sessioninitialized', function (event) {
+	        console.log('Shiny session initialized');
+
+	        // Create a loop to ping the Shiny server and keep the websocket connection on
+	        clearInterval(self.keepShinyAlive);
+	        self.keepShinyAlive = setInterval(pingShiny, 10000);
+	        function pingShiny() {
+	          var timestamp = Date.now();
+	          Shiny.onInputChange('ping', timestamp);
+	        }
+
+	        // Add listener for stl data
+	        Shiny.addCustomMessageHandler('myCallbackHandler', function (dataFromR) {
+	          console.log('From R: ', dataFromR);
+	          callback(dataFromR);
+	        });
+	      });
+
+	      $(document).on('shiny:idle', function (event) {
+	        console.log('Shiny session idle');
+	      });
+
+	      $(document).on('shiny:disconnected', function (event) {
+	        console.log('Disconnected from Shiny server');
+	        location.reload();
+	      });
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(data) {
+	      Shiny.onInputChange('mydata', data);
+	    }
+	  }]);
+
+	  return ShinyAPI;
+	}();
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18631,7 +18669,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(19),__webpack_require__(20),__webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(20),__webpack_require__(21),__webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -21805,7 +21843,7 @@
 	}));
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -32064,7 +32102,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32568,7 +32606,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32708,16 +32746,16 @@
 	}));
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(23);
+	var content = __webpack_require__(24);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(26)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -32734,10 +32772,10 @@
 	}
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(25)();
 	// imports
 
 
@@ -32748,7 +32786,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/*
@@ -32804,7 +32842,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -33056,16 +33094,16 @@
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(27);
+	var content = __webpack_require__(28);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(26)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -33082,10 +33120,10 @@
 	}
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(25)();
 	// imports
 
 
