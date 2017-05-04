@@ -7,10 +7,10 @@ export class TrendsAPI {
   gapi: () => {};
 
   constructor() {
-    
+
     console.log('TrendsAPI');
     const self = this;
-    
+
     require( 'google-client-api' )()
       .then( function( gapi ) {
         console.log('GoogleAPI library loaded');

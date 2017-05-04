@@ -30,6 +30,7 @@ export class Explore {
     trend: TrendsAPIData[],
     total: TrendsAPIData[],
     isMerged: boolean,
+    isConfirmed: boolean,
     isLoading: boolean
   };
 
@@ -54,6 +55,7 @@ export class Explore {
       trend: [],
       total: [],
       isMerged: false,
+      isConfirmed: false,
       isLoading: false
     }
     this.trendsAPI = new TrendsAPI();
@@ -63,12 +65,14 @@ export class Explore {
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
+    console.log('handleSelectDiseaseChange');
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases});
     self.confirmNav.classList.remove('hidden');
   }
 
   handleSelectGeoChange(event: {}, self: Explore) {
+    console.log('handleSelectGeoChange');
     const { value } = event.target;
     const name = this.getSelectedText(event.target);
     this.updateData({geo: {iso: value, name: name}});
@@ -86,17 +90,18 @@ export class Explore {
   }
 
   cancelFilters(event, self) {
+    console.log('cancelFilters');
     const { prevDiseases, prevGeo } = self.data;
     self.confirmNav.classList.add('hidden');
     self.updateData({ diseases: prevDiseases, geo: prevGeo });
   }
 
   confirmFilters(event, self) {
+    console.log('confirmFilters');
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ prevDiseases: diseases, prevGeo: geo });
+    self.updateData({ prevDiseases: diseases, prevGeo: geo, isConfirmed: true, isLoading: true });
     self.callTrendsApi();
-    this.updateData({ isLoading: true });
   }
 
   toggleChartMerge(event, self) {
@@ -114,6 +119,7 @@ export class Explore {
   }
 
   callTrendsApi(){
+    console.log('callTrendsApi');
     const { diseases, geo } = this.data;
     let total = [];
     const self = this;
@@ -129,6 +135,7 @@ export class Explore {
   }
 
   parseDataToR() {
+    console.log('parseDataToR');
     const { total, seasonal } = this.data;
     const { shinyAPI } = this;
     const index = seasonal.length;
@@ -138,10 +145,11 @@ export class Explore {
   }
 
   parseDataFromR(explore, dataFromR) {
+    console.log('parseDataFromR');
     const self = explore;
-    const { total, seasonal, trend, diseases } = self.data;
+    const { total, diseases, isLoading } = self.data;
+    let { seasonal, trend } = self.data;
     const index = seasonal.length;
-    let { isLoading } = self.data;
 
     const currSeasonalString = dataFromR.substring(
       dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
@@ -155,6 +163,7 @@ export class Explore {
         }
       });
     seasonal.push({ term: diseases[index].name, points: currSeasonal });
+    console.log('hey');
 
     const currTrendString = dataFromR.substring(
       dataFromR.indexOf('trend:') + 'trend:'.length + 1,
@@ -167,13 +176,15 @@ export class Explore {
         }
       });
     trend.push({ term: diseases[index].name, points: currTrend });
+    console.log('ho');
 
-    if (seasonal.length < total.length) {
-      self.parseDataToR();
+    self.updateData({seasonal: seasonal, trend: trend});
+
+    if (seasonal.length === total.length) {
+      self.updateData({ isLoading: false });
     } else {
-      isLoading = false;
+      self.parseDataToR();
     }
-    self.updateData({seasonal: seasonal, trend: trend, isLoading: isLoading});
   }
 
   createElements(parentContainer: HTMLElement) {
@@ -294,18 +305,18 @@ export class Explore {
   }
 
   updateElements() {
+    console.log('updateElements');
     const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
-    const { geo, seasonal, trend, total, isMerged, isLoading } = data;
-    let { diseases } = data;
+    const { diseases, geo, seasonal, trend, total, isMerged, isConfirmed, isLoading } = data;
 
+    console.log(isLoading);
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
     } else {
       loaderContainer.classList.add('hidden');
     }
 
-    diseases = diseases.map(d => d.entity);
-    diseaseSelect.setValue(diseases, true);
+    diseaseSelect.setValue(diseases.map(d => d.entity), true);
 
     const geoOptions = geoSelect.children;
     for (const o of geoOptions) {
@@ -316,9 +327,10 @@ export class Explore {
 
     mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    if(!isLoading && seasonal && trend && total) {
-      seasonalChart.updateData(seasonal);
-      isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-    }
+    // if(isConfirmed && !isLoading && seasonal && trend && total) {
+    //   seasonalChart.updateData(seasonal);
+    //   isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
+    //   // this.updateData({ isConfirmed: false });
+    // }
   }
 }
