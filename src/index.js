@@ -1,4 +1,4 @@
-// @flow weak 
+// @flow weak
 
 import { Explore } from './js/Explore';
 import { terms, countries } from './js/util.js';
@@ -7,15 +7,18 @@ import './sass/app.scss';
 var app = app || {};
 
 app.main = (function (){
-  
+
   console.log('app.main.init');
 
   function render() {
-    
+
     console.log('render');
-    
+
     const elementsContainer = document.createElement('div');
-    document.querySelector('body').appendChild(elementsContainer);
+    const body = document.querySelector('body');
+    if (body) {
+      body.appendChild(elementsContainer);
+    }
 
     // Curated
     const curatedNav = document.createElement('div');

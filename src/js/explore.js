@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 
 // Components
 import { FiltersMenu } from './FiltersMenu';
@@ -7,14 +7,14 @@ import { TrendsAPI } from './TrendsAPI';
 import { ShinyAPI } from './ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter } from './types'
+import type { Term, Geo, Filter, TrendsAPIPoint, TrendsAPIData } from './types'
 
 // Data
 import { dummyData, terms, countries } from './util.js';
 
 // Libraries
 import selectize from 'selectize';
-import $ from 'jquery'; 
+import $ from 'jquery';
 
 //Styles
 import 'selectize/dist/css/selectize.css';
@@ -26,13 +26,13 @@ export class Explore {
     diseases: Term[],
     prevGeo: Geo,
     geo: Geo,
-    seasonal: {date: Date, value: number}[],
-    trend: {date: Date, value: number}[],
-    total: {date: Date, value: number}[],
+    seasonal: TrendsAPIData[],
+    trend: TrendsAPIData[],
+    total: TrendsAPIData[],
     isMerged: boolean,
     isLoading: boolean
   };
-  
+
   diseaseSelect: HTMLElement;
   geoSelect: HTMLElement;
   loaderContainer: HTMLElement;
@@ -44,21 +44,17 @@ export class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, data) {
-    if (data) {
-      this.data = data;
-    } else {
-      this.data = {
-        prevDiseases: [],
-        diseases: [],
-        prevGeo: countries[0],
-        geo: countries[0],
-        seasonal: [],
-        trend: [],
-        total: [],
-        isMerged: false,
-        isLoading: false
-      }
+  constructor(parentContainer: HTMLElement, filter?: Filter) {
+    this.data = {
+      prevDiseases: filter ? filter.terms : [],
+      diseases: filter ? filter.terms : [],
+      prevGeo: filter ? filter.geo : countries[0],
+      geo: filter ? filter.geo : countries[0],
+      seasonal: [],
+      trend: [],
+      total: [],
+      isMerged: false,
+      isLoading: false
     }
     this.trendsAPI = new TrendsAPI();
     this.shinyAPI = new ShinyAPI();
@@ -66,13 +62,13 @@ export class Explore {
     this.createElements(parentContainer);
   }
 
-  handleSelectDiseaseChange(value: string[], self) {
+  handleSelectDiseaseChange(value: string[], self: Explore) {
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases});
     self.confirmNav.classList.remove('hidden');
   }
 
-  handleSelectGeoChange(event, self) {
+  handleSelectGeoChange(event: {}, self: Explore) {
     const { value } = event.target;
     const name = this.getSelectedText(event.target);
     this.updateData({geo: {iso: value, name: name}});
@@ -83,7 +79,7 @@ export class Explore {
     return terms.find(t => t.entity === entity);
   }
 
-  getSelectedText(el) {
+  getSelectedText(el: HTMLElement) {
     if (el.selectedIndex == -1)
       return null;
     return el.options[el.selectedIndex].text;
@@ -124,8 +120,10 @@ export class Explore {
 
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
       console.log('From Google Trends: ', val);
-      const total = val.lines.map(l => l.points);
-      self.updateData({ total: total, seasonal: [], trends: [] });
+      const total = val.lines.map((l, i) => {
+        return { term: diseases[i].name, points: l.points}
+      });
+      self.updateData({ total: total, seasonal: [], trend: [] });
       self.parseDataToR();
     });
   }
@@ -134,27 +132,41 @@ export class Explore {
     const { total, seasonal } = this.data;
     const { shinyAPI } = this;
     const index = seasonal.length;
-    const dataToR = total[index].map((p, i) => p.date+','+p.value);
+    const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
     this.parseDataFromR(this, dummyData[index]);
     // shinyAPI.updateData(dataToR);
   }
 
   parseDataFromR(explore, dataFromR) {
     const self = explore;
-    const { total, seasonal, trend } = self.data;
+    const { total, seasonal, trend, diseases } = self.data;
+    const index = seasonal.length;
     let { isLoading } = self.data;
 
-    const currSeasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
-    const currSeasonal = (currSeasonalString.split(',')).slice(0, 13).map((n, i) => {
-      return{ date: total[0][i].date, value: Number(n.trim())}
-    });
-    seasonal.push(currSeasonal);
+    const currSeasonalString = dataFromR.substring(
+      dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
+      dataFromR.indexOf('trend:'));
+    const currSeasonal = (currSeasonalString.split(','))
+      .slice(0, 13)
+      .map((n, i) => {
+        return{
+          date: total[0].points[i].date,
+          value: (Math.round(Number(n.trim())*100))/100
+        }
+      });
+    seasonal.push({ term: diseases[index].name, points: currSeasonal });
 
-    const currTrendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
-    const currTrend = (currTrendString.split(',')).map((n, i) => {
-      return{ date: total[0][i].date, value: Number(n.trim())}
-    });
-    trend.push(currTrend);
+    const currTrendString = dataFromR.substring(
+      dataFromR.indexOf('trend:') + 'trend:'.length + 1,
+      dataFromR.length);
+    const currTrend = (currTrendString.split(','))
+      .map((n, i) => {
+        return{
+          date: total[0].points[i].date,
+          value: Math.round(Number(n.trim()))
+        }
+      });
+    trend.push({ term: diseases[index].name, points: currTrend });
 
     if (seasonal.length < total.length) {
       self.parseDataToR();
@@ -187,7 +199,7 @@ export class Explore {
     const filtersMenu = document.createElement('div');
     filtersMenu.id = 'filters-menu'
     elementsContainer.appendChild(filtersMenu);
-      
+
       const text1 = document.createElement('span');
       text1.innerHTML = 'Search interest for ';
       filtersMenu.appendChild(text1);
@@ -221,7 +233,7 @@ export class Explore {
       // Geo
       this.geoSelect = document.createElement('select');
       const { geoSelect } = this;
-      geoSelect.name = 'geo-select';    
+      geoSelect.name = 'geo-select';
       countries.forEach((c, i) => {
         const option = document.createElement('option');
         option.setAttribute('value', c.iso);
@@ -237,7 +249,7 @@ export class Explore {
       this.confirmNav = document.createElement('div');
       const { confirmNav } = this;
       confirmNav.id = 'confirm-nav';
-      confirmNav.classList.add('hidden');   
+      confirmNav.classList.add('hidden');
 
       const cancelButton = document.createElement('button');
       cancelButton.innerHTML = 'Cancel';
@@ -307,6 +319,6 @@ export class Explore {
     if(!isLoading && seasonal && trend && total) {
       seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-    }    
+    }
   }
 }
