@@ -12,17 +12,17 @@ body {
 }
 
 svg {
-  
-  &.chart {
+
+  &.chart-canvas {
     width: 840px;
     height: 430px;
-    transition: opacity 1s linear, height 1s linear;  
+    transition: opacity 1s linear, height 1s linear;
 
-    &.hidden-chart {
+    &.hidden-canvas {
       display: block;
       opacity: 0;
       height: 0;
-    }    
+    }
   }
 
   path {
@@ -53,8 +53,8 @@ svg {
       -webkit-animation: myfirst 1s; /* Chrome, Safari, Opera */
       animation: myfirst 1s;
       -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
-      animation-iteration-count: infinite;    
-  }  
+      animation-iteration-count: infinite;
+  }
 }
 
 /* Chrome, Safari, Opera */

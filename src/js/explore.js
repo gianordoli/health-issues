@@ -163,7 +163,6 @@ export class Explore {
         }
       });
     seasonal.push({ term: diseases[index].name, points: currSeasonal });
-    console.log('hey');
 
     const currTrendString = dataFromR.substring(
       dataFromR.indexOf('trend:') + 'trend:'.length + 1,
@@ -176,7 +175,6 @@ export class Explore {
         }
       });
     trend.push({ term: diseases[index].name, points: currTrend });
-    console.log('ho');
 
     self.updateData({seasonal: seasonal, trend: trend});
 
@@ -327,10 +325,10 @@ export class Explore {
 
     mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    // if(isConfirmed && !isLoading && seasonal && trend && total) {
-    //   seasonalChart.updateData(seasonal);
-    //   isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-    //   // this.updateData({ isConfirmed: false });
-    // }
+    if(isConfirmed && !isLoading && seasonal && trend && total) {
+      seasonalChart.updateData(seasonal);
+      isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
+      this.updateData({ isConfirmed: false });
+    }
   }
 }

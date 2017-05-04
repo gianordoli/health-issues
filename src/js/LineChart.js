@@ -27,7 +27,7 @@ export class LineChart {
   }
 
   hide() {
-    this.svg.classed('hidden-chart', !this.svg.classed('hidden-chart'));
+    this.svg.classed('hidden-canvas', !this.svg.classed('hidden-canvas'));
   }
 
   updateData(data: TrendsAPIData[]) {
@@ -67,7 +67,7 @@ export class LineChart {
 
     // Displaying months for seasonal chart
     if (this.type == 'seasonal') {
-      this.xAxis = this.xAxis.tickFormat(d3.timeFormat("%b"));
+      this.xAxis = this.xAxis.tickFormat(d3.timeFormat('%b'));
     }
 
     this.yAxis = d3.axisLeft(y);
@@ -80,14 +80,13 @@ export class LineChart {
     this.svg = parentContainer.append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
-      .classed('chart', true);
+      .attr('class', 'chart-canvas');
 
     const chart = this.svg
       .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+      .attr('class', 'chart');
 
-    // this.x.domain(d3.extent(data[0].points, function(p) { return p.date; }));
-    // this.x.domain(d3.extent(data[0].points, function(p) { return p.date; }));
     this.x.domain( d3.extent(data, function(d, i) {
         return d3.extent(d.points, function(p) { return p.date }) })
     );
@@ -105,16 +104,17 @@ export class LineChart {
       .attr('class', 'y axis')
       .call(this.yAxis);
 
-    const disease = chart.selectAll(".disease")
+    const disease = chart.selectAll('.disease')
       .data(data)
       .enter()
-      .append("g")
-      .attr("class", "disease");
+      .append('g')
+      .attr('class', 'disease');
 
-    disease.append("path")
-      .attr("class", "line")
-      .attr('stroke', 'black')
-      .attr("d", function(d) { return this.line(d.points) });
+    // const self = this;
+    // disease.append('path')
+    //   .attr('class', 'line')
+    //   .attr('stroke', 'black')
+    //   .attr('d', function(d) { return self.line(d.points) });
 
     // chart.append('path')
     //   .datum(data)
@@ -127,9 +127,7 @@ export class LineChart {
     const { data } = this;
     let { svg, x, y, xAxis, yAxis, line  } = this;
 
-    this.x.domain( d3.extent(data, function(d, i) {
-        return d3.extent(d.points, function(p) { return p.date }) })
-    );
+    this.x.domain( d3.extent(data[0].points, function(p) { return p.date }) );
     this.y.domain([
       d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); }),
       d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); })
@@ -145,21 +143,36 @@ export class LineChart {
       .duration(1000)
       .call(xAxis);
 
-    // const disease = d3.selectAll(".disease")
-    //   .data(data)
-    //   .enter()
-    //   .append("g")
-    //   .attr("class", "disease");
-    //
-    // disease.append("path")
-    //   .attr("class", "line")
-    //   .attr('stroke', 'black')
-    //   .attr("d", function(d) { return this.line(d.points) });
+    const chart = svg.select('.chart');
 
-    svg.selectAll('path.line')
-      .datum(data)
-      .transition()
-      .duration(1000)
-      .attr('d', line);
+    if (chart.selectAll('.disease').size() === 0) {
+      const diseases = chart.selectAll('.disease')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('class', 'disease');
+
+      diseases.append('path')
+        .attr('class', 'line')
+        .attr('stroke', 'black')
+        .attr('d', function(d) { console.log(d); return line(d.points) });
+    } else {
+      // diseases.selectAll('path.line')
+      //   .datum(data)
+      //   .transition()
+      //   .duration(1000)
+      //   .attr('d', line);
+    }
+
+    // disease.append('path')
+    //   .attr('class', 'line')
+    //   .attr('stroke', 'black')
+    //   .attr('d', function(d) { return this.line(d.points) });
+
+    // svg.selectAll('path.line')
+    //   .datum(data)
+    //   .transition()
+    //   .duration(1000)
+    //   .attr('d', line);
   }
 }
