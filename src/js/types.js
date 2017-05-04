@@ -18,9 +18,9 @@ export type Filter = {
 export type TrendsAPIPoint = {
   date: string,
   value: number
-};
+}
 
 export type TrendsAPIData = {
   term: string,
   points: TrendsAPIPoint[]
-};
+}

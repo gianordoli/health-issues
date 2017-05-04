@@ -7,7 +7,7 @@ import { TrendsAPI } from './TrendsAPI';
 import { ShinyAPI } from './ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIPoint, TrendsAPIData } from './types'
+import type { Term, Geo, Filter, TrendsAPIData } from './types'
 
 // Data
 import { dummyData, terms, countries } from './util.js';

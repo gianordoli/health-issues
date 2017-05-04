@@ -1,5 +1,9 @@
 // @flow weak
 
+// Types
+import type { TrendsAPIData } from './types'
+
+// Libraries
 import * as d3 from 'd3';
 
 export class LineChart {
@@ -23,9 +27,18 @@ export class LineChart {
     this.svg.classed('hidden-chart', !this.svg.classed('hidden-chart'));
   }
 
-  updateData(data: {date: Date, value: number}[]) {
-    this.data = data;
+  updateData(data: TrendsAPIData[]) {
+    this.data = this.parseDates(data);
     this.updateElements();
+  }
+
+  parseDates(data: TrendsAPIData[]) {
+    const parseTime = d3.timeParse('%Y-%m-%d');
+    return data.map((d, i) => {
+      d.points.map((p, i) => {
+        return { date: parseTime(p), value: p.value }
+      })
+    });
   }
 
   createElements(_parentContainer: HTMLElement) {
@@ -38,7 +51,7 @@ export class LineChart {
     const obj = {};
     this.x = d3.scaleTime().range([0, width]);
     this.y = d3.scaleLinear().range([height, 0]);
-    
+
     // TO-DO
     // Parse time: const parseTime = d3.timeParse('%Y-%m-%d');
 
@@ -49,7 +62,7 @@ export class LineChart {
     if (this.type == 'seasonal') {
       this.xAxis = this.xAxis.tickFormat(d3.timeFormat("%b"));
     }
-    
+
     this.yAxis = d3.axisLeft(y);
 
     this.line = d3.line()
@@ -89,7 +102,7 @@ export class LineChart {
     let { svg, x, y, xAxis, yAxis, line  } = this;
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain(d3.extent(data, function(d) { return d.value; }));        
+    y.domain(d3.extent(data, function(d) { return d.value; }));
 
     svg.select('g.y')
       .transition()
@@ -105,6 +118,6 @@ export class LineChart {
       .datum(data)
       .transition()
       .duration(1000)
-      .attr('d', line);    
+      .attr('d', line);
   }
 }
