@@ -13,16 +13,17 @@ export class LineChart {
     points: {date: Date, value: number}[]
   }[];
   type: string;
+  width: number;
+  height: number;
+  margin: { top: number, left: number, bottom: number, right: number };
   svg: () => {};
-  x: () => {};
-  y: () => {};
-  xAxis: () => {};
-  yAxis: () => {};
-  line: () => {};
 
   constructor(parentContainer: HTMLElement, type: string) {
     this.data = [];
     this.type = type;
+    this.margin = {top: 10, right: 0, bottom: 30, left: 30};
+    this.width  = 800;
+    this.height = 400;
     this.createElements(parentContainer);
   }
 
@@ -50,32 +51,7 @@ export class LineChart {
 
   createElements(_parentContainer: HTMLElement) {
     const parentContainer = d3.select(_parentContainer);
-    const { data } = this;
-
-    const margin = {top: 10, right: 0, bottom: 30, left: 30};
-    const width  = 800;
-    const height = 400;
-    const obj = {};
-    this.x = d3.scaleTime().range([0, width]);
-    this.y = d3.scaleLinear().range([height, 0]);
-
-    // TO-DO
-    // Parse time: const parseTime = d3.timeParse('%Y-%m-%d');
-
-    const { x, y } = this;
-    this.xAxis = d3.axisBottom(x);
-
-    // Displaying months for seasonal chart
-    if (this.type == 'seasonal') {
-      this.xAxis = this.xAxis.tickFormat(d3.timeFormat('%b'));
-    }
-
-    this.yAxis = d3.axisLeft(y);
-
-    this.line = d3.line()
-      .curve(d3.curveBasis)
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.value); });
+    const { data, width, height, margin } = this;
 
     this.svg = parentContainer.append('svg')
       .attr('width', width + margin.left + margin.right)
@@ -87,82 +63,63 @@ export class LineChart {
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
       .attr('class', 'chart');
 
-    this.x.domain( d3.extent(data, function(d, i) {
-        return d3.extent(d.points, function(p) { return p.date }) })
-    );
-    this.y.domain([
-      d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); }),
-      d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); })
-    ]);
-
     chart.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(this.xAxis);
+      .attr('transform', 'translate(0,' + height + ')');
 
     chart.append('g')
-      .attr('class', 'y axis')
-      .call(this.yAxis);
-
-    const disease = chart.selectAll('.disease')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'disease');
-
-    // const self = this;
-    // disease.append('path')
-    //   .attr('class', 'line')
-    //   .attr('stroke', 'black')
-    //   .attr('d', function(d) { return self.line(d.points) });
-
-    // chart.append('path')
-    //   .datum(data)
-    //   .attr('class', 'line')
-    //   .attr('stroke', 'black')
-    //   .attr('d', this.line);
+      .attr('class', 'y axis');
   }
 
   updateElements() {
-    const { data } = this;
-    let { svg, x, y, xAxis, yAxis, line  } = this;
+    const { data, width, height, margin, svg, type } = this;
 
-    this.x.domain( d3.extent(data[0].points, function(p) { return p.date }) );
-    this.y.domain([
-      d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); }),
-      d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); })
-    ]);
+    const x = d3.scaleTime()
+      .range([0, width])
+      .domain( d3.extent(data[0].points, function(p) { return p.date }) );
 
-    svg.select('g.y')
-      .transition()
-      .duration(1000)
-      .call(yAxis);
+    const y = d3.scaleLinear()
+      .range([height, 0])
+      y.domain([
+        d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); }),
+        d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); })
+      ]);
 
-    svg.select('g.x')
-      .transition()
-      .duration(1000)
-      .call(xAxis);
+    let xAxis = d3.axisBottom(x);
+    if (type == 'seasonal') {
+      xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
+    }
+    const yAxis = d3.axisLeft(y);
+
+    const line = d3.line()
+      // .curve(d3.curveBasis)
+      .x(function(d) { console.log(d); return x(d.date); })
+      .y(function(d) { return y(d.value); });
 
     const chart = svg.select('.chart');
+    chart.transition().duration(1000);
 
-    if (chart.selectAll('.disease').size() === 0) {
-      const diseases = chart.selectAll('.disease')
-        .data(data)
-        .enter()
-        .append('g')
-        .attr('class', 'disease');
+    chart.select('g.y')
+      .call(yAxis);
 
-      diseases.append('path')
-        .attr('class', 'line')
-        .attr('stroke', 'black')
-        .attr('d', function(d) { console.log(d); return line(d.points) });
-    } else {
-      // diseases.selectAll('path.line')
-      //   .datum(data)
-      //   .transition()
-      //   .duration(1000)
-      //   .attr('d', line);
-    }
+    chart.select('g.x')
+      .call(xAxis);
+
+    const diseases = chart.selectAll('.disease')
+      .data(data);
+
+    const diseasesEnter = diseases.enter()
+      .append('path')
+      .attr('class', 'line disease')
+      .attr('stroke', 'black');
+
+    const diseasesUpdate = diseasesEnter
+        .attr('d', function(d) {
+          return line(d.points)
+        });
+
+    const diseasesExit = diseases.exit()
+        .remove();
 
     // disease.append('path')
     //   .attr('class', 'line')
