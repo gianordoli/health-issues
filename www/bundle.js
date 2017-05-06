@@ -171,7 +171,7 @@
 	      trend: [],
 	      total: [],
 	      isMerged: false,
-	      isConfirmed: false,
+	      isChanging: false,
 	      isLoading: false
 	    };
 	    this.trendsAPI = new _TrendsAPI.TrendsAPI();
@@ -187,7 +187,7 @@
 	      var diseases = value.map(function (v) {
 	        return self.getDiseaseByEntity(v);
 	      });
-	      this.updateData({ diseases: diseases });
+	      this.updateData({ diseases: diseases, isChanging: true });
 	      self.confirmNav.classList.remove('hidden');
 	    }
 	  }, {
@@ -197,7 +197,7 @@
 	      var value = event.target.value;
 
 	      var name = this.getSelectedText(event.target);
-	      this.updateData({ geo: { iso: value, name: name } });
+	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
 	      self.confirmNav.classList.remove('hidden');
 	    }
 	  }, {
@@ -222,7 +222,7 @@
 	          prevGeo = _self$data.prevGeo;
 
 	      self.confirmNav.classList.add('hidden');
-	      self.updateData({ diseases: prevDiseases, geo: prevGeo });
+	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
 	    }
 	  }, {
 	    key: 'confirmFilters',
@@ -233,7 +233,7 @@
 	          geo = _self$data2.geo;
 
 	      self.confirmNav.classList.add('hidden');
-	      self.updateData({ prevDiseases: diseases, prevGeo: geo, isConfirmed: true, isLoading: true });
+	      self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
 	      self.callTrendsApi();
 	    }
 	  }, {
@@ -288,8 +288,8 @@
 	      var dataToR = total[index].points.map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
-	      // this.parseDataFromR(this, dummyData[index]);
-	      shinyAPI.updateData(dataToR);
+	      this.parseDataFromR(this, _util.dummyData[index]);
+	      // shinyAPI.updateData(dataToR);
 	    }
 	  }, {
 	    key: 'parseDataFromR',
@@ -477,11 +477,10 @@
 	          trend = data.trend,
 	          total = data.total,
 	          isMerged = data.isMerged,
-	          isConfirmed = data.isConfirmed,
+	          isChanging = data.isChanging,
 	          isLoading = data.isLoading;
 
 
-	      console.log(isLoading);
 	      if (isLoading) {
 	        loaderContainer.classList.remove('hidden');
 	      } else {
@@ -522,10 +521,10 @@
 
 	      mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-	      if (isConfirmed && !isLoading && seasonal && trend && total) {
+	      if (isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
 	        seasonalChart.updateData(seasonal);
 	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-	        this.updateData({ isConfirmed: false });
+	        this.updateData({ isChanging: false });
 	      }
 	    }
 	  }]);
@@ -33173,7 +33172,7 @@
 
 
 	// module
-	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart-canvas {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s linear; }\n  svg.chart-canvas.hidden-canvas {\n    display: block;\n    opacity: 0;\n    height: 0; }\n\nsvg path.line {\n  fill: none; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart-canvas {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s ease-out; }\n  svg.chart-canvas.hidden-canvas {\n    display: block;\n    opacity: 0;\n    height: 0; }\n\nsvg path.line {\n  fill: none; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 

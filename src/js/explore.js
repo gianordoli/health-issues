@@ -30,7 +30,7 @@ export class Explore {
     trend: TrendsAPIData[],
     total: TrendsAPIData[],
     isMerged: boolean,
-    isConfirmed: boolean,
+    isChanging: boolean,
     isLoading: boolean
   };
 
@@ -55,7 +55,7 @@ export class Explore {
       trend: [],
       total: [],
       isMerged: false,
-      isConfirmed: false,
+      isChanging: false,
       isLoading: false
     }
     this.trendsAPI = new TrendsAPI();
@@ -67,7 +67,7 @@ export class Explore {
   handleSelectDiseaseChange(value: string[], self: Explore) {
     console.log('handleSelectDiseaseChange');
     const diseases = value.map(v => self.getDiseaseByEntity(v));
-    this.updateData({diseases: diseases});
+    this.updateData({diseases: diseases, isChanging: true});
     self.confirmNav.classList.remove('hidden');
   }
 
@@ -75,7 +75,7 @@ export class Explore {
     console.log('handleSelectGeoChange');
     const { value } = event.target;
     const name = this.getSelectedText(event.target);
-    this.updateData({geo: {iso: value, name: name}});
+    this.updateData({geo: {iso: value, name: name, isChanging: true}});
     self.confirmNav.classList.remove('hidden');
   }
 
@@ -93,14 +93,14 @@ export class Explore {
     console.log('cancelFilters');
     const { prevDiseases, prevGeo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ diseases: prevDiseases, geo: prevGeo });
+    self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
   }
 
   confirmFilters(event, self) {
     console.log('confirmFilters');
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ prevDiseases: diseases, prevGeo: geo, isConfirmed: true, isLoading: true });
+    self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
     self.callTrendsApi();
   }
 
@@ -140,8 +140,8 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
     const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    // this.parseDataFromR(this, dummyData[index]);
-    shinyAPI.updateData(dataToR);
+    this.parseDataFromR(this, dummyData[index]);
+    // shinyAPI.updateData(dataToR);
   }
 
   parseDataFromR(explore, dataFromR) {
@@ -305,9 +305,8 @@ export class Explore {
   updateElements() {
     console.log('updateElements');
     const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
-    const { diseases, geo, seasonal, trend, total, isMerged, isConfirmed, isLoading } = data;
+    const { diseases, geo, seasonal, trend, total, isMerged, isChanging, isLoading } = data;
 
-    console.log(isLoading);
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
     } else {
@@ -325,10 +324,10 @@ export class Explore {
 
     mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    if(isConfirmed && !isLoading && seasonal && trend && total) {
+    if(isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
       seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-      this.updateData({ isConfirmed: false });
+      this.updateData({ isChanging: false });
     }
   }
 }

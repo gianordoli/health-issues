@@ -16,7 +16,7 @@ svg {
   &.chart-canvas {
     width: 840px;
     height: 430px;
-    transition: opacity 1s linear, height 1s linear;
+    transition: opacity 1s linear, height 1s ease-out;
 
     &.hidden-canvas {
       display: block;
