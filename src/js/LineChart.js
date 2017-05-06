@@ -69,6 +69,9 @@ export class LineChart {
 
     chart.append('g')
       .attr('class', 'y axis');
+
+    chart.append('g')
+      .attr('class', 'time-series');
   }
 
   updateElements() {
@@ -93,43 +96,36 @@ export class LineChart {
 
     const line = d3.line()
       // .curve(d3.curveBasis)
-      .x(function(d) { console.log(d); return x(d.date); })
+      .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.value); });
 
     const chart = svg.select('.chart');
-    chart.transition().duration(1000);
 
     chart.select('g.y')
+      .transition()
+      .duration(1000)
       .call(yAxis);
 
     chart.select('g.x')
+      .transition()
+      .duration(1000)
       .call(xAxis);
 
-    const diseases = chart.selectAll('.disease')
-      .data(data);
+    const timeSeries = chart.selectAll('.time-series');
 
-    const diseasesEnter = diseases.enter()
+    const diseases = timeSeries.selectAll('.disease').data(data);
+
+    const diseasesEnterUpdate = diseases.enter()
       .append('path')
       .attr('class', 'line disease')
-      .attr('stroke', 'black');
+      .attr('stroke', 'black')
+      .merge(diseases)
+      .transition()
+      .duration(1000)      
+      .attr('d', function(d) {
+        return line(d.points)
+      });
 
-    const diseasesUpdate = diseasesEnter
-        .attr('d', function(d) {
-          return line(d.points)
-        });
-
-    const diseasesExit = diseases.exit()
-        .remove();
-
-    // disease.append('path')
-    //   .attr('class', 'line')
-    //   .attr('stroke', 'black')
-    //   .attr('d', function(d) { return this.line(d.points) });
-
-    // svg.selectAll('path.line')
-    //   .datum(data)
-    //   .transition()
-    //   .duration(1000)
-    //   .attr('d', line);
+    const diseasesExit = diseases.exit().remove();
   }
 }
