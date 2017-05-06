@@ -243,7 +243,7 @@
 
 	      isMerged = isMerged ? false : true;
 	      this.seasonalChart.hide();
-	      this.updateData({ isMerged: isMerged });
+	      this.updateData({ isMerged: isMerged, isChanging: true });
 	    }
 	  }, {
 	    key: 'loadCurated',
@@ -754,7 +754,7 @@
 
 	      var diseases = timeSeries.selectAll('.disease').data(data);
 
-	      var diseasesEnterUpdate = diseases.enter().append('path').attr('class', 'line disease').attr('stroke', 'black').merge(diseases).transition().duration(1000).attr('d', function (d) {
+	      var diseasesEnterUpdate = diseases.enter().append('path').attr('class', 'line disease').merge(diseases).transition().duration(1000).attr('d', function (d) {
 	        return line(d.points);
 	      });
 
@@ -33172,7 +33172,7 @@
 
 
 	// module
-	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart-canvas {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s ease-out; }\n  svg.chart-canvas.hidden-canvas {\n    display: block;\n    opacity: 0;\n    height: 0; }\n\nsvg path.line {\n  fill: none; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart-canvas {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s ease-out; }\n  svg.chart-canvas.hidden-canvas {\n    display: block;\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis path,\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 

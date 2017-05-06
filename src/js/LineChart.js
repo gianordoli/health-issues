@@ -118,10 +118,9 @@ export class LineChart {
     const diseasesEnterUpdate = diseases.enter()
       .append('path')
       .attr('class', 'line disease')
-      .attr('stroke', 'black')
       .merge(diseases)
       .transition()
-      .duration(1000)      
+      .duration(1000)
       .attr('d', function(d) {
         return line(d.points)
       });

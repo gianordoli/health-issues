@@ -108,7 +108,7 @@ export class Explore {
     let { isMerged } = self.data;
     isMerged = isMerged ? false : true;
     this.seasonalChart.hide();
-    this.updateData({ isMerged: isMerged });
+    this.updateData({ isMerged: isMerged, isChanging: true });
   }
 
   loadCurated(filter: Filter) {

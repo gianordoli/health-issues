@@ -1,3 +1,8 @@
+$color-0: #4422B3;
+$color-1: #FA8200;
+$color-2: #FF91E6;
+$color-3: #009DF7;
+
 body {
   // background-color: red;
   .test {
@@ -11,23 +16,38 @@ body {
   display: none;
 }
 
-svg {
+svg.chart-canvas {
 
-  &.chart-canvas {
-    width: 840px;
-    height: 430px;
-    transition: opacity 1s linear, height 1s ease-out;
+  width: 840px;
+  height: 430px;
+  transition: opacity 1s linear, height 1s ease-out;
 
-    &.hidden-canvas {
-      display: block;
-      opacity: 0;
-      height: 0;
-    }
+  &.hidden-canvas {
+    display: block;
+    opacity: 0;
+    height: 0;
   }
 
   path {
-    &.line {
-      fill: none;
+    fill: none;
+  }
+  
+  path, line {
+    stroke-width: 2px;
+  }
+
+  g.axis {
+    path,
+    line {
+      stroke: $color-0;
+    }
+  }
+
+  g.time-series {
+    path.line.disease {
+      &:nth-child(1) { stroke: $color-1; }
+      &:nth-child(2) { stroke: $color-2; }
+      &:nth-child(3) { stroke: $color-3; }
     }
   }
 }
