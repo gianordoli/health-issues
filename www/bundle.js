@@ -75,16 +75,20 @@
 	    curatedNav.appendChild(curatedTitle);
 
 	    var test1 = document.createElement('button');
-	    test1.innerHTML = _util.terms[18].name + ' in ' + _util.countries[10].name;
+	    test1.innerHTML = 'Curated in ' + _util.countries[11].name;
 	    test1.addEventListener('click', function (e) {
-	      return explore.loadCurated({ terms: [_util.terms[18]], geo: _util.countries[10] });
+	      return explore.loadCurated({
+	        terms: [_util.terms[139], _util.terms[257], _util.terms[2142]], geo: _util.countries[11]
+	      });
 	    });
 	    curatedNav.appendChild(test1);
 
 	    var test2 = document.createElement('button');
-	    test2.innerHTML = _util.terms[12].name + ' in ' + _util.countries[234].name;
+	    test2.innerHTML = 'Curated in the' + _util.countries[241].name;
 	    test2.addEventListener('click', function (e) {
-	      return explore.loadCurated({ terms: [_util.terms[12]], geo: _util.countries[234] });
+	      return explore.loadCurated({
+	        terms: [_util.terms[78], _util.terms[254], _util.terms[1018]], geo: _util.countries[241]
+	      });
 	    });
 	    curatedNav.appendChild(test2);
 
@@ -251,7 +255,7 @@
 	      var terms = filter.terms,
 	          geo = filter.geo;
 
-	      this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo });
+	      this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isChanging: true, isLoading: true });
 	      this.confirmNav.classList.add('hidden');
 	      this.callTrendsApi();
 	    }
@@ -288,8 +292,8 @@
 	      var dataToR = total[index].points.map(function (p, i) {
 	        return p.date + ',' + p.value;
 	      });
-	      this.parseDataFromR(this, _util.dummyData[index]);
-	      // shinyAPI.updateData(dataToR);
+	      // this.parseDataFromR(this, dummyData[index]);
+	      shinyAPI.updateData(dataToR);
 	    }
 	  }, {
 	    key: 'parseDataFromR',

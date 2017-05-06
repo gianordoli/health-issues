@@ -113,7 +113,7 @@ export class Explore {
 
   loadCurated(filter: Filter) {
     const { terms, geo } = filter;
-    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo });
+    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isChanging: true, isLoading: true });
     this.confirmNav.classList.add('hidden');
     this.callTrendsApi();
   }
@@ -140,8 +140,8 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
     const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    this.parseDataFromR(this, dummyData[index]);
-    // shinyAPI.updateData(dataToR);
+    // this.parseDataFromR(this, dummyData[index]);
+    shinyAPI.updateData(dataToR);
   }
 
   parseDataFromR(explore, dataFromR) {
