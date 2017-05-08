@@ -1,5 +1,7 @@
 // @flow weak
 
+import { Ranking } from './js/Ranking';
+
 import { Explore } from './js/Explore';
 import { terms, countries } from './js/util.js';
 import './sass/app.scss';
@@ -49,7 +51,9 @@ app.main = (function (){
 
   const init = function(){
     console.log('Initializing app.');
-    render();
+    // render();
+
+    const ranking = new Ranking();
   };
 
   return {
