@@ -10,7 +10,7 @@ import { ShinyAPI } from './ShinyAPI';
 import type { Term, Geo, Filter, TrendsAPIData } from './types'
 
 // Data
-import { dummyData, terms, countries } from './util.js';
+import { arrayIsEqual, dummyData, terms, countries } from './util.js';
 
 // Libraries
 import selectize from 'selectize';
@@ -29,6 +29,8 @@ export class Explore {
     seasonal: TrendsAPIData[],
     trend: TrendsAPIData[],
     total: TrendsAPIData[],
+    dataToR: string[],
+    dataFromR: string,
     isMerged: boolean,
     isChanging: boolean,
     isLoading: boolean
@@ -51,6 +53,8 @@ export class Explore {
       diseases: filter ? filter.terms : [],
       prevGeo: filter ? filter.geo : countries[0],
       geo: filter ? filter.geo : countries[0],
+      dataToR: '',
+      dataFromR: '',
       seasonal: [],
       trend: [],
       total: [],
@@ -58,10 +62,16 @@ export class Explore {
       isChanging: false,
       isLoading: false
     }
-    this.trendsAPI = new TrendsAPI();
-    this.shinyAPI = new ShinyAPI();
-    this.shinyAPI.addListeners(this, this.parseDataFromR);
-    this.createElements(parentContainer);
+    const self = this;
+    self.trendsAPI = new TrendsAPI();
+    self.trendsAPI.setup(function(){
+      if (filter) {
+        self.callTrendsApi();
+      }
+    });
+    self.shinyAPI = new ShinyAPI();
+    self.shinyAPI.addListeners(self, self.parseDataFromR);
+    self.createElements(parentContainer);
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
@@ -136,12 +146,18 @@ export class Explore {
 
   parseDataToR() {
     console.log('parseDataToR');
-    const { total, seasonal } = this.data;
+    const { dataToR, dataFromR, total, seasonal } = this.data;
     const { shinyAPI } = this;
     const index = seasonal.length;
-    const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
+
+    const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
+    if (arrayIsEqual(dataToR, newDataToR)) {
+      this.parseDataFromR(this, dataFromR);
+    } else {
+      this.updateData({ dataToR: newDataToR });
+      shinyAPI.updateData(newDataToR);
+    }
     // this.parseDataFromR(this, dummyData[index]);
-    shinyAPI.updateData(dataToR);
   }
 
   parseDataFromR(explore, dataFromR) {
@@ -176,7 +192,7 @@ export class Explore {
       });
     trend.push({ term: diseases[index].name, points: currTrend });
 
-    self.updateData({seasonal: seasonal, trend: trend});
+    self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
 
     if (seasonal.length === total.length) {
       self.updateData({ isLoading: false });

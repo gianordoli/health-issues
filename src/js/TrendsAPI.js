@@ -27,7 +27,9 @@ export class TrendsAPI {
           .then(function(){
             console.log('GoogleAPI client initialized');
             self.gapi = gapi;
-            callback();
+            if (callback) {
+              callback();  
+            }
           })
         }
       });
