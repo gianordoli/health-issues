@@ -11,7 +11,7 @@ export class TrendsAPI {
   }
 
   setup(callback) {
-    const self = this;    
+    const self = this;
     require( 'google-client-api' )()
       .then( function( gapi ) {
         console.log('GoogleAPI library loaded');
@@ -36,28 +36,24 @@ export class TrendsAPI {
   getTrends(filter: Filter, callback) {
     console.log('Requesting data for:', filter);
 
-    if (this.gapi) {
-      const { geo } = filter;
-      const { terms } = filter;
-      let path = 'https://www.googleapis.com/trends/v1beta/graph?';
-      for (const t of terms) {
-        path += 'terms=' + encodeURIComponent(t.entity) + '&';
-      }
-      if (geo.iso !== '') {
-        path += 'restrictions.geo='+geo.iso;
-      }
-      console.log(path);
-      this.gapi.client.request({
-        'path': path
-      })
-      .then(function(response) {
-          callback(response.result);
-        }, function(reason) {
-          console.log('Error: ' + reason.result.error.message);
-        });
-    } else {
-
+    const { geo } = filter;
+    const { terms } = filter;
+    let path = 'https://www.googleapis.com/trends/v1beta/graph?';
+    for (const t of terms) {
+      path += 'terms=' + encodeURIComponent(t.entity) + '&';
     }
+    if (geo.iso !== '') {
+      path += 'restrictions.geo='+geo.iso;
+    }
+    console.log(path);
+    this.gapi.client.request({
+      'path': path
+    })
+    .then(function(response) {
+        callback(response.result);
+      }, function(reason) {
+        console.log('Error: ' + reason.result.error.message);
+      });
 
   }
 }

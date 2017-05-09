@@ -20,28 +20,50 @@ export class Ranking {
   constructor() {
     this.data = {
       diseases: '',
-      i: 0
+      i: 2325
     }
     const self = this;
     this.trendsAPI = new TrendsAPI();
     this.trendsAPI.setup(function(){
-      self.callTrendsApi();
+      self.callTrendsApi(self);
     });
 
   }
 
-  callTrendsApi(){
-    const { i } = this.data;
-    console.log(terms[i]);
-    const self = this;
+  callTrendsApi(self){
+    let { i, diseases } = self.data;
 
     self.trendsAPI.getTrends({terms: [terms[i]], geo: countries[0]}, function(val){
       console.log('From Google Trends: ', val);
-      // const total = val.lines.map((l, i) => {
-      //   return { term: diseases[i].name, points: l.points}
-      // });
-      // self.updateData({ total: total, seasonal: [], trend: [] });
-      // self.parseDataToR();
+
+      let hasData = 0;
+      for (const p of val.lines[0].points) {
+        if (p.value !== 0) {
+          hasData = 1;
+          break;
+        }
+      }
+
+      self.updateData({
+          diseases: diseases + hasData + '\t' + terms[i].name + '\t' + terms[i].entity + '\n',
+          i: i+1
+      })      
+
+      if (i < terms.length - 1) {
+        setTimeout(function(){
+          self.callTrendsApi(self);
+        }, 1000);
+      }
     });
   }
+
+  updateData(obj) {
+    let { data } = this;
+    for (const key in obj) {
+      data[key] = obj[key];
+    }
+    this.data = data;
+    console.log(this.data);
+  }
+
 }
