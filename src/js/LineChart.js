@@ -87,7 +87,11 @@ export class LineChart {
     if (type === 'seasonal') {
       yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
       yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
+    } else {
+      yMin = 0;
+      yMax = 100;
     }
+    
     const y = d3.scaleLinear()
       .range([height, 0])
       .domain([yMin, yMax]);
