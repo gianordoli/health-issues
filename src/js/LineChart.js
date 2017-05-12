@@ -22,8 +22,8 @@ export class LineChart {
     this.data = [];
     this.type = type;
     this.margin = {top: 4, right: 0, bottom: 32, left: 32};
-    this.width  = 400;
-    this.height = 300;
+    this.width  = 400 - (this.margin.left + this.margin.right);
+    this.height = 300 - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }
 
@@ -76,6 +76,7 @@ export class LineChart {
 
   updateElements() {
     const { data, width, height, margin, svg, type } = this;
+    const transitionDuration = 500;
 
     const x = d3.scaleTime()
       .range([0, width])
@@ -91,8 +92,11 @@ export class LineChart {
       .range([height, 0])
       .domain([yMin, yMax]);
 
-    let xAxis = d3.axisBottom(x)
-      .tickSize(0);
+    const xAxis = d3.axisBottom(x)
+      .tickSize(0)
+      .tickPadding(12)
+      .tickFormat(d3.timeFormat(type === 'seasonal' ? '%b' : '%Y'));
+
     const yAxis = d3.axisLeft(y)
       .tickSize(12);
 
@@ -105,18 +109,17 @@ export class LineChart {
 
     chart.select('g.y')
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
       .call(yAxis);
 
     chart.select('g.x')
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
       .call(xAxis);
 
     if (type === 'seasonal') {
-      xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
       chart.select('g.x path')
-        .style('transform', 'translate(0, -'+(height/2 + 2)+'px)');
+        .style('transform', 'translate(0, -'+height/2+'px)');
     } else {
       chart.select('g.x')
         .selectAll(".tick text")
@@ -134,7 +137,7 @@ export class LineChart {
       .attr('class', 'line disease')
       .merge(diseases)
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
       .attr('d', function(d) {
         return line(d.points)
       });

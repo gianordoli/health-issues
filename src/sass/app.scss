@@ -3,6 +3,9 @@ $color-1: #FA8200;
 $color-2: #FF91E6;
 $color-3: #009DF7;
 
+$chart-width: 400px;
+$chart-height: 300px;
+
 body {
   // background-color: red;
   .test {
@@ -28,19 +31,19 @@ body {
 }
 
 .charts-container {
-  display: flex;
-  flex-direction: row;
+  // display: flex;
+  // flex-direction: row;
   width: 100%;
 }
 
 svg.chart-canvas {
 
-  width: 840px;
-  height: 430px;
-  transition: opacity 1s linear, height 1s ease-out;
+  display: block;
+  width: $chart-width;
+  height: $chart-height;
+  transition: opacity 0.5s ease-out, height 0.5s ease-out;
 
   &.hidden-canvas {
-    display: block;
     opacity: 0;
     height: 0;
   }
@@ -58,6 +61,11 @@ svg.chart-canvas {
     line {
       stroke: $color-0;
     }
+    &.x {
+      path {
+        stroke-opacity: 0.24;
+      }
+    }
   }
 
   g.time-series {
@@ -66,6 +74,10 @@ svg.chart-canvas {
       &:nth-child(2) { stroke: $color-2; }
       &:nth-child(3) { stroke: $color-3; }
     }
+  }
+
+  text {
+    fill: $color-0;
   }
 }
 
