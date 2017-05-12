@@ -150,14 +150,14 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
 
-    // const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    // if (arrayIsEqual(dataToR, newDataToR)) {
-    //   this.parseDataFromR(this, dataFromR);
-    // } else {
-    //   this.updateData({ dataToR: newDataToR });
-    //   shinyAPI.updateData(newDataToR);
-    // }
-    this.parseDataFromR(this, dummyData[index]);
+    const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
+    if (arrayIsEqual(dataToR, newDataToR)) {
+      this.parseDataFromR(this, dataFromR);
+    } else {
+      this.updateData({ dataToR: newDataToR });
+      shinyAPI.updateData(newDataToR);
+    }
+    // this.parseDataFromR(this, dummyData[index]);
   }
 
   parseDataFromR(explore, dataFromR) {
