@@ -91,7 +91,7 @@ export class LineChart {
       yMin = 0;
       yMax = 100;
     }
-    
+
     const y = d3.scaleLinear()
       .range([height, 0])
       .domain([yMin, yMax]);
@@ -115,6 +115,11 @@ export class LineChart {
       .transition()
       .duration(transitionDuration)
       .call(yAxis);
+    chart.select('g.y')
+      .selectAll(".tick text")
+      .each(function(d,i){
+        d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
+      });
 
     chart.select('g.x')
       .transition()
