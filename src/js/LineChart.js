@@ -21,7 +21,7 @@ export class LineChart {
   constructor(parentContainer: HTMLElement, type: string) {
     this.data = [];
     this.type = type;
-    this.margin = {top: 0, right: 0, bottom: 32, left: 32};
+    this.margin = {top: 4, right: 0, bottom: 32, left: 32};
     this.width  = 400;
     this.height = 300;
     this.createElements(parentContainer);
@@ -118,9 +118,10 @@ export class LineChart {
       chart.select('g.x path')
         .style('transform', 'translate(0, -'+(height/2 + 2)+'px)');
     } else {
-      chart.selectAll(".tick text")
+      chart.select('g.x')
+        .selectAll(".tick text")
         .each(function(d,i){
-          if(i%2 !== 0) d3.select(this).remove();
+          d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
         });
     }
 
