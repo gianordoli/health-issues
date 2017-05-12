@@ -31,6 +31,7 @@
     "d3-scale": "^1.0.5",
     "google-client-api": "^1.0.4",
     "jquery": "^3.2.1",
+    "loglevel": "^1.4.1",
     "selectize": "^0.12.4"
   }
 }

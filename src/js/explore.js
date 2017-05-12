@@ -13,6 +13,7 @@ import type { Term, Geo, Filter, TrendsAPIData } from './types'
 import { arrayIsEqual, dummyData, terms, countries } from './util.js';
 
 // Libraries
+import log from 'loglevel';
 import selectize from 'selectize';
 import $ from 'jquery';
 
@@ -75,14 +76,14 @@ export class Explore {
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
-    console.log('handleSelectDiseaseChange');
+    log.info('handleSelectDiseaseChange');
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases, isChanging: true});
     self.confirmNav.classList.remove('hidden');
   }
 
   handleSelectGeoChange(event: {}, self: Explore) {
-    console.log('handleSelectGeoChange');
+    log.info('handleSelectGeoChange');
     const { value } = event.target;
     const name = this.getSelectedText(event.target);
     this.updateData({geo: {iso: value, name: name, isChanging: true}});
@@ -100,14 +101,14 @@ export class Explore {
   }
 
   cancelFilters(event, self) {
-    console.log('cancelFilters');
+    log.info('cancelFilters');
     const { prevDiseases, prevGeo } = self.data;
     self.confirmNav.classList.add('hidden');
     self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
   }
 
   confirmFilters(event, self) {
-    console.log('confirmFilters');
+    log.info('confirmFilters');
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
     self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
@@ -129,13 +130,13 @@ export class Explore {
   }
 
   callTrendsApi(){
-    console.log('callTrendsApi');
+    log.info('callTrendsApi');
     const { diseases, geo } = this.data;
     let total = [];
     const self = this;
 
     self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
-      console.log('From Google Trends: ', val);
+      log.info('From Google Trends: ', val);
       const total = val.lines.map((l, i) => {
         return { term: diseases[i].name, points: l.points}
       });
@@ -145,7 +146,7 @@ export class Explore {
   }
 
   parseDataToR() {
-    console.log('parseDataToR');
+    log.info('parseDataToR');
     const { dataToR, dataFromR, total, seasonal } = this.data;
     const { shinyAPI } = this;
     const index = seasonal.length;
@@ -161,7 +162,7 @@ export class Explore {
   }
 
   parseDataFromR(explore, dataFromR) {
-    console.log('parseDataFromR');
+    log.info('parseDataFromR');
     const self = explore;
     const { total, diseases, isLoading } = self.data;
     let { seasonal, trend } = self.data;
@@ -315,12 +316,12 @@ export class Explore {
       data[key] = obj[key];
     }
     this.data = data;
-    console.log(this.data);
+    log.info(this.data);
     this.updateElements();
   }
 
   updateElements() {
-    console.log('updateElements');
+    log.info('updateElements');
     const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
     const { diseases, geo, seasonal, trend, total, isMerged, isChanging, isLoading } = data;
 

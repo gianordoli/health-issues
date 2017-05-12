@@ -2,6 +2,7 @@
 
 import { Explore } from './js/Explore';
 import { terms, countries } from './js/util.js';
+import log from 'loglevel';
 import './sass/app.scss';
 
 var app = app || {};
@@ -49,6 +50,7 @@ app.main = (function (){
 
   const init = function(){
     console.log('Initializing app.');
+    log.setLevel('trace');
     render();
   };
 
