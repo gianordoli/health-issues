@@ -81,17 +81,18 @@ export class LineChart {
       .range([0, width])
       .domain( d3.extent(data[0].points, function(p) { return p.date }) );
 
+    let yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
+    let yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
+    if (type === 'seasonal') {
+      yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
+      yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
+    }
     const y = d3.scaleLinear()
       .range([height, 0])
-      y.domain([
-        d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); }),
-        d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); })
-      ]);
+      .domain([yMin, yMax]);
 
-    let xAxis = d3.axisBottom(x);
-    if (type == 'seasonal') {
-      xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
-    }
+    let xAxis = d3.axisBottom(x)
+      .tickSize(0);
     const yAxis = d3.axisLeft(y);
 
     const line = d3.line()
@@ -110,6 +111,12 @@ export class LineChart {
       .transition()
       .duration(1000)
       .call(xAxis);
+
+    if (type === 'seasonal') {
+      xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
+      chart.select('g.x path')
+        .style('transform', 'translate(0, -'+(height/2 + 2)+'px)');
+    }
 
     const timeSeries = chart.selectAll('.time-series');
 
