@@ -756,21 +756,23 @@
 	        return p.date;
 	      }));
 
-	      var y = d3.scaleLinear().range([height, 0]);
-	      y.domain([d3.min(data, function (d, i) {
+	      var yMin = d3.min(data, function (d, i) {
 	        return d3.min(d.points, function (p) {
 	          return p.value;
 	        });
-	      }), d3.max(data, function (d, i) {
+	      });
+	      var yMax = d3.max(data, function (d, i) {
 	        return d3.max(d.points, function (p) {
 	          return p.value;
 	        });
-	      })]);
-
-	      var xAxis = d3.axisBottom(x);
-	      if (type == 'seasonal') {
-	        xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
+	      });
+	      if (type === 'seasonal') {
+	        yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
+	        yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
 	      }
+	      var y = d3.scaleLinear().range([height, 0]).domain([yMin, yMax]);
+
+	      var xAxis = d3.axisBottom(x).tickSize(0);
 	      var yAxis = d3.axisLeft(y);
 
 	      var line = d3.line()
@@ -786,6 +788,11 @@
 	      chart.select('g.y').transition().duration(1000).call(yAxis);
 
 	      chart.select('g.x').transition().duration(1000).call(xAxis);
+
+	      if (type === 'seasonal') {
+	        xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
+	        chart.select('g.x path').style('transform', 'translate(0, -' + (height / 2 + 2) + 'px)');
+	      }
 
 	      var timeSeries = chart.selectAll('.time-series');
 

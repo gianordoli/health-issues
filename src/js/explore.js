@@ -291,6 +291,12 @@ export class Explore {
       filtersMenu.appendChild(confirmNav);
     // End filtersMenu
 
+    // Charts
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    elementsContainer.appendChild(chartsContainer);
+    this.seasonalChart = new LineChart(chartsContainer, 'seasonal');
+    this.trendChart = new LineChart(chartsContainer, 'trend');
 
     // Merge
     this.mergeButton = document.createElement('button');
@@ -299,11 +305,6 @@ export class Explore {
     bindHandleChange = evt => this.toggleChartMerge(evt, this);
     mergeButton.addEventListener('click', bindHandleChange);
     elementsContainer.appendChild(mergeButton);
-
-
-    // Charts
-    this.seasonalChart = new LineChart(elementsContainer, 'seasonal');
-    this.trendChart = new LineChart(elementsContainer, 'trend');
 
     this.updateElements();
   }

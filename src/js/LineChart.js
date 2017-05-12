@@ -21,9 +21,9 @@ export class LineChart {
   constructor(parentContainer: HTMLElement, type: string) {
     this.data = [];
     this.type = type;
-    this.margin = {top: 10, right: 0, bottom: 30, left: 30};
-    this.width  = 800;
-    this.height = 400;
+    this.margin = {top: 0, right: 0, bottom: 32, left: 32};
+    this.width  = 400;
+    this.height = 300;
     this.createElements(parentContainer);
   }
 
@@ -93,7 +93,8 @@ export class LineChart {
 
     let xAxis = d3.axisBottom(x)
       .tickSize(0);
-    const yAxis = d3.axisLeft(y);
+    const yAxis = d3.axisLeft(y)
+      .tickSize(12);
 
     const line = d3.line()
       // .curve(d3.curveBasis)
@@ -116,6 +117,11 @@ export class LineChart {
       xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
       chart.select('g.x path')
         .style('transform', 'translate(0, -'+(height/2 + 2)+'px)');
+    } else {
+      chart.selectAll(".tick text")
+        .each(function(d,i){
+          if(i%2 !== 0) d3.select(this).remove();
+        });
     }
 
     const timeSeries = chart.selectAll('.time-series');
