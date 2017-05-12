@@ -447,6 +447,12 @@
 	      filtersMenu.appendChild(confirmNav);
 	      // End filtersMenu
 
+	      // Charts
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      elementsContainer.appendChild(chartsContainer);
+	      this.seasonalChart = new _LineChart.LineChart(chartsContainer, 'seasonal');
+	      this.trendChart = new _LineChart.LineChart(chartsContainer, 'trend');
 
 	      // Merge
 	      this.mergeButton = document.createElement('button');
@@ -458,10 +464,6 @@
 	      };
 	      mergeButton.addEventListener('click', bindHandleChange);
 	      elementsContainer.appendChild(mergeButton);
-
-	      // Charts
-	      this.seasonalChart = new _LineChart.LineChart(elementsContainer, 'seasonal');
-	      this.trendChart = new _LineChart.LineChart(elementsContainer, 'trend');
 
 	      this.updateElements();
 	    }
@@ -690,9 +692,9 @@
 
 	    this.data = [];
 	    this.type = type;
-	    this.margin = { top: 10, right: 0, bottom: 30, left: 30 };
-	    this.width = 800;
-	    this.height = 400;
+	    this.margin = { top: 4, right: 0, bottom: 32, left: 32 };
+	    this.width = 400 - (this.margin.left + this.margin.right);
+	    this.height = 300 - (this.margin.top + this.margin.bottom);
 	    this.createElements(parentContainer);
 	  }
 
@@ -751,6 +753,7 @@
 	          svg = this.svg,
 	          type = this.type;
 
+	      var transitionDuration = 500;
 
 	      var x = d3.scaleTime().range([0, width]).domain(d3.extent(data[0].points, function (p) {
 	        return p.date;
@@ -769,11 +772,16 @@
 	      if (type === 'seasonal') {
 	        yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
 	        yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
+	      } else {
+	        yMin = 0;
+	        yMax = 100;
 	      }
+
 	      var y = d3.scaleLinear().range([height, 0]).domain([yMin, yMax]);
 
-	      var xAxis = d3.axisBottom(x).tickSize(0);
-	      var yAxis = d3.axisLeft(y);
+	      var xAxis = d3.axisBottom(x).tickSize(0).tickPadding(12).tickFormat(d3.timeFormat(type === 'seasonal' ? '%b' : '%Y'));
+
+	      var yAxis = d3.axisLeft(y).tickSize(12);
 
 	      var line = d3.line()
 	      // .curve(d3.curveBasis)
@@ -785,20 +793,23 @@
 
 	      var chart = svg.select('.chart');
 
-	      chart.select('g.y').transition().duration(1000).call(yAxis);
+	      chart.select('g.y').transition().duration(transitionDuration).call(yAxis);
 
-	      chart.select('g.x').transition().duration(1000).call(xAxis);
+	      chart.select('g.x').transition().duration(transitionDuration).call(xAxis);
 
 	      if (type === 'seasonal') {
-	        xAxis = xAxis.tickFormat(d3.timeFormat('%b'));
-	        chart.select('g.x path').style('transform', 'translate(0, -' + (height / 2 + 2) + 'px)');
+	        chart.select('g.x path').style('transform', 'translate(0, -' + height / 2 + 'px)');
+	      } else {
+	        chart.select('g.x').selectAll(".tick text").each(function (d, i) {
+	          d3.select(this).classed('hidden', i % 2 !== 0 ? true : false);
+	        });
 	      }
 
 	      var timeSeries = chart.selectAll('.time-series');
 
 	      var diseases = timeSeries.selectAll('.disease').data(data);
 
-	      var diseasesEnterUpdate = diseases.enter().append('path').attr('class', 'line disease').merge(diseases).transition().duration(1000).attr('d', function (d) {
+	      var diseasesEnterUpdate = diseases.enter().append('path').attr('class', 'line disease').merge(diseases).transition().duration(transitionDuration).attr('d', function (d) {
 	        return line(d.points);
 	      });
 
@@ -33223,7 +33234,7 @@
 
 
 	// module
-	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\nsvg.chart-canvas {\n  width: 840px;\n  height: 430px;\n  transition: opacity 1s linear, height 1s ease-out; }\n  svg.chart-canvas.hidden-canvas {\n    display: block;\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis path,\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\n.selectize-control.multi .selectize-input.items div.item {\n  background-color: transparent; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n    color: #FA8200; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n    color: #FF91E6; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n    color: #009DF7; }\n\n.charts-container {\n  width: 100%; }\n\nsvg.chart-canvas {\n  display: block;\n  width: 400px;\n  height: 300px;\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis path,\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 
