@@ -19,15 +19,8 @@ body {
   display: none;
 }
 
-.selectize-control.multi {
-  .selectize-input.items {
-    div.item {
-      background-color: transparent;
-      &:nth-child(1) { color: $color-1; }
-      &:nth-child(2) { color: $color-2; }
-      &:nth-child(3) { color: $color-3; }
-    }
-  }
+.page {
+
 }
 
 .charts-container {

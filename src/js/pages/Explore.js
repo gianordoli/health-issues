@@ -19,6 +19,7 @@ import $ from 'jquery';
 
 //Styles
 import 'selectize/dist/css/selectize.css';
+import '../../sass/explore.scss';
 
 export class Explore {
 

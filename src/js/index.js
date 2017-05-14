@@ -3,7 +3,7 @@
 import { Explore } from './pages/Explore';
 import { terms, countries } from './util/util.js';
 import log from 'loglevel';
-import '../sass/app.scss';
+import '../sass/App.scss';
 
 var app = app || {};
 
