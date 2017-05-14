@@ -15,5 +15,8 @@ export class Intro {
     elementsContainer.id = 'intro';
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
+
+    let p = document.createElement('p');
+    p.innerHTML = '';
   }
 }
