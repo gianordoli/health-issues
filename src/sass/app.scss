@@ -1,10 +1,47 @@
+@import 'normalize.scss';
+
+//---------------------- COLOR -----------------------//
+
 $color-0: #4422B3;
 $color-1: #FA8200;
 $color-2: #FF91E6;
 $color-3: #009DF7;
 
+
+//---------------------- LAYOUT ----------------------//
+$col-gutter-small: 12px;
+$col-gutter-large: 20px;
+
 $chart-width: 400px;
 $chart-height: 300px;
+
+
+
+//-------------------- TYPOGRAPHY --------------------//
+
+
+
+//-------------------- RESPONSIVE --------------------//
+
+@mixin for-phone-down {
+  @media (max-width: 600px) { @content; }
+}
+
+@mixin for-tablet-portrait-down {
+  @media (max-width: 900px) { @content; }
+}
+
+@mixin for-tablet-landscape-down {
+  @media (max-width: 1200px) { @content; }
+}
+
+@mixin for-desktop-down {
+  @media (max-width: 1799px) { @content; }
+}
+
+@mixin for-big-desktop-only {
+  @media (min-width: 1800px) { @content; }
+}
 
 html {
   -webkit-box-sizing: border-box;
@@ -32,25 +69,37 @@ body {
   display: none;
 }
 
+#page-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .page {
   
   width: 100vw;
   min-height: 100vh;
+  margin: 0;
+  border: 0;
+  padding: $col-gutter-large;
+
+  @include for-phone-down {
+    padding: $col-gutter-small;
+  }
 
   &:nth-child(1) {
-    background-color: red;
+    background-color: $color-0;
   }
   &:nth-child(2) {
-    background-color: blue;
+    background-color: $color-1;
   }
   &:nth-child(3) {
-    background-color: yellow;
+    background-color: $color-2;
   }
   &:nth-child(4) {
-    background-color: cyan;
+    background-color: $color-3;
   }
   &:nth-child(5) {
-    background-color: brown;
+    background-color: $color-0;
   }       
 }
 

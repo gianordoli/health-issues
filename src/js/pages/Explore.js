@@ -207,6 +207,7 @@ export class Explore {
 
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'explore';
+    elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
 

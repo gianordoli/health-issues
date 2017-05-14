@@ -20,6 +20,7 @@ app.main = (function (){
     console.log('render');
 
     const elementsContainer = document.createElement('div');
+    elementsContainer.id = 'page-container';
     const body = document.querySelector('body');
     if (body) {
       body.appendChild(elementsContainer);
