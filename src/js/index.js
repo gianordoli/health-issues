@@ -1,6 +1,10 @@
 // @flow weak
 
+import { Home } from './pages/Home';
+import { Intro } from './pages/Intro';
+import { Curated } from './pages/Curated';
 import { Explore } from './pages/Explore';
+import { About } from './pages/About';
 import { terms, countries } from './util/util.js';
 import log from 'loglevel';
 import '../sass/App.scss';
@@ -43,9 +47,11 @@ app.main = (function (){
     //
     // elementsContainer.appendChild(curatedNav);
 
-
-    // Explore
+    const home = new Home(elementsContainer);
+    const intro = new Intro(elementsContainer);
+    const curated = new Curated(elementsContainer);    
     const explore = new Explore(elementsContainer);
+    const about = new About(elementsContainer);
   }
 
   const init = function(){

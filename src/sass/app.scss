@@ -6,13 +6,26 @@ $color-3: #009DF7;
 $chart-width: 400px;
 $chart-height: 300px;
 
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 body {
-  // background-color: red;
-  .test {
-    h1 {
-      color: white;
-    }
-  }
+
+}
+
+*:focus {
+  outline: none;
 }
 
 .hidden {
@@ -20,7 +33,25 @@ body {
 }
 
 .page {
+  
+  width: 100vw;
+  min-height: 100vh;
 
+  &:nth-child(1) {
+    background-color: red;
+  }
+  &:nth-child(2) {
+    background-color: blue;
+  }
+  &:nth-child(3) {
+    background-color: yellow;
+  }
+  &:nth-child(4) {
+    background-color: cyan;
+  }
+  &:nth-child(5) {
+    background-color: brown;
+  }       
 }
 
 .charts-container {
