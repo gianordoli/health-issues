@@ -1,7 +1,7 @@
 // @flow weak
 
 // Types
-import type { TrendsAPIData } from './types'
+import type { TrendsAPIData } from '../util/types'
 
 // Libraries
 import * as d3 from 'd3';

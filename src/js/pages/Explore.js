@@ -1,16 +1,16 @@
 // @flow weak
 
 // Components
-import { FiltersMenu } from './FiltersMenu';
-import { LineChart } from './LineChart';
-import { TrendsAPI } from './TrendsAPI';
-import { ShinyAPI } from './ShinyAPI';
+import { LineChart } from '../visualizations/LineChart';
+import { TrendsAPI } from '../api/TrendsAPI';
+import { ShinyAPI } from '../api/ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIData } from './types'
+import type { Term, Geo, Filter, TrendsAPIData } from '../util/types'
 
-// Data
-import { arrayIsEqual, dummyData, terms, countries } from './util.js';
+// Data and Utils
+import { arrayIsEqual } from '../util/util.js';
+import { dummyData, terms, countries } from '../util/data.js';
 
 // Libraries
 import log from 'loglevel';
@@ -151,14 +151,14 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
 
-    const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    if (arrayIsEqual(dataToR, newDataToR)) {
-      this.parseDataFromR(this, dataFromR);
-    } else {
-      this.updateData({ dataToR: newDataToR });
-      shinyAPI.updateData(newDataToR);
-    }
-    // this.parseDataFromR(this, dummyData[index]);
+    // const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
+    // if (arrayIsEqual(dataToR, newDataToR)) {
+    //   this.parseDataFromR(this, dataFromR);
+    // } else {
+    //   this.updateData({ dataToR: newDataToR });
+    //   shinyAPI.updateData(newDataToR);
+    // }
+    this.parseDataFromR(this, dummyData[index]);
   }
 
   parseDataFromR(explore, dataFromR) {

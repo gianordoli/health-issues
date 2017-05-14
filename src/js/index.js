@@ -1,9 +1,9 @@
 // @flow weak
 
-import { Explore } from './js/Explore';
-import { terms, countries } from './js/util.js';
+import { Explore } from './pages/Explore';
+import { terms, countries } from './util/util.js';
 import log from 'loglevel';
-import './sass/app.scss';
+import '../sass/app.scss';
 
 var app = app || {};
 
