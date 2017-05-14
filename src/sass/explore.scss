@@ -1,6 +1,9 @@
 @import 'App';
 
 .selectize-control.multi {
+  
+  @include type-body-2;
+
   .selectize-input.items {
     div.item {
       background-color: transparent;

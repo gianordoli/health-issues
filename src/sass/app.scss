@@ -2,6 +2,7 @@
 
 //---------------------- COLOR -----------------------//
 
+$color-black: #333;
 $color-0: #4422B3;
 $color-1: #FA8200;
 $color-2: #FF91E6;
@@ -18,8 +19,65 @@ $chart-height: 300px;
 
 
 //-------------------- TYPOGRAPHY --------------------//
+$font-sans: 'Heebo', sans-serif;
+$font-mono: 'Inconsolata', monospace;
 
+@mixin type-h1 {
 
+  @include for-phone-down {
+
+  }
+}
+
+@mixin type-h2 {
+
+  font-size: 13px;
+  font-family: $font-sans;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;  
+
+  @include for-phone-down {
+
+  }
+}
+
+@mixin type-h3 {
+
+}
+
+@mixin type-h4 {
+
+}
+
+@mixin type-h5 {
+
+}
+
+@mixin type-body-1 {
+  font-size: 13px;
+  font-family: $font-mono;
+  font-weight: 400;
+}
+
+@mixin type-body-2 {
+  @include type-body-1;
+  font-weight: 700;
+}
+
+@mixin type-small {
+  font-size: 11px;
+  font-family: $font-mono;
+  font-weight: 700;
+}
+
+@mixin type-button {
+  font-size: 11px;
+  font-family: $font-sans;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
 //-------------------- RESPONSIVE --------------------//
 
@@ -58,7 +116,8 @@ html, body {
 }
 
 body {
-
+  color: $color-black;
+  @include type-body-1;
 }
 
 *:focus {
@@ -84,23 +143,7 @@ body {
 
   @include for-phone-down {
     padding: $col-gutter-small;
-  }
-
-  &:nth-child(1) {
-    background-color: $color-0;
-  }
-  &:nth-child(2) {
-    background-color: $color-1;
-  }
-  &:nth-child(3) {
-    background-color: $color-2;
-  }
-  &:nth-child(4) {
-    background-color: $color-3;
-  }
-  &:nth-child(5) {
-    background-color: $color-0;
-  }       
+  }    
 }
 
 .charts-container {
@@ -134,6 +177,10 @@ svg.chart-canvas {
   }
 
   g.axis {
+
+    text {
+
+    }
 
     line {
       stroke: $color-0;
