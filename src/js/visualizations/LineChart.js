@@ -1,7 +1,7 @@
 // @flow weak
 
 // Types
-import type { TrendsAPIData } from '../util/types'
+import type { TrendsAPIGraph } from '../util/types'
 
 // Libraries
 import * as d3 from 'd3';
@@ -31,13 +31,13 @@ export class LineChart {
     this.svg.classed('hidden-canvas', !this.svg.classed('hidden-canvas'));
   }
 
-  updateData(data: TrendsAPIData[]) {
+  updateData(data: TrendsAPIGraph[]) {
     this.data = this.parseDates(data);
     console.log('D3 ->', this.data);
     this.updateElements();
   }
 
-  parseDates(data: TrendsAPIData[]) {
+  parseDates(data: TrendsAPIGraph[]) {
     const parseTime = d3.timeParse('%Y-%m-%d');
     return data.map((d, i) => {
       return {

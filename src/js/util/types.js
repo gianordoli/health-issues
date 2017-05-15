@@ -20,7 +20,16 @@ export type TrendsAPIPoint = {
   value: number
 }
 
-export type TrendsAPIData = {
+export type TrendsAPIGraph = {
   term: string,
   points: TrendsAPIPoint[]
+}
+
+export type TrendsAPIQuery = {
+  title: string,
+  value: number
+}
+
+export type TrendsAPITopQueries = {
+  item: TrendsAPIQuery[]
 }

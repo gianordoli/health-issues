@@ -6,7 +6,7 @@ import { TrendsAPI } from '../api/TrendsAPI';
 import { ShinyAPI } from '../api/ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIData } from '../util/types'
+import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPIQuery } from '../util/types'
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util.js';
@@ -21,6 +21,8 @@ import $ from 'jquery';
 import 'selectize/dist/css/selectize.css';
 import '../../sass/explore.scss';
 
+
+
 export class Explore {
 
   data: {
@@ -28,9 +30,10 @@ export class Explore {
     diseases: Term[],
     prevGeo: Geo,
     geo: Geo,
-    seasonal: TrendsAPIData[],
-    trend: TrendsAPIData[],
-    total: TrendsAPIData[],
+    seasonal: TrendsAPIGraph[],
+    trend: TrendsAPIGraph[],
+    total: TrendsAPIGraph[],
+    topQueries: TrendsAPIQuery,
     dataToR: string[],
     dataFromR: string,
     isMerged: boolean,
@@ -55,11 +58,12 @@ export class Explore {
       diseases: filter ? filter.terms : [],
       prevGeo: filter ? filter.geo : countries[0],
       geo: filter ? filter.geo : countries[0],
-      dataToR: [],
-      dataFromR: '',
       seasonal: [],
       trend: [],
       total: [],
+      topQueries: {},
+      dataToR: [],
+      dataFromR: '',      
       isMerged: false,
       isChanging: false,
       isLoading: false
@@ -69,7 +73,7 @@ export class Explore {
     // self.trendsAPI = new TrendsAPI();
     // self.trendsAPI.setup(function(){
     //   if (filter) {
-    //     self.callTrendsApi();
+    //     self.getTrendsAPIGraph();
     //   }
     // });
     self.shinyAPI = new ShinyAPI();
@@ -112,7 +116,7 @@ export class Explore {
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
     self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
-    self.callTrendsApi();
+    self.getTrendsAPIGraph();
   }
 
   toggleChartMerge(event, self) {
@@ -126,11 +130,11 @@ export class Explore {
     const { terms, geo } = filter;
     this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isChanging: true, isLoading: true });
     this.confirmNav.classList.add('hidden');
-    this.callTrendsApi();
+    this.getTrendsAPIGraph();
   }
 
-  callTrendsApi(){
-    log.info('callTrendsApi');
+  getTrendsAPIGraph(){
+    log.info('getTrendsAPIGraph');
     const { diseases, geo } = this.data;
     let total = [];
     const self = this;
@@ -323,6 +327,8 @@ export class Explore {
     bindHandleChange = evt => this.toggleChartMerge(evt, this);
     mergeButton.addEventListener('click', bindHandleChange);
     elementsContainer.appendChild(mergeButton);
+
+
 
     this.updateElements();
   }

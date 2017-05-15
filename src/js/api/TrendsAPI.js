@@ -67,7 +67,7 @@ export class TrendsAPI {
     this.executeCall(path, callback);
   }
 
-  getGraph(filter: Filter, callback) {
+  getTopQueries(filter: Filter, callback) {
     log.info('getTopQueries for:', filter);
     const path = this.composePath('topQueries', filter);
     this.executeCall(path, callback);
