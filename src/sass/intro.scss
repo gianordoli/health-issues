@@ -1,0 +1,22 @@
+@import 'App';
+
+#intro.page {
+  display: flex;
+  flex-direction: row;
+
+  .charts-container,
+  .copy-container {
+    width: calc((100% - #{$col-gutter-large})/2);
+  }
+
+  .charts-container {
+    height: 100%;
+  }
+
+  .copy-container {
+    margin-left: $col-gutter-large;
+  }
+
+}
+
+
