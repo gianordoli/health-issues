@@ -13,6 +13,11 @@ $color-3: #009DF7;
 $col-gutter-small: 12px;
 $col-gutter-large: 20px;
 
+$baseline-height: 12px;
+
+$elements-margin: $baseline-height;
+$elements-padding: $baseline-height;
+
 $chart-width: 400px;
 $chart-height: 300px;
 
@@ -31,7 +36,7 @@ $font-mono: 'Inconsolata', monospace;
 
 @mixin type-h2 {
 
-  font-size: 13px;
+  font-size: 14px;
   font-family: $font-sans;
   font-weight: 900;
   text-transform: uppercase;
@@ -55,7 +60,8 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-body-1 {
-  font-size: 13px;
+  font-size: 14px;
+  line-height: $baseline-height*2;
   font-family: $font-mono;
   font-weight: 400;
 }
@@ -118,6 +124,7 @@ html, body {
 body {
   color: $color-black;
   @include type-body-1;
+  text-align: center;
 }
 
 *:focus {
@@ -131,11 +138,14 @@ body {
 #page-container {
   display: flex;
   flex-direction: column;
+  max-width: 960px;
+  text-align: left;
+  margin: auto;
 }
 
 .page {
   
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   margin: 0;
   border: 0;
