@@ -6,7 +6,7 @@ import { TrendsAPI } from '../api/TrendsAPI';
 import { ShinyAPI } from '../api/ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPIQuery } from '../util/types'
+import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types'
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util.js';
@@ -33,7 +33,7 @@ export class Explore {
     seasonal: TrendsAPIGraph[],
     trend: TrendsAPIGraph[],
     total: TrendsAPIGraph[],
-    topQueries: TrendsAPIQuery[],
+    topQueries: TrendsAPITopQueries[],
     dataToR: string[],
     dataFromR: string,
     isMerged: boolean,
@@ -41,14 +41,17 @@ export class Explore {
     isLoading: boolean
   };
 
-  diseaseSelect: HTMLElement;
-  geoSelect: HTMLElement;
+  diseaseSelect: selectize;
+  geoSelect: selectize;
+
   loaderContainer: HTMLElement;
   confirmNav: HTMLElement;
   mergeButton: HTMLElement;
+  topQueriesList: HTMLElement;
 
   seasonalChart: LineChart;
   trendChart: LineChart;
+
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
@@ -217,8 +220,8 @@ export class Explore {
     self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
 
     if (seasonal.length === total.length) {
+      self.updateData({ topQueries: [], isLoading: false });      
       this.getTrendsAPITopQueries();
-      self.updateData({ isLoading: false });
     } else {
       self.parseDataToR();
     }
@@ -346,7 +349,10 @@ export class Explore {
     mergeButton.addEventListener('click', bindHandleChange);
     elementsContainer.appendChild(mergeButton);
 
-
+    this.topQueriesList = document.createElement('div');
+    const { topQueriesList } = this;
+    topQueriesList.classList.add('top-queries-list');
+    elementsContainer.appendChild(topQueriesList);
 
     this.updateElements();
   }
@@ -363,8 +369,8 @@ export class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart } = this;
-    const { diseases, geo, seasonal, trend, total, isMerged, isChanging, isLoading } = data;
+    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
@@ -382,5 +388,44 @@ export class Explore {
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
       this.updateData({ isChanging: false });
     }
+
+    topQueriesList.innerHTML = '';
+    for(let i = 0; i < topQueries.length; i++) {
+      if (topQueries[i].item) {
+        const listContainer = document.createElement('div');
+        listContainer.classList.add('list-container');
+        topQueriesList.appendChild(listContainer);
+
+        const term = document.createElement('p');
+        term.innerHTML = diseases[i].name;
+        listContainer.appendChild(term);
+
+        const list = document.createElement('ul');
+        listContainer.appendChild(list);
+
+        for(const q of topQueries[i].item) {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = q.title;
+          list.appendChild(listItem);
+        }
+      }
+    }    
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
