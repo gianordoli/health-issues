@@ -301,8 +301,20 @@ export class Explore {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     elementsContainer.appendChild(chartsContainer);
-    this.seasonalChart = new LineChart(chartsContainer, 'seasonal');
-    this.trendChart = new LineChart(chartsContainer, 'trend');
+    
+    let chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.seasonalChart = new LineChart(chartItem, 'seasonal');
+    
+    const chartToggleBar = document.createElement('div');
+    chartToggleBar.classList.add('chart-toggle-bar');
+    chartsContainer.appendChild(chartToggleBar);
+
+    chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.trendChart = new LineChart(chartItem, 'trend');
 
     // Merge
     this.mergeButton = document.createElement('button');

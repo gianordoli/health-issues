@@ -22,8 +22,8 @@ export class LineChart {
     this.data = [];
     this.type = type;
     this.margin = {top: 4, right: 0, bottom: 32, left: 32};
-    this.width  = 400 - (this.margin.left + this.margin.right);
-    this.height = 300 - (this.margin.top + this.margin.bottom);
+    this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
+    this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }
 

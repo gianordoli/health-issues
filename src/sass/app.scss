@@ -161,15 +161,12 @@ body {
   }    
 }
 
-.charts-container {
-  // display: flex;
-  // flex-direction: row;
+.chart-item {
   width: 100%;
 }
 
 svg.chart-canvas {
 
-  display: block;
   width: $chart-width;
   height: $chart-height;
   transition: opacity 0.5s ease-out, height 0.5s ease-out;
