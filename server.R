@@ -30,7 +30,7 @@ shinyServer(function(input, output, session) {
       myTS <- ts(values, start=c(firstYear, firstMonth), end=c(lastYear, lastMonth), frequency=12)
 
       # Run stl script
-      mySTL <- stl(myTS, t.window=15, s.window="periodic", robust=TRUE)
+      mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       # print(mySTL$time.series)
       
       # Convert to data frame
