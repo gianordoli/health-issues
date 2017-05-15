@@ -83,10 +83,10 @@ export class Explore {
     self.confirmNav.classList.remove('hidden');
   }
 
-  handleSelectGeoChange(event: {}, self: Explore) {
+  handleSelectGeoChange(value: string, self: Explore) {
     log.info('handleSelectGeoChange');
-    const { value } = event.target;
-    const name = this.getSelectedText(event.target);
+    log.info(value);
+    const name = this.getCountryByIso(value).name;
     this.updateData({geo: {iso: value, name: name, isChanging: true}});
     self.confirmNav.classList.remove('hidden');
   }
@@ -95,10 +95,8 @@ export class Explore {
     return terms.find(t => t.entity === entity);
   }
 
-  getSelectedText(el: HTMLElement) {
-    if (el.selectedIndex == -1)
-      return null;
-    return el.options[el.selectedIndex].text;
+  getCountryByIso(iso: string): Geo {
+    return countries.find(c => c.iso === iso);
   }
 
   cancelFilters(event, self) {
@@ -259,8 +257,8 @@ export class Explore {
 
 
       // Geo
-      this.geoSelect = document.createElement('select');
-      const { geoSelect } = this;
+      const geoSelect = document.createElement('select');
+      geoSelect.id = 'geo-select';
       geoSelect.name = 'geo-select';
       countries.forEach((c, i) => {
         const option = document.createElement('option');
@@ -268,9 +266,13 @@ export class Explore {
         option.innerHTML = c.name;
         geoSelect.appendChild(option);
       });
-      bindHandleChange = evt => this.handleSelectGeoChange(evt, this);
-      geoSelect.addEventListener('change', bindHandleChange);
+      bindHandleChange = value => this.handleSelectGeoChange(value, this);
       filtersMenu.appendChild(geoSelect);
+      const geoSelectize = $(geoSelect).selectize({
+        maxItems: 1,
+        onChange: bindHandleChange
+      });
+      this.geoSelect = geoSelectize[0].selectize;
 
 
       // Cancel / Done
@@ -334,13 +336,7 @@ export class Explore {
     }
 
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
-
-    const geoOptions = geoSelect.children;
-    for (const o of geoOptions) {
-      if (o.value === data.geo.iso) {
-        o.selected = true;
-      }
-    }
+    geoSelect.setValue(geo.iso, true);
 
     mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 

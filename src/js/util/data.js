@@ -1912,7 +1912,7 @@ export const terms = [
 ];
 
 export const countries = [
-  {iso:"",name:"World"},
+  {iso:" ",name:"World"},
   {iso:"AF",name:"Afghanistan"},
   {iso:"AX",name:"Åland"},
   {iso:"AL",name:"Albania"},
