@@ -1,20 +1,21 @@
 // @flow weak
 
-import type { Filter } from './types'
+import type { Filter } from '../util/types';
+import log from 'loglevel';
 
 export class TrendsAPI {
 
   gapi: () => {};
 
   constructor() {
-    console.log('TrendsAPI');
+    log.info('TrendsAPI');
   }
 
   setup(callback) {
     const self = this;
     require( 'google-client-api' )()
       .then( function( gapi ) {
-        console.log('GoogleAPI library loaded');
+        log.info('GoogleAPI library loaded');
         gapi.load('client', start);
 
         function start() {
@@ -25,7 +26,7 @@ export class TrendsAPI {
             'clientId': 'diseases.apps.googleusercontent.com',
           })
           .then(function(){
-            console.log('GoogleAPI client initialized');
+            log.info('GoogleAPI client initialized');
             self.gapi = gapi;
             if (callback) {
               callback();  
@@ -35,27 +36,40 @@ export class TrendsAPI {
       });
   }
 
-  getTrends(filter: Filter, callback) {
-    console.log('Requesting data for:', filter);
-
+  composePath(method: string, filter: Filter) {
     const { geo } = filter;
     const { terms } = filter;
     let path = 'https://www.googleapis.com/trends/v1beta/graph?';
     for (const t of terms) {
       path += 'terms=' + encodeURIComponent(t.entity) + '&';
     }
-    if (geo.iso !== ' ') {
+    if (geo.iso !== 'world') {
       path += 'restrictions.geo='+geo.iso;
     }
-    console.log(path);
+    log.info(path);
+    return path;
+  }
+
+  executeCall(path: string, callback) {
     this.gapi.client.request({
       'path': path
     })
     .then(function(response) {
         callback(response.result);
       }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
+        log.info('Error: ' + reason.result.error.message);
       });
+  }
 
+  getGraph(filter: Filter, callback) {
+    log.info('getGraph for:', filter);
+    const path = this.composePath('graph', filter);
+    this.executeCall(path, callback);
+  }
+
+  getGraph(filter: Filter, callback) {
+    log.info('getTopQueries for:', filter);
+    const path = this.composePath('topQueries', filter);
+    this.executeCall(path, callback);
   }
 }

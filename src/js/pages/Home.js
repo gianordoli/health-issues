@@ -1,5 +1,11 @@
 // @flow weak
 
+// Components
+import { TrendsAPI } from '../api/TrendsAPI';
+
+// Types
+import type { Term, Geo, Filter, TrendsAPIData } from '../util/types'
+
 // Libraries
 import log from 'loglevel';
 

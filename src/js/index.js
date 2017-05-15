@@ -56,7 +56,7 @@ app.main = (function (){
     //
     // elementsContainer.appendChild(curatedNav);
 
-    const home = new Home(elementsContainer);
+    const home = new Home(elementsContainer, trendsAPI);
     const intro = new Intro(elementsContainer);
     const curated = new Curated(elementsContainer);    
     const explore = new Explore(elementsContainer, trendsAPI);

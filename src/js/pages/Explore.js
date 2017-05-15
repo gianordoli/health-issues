@@ -135,7 +135,7 @@ export class Explore {
     let total = [];
     const self = this;
 
-    self.trendsAPI.getTrends({terms: diseases, geo: geo}, function(val){
+    self.trendsAPI.getGraph({terms: diseases, geo: geo}, function(val){
       log.info('From Google Trends: ', val);
       const total = val.lines.map((l, i) => {
         return { term: diseases[i].name, points: l.points}
