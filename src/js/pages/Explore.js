@@ -33,7 +33,7 @@ export class Explore {
     seasonal: TrendsAPIGraph[],
     trend: TrendsAPIGraph[],
     total: TrendsAPIGraph[],
-    topQueries: TrendsAPIQuery,
+    topQueries: TrendsAPIQuery[],
     dataToR: string[],
     dataFromR: string,
     isMerged: boolean,
@@ -61,7 +61,7 @@ export class Explore {
       seasonal: [],
       trend: [],
       total: [],
-      topQueries: {},
+      topQueries: [],
       dataToR: [],
       dataFromR: '',      
       isMerged: false,
@@ -149,6 +149,23 @@ export class Explore {
     });
   }
 
+  getTrendsAPITopQueries(){
+    log.info('getTrendsAPITopQueries');
+    const { diseases, geo } = this.data;
+    let { topQueries } = this.data;
+    const index = topQueries.length;
+    const self = this;
+
+    self.trendsAPI.getTopQueries({terms: diseases, geo: geo}, index, function(val){
+      log.info('From Google Trends: ', val);
+      topQueries = topQueries.concat(val);
+      self.updateData({topQueries});
+      if (topQueries.length < diseases.length) {
+        self.getTrendsAPITopQueries();
+      }
+    });
+  }  
+
   parseDataToR() {
     log.info('parseDataToR');
     const { dataToR, dataFromR, total, seasonal } = this.data;
@@ -200,6 +217,7 @@ export class Explore {
     self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
 
     if (seasonal.length === total.length) {
+      this.getTrendsAPITopQueries();
       self.updateData({ isLoading: false });
     } else {
       self.parseDataToR();
