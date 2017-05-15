@@ -240,7 +240,6 @@ export class Explore {
     const { loaderContainer } = this;
     loaderContainer.id = 'loader-container';
     loaderContainer.style.top = elementsContainer.offsetTop + 'px';
-    loaderContainer.style.left = elementsContainer.offsetLeft + 'px';
     const loader = document.createElement('span');
     loader.classList.add('loader');
     loaderContainer.appendChild(loader);
@@ -349,10 +348,19 @@ export class Explore {
     mergeButton.addEventListener('click', bindHandleChange);
     elementsContainer.appendChild(mergeButton);
 
+    // Top Queries
+    const topQueriesContainer = document.createElement('div'); 
+    topQueriesContainer.classList.add('top-queries-container');
+    elementsContainer.appendChild(topQueriesContainer);
+
+    const topQueriesTitle = document.createElement('h4');
+    topQueriesTitle.innerHTML = 'Top Related Queries';
+    topQueriesContainer.appendChild(topQueriesTitle);
+
     this.topQueriesList = document.createElement('div');
     const { topQueriesList } = this;
     topQueriesList.classList.add('top-queries-list');
-    elementsContainer.appendChild(topQueriesList);
+    topQueriesContainer.appendChild(topQueriesList);
 
     this.updateElements();
   }

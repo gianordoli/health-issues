@@ -12,7 +12,7 @@ export class About {
   createElements(parentContainer: HTMLElement) {
 
     const elementsContainer = document.createElement('div');
-    elementsContainer.id = 'explore';
+    elementsContainer.id = 'about';
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
   }
