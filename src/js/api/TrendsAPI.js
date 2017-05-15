@@ -44,7 +44,7 @@ export class TrendsAPI {
     for (const t of terms) {
       path += 'terms=' + encodeURIComponent(t.entity) + '&';
     }
-    if (geo.iso !== '') {
+    if (geo.iso !== ' ') {
       path += 'restrictions.geo='+geo.iso;
     }
     console.log(path);

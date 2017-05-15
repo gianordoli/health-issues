@@ -49,13 +49,13 @@ export class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, filter?: Filter) {
+  constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI, filter?: Filter) {
     this.data = {
       prevDiseases: filter ? filter.terms : [],
       diseases: filter ? filter.terms : [],
       prevGeo: filter ? filter.geo : countries[0],
       geo: filter ? filter.geo : countries[0],
-      dataToR: '',
+      dataToR: [],
       dataFromR: '',
       seasonal: [],
       trend: [],
@@ -65,12 +65,13 @@ export class Explore {
       isLoading: false
     }
     const self = this;
-    self.trendsAPI = new TrendsAPI();
-    self.trendsAPI.setup(function(){
-      if (filter) {
-        self.callTrendsApi();
-      }
-    });
+    self.trendsAPI = trendsAPI;
+    // self.trendsAPI = new TrendsAPI();
+    // self.trendsAPI.setup(function(){
+    //   if (filter) {
+    //     self.callTrendsApi();
+    //   }
+    // });
     self.shinyAPI = new ShinyAPI();
     self.shinyAPI.addListeners(self, self.parseDataFromR);
     self.createElements(parentContainer);
