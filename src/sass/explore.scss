@@ -36,7 +36,6 @@
 
       .toggle-bar-titles {
         flex-grow: 1;
-        background-color: red;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -49,8 +48,13 @@
         }
       }
 
-      .icon {
-        
+      p {
+        width: 100%;
+        height: $icon-size;
+        text-align: center;
+        .icon {
+          display: inline-block;
+        }        
       }
     }
   }

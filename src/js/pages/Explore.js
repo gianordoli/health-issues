@@ -348,12 +348,15 @@ export class Explore {
     trendTitle.innerHTML = 'Trend';
     toggleBarTitles.appendChild(trendTitle);
 
+    const p = document.createElement('p');
+    chartToggleBar.appendChild(p);
+
     this.mergeButton = document.createElement('a');
     const { mergeButton } = this;
     mergeButton.classList.add('icon');
     bindHandleChange = evt => this.toggleChartMerge(evt, this);
     mergeButton.addEventListener('click', bindHandleChange);
-    chartToggleBar.appendChild(mergeButton);
+    p.appendChild(mergeButton);
 
     // Trend chart
     chartItem = document.createElement('div');
