@@ -30,10 +30,6 @@
   text-align: left;
 }
 
-.confirm-nav {
-  display: inline-block;
-}
-
 #explore {
 
   height: 100vh;
@@ -64,13 +60,20 @@
     .sentence-item {
       display: inline-block;
     }
+
+    .confirm-nav {
+      display: inline-block;
+      &.hidden {
+        display: none;
+      }
+    }    
   }
 
   .charts-container {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 50vh;
+    height: 45vh;
 
     .chart-item {
       width: calc((100% - #{$col-gutter-large}*5)/2);
@@ -118,8 +121,18 @@
     .top-queries-container {
       width: calc((100% - #{$col-gutter-large}*5)/2);
       height: 100%;
-      overflow-y: auto;
       border: 1px solid #DDD;
+      display: flex;
+      flex-direction: column;
+
+      &.hidden {
+        display: none;
+      }      
+
+      .top-queries-list {
+        flex-grow: 1;
+        overflow-y: auto;
+      }
     }
   }
 }
