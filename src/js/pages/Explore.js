@@ -48,6 +48,7 @@ export class Explore {
   confirmNav: HTMLElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
+  sentenceItem: HTMLElement;
 
   seasonalChart: LineChart;
   trendChart: LineChart;
@@ -276,9 +277,11 @@ export class Explore {
     this.diseaseSelect = diseaseSelectize[0].selectize;
 
 
-    const text2 = document.createElement('span');
-    text2.innerHTML = ' in the ';
-    filtersMenu.appendChild(text2);
+    this.sentenceItem = document.createElement('span');
+    const { sentenceItem } = this;
+    sentenceItem.classList.add('sentence-item');
+    sentenceItem.innerHTML = ' in the ';
+    filtersMenu.appendChild(sentenceItem);
 
 
     // Geo
@@ -365,10 +368,14 @@ export class Explore {
     this.trendChart = new LineChart(chartItem, 'trend');
 
 
+    const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('bottom-container');
+    elementsContainer.appendChild(bottomContainer);
+
     // Top Queries
     const topQueriesContainer = document.createElement('div'); 
     topQueriesContainer.classList.add('top-queries-container');
-    elementsContainer.appendChild(topQueriesContainer);
+    bottomContainer.appendChild(topQueriesContainer);
 
     const topQueriesTitle = document.createElement('h4');
     topQueriesTitle.innerHTML = 'Top Related Queries';
@@ -394,7 +401,7 @@ export class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, diseaseSelect, geoSelect, sentenceItem, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
@@ -404,6 +411,7 @@ export class Explore {
     }
 
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
+    sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
     geoSelect.setValue(geo.iso, true);
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';

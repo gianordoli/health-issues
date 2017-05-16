@@ -175,6 +175,7 @@ body {
   margin: 0;
   border: 0;
   padding: $col-gutter-large;
+  border: 1px solid #DDD;
 
   @include for-phone-down {
     padding: $col-gutter-small;

@@ -1,11 +1,22 @@
 @import 'App';
 
+.selectize-input {
+  border: 0;
+  box-shadow: none;
+  @include type-body-2;
+
+  .item {
+    @include type-body-2;
+  }
+}
+
 .selectize-control.multi {
   
-  @include type-body-2;
   text-align: center;
+  height: 40px;
 
   .selectize-input.items {
+    @include type-body-2;
     div.item {
       background-color: transparent;
       &:nth-child(1) { color: $color-1; }
@@ -15,7 +26,44 @@
   }
 }
 
+.selectize-dropdown {
+  text-align: left;
+}
+
+.confirm-nav {
+  display: inline-block;
+}
+
 #explore {
+
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .filters-menu {
+
+    line-height: 40px;
+
+    .disease-select {
+      min-width: 50%;
+      .selectize-input {
+        width: 50%;
+      }
+    }
+
+    .geo-select {
+      width: 280px;
+      display: inline-block;
+      vertical-align: top;
+      .selectize-input {
+        text-align: left;
+      }
+    }
+
+    .sentence-item {
+      display: inline-block;
+    }
+  }
 
   .charts-container {
     display: flex;
@@ -57,5 +105,11 @@
         }        
       }
     }
+  }
+
+  .bottom-container {
+    width: 100%;    
+    flex-grow: 1;
+    background-color: pink;
   }
 }
