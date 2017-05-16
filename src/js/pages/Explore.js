@@ -422,9 +422,11 @@ export class Explore {
       this.updateData({ isChanging: false });
     }
 
+    let isEmpty = true;
     topQueriesList.innerHTML = '';
     for(let i = 0; i < topQueries.length; i++) {
       if (topQueries[i].item) {
+        isEmpty = false;
         const listContainer = document.createElement('div');
         listContainer.classList.add('list-container');
         topQueriesList.appendChild(listContainer);
@@ -442,7 +444,12 @@ export class Explore {
           list.appendChild(listItem);
         }
       }
-    }    
+    }
+    if (isEmpty) {
+      topQueriesList.parentElement.classList.add('hidden');
+    } else {
+      topQueriesList.parentElement.classList.remove('hidden');
+    }
   }
 }
 

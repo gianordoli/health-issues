@@ -18,9 +18,6 @@ $baseline-height: 12px;
 $elements-margin: $baseline-height;
 $elements-padding: $baseline-height;
 
-$chart-width: 400px;
-$chart-height: 300px;
-
 $icon-size: 32px;
 
 
@@ -38,6 +35,14 @@ $font-mono: 'Inconsolata', monospace;
 
 @mixin type-h2 {
 
+
+}
+
+@mixin type-h3 {
+
+}
+
+@mixin type-h4 {
   font-size: 14px;
   font-family: $font-sans;
   font-weight: 900;
@@ -47,14 +52,6 @@ $font-mono: 'Inconsolata', monospace;
   @include for-phone-down {
 
   }
-}
-
-@mixin type-h3 {
-
-}
-
-@mixin type-h4 {
-
 }
 
 @mixin type-h5 {
@@ -127,6 +124,10 @@ a {
 
 h1, h2, h3, h4, h5, h6, p, ul, li { margin: 0 };
 
+h4 {
+  @include type-h4;
+}
+
 html {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -192,8 +193,6 @@ body {
 
 svg.chart-canvas {
 
-  width: $chart-width;
-  height: $chart-height;
   transition: opacity 0.5s ease-out, height 0.5s ease-out;
 
   &:first-child {
