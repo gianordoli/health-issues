@@ -28,7 +28,7 @@ app.main = (function (){
     log.info('render');
 
     const elementsContainer = document.createElement('div');
-    elementsContainer.id = 'page-container';
+    elementsContainer.classList.add('main-container');
     const body = document.querySelector('body');
     if (body) {
       body.appendChild(elementsContainer);

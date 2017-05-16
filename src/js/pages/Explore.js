@@ -238,7 +238,7 @@ export class Explore {
     // Loader
     this.loaderContainer = document.createElement('div');
     const { loaderContainer } = this;
-    loaderContainer.id = 'loader-container';
+    loaderContainer.classList.add('loader-container');
     loaderContainer.style.top = elementsContainer.offsetTop + 'px';
     const loader = document.createElement('span');
     loader.classList.add('loader');
@@ -248,84 +248,85 @@ export class Explore {
 
     // filtersMenu
     const filtersMenu = document.createElement('div');
-    filtersMenu.id = 'filters-menu'
+    filtersMenu.classList.add('filters-menu');
     elementsContainer.appendChild(filtersMenu);
 
-      const text1 = document.createElement('span');
-      text1.innerHTML = 'Search interest for ';
-      filtersMenu.appendChild(text1);
+    const text1 = document.createElement('span');
+    text1.innerHTML = 'Search interest from 2004 to today for ';
+    filtersMenu.appendChild(text1);
 
 
-      // Diseases
-      const diseaseSelect = document.createElement('select');
-      diseaseSelect.id = 'disease-select';
-      terms.forEach((d, i) => {
-        const option = document.createElement('option');
-        option.setAttribute('value', d.entity);
-        option.setAttribute('key', i);
-        option.innerHTML = d.name;
-        diseaseSelect.appendChild(option);
-      });
-      let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
-      filtersMenu.appendChild(diseaseSelect);
-      const diseaseSelectize = $(diseaseSelect).selectize({
-        maxItems: 3,
-        onChange: bindHandleChange,
-        placeholder: 'Select'
-      });
-      this.diseaseSelect = diseaseSelectize[0].selectize;
+    // Diseases
+    const diseaseSelect = document.createElement('select');
+    diseaseSelect.classList.add('disease-select');
+    terms.forEach((d, i) => {
+      const option = document.createElement('option');
+      option.setAttribute('value', d.entity);
+      option.setAttribute('key', i);
+      option.innerHTML = d.name;
+      diseaseSelect.appendChild(option);
+    });
+    let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
+    filtersMenu.appendChild(diseaseSelect);
+    const diseaseSelectize = $(diseaseSelect).selectize({
+      maxItems: 3,
+      onChange: bindHandleChange,
+      placeholder: 'Select'
+    });
+    this.diseaseSelect = diseaseSelectize[0].selectize;
 
 
-      const text2 = document.createElement('span');
-      text2.innerHTML = ' in the ';
-      filtersMenu.appendChild(text2);
+    const text2 = document.createElement('span');
+    text2.innerHTML = ' in the ';
+    filtersMenu.appendChild(text2);
 
 
-      // Geo
-      const geoSelect = document.createElement('select');
-      geoSelect.id = 'geo-select';
-      geoSelect.name = 'geo-select';
-      countries.forEach((c, i) => {
-        const option = document.createElement('option');
-        option.setAttribute('value', c.iso);
-        option.innerHTML = c.name;
-        geoSelect.appendChild(option);
-      });
-      bindHandleChange = value => this.handleSelectGeoChange(value, this);
-      filtersMenu.appendChild(geoSelect);
-      const geoSelectize = $(geoSelect).selectize({
-        maxItems: 1,
-        onChange: bindHandleChange
-      });
-      this.geoSelect = geoSelectize[0].selectize;
+    // Geo
+    const geoSelect = document.createElement('select');
+    geoSelect.classList.add('geo-select');
+    geoSelect.name = 'geo-select';
+    countries.forEach((c, i) => {
+      const option = document.createElement('option');
+      option.setAttribute('value', c.iso);
+      option.innerHTML = c.name;
+      geoSelect.appendChild(option);
+    });
+    bindHandleChange = value => this.handleSelectGeoChange(value, this);
+    filtersMenu.appendChild(geoSelect);
+    const geoSelectize = $(geoSelect).selectize({
+      maxItems: 1,
+      onChange: bindHandleChange
+    });
+    this.geoSelect = geoSelectize[0].selectize;
 
 
-      // Cancel / Done
-      this.confirmNav = document.createElement('div');
-      const { confirmNav } = this;
-      confirmNav.id = 'confirm-nav';
-      confirmNav.classList.add('hidden');
+    // Cancel / Done
+    this.confirmNav = document.createElement('div');
+    const { confirmNav } = this;
+    confirmNav.classList.add('confirm-nav');
+    confirmNav.classList.add('hidden');
 
-      const cancelButton = document.createElement('button');
-      cancelButton.innerHTML = 'Cancel';
-      bindHandleChange = evt => this.cancelFilters(evt, this);
-      cancelButton.addEventListener('click', bindHandleChange);
-      confirmNav.appendChild(cancelButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.innerHTML = 'Cancel';
+    bindHandleChange = evt => this.cancelFilters(evt, this);
+    cancelButton.addEventListener('click', bindHandleChange);
+    confirmNav.appendChild(cancelButton);
 
-      const doneButton = document.createElement('button');
-      doneButton.innerHTML = 'Done';
-      bindHandleChange = evt => this.confirmFilters(evt, this);
-      doneButton.addEventListener('click', bindHandleChange);
-      confirmNav.appendChild(doneButton);
+    const doneButton = document.createElement('button');
+    doneButton.innerHTML = 'Done';
+    bindHandleChange = evt => this.confirmFilters(evt, this);
+    doneButton.addEventListener('click', bindHandleChange);
+    confirmNav.appendChild(doneButton);
 
-      filtersMenu.appendChild(confirmNav);
-    // End filtersMenu
+    filtersMenu.appendChild(confirmNav);
 
-    // Charts
+
+    // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     elementsContainer.appendChild(chartsContainer);
     
+    // Seasonal Chart
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
@@ -335,18 +336,31 @@ export class Explore {
     chartToggleBar.classList.add('chart-toggle-bar');
     chartsContainer.appendChild(chartToggleBar);
 
+    const toggleBarTitles = document.createElement('div');
+    toggleBarTitles.classList.add('toggle-bar-titles');
+    chartToggleBar.appendChild(toggleBarTitles);
+
+    const seasonalTitle = document.createElement('span');
+    seasonalTitle.innerHTML = 'Seasonal';
+    toggleBarTitles.appendChild(seasonalTitle);
+    
+    const trendTitle = document.createElement('span');
+    trendTitle.innerHTML = 'Trend';
+    toggleBarTitles.appendChild(trendTitle);
+
+    this.mergeButton = document.createElement('a');
+    const { mergeButton } = this;
+    mergeButton.classList.add('icon');
+    bindHandleChange = evt => this.toggleChartMerge(evt, this);
+    mergeButton.addEventListener('click', bindHandleChange);
+    chartToggleBar.appendChild(mergeButton);
+
+    // Trend chart
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
     this.trendChart = new LineChart(chartItem, 'trend');
 
-    // Merge
-    this.mergeButton = document.createElement('button');
-    const { mergeButton } = this;
-    mergeButton.innerHTML = 'Merge Charts';
-    bindHandleChange = evt => this.toggleChartMerge(evt, this);
-    mergeButton.addEventListener('click', bindHandleChange);
-    elementsContainer.appendChild(mergeButton);
 
     // Top Queries
     const topQueriesContainer = document.createElement('div'); 
@@ -389,7 +403,7 @@ export class Explore {
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
     geoSelect.setValue(geo.iso, true);
 
-    mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
+    // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
     if(isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
       seasonalChart.updateData(seasonal);

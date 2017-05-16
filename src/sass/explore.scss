@@ -3,6 +3,7 @@
 .selectize-control.multi {
   
   @include type-body-2;
+  text-align: center;
 
   .selectize-input.items {
     div.item {
@@ -15,6 +16,7 @@
 }
 
 #explore {
+
   .charts-container {
     display: flex;
     flex-direction: row;
@@ -27,8 +29,29 @@
 
     .chart-toggle-bar {
       width: $col-gutter-large * 3;
-      background-color: red;
       margin: 0 $col-gutter-large;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+
+      .toggle-bar-titles {
+        flex-grow: 1;
+        background-color: red;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        span {
+          width: 200px;
+          margin: 0 -100% 0 -100%;
+          transform: rotate(-90deg);
+          text-align: center;
+        }
+      }
+
+      .icon {
+        
+      }
     }
   }
 }

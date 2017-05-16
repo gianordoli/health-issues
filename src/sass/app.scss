@@ -21,6 +21,8 @@ $elements-padding: $baseline-height;
 $chart-width: 400px;
 $chart-height: 300px;
 
+$icon-size: 32px;
+
 
 
 //-------------------- TYPOGRAPHY --------------------//
@@ -85,6 +87,19 @@ $font-mono: 'Inconsolata', monospace;
   letter-spacing: 1px;
 }
 
+//-------------------- BUTTONS --------------------//
+
+a {
+  &.icon {
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: $icon-size/2;
+    background-color: $color-black;
+  }
+}
+
+
+
 //-------------------- RESPONSIVE --------------------//
 
 @mixin for-phone-down {
@@ -106,6 +121,9 @@ $font-mono: 'Inconsolata', monospace;
 @mixin for-big-desktop-only {
   @media (min-width: 1800px) { @content; }
 }
+
+
+//-------------------- STYLES --------------------//
 
 html {
   -webkit-box-sizing: border-box;
@@ -140,7 +158,7 @@ body {
   display: none;
 }
 
-#page-container {
+.main-container {
   display: flex;
   flex-direction: column;
   max-width: 960px;
@@ -159,6 +177,10 @@ body {
   @include for-phone-down {
     padding: $col-gutter-small;
   }    
+}
+
+.filters-menu {
+  text-align: center;
 }
 
 .chart-item {
@@ -226,7 +248,7 @@ svg.chart-canvas {
 }
 
 /*-------------------- LOADER --------------------*/
-#loader-container{
+.loader-container{
   position: absolute;
   left: 0;
   width: 100vw;
