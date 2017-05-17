@@ -5,6 +5,7 @@ import { Intro } from './pages/Intro';
 import { Curated } from './pages/Curated';
 import { Explore } from './pages/Explore';
 import { About } from './pages/About';
+import { ShinyAPI } from './api/ShinyAPI';
 import { TrendsAPI } from './api/TrendsAPI';
 import { terms, countries } from './util/util.js';
 import log from 'loglevel';
@@ -14,16 +15,25 @@ var app = app || {};
 
 app.main = (function (){
 
+  function loadShinyAPI() {
+    const shinyAPI = new ShinyAPI();
+    shinyAPI.setup(function(){
+      loadTrendsAPI(shinyAPI);
+    });
+  }
   log.info('app.main.init');
 
-  function loadTrendsAPI() {
+  // self.shinyAPI = new ShinyAPI();
+  // self.shinyAPI.addListeners(self, self.parseDataFromR);
+
+  function loadTrendsAPI(shinyAPI: ShinyAPI) {
     const trendsAPI = new TrendsAPI();
     trendsAPI.setup(function(){
-        render(trendsAPI);
+      render(shinyAPI, trendsAPI);
     });
   }
 
-  function render(trendsAPI: TrendsAPI) {
+  function render(shinyAPI: ShinyAPI, trendsAPI: TrendsAPI) {
 
     log.info('render');
 
@@ -58,15 +68,15 @@ app.main = (function (){
 
     const home = new Home(elementsContainer, trendsAPI);
     const intro = new Intro(elementsContainer);
-    const curated = new Curated(elementsContainer);    
-    const explore = new Explore(elementsContainer, trendsAPI);
+    const curated = new Curated(elementsContainer);
+    const explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);
   }
 
   const init = function(){
     log.info('Initializing app.');
     log.setLevel('trace');
-    loadTrendsAPI();
+    loadShinyAPI();
   };
 
   return {

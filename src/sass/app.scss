@@ -200,6 +200,7 @@ svg.chart-canvas {
   }
 
   &.hidden-canvas {
+    display: block;
     opacity: 0;
     height: 0;
   }
@@ -207,7 +208,7 @@ svg.chart-canvas {
   path {
     fill: none;
   }
-
+  
   path, line {
     stroke-width: 2px;
   }
@@ -221,19 +222,6 @@ svg.chart-canvas {
     line {
       stroke: $color-0;
     }
-
-    &.x {
-      path {
-        stroke: $color-0;
-        stroke-opacity: 0.24;
-      }
-    }
-
-    &.y {
-      path {
-        stroke-opacity: 0;
-      }
-    }
   }
 
   g.time-series {
@@ -242,10 +230,6 @@ svg.chart-canvas {
       &:nth-child(2) { stroke: $color-2; }
       &:nth-child(3) { stroke: $color-3; }
     }
-  }
-
-  text {
-    fill: $color-0;
   }
 }
 

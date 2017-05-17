@@ -56,7 +56,7 @@ export class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI, filter?: Filter) {
+  constructor(parentContainer: HTMLElement, shinyAPI: ShinyAPI, trendsAPI: TrendsAPI, filter?: Filter) {
     this.data = {
       prevDiseases: filter ? filter.terms : [],
       diseases: filter ? filter.terms : [],
@@ -67,20 +67,20 @@ export class Explore {
       total: [],
       topQueries: [],
       dataToR: [],
-      dataFromR: '',      
+      dataFromR: '',
       isMerged: false,
       isChanging: false,
       isLoading: false
     }
     const self = this;
     self.trendsAPI = trendsAPI;
-    self.shinyAPI = new ShinyAPI();
-    self.shinyAPI.addListeners(self, self.parseDataFromR);
+    self.shinyAPI = shinyAPI;
+    self.shinyAPI.setCallback(self, self.parseDataFromR);
     self.createElements(parentContainer);
-    
+
     if (filter) {
       self.getTrendsAPIGraph();
-    }    
+    }
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
@@ -166,7 +166,7 @@ export class Explore {
         self.getTrendsAPITopQueries();
       }
     });
-  }  
+  }
 
   parseDataToR() {
     log.info('parseDataToR');
@@ -219,8 +219,8 @@ export class Explore {
     self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
 
     if (seasonal.length === total.length) {
-      self.updateData({ topQueries: [], isLoading: false });      
-      this.getTrendsAPITopQueries();
+      self.updateData({ topQueries: [], isLoading: false });
+      self.getTrendsAPITopQueries();
     } else {
       self.parseDataToR();
     }
@@ -326,13 +326,13 @@ export class Explore {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     elementsContainer.appendChild(chartsContainer);
-    
+
     // Seasonal Chart
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
     this.seasonalChart = new LineChart(chartItem, 'seasonal');
-    
+
     const chartToggleBar = document.createElement('div');
     chartToggleBar.classList.add('chart-toggle-bar');
     chartsContainer.appendChild(chartToggleBar);
@@ -344,7 +344,7 @@ export class Explore {
     const seasonalTitle = document.createElement('span');
     seasonalTitle.innerHTML = 'Seasonal';
     toggleBarTitles.appendChild(seasonalTitle);
-    
+
     const trendTitle = document.createElement('span');
     trendTitle.innerHTML = 'Trend';
     toggleBarTitles.appendChild(trendTitle);
@@ -371,7 +371,7 @@ export class Explore {
     elementsContainer.appendChild(bottomContainer);
 
     // Top Queries
-    const topQueriesContainer = document.createElement('div'); 
+    const topQueriesContainer = document.createElement('div');
     topQueriesContainer.classList.add('top-queries-container');
     bottomContainer.appendChild(topQueriesContainer);
 
@@ -443,10 +443,13 @@ export class Explore {
         }
       }
     }
-    if (isEmpty) {
-      topQueriesList.parentElement.classList.add('hidden');
-    } else {
-      topQueriesList.parentElement.classList.remove('hidden');
+    const parent = topQueriesList.parentElement;
+    if (parent) {
+      if (isEmpty) {
+        parent.classList.add('hidden');
+      } else {
+        parent.classList.remove('hidden');
+      }
     }
   }
 }
