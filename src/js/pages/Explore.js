@@ -21,8 +21,6 @@ import $ from 'jquery';
 import 'selectize/dist/css/selectize.css';
 import '../../sass/explore.scss';
 
-
-
 export class Explore {
 
   data: {
@@ -56,7 +54,7 @@ export class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, shinyAPI: ShinyAPI, trendsAPI: TrendsAPI, filter?: Filter) {
+  constructor(parentContainer: HTMLElement, shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI, filter?: Filter) {
     this.data = {
       prevDiseases: filter ? filter.terms : [],
       diseases: filter ? filter.terms : [],
@@ -74,8 +72,10 @@ export class Explore {
     }
     const self = this;
     self.trendsAPI = trendsAPI;
-    self.shinyAPI = shinyAPI;
-    self.shinyAPI.setCallback(self, self.parseDataFromR);
+    if (shinyAPI) {
+      self.shinyAPI = shinyAPI;
+      self.shinyAPI.setCallback(self, self.parseDataFromR);
+    }
     self.createElements(parentContainer);
 
     if (filter) {
@@ -174,14 +174,17 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
 
-    const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    if (arrayIsEqual(dataToR, newDataToR)) {
-      this.parseDataFromR(this, dataFromR);
+    if (shinyAPI) {
+      const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
+      if (arrayIsEqual(dataToR, newDataToR)) {
+        this.parseDataFromR(this, dataFromR);
+      } else {
+        this.updateData({ dataToR: newDataToR });
+        shinyAPI.updateData(newDataToR);
+      }
     } else {
-      this.updateData({ dataToR: newDataToR });
-      shinyAPI.updateData(newDataToR);
+      this.parseDataFromR(this, dummyData[index]);
     }
-    // this.parseDataFromR(this, dummyData[index]);
   }
 
   parseDataFromR(explore, dataFromR) {

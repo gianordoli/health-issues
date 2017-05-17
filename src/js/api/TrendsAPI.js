@@ -19,8 +19,16 @@ export class TrendsAPI {
         gapi.load('client', start);
 
         function start() {
-          const apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
-          const id = 'diseases';
+          let apiKey, id;
+          if (ENV === 'PRODUCTION') {
+            apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
+            id = 'diseases-production';
+          } else {
+            log.info('staging');
+            apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
+            id = 'diseases';
+          }
+
           gapi.client.init({
             'apiKey': apiKey,
             'clientId': 'diseases.apps.googleusercontent.com',
@@ -29,7 +37,7 @@ export class TrendsAPI {
             log.info('GoogleAPI client initialized');
             self.gapi = gapi;
             if (callback) {
-              callback();  
+              callback();
             }
           })
         }
@@ -58,7 +66,7 @@ export class TrendsAPI {
     if (geo.iso !== 'world') {
       path += 'restrictions.geo='+geo.iso;
     }
-    log.info(path);    
+    log.info(path);
     this.executeCall(path, callback);
   }
 

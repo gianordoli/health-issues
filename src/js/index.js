@@ -17,23 +17,23 @@ app.main = (function (){
 
   function loadShinyAPI() {
     const shinyAPI = new ShinyAPI();
-    shinyAPI.setup(function(){
-      loadTrendsAPI(shinyAPI);
-    });
+    if (ENV !== 'DEVELOPMENT') {
+      shinyAPI.setup(function(){
+        loadTrendsAPI(shinyAPI);
+      });
+    } else {
+      loadTrendsAPI(null);
+    }
   }
-  log.info('app.main.init');
 
-  // self.shinyAPI = new ShinyAPI();
-  // self.shinyAPI.addListeners(self, self.parseDataFromR);
-
-  function loadTrendsAPI(shinyAPI: ShinyAPI) {
+  function loadTrendsAPI(shinyAPI: ?ShinyAPI) {
     const trendsAPI = new TrendsAPI();
     trendsAPI.setup(function(){
       render(shinyAPI, trendsAPI);
     });
   }
 
-  function render(shinyAPI: ShinyAPI, trendsAPI: TrendsAPI) {
+  function render(shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
 
     log.info('render');
 
@@ -74,8 +74,9 @@ app.main = (function (){
   }
 
   const init = function(){
+    log.enableAll();
     log.info('Initializing app.');
-    log.setLevel('trace');
+    log.info('ENV: ' + ENV);
     loadShinyAPI();
   };
 

@@ -78,14 +78,14 @@
 
 	  function loadShinyAPI() {
 	    var shinyAPI = new _ShinyAPI.ShinyAPI();
-	    shinyAPI.setup(function () {
-	      loadTrendsAPI(shinyAPI);
-	    });
+	    if (ENV !== 'DEVELOPMENT') {
+	      shinyAPI.setup(function () {
+	        loadTrendsAPI(shinyAPI);
+	      });
+	    } else {
+	      loadTrendsAPI(null);
+	    }
 	  }
-	  _loglevel2.default.info('app.main.init');
-
-	  // self.shinyAPI = new ShinyAPI();
-	  // self.shinyAPI.addListeners(self, self.parseDataFromR);
 
 	  function loadTrendsAPI(shinyAPI) {
 	    var trendsAPI = new _TrendsAPI.TrendsAPI();
@@ -135,8 +135,9 @@
 	  }
 
 	  var init = function init() {
+	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.setLevel('trace');
+	    _loglevel2.default.info('ENV: ' + ENV);
 	    loadShinyAPI();
 	  };
 
@@ -267,8 +268,17 @@
 	        gapi.load('client', start);
 
 	        function start() {
-	          var apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
-	          var id = 'diseases';
+	          var apiKey = void 0,
+	              id = void 0;
+	          if (ENV === 'PRODUCTION') {
+	            apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
+	            id = 'diseases-production';
+	          } else {
+	            _loglevel2.default.info('staging');
+	            apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
+	            id = 'diseases';
+	          }
+
 	          gapi.client.init({
 	            'apiKey': apiKey,
 	            'clientId': 'diseases.apps.googleusercontent.com'
@@ -2339,8 +2349,10 @@
 	    };
 	    var self = this;
 	    self.trendsAPI = trendsAPI;
-	    self.shinyAPI = shinyAPI;
-	    self.shinyAPI.setCallback(self, self.parseDataFromR);
+	    if (shinyAPI) {
+	      self.shinyAPI = shinyAPI;
+	      self.shinyAPI.setCallback(self, self.parseDataFromR);
+	    }
 	    self.createElements(parentContainer);
 
 	    if (filter) {
@@ -2477,16 +2489,19 @@
 
 	      var index = seasonal.length;
 
-	      var newDataToR = total[index].points.map(function (p, i) {
-	        return p.date + ',' + p.value;
-	      });
-	      if ((0, _util.arrayIsEqual)(dataToR, newDataToR)) {
-	        this.parseDataFromR(this, dataFromR);
+	      if (shinyAPI) {
+	        var newDataToR = total[index].points.map(function (p, i) {
+	          return p.date + ',' + p.value;
+	        });
+	        if ((0, _util.arrayIsEqual)(dataToR, newDataToR)) {
+	          this.parseDataFromR(this, dataFromR);
+	        } else {
+	          this.updateData({ dataToR: newDataToR });
+	          shinyAPI.updateData(newDataToR);
+	        }
 	      } else {
-	        this.updateData({ dataToR: newDataToR });
-	        shinyAPI.updateData(newDataToR);
+	        this.parseDataFromR(this, _data4.dummyData[index]);
 	      }
-	      // this.parseDataFromR(this, dummyData[index]);
 	    }
 	  }, {
 	    key: 'parseDataFromR',
