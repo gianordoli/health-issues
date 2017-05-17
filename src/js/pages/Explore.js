@@ -74,15 +74,13 @@ export class Explore {
     }
     const self = this;
     self.trendsAPI = trendsAPI;
-    // self.trendsAPI = new TrendsAPI();
-    // self.trendsAPI.setup(function(){
-    //   if (filter) {
-    //     self.getTrendsAPIGraph();
-    //   }
-    // });
     self.shinyAPI = new ShinyAPI();
     self.shinyAPI.addListeners(self, self.parseDataFromR);
     self.createElements(parentContainer);
+    
+    if (filter) {
+      self.getTrendsAPIGraph();
+    }    
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
@@ -176,14 +174,14 @@ export class Explore {
     const { shinyAPI } = this;
     const index = seasonal.length;
 
-    // const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
-    // if (arrayIsEqual(dataToR, newDataToR)) {
-    //   this.parseDataFromR(this, dataFromR);
-    // } else {
-    //   this.updateData({ dataToR: newDataToR });
-    //   shinyAPI.updateData(newDataToR);
-    // }
-    this.parseDataFromR(this, dummyData[index]);
+    const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
+    if (arrayIsEqual(dataToR, newDataToR)) {
+      this.parseDataFromR(this, dataFromR);
+    } else {
+      this.updateData({ dataToR: newDataToR });
+      shinyAPI.updateData(newDataToR);
+    }
+    // this.parseDataFromR(this, dummyData[index]);
   }
 
   parseDataFromR(explore, dataFromR) {
@@ -452,20 +450,3 @@ export class Explore {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -10,7 +10,8 @@ shinyServer(function(input, output, session) {
     input$mydata
 
     if (!is.null(input$mydata)) {
-
+      print(input$mydata)
+      
       ul <- unlist(strsplit(input$mydata,","))
       data <- matrix(ul, length(input$mydata), 2, T)
 
@@ -38,7 +39,7 @@ shinyServer(function(input, output, session) {
       # print(mySTL.DF$seasonal)
       
       response <- paste('seasonal:', toString(mySTL.DF$seasonal), 'trend:', toString(mySTL.DF$trend))
-      # print(response)
+      print(response)
       
       session$sendCustomMessage(type = "myCallbackHandler", response)
     }

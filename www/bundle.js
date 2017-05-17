@@ -46,23 +46,47 @@
 
 	'use strict';
 
-	var _Explore = __webpack_require__(1);
+	var _Home = __webpack_require__(1);
 
-	var _util = __webpack_require__(3);
+	var _Intro = __webpack_require__(15);
 
-	__webpack_require__(27);
+	var _Curated = __webpack_require__(20);
+
+	var _Explore = __webpack_require__(23);
+
+	var _About = __webpack_require__(37);
+
+	var _TrendsAPI = __webpack_require__(2);
+
+	var _util = __webpack_require__(27);
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(38);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var app = app || {}; //  weak
 
 	app.main = function () {
 
-	  console.log('app.main.init');
+	  _loglevel2.default.info('app.main.init');
 
-	  function render() {
+	  function loadTrendsAPI() {
+	    var trendsAPI = new _TrendsAPI.TrendsAPI();
+	    trendsAPI.setup(function () {
+	      render(trendsAPI);
+	    });
+	  }
 
-	    console.log('render');
+	  function render(trendsAPI) {
+
+	    _loglevel2.default.info('render');
 
 	    var elementsContainer = document.createElement('div');
+	    elementsContainer.classList.add('main-container');
 	    var body = document.querySelector('body');
 	    if (body) {
 	      body.appendChild(elementsContainer);
@@ -90,14 +114,17 @@
 	    //
 	    // elementsContainer.appendChild(curatedNav);
 
-
-	    // Explore
-	    var explore = new _Explore.Explore(elementsContainer);
+	    var home = new _Home.Home(elementsContainer, trendsAPI);
+	    var intro = new _Intro.Intro(elementsContainer);
+	    var curated = new _Curated.Curated(elementsContainer);
+	    var explore = new _Explore.Explore(elementsContainer, trendsAPI);
+	    var about = new _About.About(elementsContainer);
 	  }
 
 	  var init = function init() {
-	    console.log('Initializing app.');
-	    render();
+	    _loglevel2.default.info('Initializing app.');
+	    _loglevel2.default.setLevel('trace');
+	    loadTrendsAPI();
 	  };
 
 	  return {
@@ -116,6 +143,2119 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.Home = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	// Components
+
+
+	// Libraries
+
+
+	// Types
+
+
+	var _TrendsAPI = __webpack_require__(2);
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Home = exports.Home = function () {
+	  function Home(parentContainer) {
+	    _classCallCheck(this, Home);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Home, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'home';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var titleContainer = document.createElement('div');
+	      elementsContainer.appendChild(titleContainer);
+
+	      var title = document.createElement('h1');
+	      title.innerHTML = 'Project Title';
+	      titleContainer.appendChild(title);
+
+	      var projectDescription = document.createElement('p');
+	      projectDescription.id = 'project-description';
+	      projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.';
+	      titleContainer.appendChild(projectDescription);
+
+	      var logosContainer = document.createElement('div');
+	      logosContainer.id = 'logos-container';
+	      elementsContainer.appendChild(logosContainer);
+
+	      var fuguLogo = document.createElement('p');
+	      fuguLogo.innerHTML = 'Fugu.Studio';
+	      logosContainer.appendChild(fuguLogo);
+
+	      var forP = document.createElement('p');
+	      forP.innerHTML = 'for';
+	      logosContainer.appendChild(forP);
+
+	      var newsLabLogo = document.createElement('p');
+	      newsLabLogo.innerHTML = 'Google News Lab';
+	      logosContainer.appendChild(newsLabLogo);
+	    }
+	  }]);
+
+	  return Home;
+	}();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.TrendsAPI = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	//  weak
+
+	var TrendsAPI = exports.TrendsAPI = function () {
+	  function TrendsAPI() {
+	    _classCallCheck(this, TrendsAPI);
+
+	    _loglevel2.default.info('TrendsAPI');
+	  }
+
+	  _createClass(TrendsAPI, [{
+	    key: 'setup',
+	    value: function setup(callback) {
+	      var self = this;
+	      __webpack_require__(4)().then(function (gapi) {
+	        _loglevel2.default.info('GoogleAPI library loaded');
+	        gapi.load('client', start);
+
+	        function start() {
+	          var apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
+	          var id = 'diseases';
+	          gapi.client.init({
+	            'apiKey': apiKey,
+	            'clientId': 'diseases.apps.googleusercontent.com'
+	          }).then(function () {
+	            _loglevel2.default.info('GoogleAPI client initialized');
+	            self.gapi = gapi;
+	            if (callback) {
+	              callback();
+	            }
+	          });
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'executeCall',
+	    value: function executeCall(path, callback) {
+	      this.gapi.client.request({
+	        'path': path
+	      }).then(function (response) {
+	        callback(response.result);
+	      }, function (reason) {
+	        _loglevel2.default.info('Error: ' + reason.result.error.message);
+	      });
+	    }
+	  }, {
+	    key: 'getGraph',
+	    value: function getGraph(filter, callback) {
+	      _loglevel2.default.info('getGraph for:', filter);
+	      var geo = filter.geo;
+	      var terms = filter.terms;
+
+	      var path = 'https://www.googleapis.com/trends/v1beta/graph?';
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var t = _step.value;
+
+	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      if (geo.iso !== 'world') {
+	        path += 'restrictions.geo=' + geo.iso;
+	      }
+	      _loglevel2.default.info(path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getTopQueries',
+	    value: function getTopQueries(filter, index, callback) {
+	      _loglevel2.default.info('getTopQueries for:', filter);
+	      var geo = filter.geo;
+	      var terms = filter.terms;
+
+	      var term = terms[index];
+	      var path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity) + '&';
+	      if (geo.iso !== 'world') {
+	        path += 'restrictions.geo=' + geo.iso;
+	      }
+	      _loglevel2.default.info(path);
+	      this.executeCall(path, callback);
+	    }
+	  }]);
+
+	  return TrendsAPI;
+	}();
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	* loglevel - https://github.com/pimterry/loglevel
+	*
+	* Copyright (c) 2013 Tim Perry
+	* Licensed under the MIT license.
+	*/
+	(function (root, definition) {
+	    "use strict";
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof module === 'object' && module.exports) {
+	        module.exports = definition();
+	    } else {
+	        root.log = definition();
+	    }
+	}(this, function () {
+	    "use strict";
+	    var noop = function() {};
+	    var undefinedType = "undefined";
+
+	    function realMethod(methodName) {
+	        if (typeof console === undefinedType) {
+	            return false; // We can't build a real method without a console to log to
+	        } else if (console[methodName] !== undefined) {
+	            return bindMethod(console, methodName);
+	        } else if (console.log !== undefined) {
+	            return bindMethod(console, 'log');
+	        } else {
+	            return noop;
+	        }
+	    }
+
+	    function bindMethod(obj, methodName) {
+	        var method = obj[methodName];
+	        if (typeof method.bind === 'function') {
+	            return method.bind(obj);
+	        } else {
+	            try {
+	                return Function.prototype.bind.call(method, obj);
+	            } catch (e) {
+	                // Missing bind shim or IE8 + Modernizr, fallback to wrapping
+	                return function() {
+	                    return Function.prototype.apply.apply(method, [obj, arguments]);
+	                };
+	            }
+	        }
+	    }
+
+	    // these private functions always need `this` to be set properly
+
+	    function enableLoggingWhenConsoleArrives(methodName, level, loggerName) {
+	        return function () {
+	            if (typeof console !== undefinedType) {
+	                replaceLoggingMethods.call(this, level, loggerName);
+	                this[methodName].apply(this, arguments);
+	            }
+	        };
+	    }
+
+	    function replaceLoggingMethods(level, loggerName) {
+	        /*jshint validthis:true */
+	        for (var i = 0; i < logMethods.length; i++) {
+	            var methodName = logMethods[i];
+	            this[methodName] = (i < level) ?
+	                noop :
+	                this.methodFactory(methodName, level, loggerName);
+	        }
+	    }
+
+	    function defaultMethodFactory(methodName, level, loggerName) {
+	        /*jshint validthis:true */
+	        return realMethod(methodName) ||
+	               enableLoggingWhenConsoleArrives.apply(this, arguments);
+	    }
+
+	    var logMethods = [
+	        "trace",
+	        "debug",
+	        "info",
+	        "warn",
+	        "error"
+	    ];
+
+	    function Logger(name, defaultLevel, factory) {
+	      var self = this;
+	      var currentLevel;
+	      var storageKey = "loglevel";
+	      if (name) {
+	        storageKey += ":" + name;
+	      }
+
+	      function persistLevelIfPossible(levelNum) {
+	          var levelName = (logMethods[levelNum] || 'silent').toUpperCase();
+
+	          // Use localStorage if available
+	          try {
+	              window.localStorage[storageKey] = levelName;
+	              return;
+	          } catch (ignore) {}
+
+	          // Use session cookie as fallback
+	          try {
+	              window.document.cookie =
+	                encodeURIComponent(storageKey) + "=" + levelName + ";";
+	          } catch (ignore) {}
+	      }
+
+	      function getPersistedLevel() {
+	          var storedLevel;
+
+	          try {
+	              storedLevel = window.localStorage[storageKey];
+	          } catch (ignore) {}
+
+	          if (typeof storedLevel === undefinedType) {
+	              try {
+	                  var cookie = window.document.cookie;
+	                  var location = cookie.indexOf(
+	                      encodeURIComponent(storageKey) + "=");
+	                  if (location) {
+	                      storedLevel = /^([^;]+)/.exec(cookie.slice(location))[1];
+	                  }
+	              } catch (ignore) {}
+	          }
+
+	          // If the stored level is not valid, treat it as if nothing was stored.
+	          if (self.levels[storedLevel] === undefined) {
+	              storedLevel = undefined;
+	          }
+
+	          return storedLevel;
+	      }
+
+	      /*
+	       *
+	       * Public API
+	       *
+	       */
+
+	      self.levels = { "TRACE": 0, "DEBUG": 1, "INFO": 2, "WARN": 3,
+	          "ERROR": 4, "SILENT": 5};
+
+	      self.methodFactory = factory || defaultMethodFactory;
+
+	      self.getLevel = function () {
+	          return currentLevel;
+	      };
+
+	      self.setLevel = function (level, persist) {
+	          if (typeof level === "string" && self.levels[level.toUpperCase()] !== undefined) {
+	              level = self.levels[level.toUpperCase()];
+	          }
+	          if (typeof level === "number" && level >= 0 && level <= self.levels.SILENT) {
+	              currentLevel = level;
+	              if (persist !== false) {  // defaults to true
+	                  persistLevelIfPossible(level);
+	              }
+	              replaceLoggingMethods.call(self, level, name);
+	              if (typeof console === undefinedType && level < self.levels.SILENT) {
+	                  return "No console available for logging";
+	              }
+	          } else {
+	              throw "log.setLevel() called with invalid level: " + level;
+	          }
+	      };
+
+	      self.setDefaultLevel = function (level) {
+	          if (!getPersistedLevel()) {
+	              self.setLevel(level, false);
+	          }
+	      };
+
+	      self.enableAll = function(persist) {
+	          self.setLevel(self.levels.TRACE, persist);
+	      };
+
+	      self.disableAll = function(persist) {
+	          self.setLevel(self.levels.SILENT, persist);
+	      };
+
+	      // Initialize with the right level
+	      var initialLevel = getPersistedLevel();
+	      if (initialLevel == null) {
+	          initialLevel = defaultLevel == null ? "WARN" : defaultLevel;
+	      }
+	      self.setLevel(initialLevel, false);
+	    }
+
+	    /*
+	     *
+	     * Package-level API
+	     *
+	     */
+
+	    var defaultLogger = new Logger();
+
+	    var _loggersByName = {};
+	    defaultLogger.getLogger = function getLogger(name) {
+	        if (typeof name !== "string" || name === "") {
+	          throw new TypeError("You must supply a name when creating a logger.");
+	        }
+
+	        var logger = _loggersByName[name];
+	        if (!logger) {
+	          logger = _loggersByName[name] = new Logger(
+	            name, defaultLogger.getLevel(), defaultLogger.methodFactory);
+	        }
+	        return logger;
+	    };
+
+	    // Grab the current global log variable in case of overwrite
+	    var _log = (typeof window !== undefinedType) ? window.log : undefined;
+	    defaultLogger.noConflict = function() {
+	        if (typeof window !== undefinedType &&
+	               window.log === defaultLogger) {
+	            window.log = _log;
+	        }
+
+	        return defaultLogger;
+	    };
+
+	    return defaultLogger;
+	}));
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** @module google-client-api */
+
+	var scriptjs = __webpack_require__( 5 ),
+		promise = __webpack_require__( 6 );
+
+	var callbacks = [];
+
+	global.$$onClientLoad = function() {
+
+		for( var i = 0, len = callbacks.length; i < len; i++ ) {
+
+			doResolve.apply( undefined, callbacks[ i ] );
+		}
+	};
+
+	function doResolve( resolve, onComplete ) {
+
+		resolve( global.gapi );
+
+		if( onComplete )
+			onComplete( global.gapi );
+	}
+
+
+	/** 
+	 * This module is a function which will return a Google Client API object 
+	 * (https://developers.google.com/api-client-library/javascript/dev/dev_jscript) assynchronously.
+	 *
+	 * This function returns a promise. (if you're into promises) Which will return the gapi Object.
+	 *
+	 * If you're not into promises then you can simply call this function and pass in a callback object.
+	 * 
+	 * @param  {Function} onComplete an optional callback which will return the Google Client API Object.
+	 * @return {Promise} This function also returns a promise if you're into promises which will
+	 *                   return the Google Client API Object.
+	 *
+	 * @example Using with Promise
+	 * require( 'google-client-api' )().then( function( gapi ) {
+	 * 	// Do something with the gapi object
+	 * });
+	 *
+	 * @example Using with callback
+	 * require( 'google-client-api' )( function( gapi ) {
+	 * 	// Do something with the gapi object
+	 * });
+	 */
+	module.exports = function( onComplete ) {
+
+		return new promise( function( resolve, reject ) {
+
+			if( global.gapi ) {
+
+				doResolve( resolve, onComplete );
+			} else {
+
+				callbacks.push( [ resolve, onComplete ] );
+
+				if( callbacks.length == 1 ) {
+
+					scriptjs( 'https://apis.google.com/js/client.js?onload=$$onClientLoad' );
+				}
+			}
+		});
+	};
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  * $script.js JS loader & dependency manager
+	  * https://github.com/ded/script.js
+	  * (c) Dustin Diaz 2014 | License MIT
+	  */
+
+	(function (name, definition) {
+	  if (typeof module != 'undefined' && module.exports) module.exports = definition()
+	  else if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  else this[name] = definition()
+	})('$script', function () {
+	  var doc = document
+	    , head = doc.getElementsByTagName('head')[0]
+	    , s = 'string'
+	    , f = false
+	    , push = 'push'
+	    , readyState = 'readyState'
+	    , onreadystatechange = 'onreadystatechange'
+	    , list = {}
+	    , ids = {}
+	    , delay = {}
+	    , scripts = {}
+	    , scriptpath
+	    , urlArgs
+
+	  function every(ar, fn) {
+	    for (var i = 0, j = ar.length; i < j; ++i) if (!fn(ar[i])) return f
+	    return 1
+	  }
+	  function each(ar, fn) {
+	    every(ar, function (el) {
+	      return !fn(el)
+	    })
+	  }
+
+	  function $script(paths, idOrDone, optDone) {
+	    paths = paths[push] ? paths : [paths]
+	    var idOrDoneIsDone = idOrDone && idOrDone.call
+	      , done = idOrDoneIsDone ? idOrDone : optDone
+	      , id = idOrDoneIsDone ? paths.join('') : idOrDone
+	      , queue = paths.length
+	    function loopFn(item) {
+	      return item.call ? item() : list[item]
+	    }
+	    function callback() {
+	      if (!--queue) {
+	        list[id] = 1
+	        done && done()
+	        for (var dset in delay) {
+	          every(dset.split('|'), loopFn) && !each(delay[dset], loopFn) && (delay[dset] = [])
+	        }
+	      }
+	    }
+	    setTimeout(function () {
+	      each(paths, function loading(path, force) {
+	        if (path === null) return callback()
+	        
+	        if (!force && !/^https?:\/\//.test(path) && scriptpath) {
+	          path = (path.indexOf('.js') === -1) ? scriptpath + path + '.js' : scriptpath + path;
+	        }
+	        
+	        if (scripts[path]) {
+	          if (id) ids[id] = 1
+	          return (scripts[path] == 2) ? callback() : setTimeout(function () { loading(path, true) }, 0)
+	        }
+
+	        scripts[path] = 1
+	        if (id) ids[id] = 1
+	        create(path, callback)
+	      })
+	    }, 0)
+	    return $script
+	  }
+
+	  function create(path, fn) {
+	    var el = doc.createElement('script'), loaded
+	    el.onload = el.onerror = el[onreadystatechange] = function () {
+	      if ((el[readyState] && !(/^c|loade/.test(el[readyState]))) || loaded) return;
+	      el.onload = el[onreadystatechange] = null
+	      loaded = 1
+	      scripts[path] = 2
+	      fn()
+	    }
+	    el.async = 1
+	    el.src = urlArgs ? path + (path.indexOf('?') === -1 ? '?' : '&') + urlArgs : path;
+	    head.insertBefore(el, head.lastChild)
+	  }
+
+	  $script.get = create
+
+	  $script.order = function (scripts, id, done) {
+	    (function callback(s) {
+	      s = scripts.shift()
+	      !scripts.length ? $script(s, id, done) : $script(s, callback)
+	    }())
+	  }
+
+	  $script.path = function (p) {
+	    scriptpath = p
+	  }
+	  $script.urlArgs = function (str) {
+	    urlArgs = str;
+	  }
+	  $script.ready = function (deps, ready, req) {
+	    deps = deps[push] ? deps : [deps]
+	    var missing = [];
+	    !each(deps, function (dep) {
+	      list[dep] || missing[push](dep);
+	    }) && every(deps, function (dep) {return list[dep]}) ?
+	      ready() : !function (key) {
+	      delay[key] = delay[key] || []
+	      delay[key][push](ready)
+	      req && req(missing)
+	    }(deps.join('|'))
+	    return $script
+	  }
+
+	  $script.done = function (idOrDone) {
+	    $script([null], idOrDone)
+	  }
+
+	  return $script
+	});
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = __webpack_require__(7)
+	__webpack_require__(12)
+	__webpack_require__(13)
+	__webpack_require__(14)
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var asap = __webpack_require__(8)
+
+	module.exports = Promise;
+	function Promise(fn) {
+	  if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new')
+	  if (typeof fn !== 'function') throw new TypeError('not a function')
+	  var state = null
+	  var value = null
+	  var deferreds = []
+	  var self = this
+
+	  this.then = function(onFulfilled, onRejected) {
+	    return new self.constructor(function(resolve, reject) {
+	      handle(new Handler(onFulfilled, onRejected, resolve, reject))
+	    })
+	  }
+
+	  function handle(deferred) {
+	    if (state === null) {
+	      deferreds.push(deferred)
+	      return
+	    }
+	    asap(function() {
+	      var cb = state ? deferred.onFulfilled : deferred.onRejected
+	      if (cb === null) {
+	        (state ? deferred.resolve : deferred.reject)(value)
+	        return
+	      }
+	      var ret
+	      try {
+	        ret = cb(value)
+	      }
+	      catch (e) {
+	        deferred.reject(e)
+	        return
+	      }
+	      deferred.resolve(ret)
+	    })
+	  }
+
+	  function resolve(newValue) {
+	    try { //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+	      if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.')
+	      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+	        var then = newValue.then
+	        if (typeof then === 'function') {
+	          doResolve(then.bind(newValue), resolve, reject)
+	          return
+	        }
+	      }
+	      state = true
+	      value = newValue
+	      finale()
+	    } catch (e) { reject(e) }
+	  }
+
+	  function reject(newValue) {
+	    state = false
+	    value = newValue
+	    finale()
+	  }
+
+	  function finale() {
+	    for (var i = 0, len = deferreds.length; i < len; i++)
+	      handle(deferreds[i])
+	    deferreds = null
+	  }
+
+	  doResolve(fn, resolve, reject)
+	}
+
+
+	function Handler(onFulfilled, onRejected, resolve, reject){
+	  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null
+	  this.onRejected = typeof onRejected === 'function' ? onRejected : null
+	  this.resolve = resolve
+	  this.reject = reject
+	}
+
+	/**
+	 * Take a potentially misbehaving resolver function and make sure
+	 * onFulfilled and onRejected are only called once.
+	 *
+	 * Makes no guarantees about asynchrony.
+	 */
+	function doResolve(fn, onFulfilled, onRejected) {
+	  var done = false;
+	  try {
+	    fn(function (value) {
+	      if (done) return
+	      done = true
+	      onFulfilled(value)
+	    }, function (reason) {
+	      if (done) return
+	      done = true
+	      onRejected(reason)
+	    })
+	  } catch (ex) {
+	    if (done) return
+	    done = true
+	    onRejected(ex)
+	  }
+	}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {
+	// Use the fastest possible means to execute a task in a future turn
+	// of the event loop.
+
+	// linked list of tasks (single, with head node)
+	var head = {task: void 0, next: null};
+	var tail = head;
+	var flushing = false;
+	var requestFlush = void 0;
+	var isNodeJS = false;
+
+	function flush() {
+	    /* jshint loopfunc: true */
+
+	    while (head.next) {
+	        head = head.next;
+	        var task = head.task;
+	        head.task = void 0;
+	        var domain = head.domain;
+
+	        if (domain) {
+	            head.domain = void 0;
+	            domain.enter();
+	        }
+
+	        try {
+	            task();
+
+	        } catch (e) {
+	            if (isNodeJS) {
+	                // In node, uncaught exceptions are considered fatal errors.
+	                // Re-throw them synchronously to interrupt flushing!
+
+	                // Ensure continuation if the uncaught exception is suppressed
+	                // listening "uncaughtException" events (as domains does).
+	                // Continue in next event to avoid tick recursion.
+	                if (domain) {
+	                    domain.exit();
+	                }
+	                setTimeout(flush, 0);
+	                if (domain) {
+	                    domain.enter();
+	                }
+
+	                throw e;
+
+	            } else {
+	                // In browsers, uncaught exceptions are not fatal.
+	                // Re-throw them asynchronously to avoid slow-downs.
+	                setTimeout(function() {
+	                   throw e;
+	                }, 0);
+	            }
+	        }
+
+	        if (domain) {
+	            domain.exit();
+	        }
+	    }
+
+	    flushing = false;
+	}
+
+	if (typeof process !== "undefined" && process.nextTick) {
+	    // Node.js before 0.9. Note that some fake-Node environments, like the
+	    // Mocha test runner, introduce a `process` global without a `nextTick`.
+	    isNodeJS = true;
+
+	    requestFlush = function () {
+	        process.nextTick(flush);
+	    };
+
+	} else if (typeof setImmediate === "function") {
+	    // In IE10, Node.js 0.9+, or https://github.com/NobleJS/setImmediate
+	    if (typeof window !== "undefined") {
+	        requestFlush = setImmediate.bind(window, flush);
+	    } else {
+	        requestFlush = function () {
+	            setImmediate(flush);
+	        };
+	    }
+
+	} else if (typeof MessageChannel !== "undefined") {
+	    // modern browsers
+	    // http://www.nonblocking.io/2011/06/windownexttick.html
+	    var channel = new MessageChannel();
+	    channel.port1.onmessage = flush;
+	    requestFlush = function () {
+	        channel.port2.postMessage(0);
+	    };
+
+	} else {
+	    // old browsers
+	    requestFlush = function () {
+	        setTimeout(flush, 0);
+	    };
+	}
+
+	function asap(task) {
+	    tail = tail.next = {
+	        task: task,
+	        domain: isNodeJS && process.domain,
+	        next: null
+	    };
+
+	    if (!flushing) {
+	        flushing = true;
+	        requestFlush();
+	    }
+	};
+
+	module.exports = asap;
+
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(10).setImmediate))
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+
+	process.listeners = function (name) { return [] }
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var apply = Function.prototype.apply;
+
+	// DOM APIs, for completeness
+
+	exports.setTimeout = function() {
+	  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+	};
+	exports.setInterval = function() {
+	  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+	};
+	exports.clearTimeout =
+	exports.clearInterval = function(timeout) {
+	  if (timeout) {
+	    timeout.close();
+	  }
+	};
+
+	function Timeout(id, clearFn) {
+	  this._id = id;
+	  this._clearFn = clearFn;
+	}
+	Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+	Timeout.prototype.close = function() {
+	  this._clearFn.call(window, this._id);
+	};
+
+	// Does not start the time, just sets up the members needed.
+	exports.enroll = function(item, msecs) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = msecs;
+	};
+
+	exports.unenroll = function(item) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = -1;
+	};
+
+	exports._unrefActive = exports.active = function(item) {
+	  clearTimeout(item._idleTimeoutId);
+
+	  var msecs = item._idleTimeout;
+	  if (msecs >= 0) {
+	    item._idleTimeoutId = setTimeout(function onTimeout() {
+	      if (item._onTimeout)
+	        item._onTimeout();
+	    }, msecs);
+	  }
+	};
+
+	// setimmediate attaches itself to the global object
+	__webpack_require__(11);
+	exports.setImmediate = setImmediate;
+	exports.clearImmediate = clearImmediate;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+	    "use strict";
+
+	    if (global.setImmediate) {
+	        return;
+	    }
+
+	    var nextHandle = 1; // Spec says greater than zero
+	    var tasksByHandle = {};
+	    var currentlyRunningATask = false;
+	    var doc = global.document;
+	    var registerImmediate;
+
+	    function setImmediate(callback) {
+	      // Callback can either be a function or a string
+	      if (typeof callback !== "function") {
+	        callback = new Function("" + callback);
+	      }
+	      // Copy function arguments
+	      var args = new Array(arguments.length - 1);
+	      for (var i = 0; i < args.length; i++) {
+	          args[i] = arguments[i + 1];
+	      }
+	      // Store and register the task
+	      var task = { callback: callback, args: args };
+	      tasksByHandle[nextHandle] = task;
+	      registerImmediate(nextHandle);
+	      return nextHandle++;
+	    }
+
+	    function clearImmediate(handle) {
+	        delete tasksByHandle[handle];
+	    }
+
+	    function run(task) {
+	        var callback = task.callback;
+	        var args = task.args;
+	        switch (args.length) {
+	        case 0:
+	            callback();
+	            break;
+	        case 1:
+	            callback(args[0]);
+	            break;
+	        case 2:
+	            callback(args[0], args[1]);
+	            break;
+	        case 3:
+	            callback(args[0], args[1], args[2]);
+	            break;
+	        default:
+	            callback.apply(undefined, args);
+	            break;
+	        }
+	    }
+
+	    function runIfPresent(handle) {
+	        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+	        // So if we're currently running a task, we'll need to delay this invocation.
+	        if (currentlyRunningATask) {
+	            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+	            // "too much recursion" error.
+	            setTimeout(runIfPresent, 0, handle);
+	        } else {
+	            var task = tasksByHandle[handle];
+	            if (task) {
+	                currentlyRunningATask = true;
+	                try {
+	                    run(task);
+	                } finally {
+	                    clearImmediate(handle);
+	                    currentlyRunningATask = false;
+	                }
+	            }
+	        }
+	    }
+
+	    function installNextTickImplementation() {
+	        registerImmediate = function(handle) {
+	            process.nextTick(function () { runIfPresent(handle); });
+	        };
+	    }
+
+	    function canUsePostMessage() {
+	        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+	        // where `global.postMessage` means something completely different and can't be used for this purpose.
+	        if (global.postMessage && !global.importScripts) {
+	            var postMessageIsAsynchronous = true;
+	            var oldOnMessage = global.onmessage;
+	            global.onmessage = function() {
+	                postMessageIsAsynchronous = false;
+	            };
+	            global.postMessage("", "*");
+	            global.onmessage = oldOnMessage;
+	            return postMessageIsAsynchronous;
+	        }
+	    }
+
+	    function installPostMessageImplementation() {
+	        // Installs an event handler on `global` for the `message` event: see
+	        // * https://developer.mozilla.org/en/DOM/window.postMessage
+	        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+	        var messagePrefix = "setImmediate$" + Math.random() + "$";
+	        var onGlobalMessage = function(event) {
+	            if (event.source === global &&
+	                typeof event.data === "string" &&
+	                event.data.indexOf(messagePrefix) === 0) {
+	                runIfPresent(+event.data.slice(messagePrefix.length));
+	            }
+	        };
+
+	        if (global.addEventListener) {
+	            global.addEventListener("message", onGlobalMessage, false);
+	        } else {
+	            global.attachEvent("onmessage", onGlobalMessage);
+	        }
+
+	        registerImmediate = function(handle) {
+	            global.postMessage(messagePrefix + handle, "*");
+	        };
+	    }
+
+	    function installMessageChannelImplementation() {
+	        var channel = new MessageChannel();
+	        channel.port1.onmessage = function(event) {
+	            var handle = event.data;
+	            runIfPresent(handle);
+	        };
+
+	        registerImmediate = function(handle) {
+	            channel.port2.postMessage(handle);
+	        };
+	    }
+
+	    function installReadyStateChangeImplementation() {
+	        var html = doc.documentElement;
+	        registerImmediate = function(handle) {
+	            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+	            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+	            var script = doc.createElement("script");
+	            script.onreadystatechange = function () {
+	                runIfPresent(handle);
+	                script.onreadystatechange = null;
+	                html.removeChild(script);
+	                script = null;
+	            };
+	            html.appendChild(script);
+	        };
+	    }
+
+	    function installSetTimeoutImplementation() {
+	        registerImmediate = function(handle) {
+	            setTimeout(runIfPresent, 0, handle);
+	        };
+	    }
+
+	    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+	    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+	    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+	    // Don't get fooled by e.g. browserify environments.
+	    if ({}.toString.call(global.process) === "[object process]") {
+	        // For Node.js before 0.9
+	        installNextTickImplementation();
+
+	    } else if (canUsePostMessage()) {
+	        // For non-IE10 modern browsers
+	        installPostMessageImplementation();
+
+	    } else if (global.MessageChannel) {
+	        // For web workers, where supported
+	        installMessageChannelImplementation();
+
+	    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+	        // For IE 6–8
+	        installReadyStateChangeImplementation();
+
+	    } else {
+	        // For older browsers
+	        installSetTimeoutImplementation();
+	    }
+
+	    attachTo.setImmediate = setImmediate;
+	    attachTo.clearImmediate = clearImmediate;
+	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9)))
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Promise = __webpack_require__(7)
+	var asap = __webpack_require__(8)
+
+	module.exports = Promise
+	Promise.prototype.done = function (onFulfilled, onRejected) {
+	  var self = arguments.length ? this.then.apply(this, arguments) : this
+	  self.then(null, function (err) {
+	    asap(function () {
+	      throw err
+	    })
+	  })
+	}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//This file contains the ES6 extensions to the core Promises/A+ API
+
+	var Promise = __webpack_require__(7)
+	var asap = __webpack_require__(8)
+
+	module.exports = Promise
+
+	/* Static Functions */
+
+	function ValuePromise(value) {
+	  this.then = function (onFulfilled) {
+	    if (typeof onFulfilled !== 'function') return this
+	    return new Promise(function (resolve, reject) {
+	      asap(function () {
+	        try {
+	          resolve(onFulfilled(value))
+	        } catch (ex) {
+	          reject(ex);
+	        }
+	      })
+	    })
+	  }
+	}
+	ValuePromise.prototype = Promise.prototype
+
+	var TRUE = new ValuePromise(true)
+	var FALSE = new ValuePromise(false)
+	var NULL = new ValuePromise(null)
+	var UNDEFINED = new ValuePromise(undefined)
+	var ZERO = new ValuePromise(0)
+	var EMPTYSTRING = new ValuePromise('')
+
+	Promise.resolve = function (value) {
+	  if (value instanceof Promise) return value
+
+	  if (value === null) return NULL
+	  if (value === undefined) return UNDEFINED
+	  if (value === true) return TRUE
+	  if (value === false) return FALSE
+	  if (value === 0) return ZERO
+	  if (value === '') return EMPTYSTRING
+
+	  if (typeof value === 'object' || typeof value === 'function') {
+	    try {
+	      var then = value.then
+	      if (typeof then === 'function') {
+	        return new Promise(then.bind(value))
+	      }
+	    } catch (ex) {
+	      return new Promise(function (resolve, reject) {
+	        reject(ex)
+	      })
+	    }
+	  }
+
+	  return new ValuePromise(value)
+	}
+
+	Promise.all = function (arr) {
+	  var args = Array.prototype.slice.call(arr)
+
+	  return new Promise(function (resolve, reject) {
+	    if (args.length === 0) return resolve([])
+	    var remaining = args.length
+	    function res(i, val) {
+	      try {
+	        if (val && (typeof val === 'object' || typeof val === 'function')) {
+	          var then = val.then
+	          if (typeof then === 'function') {
+	            then.call(val, function (val) { res(i, val) }, reject)
+	            return
+	          }
+	        }
+	        args[i] = val
+	        if (--remaining === 0) {
+	          resolve(args);
+	        }
+	      } catch (ex) {
+	        reject(ex)
+	      }
+	    }
+	    for (var i = 0; i < args.length; i++) {
+	      res(i, args[i])
+	    }
+	  })
+	}
+
+	Promise.reject = function (value) {
+	  return new Promise(function (resolve, reject) { 
+	    reject(value);
+	  });
+	}
+
+	Promise.race = function (values) {
+	  return new Promise(function (resolve, reject) { 
+	    values.forEach(function(value){
+	      Promise.resolve(value).then(resolve, reject);
+	    })
+	  });
+	}
+
+	/* Prototype Methods */
+
+	Promise.prototype['catch'] = function (onRejected) {
+	  return this.then(null, onRejected);
+	}
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	//This file contains then/promise specific extensions that are only useful for node.js interop
+
+	var Promise = __webpack_require__(7)
+	var asap = __webpack_require__(8)
+
+	module.exports = Promise
+
+	/* Static Functions */
+
+	Promise.denodeify = function (fn, argumentCount) {
+	  argumentCount = argumentCount || Infinity
+	  return function () {
+	    var self = this
+	    var args = Array.prototype.slice.call(arguments)
+	    return new Promise(function (resolve, reject) {
+	      while (args.length && args.length > argumentCount) {
+	        args.pop()
+	      }
+	      args.push(function (err, res) {
+	        if (err) reject(err)
+	        else resolve(res)
+	      })
+	      var res = fn.apply(self, args)
+	      if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
+	        resolve(res)
+	      }
+	    })
+	  }
+	}
+	Promise.nodeify = function (fn) {
+	  return function () {
+	    var args = Array.prototype.slice.call(arguments)
+	    var callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
+	    var ctx = this
+	    try {
+	      return fn.apply(this, arguments).nodeify(callback, ctx)
+	    } catch (ex) {
+	      if (callback === null || typeof callback == 'undefined') {
+	        return new Promise(function (resolve, reject) { reject(ex) })
+	      } else {
+	        asap(function () {
+	          callback.call(ctx, ex)
+	        })
+	      }
+	    }
+	  }
+	}
+
+	Promise.prototype.nodeify = function (callback, ctx) {
+	  if (typeof callback != 'function') return this
+
+	  this.then(function (value) {
+	    asap(function () {
+	      callback.call(ctx, null, value)
+	    })
+	  }, function (err) {
+	    asap(function () {
+	      callback.call(ctx, err)
+	    })
+	  })
+	}
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Intro = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	// Libraries
+
+
+	// Styles
+
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(16);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Intro = exports.Intro = function () {
+	  function Intro(parentContainer) {
+	    _classCallCheck(this, Intro);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Intro, [{
+	    key: 'createStoryBlock',
+	    value: function createStoryBlock(id, content) {
+	      var div = document.createElement('div');
+	      div.id = 'story-' + id;
+	      div.classList.add('story-block');
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = content[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var c = _step.value;
+
+	          var p = document.createElement('p');
+	          p.innerHTML = c;
+	          div.appendChild(p);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      return div;
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'intro';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      elementsContainer.appendChild(chartsContainer);
+
+	      var copyContainer = document.createElement('div');
+	      copyContainer.classList.add('copy-container');
+	      elementsContainer.appendChild(copyContainer);
+
+	      copyContainer.appendChild(this.createStoryBlock(1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(4, ['Those yearly cycles can be combined to reveal what would be a “normal” pattern. That allows us to take a closer look into how seasonal factors — in this case, the weather — affect the interest for a given health issue.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(5, ['Because they’re influenced by the weather, those cycles will look almost like mirrored images from one hemisphere to another, since their seasons are the flipped.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(6, ['But factors other than the weather can affect the cycles too. Notice how the searches for stomach bug coincide with the end-of-year holidays seasons in both the US and Brazil.', 'In Brazil, 2 minor spikes also happen around  Easter and the Sep 7th, the country’s Indepence Day.']));
+
+	      copyContainer.appendChild(this.createStoryBlock(7, ['But the overall trend is important too. It allows us to see how outbreaks developed — or at least how people reacted to them. The zyka virus didn’t really spread in the US, but it became a major concern because in the early 2016 anyway.', 'A concern bigger than it was in Brazil, where most of the cases developed.']));
+	    }
+	  }]);
+
+	  return Intro;
+	}();
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(17);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(19)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(18)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page {\n  display: flex;\n  flex-direction: row; }\n  #intro.page .charts-container,\n  #intro.page .copy-container {\n    width: calc((100% - 20px)/2); }\n  #intro.page .charts-container {\n    height: 100%; }\n  #intro.page .copy-container {\n    margin-left: 20px; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Curated = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	// Libraries
+
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(21);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Curated = exports.Curated = function () {
+	  function Curated(parentContainer) {
+	    _classCallCheck(this, Curated);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Curated, [{
+	    key: 'createCuratedGroup',
+	    value: function createCuratedGroup(title, content) {
+	      var curatedGroup = document.createElement('div');
+	      curatedGroup.classList.add('curated-group');
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = content[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var c = _step.value;
+
+	          var curatedItem = document.createElement('button');
+	          curatedItem.classList.add('curated-item');
+	          curatedItem.innerHTML = c;
+	          curatedGroup.appendChild(curatedItem);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      return curatedGroup;
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'curated';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var div = document.createElement('div');
+	      elementsContainer.appendChild(div);
+	      var p = document.createElement('p');
+	      p.innerHTML = 'Now go and explore!';
+	      div.appendChild(p);
+	      p = document.createElement('p');
+	      p.innerHTML = 'Start with one of the curated stories below! Or scroll to pick a topic!';
+	      div.appendChild(p);
+
+	      elementsContainer.appendChild(this.createCuratedGroup('Seasonal', ['Winter', 'Summer', 'Holidays']));
+
+	      elementsContainer.appendChild(this.createCuratedGroup('Outbreaks', ['Swine Flu', 'Measles', 'Ebola', 'Zyka']));
+
+	      elementsContainer.appendChild(this.createCuratedGroup('Trending', ['Celiac Disease', 'Lupus', 'Milk Intolerance']));
+	    }
+	  }]);
+
+	  return Curated;
+	}();
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(22);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(19)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./curated.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./curated.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(18)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#curated-nav {\n  background-color: #4422B3; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.Explore = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
@@ -123,7 +2263,7 @@
 	// Components
 
 
-	// Data
+	// Data and Utils
 
 
 	// Types
@@ -135,64 +2275,70 @@
 	//Styles
 
 
-	var _FiltersMenu = __webpack_require__(2);
+	var _LineChart = __webpack_require__(24);
 
-	var _LineChart = __webpack_require__(4);
+	var _TrendsAPI = __webpack_require__(2);
 
-	var _TrendsAPI = __webpack_require__(6);
+	var _ShinyAPI = __webpack_require__(26);
 
-	var _ShinyAPI = __webpack_require__(18);
+	var _util = __webpack_require__(27);
 
-	var _util = __webpack_require__(3);
+	var _data4 = __webpack_require__(28);
 
-	var _selectize = __webpack_require__(19);
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	var _selectize = __webpack_require__(29);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
-	var _jquery = __webpack_require__(20);
+	var _jquery = __webpack_require__(30);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(23);
+	__webpack_require__(33);
+
+	__webpack_require__(35);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Explore = exports.Explore = function () {
-	  function Explore(parentContainer, filter) {
+	  function Explore(parentContainer, trendsAPI, filter) {
 	    _classCallCheck(this, Explore);
 
 	    this.data = {
 	      prevDiseases: filter ? filter.terms : [],
 	      diseases: filter ? filter.terms : [],
-	      prevGeo: filter ? filter.geo : _util.countries[0],
-	      geo: filter ? filter.geo : _util.countries[0],
-	      dataToR: '',
-	      dataFromR: '',
+	      prevGeo: filter ? filter.geo : _data4.countries[0],
+	      geo: filter ? filter.geo : _data4.countries[0],
 	      seasonal: [],
 	      trend: [],
 	      total: [],
+	      topQueries: [],
+	      dataToR: [],
+	      dataFromR: '',
 	      isMerged: false,
 	      isChanging: false,
 	      isLoading: false
 	    };
 	    var self = this;
-	    self.trendsAPI = new _TrendsAPI.TrendsAPI();
-	    self.trendsAPI.setup(function () {
-	      if (filter) {
-	        self.callTrendsApi();
-	      }
-	    });
+	    self.trendsAPI = trendsAPI;
 	    self.shinyAPI = new _ShinyAPI.ShinyAPI();
 	    self.shinyAPI.addListeners(self, self.parseDataFromR);
 	    self.createElements(parentContainer);
+
+	    if (filter) {
+	      self.getTrendsAPIGraph();
+	    }
 	  }
 
 	  _createClass(Explore, [{
 	    key: 'handleSelectDiseaseChange',
 	    value: function handleSelectDiseaseChange(value, self) {
-	      console.log('handleSelectDiseaseChange');
+	      _loglevel2.default.info('handleSelectDiseaseChange');
 	      var diseases = value.map(function (v) {
 	        return self.getDiseaseByEntity(v);
 	      });
@@ -201,31 +2347,31 @@
 	    }
 	  }, {
 	    key: 'handleSelectGeoChange',
-	    value: function handleSelectGeoChange(event, self) {
-	      console.log('handleSelectGeoChange');
-	      var value = event.target.value;
-
-	      var name = this.getSelectedText(event.target);
+	    value: function handleSelectGeoChange(value, self) {
+	      _loglevel2.default.info('handleSelectGeoChange');
+	      _loglevel2.default.info(value);
+	      var name = this.getCountryByIso(value).name;
 	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
 	      self.confirmNav.classList.remove('hidden');
 	    }
 	  }, {
 	    key: 'getDiseaseByEntity',
 	    value: function getDiseaseByEntity(entity) {
-	      return _util.terms.find(function (t) {
+	      return _data4.terms.find(function (t) {
 	        return t.entity === entity;
 	      });
 	    }
 	  }, {
-	    key: 'getSelectedText',
-	    value: function getSelectedText(el) {
-	      if (el.selectedIndex == -1) return null;
-	      return el.options[el.selectedIndex].text;
+	    key: 'getCountryByIso',
+	    value: function getCountryByIso(iso) {
+	      return _data4.countries.find(function (c) {
+	        return c.iso === iso;
+	      });
 	    }
 	  }, {
 	    key: 'cancelFilters',
 	    value: function cancelFilters(event, self) {
-	      console.log('cancelFilters');
+	      _loglevel2.default.info('cancelFilters');
 	      var _self$data = self.data,
 	          prevDiseases = _self$data.prevDiseases,
 	          prevGeo = _self$data.prevGeo;
@@ -236,14 +2382,14 @@
 	  }, {
 	    key: 'confirmFilters',
 	    value: function confirmFilters(event, self) {
-	      console.log('confirmFilters');
+	      _loglevel2.default.info('confirmFilters');
 	      var _self$data2 = self.data,
 	          diseases = _self$data2.diseases,
 	          geo = _self$data2.geo;
 
 	      self.confirmNav.classList.add('hidden');
 	      self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
-	      self.callTrendsApi();
+	      self.getTrendsAPIGraph();
 	    }
 	  }, {
 	    key: 'toggleChartMerge',
@@ -262,12 +2408,12 @@
 
 	      this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isChanging: true, isLoading: true });
 	      this.confirmNav.classList.add('hidden');
-	      this.callTrendsApi();
+	      this.getTrendsAPIGraph();
 	    }
 	  }, {
-	    key: 'callTrendsApi',
-	    value: function callTrendsApi() {
-	      console.log('callTrendsApi');
+	    key: 'getTrendsAPIGraph',
+	    value: function getTrendsAPIGraph() {
+	      _loglevel2.default.info('getTrendsAPIGraph');
 	      var _data = this.data,
 	          diseases = _data.diseases,
 	          geo = _data.geo;
@@ -275,8 +2421,8 @@
 	      var total = [];
 	      var self = this;
 
-	      self.trendsAPI.getTrends({ terms: diseases, geo: geo }, function (val) {
-	        console.log('From Google Trends: ', val);
+	      self.trendsAPI.getGraph({ terms: diseases, geo: geo }, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', val);
 	        var total = val.lines.map(function (l, i) {
 	          return { term: diseases[i].name, points: l.points };
 	        });
@@ -285,14 +2431,35 @@
 	      });
 	    }
 	  }, {
+	    key: 'getTrendsAPITopQueries',
+	    value: function getTrendsAPITopQueries() {
+	      _loglevel2.default.info('getTrendsAPITopQueries');
+	      var _data2 = this.data,
+	          diseases = _data2.diseases,
+	          geo = _data2.geo;
+	      var topQueries = this.data.topQueries;
+
+	      var index = topQueries.length;
+	      var self = this;
+
+	      self.trendsAPI.getTopQueries({ terms: diseases, geo: geo }, index, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', val);
+	        topQueries = topQueries.concat(val);
+	        self.updateData({ topQueries: topQueries });
+	        if (topQueries.length < diseases.length) {
+	          self.getTrendsAPITopQueries();
+	        }
+	      });
+	    }
+	  }, {
 	    key: 'parseDataToR',
 	    value: function parseDataToR() {
-	      console.log('parseDataToR');
-	      var _data2 = this.data,
-	          dataToR = _data2.dataToR,
-	          dataFromR = _data2.dataFromR,
-	          total = _data2.total,
-	          seasonal = _data2.seasonal;
+	      _loglevel2.default.info('parseDataToR');
+	      var _data3 = this.data,
+	          dataToR = _data3.dataToR,
+	          dataFromR = _data3.dataFromR,
+	          total = _data3.total,
+	          seasonal = _data3.seasonal;
 	      var shinyAPI = this.shinyAPI;
 
 	      var index = seasonal.length;
@@ -311,7 +2478,7 @@
 	  }, {
 	    key: 'parseDataFromR',
 	    value: function parseDataFromR(explore, dataFromR) {
-	      console.log('parseDataFromR');
+	      _loglevel2.default.info('parseDataFromR');
 	      var self = explore;
 	      var _self$data3 = self.data,
 	          total = _self$data3.total,
@@ -344,7 +2511,8 @@
 	      self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
 
 	      if (seasonal.length === total.length) {
-	        self.updateData({ isLoading: false });
+	        self.updateData({ topQueries: [], isLoading: false });
+	        this.getTrendsAPITopQueries();
 	      } else {
 	        self.parseDataToR();
 	      }
@@ -356,15 +2524,15 @@
 
 	      var elementsContainer = document.createElement('div');
 	      elementsContainer.id = 'explore';
+	      elementsContainer.classList.add('page');
 	      parentContainer.appendChild(elementsContainer);
 
 	      // Loader
 	      this.loaderContainer = document.createElement('div');
 	      var loaderContainer = this.loaderContainer;
 
-	      loaderContainer.id = 'loader-container';
+	      loaderContainer.classList.add('loader-container');
 	      loaderContainer.style.top = elementsContainer.offsetTop + 'px';
-	      loaderContainer.style.left = elementsContainer.offsetLeft + 'px';
 	      var loader = document.createElement('span');
 	      loader.classList.add('loader');
 	      loaderContainer.appendChild(loader);
@@ -372,17 +2540,17 @@
 
 	      // filtersMenu
 	      var filtersMenu = document.createElement('div');
-	      filtersMenu.id = 'filters-menu';
+	      filtersMenu.classList.add('filters-menu');
 	      elementsContainer.appendChild(filtersMenu);
 
 	      var text1 = document.createElement('span');
-	      text1.innerHTML = 'Search interest for ';
+	      text1.innerHTML = 'Search interest from 2004 to today for ';
 	      filtersMenu.appendChild(text1);
 
 	      // Diseases
 	      var diseaseSelect = document.createElement('select');
-	      diseaseSelect.id = 'disease-select';
-	      _util.terms.forEach(function (d, i) {
+	      diseaseSelect.classList.add('disease-select');
+	      _data4.terms.forEach(function (d, i) {
 	        var option = document.createElement('option');
 	        option.setAttribute('value', d.entity);
 	        option.setAttribute('key', i);
@@ -400,32 +2568,38 @@
 	      });
 	      this.diseaseSelect = diseaseSelectize[0].selectize;
 
-	      var text2 = document.createElement('span');
-	      text2.innerHTML = ' in the ';
-	      filtersMenu.appendChild(text2);
+	      this.sentenceItem = document.createElement('span');
+	      var sentenceItem = this.sentenceItem;
+
+	      sentenceItem.classList.add('sentence-item');
+	      sentenceItem.innerHTML = ' in the ';
+	      filtersMenu.appendChild(sentenceItem);
 
 	      // Geo
-	      this.geoSelect = document.createElement('select');
-	      var geoSelect = this.geoSelect;
-
+	      var geoSelect = document.createElement('select');
+	      geoSelect.classList.add('geo-select');
 	      geoSelect.name = 'geo-select';
-	      _util.countries.forEach(function (c, i) {
+	      _data4.countries.forEach(function (c, i) {
 	        var option = document.createElement('option');
 	        option.setAttribute('value', c.iso);
 	        option.innerHTML = c.name;
 	        geoSelect.appendChild(option);
 	      });
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.handleSelectGeoChange(evt, _this);
+	      bindHandleChange = function bindHandleChange(value) {
+	        return _this.handleSelectGeoChange(value, _this);
 	      };
-	      geoSelect.addEventListener('change', bindHandleChange);
 	      filtersMenu.appendChild(geoSelect);
+	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
+	        maxItems: 1,
+	        onChange: bindHandleChange
+	      });
+	      this.geoSelect = geoSelectize[0].selectize;
 
 	      // Cancel / Done
 	      this.confirmNav = document.createElement('div');
 	      var confirmNav = this.confirmNav;
 
-	      confirmNav.id = 'confirm-nav';
+	      confirmNav.classList.add('confirm-nav');
 	      confirmNav.classList.add('hidden');
 
 	      var cancelButton = document.createElement('button');
@@ -445,25 +2619,71 @@
 	      confirmNav.appendChild(doneButton);
 
 	      filtersMenu.appendChild(confirmNav);
-	      // End filtersMenu
 
-	      // Charts
+	      // Charts section
 	      var chartsContainer = document.createElement('div');
 	      chartsContainer.classList.add('charts-container');
 	      elementsContainer.appendChild(chartsContainer);
-	      this.seasonalChart = new _LineChart.LineChart(chartsContainer, 'seasonal');
-	      this.trendChart = new _LineChart.LineChart(chartsContainer, 'trend');
 
-	      // Merge
-	      this.mergeButton = document.createElement('button');
+	      // Seasonal Chart
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.seasonalChart = new _LineChart.LineChart(chartItem, 'seasonal');
+
+	      var chartToggleBar = document.createElement('div');
+	      chartToggleBar.classList.add('chart-toggle-bar');
+	      chartsContainer.appendChild(chartToggleBar);
+
+	      var toggleBarTitles = document.createElement('div');
+	      toggleBarTitles.classList.add('toggle-bar-titles');
+	      chartToggleBar.appendChild(toggleBarTitles);
+
+	      var seasonalTitle = document.createElement('span');
+	      seasonalTitle.innerHTML = 'Seasonal';
+	      toggleBarTitles.appendChild(seasonalTitle);
+
+	      var trendTitle = document.createElement('span');
+	      trendTitle.innerHTML = 'Trend';
+	      toggleBarTitles.appendChild(trendTitle);
+
+	      var p = document.createElement('p');
+	      chartToggleBar.appendChild(p);
+
+	      this.mergeButton = document.createElement('a');
 	      var mergeButton = this.mergeButton;
 
-	      mergeButton.innerHTML = 'Merge Charts';
+	      mergeButton.classList.add('icon');
 	      bindHandleChange = function bindHandleChange(evt) {
 	        return _this.toggleChartMerge(evt, _this);
 	      };
 	      mergeButton.addEventListener('click', bindHandleChange);
-	      elementsContainer.appendChild(mergeButton);
+	      p.appendChild(mergeButton);
+
+	      // Trend chart
+	      chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.trendChart = new _LineChart.LineChart(chartItem, 'trend');
+
+	      var bottomContainer = document.createElement('div');
+	      bottomContainer.classList.add('bottom-container');
+	      elementsContainer.appendChild(bottomContainer);
+
+	      // Top Queries
+	      var topQueriesContainer = document.createElement('div');
+	      topQueriesContainer.classList.add('top-queries-container');
+	      bottomContainer.appendChild(topQueriesContainer);
+
+	      var topQueriesTitle = document.createElement('h4');
+	      topQueriesTitle.innerHTML = 'Top Related Queries';
+	      topQueriesContainer.appendChild(topQueriesTitle);
+
+	      this.topQueriesList = document.createElement('div');
+	      var topQueriesList = this.topQueriesList;
+
+	      topQueriesList.classList.add('top-queries-list');
+	      topQueriesContainer.appendChild(topQueriesList);
 
 	      this.updateElements();
 	    }
@@ -476,25 +2696,28 @@
 	        data[key] = obj[key];
 	      }
 	      this.data = data;
-	      console.log(this.data);
+	      _loglevel2.default.info(this.data);
 	      this.updateElements();
 	    }
 	  }, {
 	    key: 'updateElements',
 	    value: function updateElements() {
-	      console.log('updateElements');
+	      _loglevel2.default.info('updateElements');
 	      var data = this.data,
 	          loaderContainer = this.loaderContainer,
 	          diseaseSelect = this.diseaseSelect,
 	          geoSelect = this.geoSelect,
+	          sentenceItem = this.sentenceItem,
 	          mergeButton = this.mergeButton,
 	          seasonalChart = this.seasonalChart,
-	          trendChart = this.trendChart;
+	          trendChart = this.trendChart,
+	          topQueriesList = this.topQueriesList;
 	      var diseases = data.diseases,
 	          geo = data.geo,
 	          seasonal = data.seasonal,
 	          trend = data.trend,
 	          total = data.total,
+	          topQueries = data.topQueries,
 	          isMerged = data.isMerged,
 	          isChanging = data.isChanging,
 	          isLoading = data.isLoading;
@@ -509,41 +2732,65 @@
 	      diseaseSelect.setValue(diseases.map(function (d) {
 	        return d.entity;
 	      }), true);
+	      sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
+	      geoSelect.setValue(geo.iso, true);
 
-	      var geoOptions = geoSelect.children;
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = geoOptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var o = _step.value;
-
-	          if (o.value === data.geo.iso) {
-	            o.selected = true;
-	          }
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
+	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
 	      if (isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
 	        seasonalChart.updateData(seasonal);
 	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
 	        this.updateData({ isChanging: false });
+	      }
+
+	      var isEmpty = true;
+	      topQueriesList.innerHTML = '';
+	      for (var i = 0; i < topQueries.length; i++) {
+	        if (topQueries[i].item) {
+	          isEmpty = false;
+	          var listContainer = document.createElement('div');
+	          listContainer.classList.add('list-container');
+	          topQueriesList.appendChild(listContainer);
+
+	          var term = document.createElement('p');
+	          term.innerHTML = diseases[i].name;
+	          listContainer.appendChild(term);
+
+	          var list = document.createElement('ul');
+	          listContainer.appendChild(list);
+
+	          var _iteratorNormalCompletion = true;
+	          var _didIteratorError = false;
+	          var _iteratorError = undefined;
+
+	          try {
+	            for (var _iterator = topQueries[i].item[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	              var q = _step.value;
+
+	              var listItem = document.createElement('li');
+	              listItem.innerHTML = q.title;
+	              list.appendChild(listItem);
+	            }
+	          } catch (err) {
+	            _didIteratorError = true;
+	            _iteratorError = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	              }
+	            } finally {
+	              if (_didIteratorError) {
+	                throw _iteratorError;
+	              }
+	            }
+	          }
+	        }
+	      }
+	      if (isEmpty) {
+	        topQueriesList.parentElement.classList.add('hidden');
+	      } else {
+	        topQueriesList.parentElement.classList.remove('hidden');
 	      }
 	    }
 	  }]);
@@ -552,115 +2799,7 @@
 	}();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.FiltersMenu = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _util = __webpack_require__(3);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var FiltersMenu = exports.FiltersMenu = function () {
-	  function FiltersMenu(parentContainer, diseases) {
-	    _classCallCheck(this, FiltersMenu);
-
-	    this.parentContainer = parentContainer;
-	    this.diseases = diseases;
-	  }
-
-	  _createClass(FiltersMenu, [{
-	    key: 'render',
-	    value: function render() {
-	      var parentContainer = this.parentContainer,
-	          diseases = this.diseases;
-
-
-	      var container = document.createElement('div');
-	      container.id = 'filters-menu';
-	      var elements = [];
-
-	      var text1 = document.createElement('span');
-	      text1.innerHTML = 'Search interest for ';
-	      elements.push(text1);
-
-	      var diseaseSelect = document.createElement('select');
-	      diseases.forEach(function (d, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', d);
-	        option.innerHTML = d;
-	        diseaseSelect.appendChild(option);
-	      });
-	      elements.push(diseaseSelect);
-
-	      var text2 = document.createElement('span');
-	      text2.innerHTML = ' in the ';
-	      elements.push(text2);
-
-	      var countrySelect = document.createElement('select');
-	      _util.countries.forEach(function (c, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', c.iso);
-	        option.innerHTML = c.name;
-	        countrySelect.appendChild(option);
-	      });
-	      elements.push(countrySelect);
-
-	      elements.forEach(function (el, i) {
-	        container.appendChild(el);
-	      });
-
-	      parentContainer.appendChild(container);
-	    }
-	  }]);
-
-	  return FiltersMenu;
-	}();
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.arrayIsEqual = arrayIsEqual;
-	function arrayIsEqual(array1, array2) {
-	  if (!array1 || !array2) return false;
-
-	  // compare lengths - can save a lot of time
-	  if (array1.length != array2.length) return false;
-
-	  for (var i = 0, l = array1.length; i < l; i++) {
-	    // Check if we have nested arrays
-	    if (array1[i] instanceof Array && array2[i] instanceof Array) {
-	      // recurse into the nested arrays
-	      if (!array1[i].equals(array2[i])) return false;
-	    } else if (array1[i] != array2[i]) {
-	      // Warning - two different object instances will never be equal: {x:20} != {x:20}
-	      return false;
-	    }
-	  }
-	  return true;
-	}
-
-	var dummyData = exports.dummyData = ['seasonal: -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188 trend: 37.762528901914, 38.3315239226386, 38.9005189433633, 39.4485470988465, 39.9965752543297, 40.5206806715379, 41.0447860887462, 41.3886322650334, 41.7324784413207, 41.7392572020122, 41.7460359627038, 41.5791064446562, 41.4121769266086, 41.1318212828417, 40.8514656390748, 40.6780349987404, 40.5046043584061, 40.5188632422699, 40.5331221261337, 40.5695070279037, 40.6058919296737, 40.534033062029, 40.4621741943843, 40.3049506383617, 40.147727082339, 39.8594446639334, 39.5711622455278, 39.3068081546365, 39.0424540637451, 38.9053150746276, 38.76817608551, 38.6574114282917, 38.5466467710734, 38.4349433301189, 38.3232398891643, 38.2776037657757, 38.231967642387, 38.2472198122293, 38.2624719820716, 38.4289927329503, 38.595513483829, 38.9671421872068, 39.3387708905846, 39.7824300831314, 40.2260892756782, 40.6093568888705, 40.9926245020627, 41.2865237478593, 41.5804229936559, 41.8262308468391, 42.0720387000224, 42.3926667022274, 42.7132947044324, 43.148555962762, 43.5838172210916, 44.128353255787, 44.6728892904824, 45.1988109033336, 45.7247325161847, 46.2134328179009, 46.7021331196171, 47.1574972398801, 47.6128613601431, 48.0357596401487, 48.4586579201543, 48.9013681841982, 49.3440784482421, 49.7656456434357, 50.1872128386294, 50.5929227496707, 50.998632660712, 51.3422682876776, 51.6859039146432, 52.05906244743, 52.4322209802168, 52.8736664341601, 53.3151118881033, 53.6981592404157, 54.0812065927281, 54.4214366146818, 54.7616666366355, 55.1333674620577, 55.5050682874799, 55.9004303235463, 56.2957923596128, 56.7875182780576, 57.2792441965025, 57.860022572452, 58.4408009484015, 59.0992251419377, 59.7576493354738, 60.4654881464552, 61.1733269574365, 61.9446115433358, 62.7158961292352, 63.4904979396724, 64.2650997501097, 64.9579658512425, 65.6508319523754, 66.3117714490589, 66.9727109457423, 67.4444559885474, 67.9162010313524, 68.3551428948972, 68.7940847584419, 69.4016724310113, 70.0092601035807, 70.6069822095218, 71.2047043154629, 71.8677988915912, 72.5308934677195, 73.2418887830691, 73.9528840984187, 74.5029020446274, 75.0529199908361, 75.5894024603802, 76.1258849299243, 76.7715622423254, 77.4172395547264, 78.0803114155812, 78.743383276436, 79.3595450195791, 79.9757067627222, 80.4065486314354, 80.8373905001485, 81.0899663533168, 81.342542206485, 81.5837620601726, 81.8249819138603, 82.1654352421156, 82.5058885703709, 83.0139746446069, 83.5220607188428, 84.0903057594762, 84.6585508001096, 85.1276593494974, 85.5967678988852, 86.011438809179, 86.4261097194727, 86.7790958667048, 87.1320820139368, 87.5471548654305, 87.9622277169241, 88.4219343412198, 88.8816409655154, 89.3548562942496, 89.8280716229839, 90.14530578964, 90.4625399562962, 90.6314383206203, 90.8003366849444, 91.1376860832641, 91.4750354815838, 91.8546816677125, 92.2343278538412, 92.6367825338066, 93.039237213772, 93.4815058198052, 93.9237744258383, 94.3825244273239, 94.8412744288096', 'seasonal: 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021 trend: 14.3578199572843, 14.5195946201682, 14.6813692830522, 14.8302914069663, 14.9792135308805, 15.1242938739813, 15.269374217082, 15.3718287974637, 15.4742833778453, 15.4876649147358, 15.5010464516262, 15.4718230633834, 15.4425996751405, 15.4105404361473, 15.3784811971541, 15.3328983462791, 15.2873154954041, 15.2392561019736, 15.1911967085432, 15.1568110745783, 15.1224254406135, 15.0837155181007, 15.0450055955879, 15.026612520556, 15.0082194455241, 14.990380961039, 14.9725424765538, 14.9430978831242, 14.9136532896945, 14.9183321225634, 14.9230109554322, 14.9441936007067, 14.9653762459811, 14.9563536457965, 14.9473310456118, 14.9000384794828, 14.8527459133538, 14.8013391868136, 14.7499324602735, 14.6932306248692, 14.6365287894648, 14.594713369661, 14.5528979498572, 14.5370907096426, 14.521283469428, 14.4856523152637, 14.4500211610993, 14.4001438455218, 14.3502665299443, 14.347175550043, 14.3440845701418, 14.3621855827124, 14.380286595283, 14.4016213949616, 14.4229561946402, 14.4659112301919, 14.5088662657436, 14.5417226649858, 14.574579064228, 14.6355886297172, 14.6965981952064, 14.8256163515569, 14.9546345079075, 15.0903738776158, 15.2261132473242, 15.3671273622559, 15.5081414771876, 15.6514538961445, 15.7947663151013, 15.9173037473833, 16.0398411796653, 16.1341850114871, 16.2285288433089, 16.3413820838349, 16.4542353243609, 16.5709743832642, 16.6877134421674, 16.7817031551808, 16.8756928681942, 16.9774651936794, 17.0792375191646, 17.1984732010251, 17.3177088828855, 17.4286690010625, 17.5396291192395, 17.6687942910293, 17.7979594628191, 17.9434935492305, 18.0890276356418, 18.2488252542452, 18.4086228728486, 18.5599852965853, 18.711347720322, 18.8544074628668, 18.9974672054117, 19.1313290625803, 19.265190919749, 19.3824369425128, 19.4996829652766, 19.6313937608381, 19.7631045563997, 19.8925827099423, 20.0220608634849, 20.1283483615619, 20.2346358596388, 20.3386801270773, 20.4427243945158, 20.5269080527314, 20.611091710947, 20.6744471369078, 20.7378025628686, 20.8529634853855, 20.9681244079024, 21.0996052678197, 21.2310861277371, 21.3607093447727, 21.4903325618084, 21.6532403499474, 21.8161481380863, 22.0027630594274, 22.1893779807684, 22.3317609981907, 22.474144015613, 22.5702998130241, 22.6664556104352, 22.7430503317079, 22.8196450529806, 22.8662025303359, 22.9127600076912, 22.980391894265, 23.0480237808387, 23.1848043356962, 23.3215848905536, 23.4565496653722, 23.5915144401907, 23.7118683228628, 23.8322222055349, 23.9695363167402, 24.1068504279456, 24.2424326268297, 24.3780148257137, 24.5178297480231, 24.6576446703324, 24.7802017100922, 24.9027587498519, 24.9740476783147, 25.0453366067775, 25.1050395869173, 25.1647425670571, 25.2312252924397, 25.2977080178222, 25.4136226077212, 25.5295371976202, 25.7007806907945, 25.8720241839688, 26.0342260716288, 26.1964279592888, 26.3592020810185, 26.5219762027481, 26.6822329596632, 26.8424897165783', 'seasonal: 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177 trend: 27.3986322370905, 27.714526301855, 28.0304203666196, 28.321109636283, 28.6117989059464, 28.8801131483429, 29.1484273907393, 29.4058697028756, 29.6633120150119, 29.7721956440063, 29.8810792730007, 29.8957972702914, 29.9105152675822, 30.0758586985843, 30.2412021295865, 30.424220870771, 30.6072396119555, 30.7302979449746, 30.8533562779936, 30.8683459167139, 30.8833355554341, 30.7551976144338, 30.6270596734335, 30.4904118272885, 30.3537639811434, 30.308506237194, 30.2632484932446, 30.265871750764, 30.2684950082833, 30.3381427035903, 30.4077903988972, 30.4500887476555, 30.4923870964139, 30.4202022145751, 30.3480173327364, 30.3402347735406, 30.3324522143448, 30.4265158112843, 30.5205794082239, 30.6390633360859, 30.7575472639479, 30.9433855074682, 31.1292237509885, 31.2796825034448, 31.4301412559011, 31.5000701248447, 31.5699989937882, 31.6616635874825, 31.7533281811767, 31.8810646737642, 32.0088011663516, 32.2005498135123, 32.3922984606731, 32.6494748609359, 32.9066512611987, 33.1818769337738, 33.4571026063488, 33.7938090797627, 34.1305155531766, 34.5067416197967, 34.8829676864167, 35.2850098959484, 35.68705210548, 36.1262427814549, 36.5654334574298, 36.9990478678129, 37.4326622781959, 37.6817440153009, 37.9308257524059, 38.1079958307612, 38.2851659091164, 38.4475542694649, 38.6099426298133, 38.7578741529403, 38.9058056760673, 39.2497721993034, 39.5937387225395, 40.0547645570899, 40.5157903916403, 41.0155887503635, 41.5153871090867, 42.0069628430308, 42.498538576975, 42.9065504230989, 43.3145622692229, 43.7117525360835, 44.1089428029441, 44.4888638166499, 44.8687848303557, 45.3068910470509, 45.7449972637461, 46.270464146007, 46.795931028268, 47.3686441381757, 47.9413572480833, 48.5528946859882, 49.164432123893, 49.7867059757355, 50.408979827578, 51.015751656055, 51.6225234845321, 52.1585529638902, 52.6945824432484, 53.2053427506706, 53.7161030580927, 54.2204344975437, 54.7247659369946, 55.1567875585755, 55.5888091801564, 55.9909462273812, 56.3930832746059, 56.8388840661498, 57.2846848576937, 57.6457286743269, 58.0067724909601, 58.4411047733521, 58.875437055744, 59.4543768050557, 60.0333165543673, 60.5859588098427, 61.1386010653181, 61.5632256419185, 61.9878502185188, 62.3548932760562, 62.7219363335935, 63.1281807472289, 63.5344251608643, 64.0066277172409, 64.4788302736176, 65.1697337048494, 65.8606371360812, 66.6376887705037, 67.4147404049262, 68.0068574144586, 68.598974423991, 69.0856959137771, 69.5724174035631, 70.0343736248878, 70.4963298462125, 70.9248447588789, 71.3533596715453, 71.9500491954437, 72.5467387193421, 72.9548513383565, 73.3629639573709, 73.68026507407, 73.9975661907689, 74.3054165268165, 74.6132668628641, 74.862645186733, 75.1120235106019, 75.6635322942038, 76.2150410778058, 76.970228085594, 77.7254150933821, 78.4988887205338, 79.2723623476855, 80.0548184083599, 80.8372744690344, 81.6163958655883, 82.3955172621422'];
-
-	var terms = exports.terms = [{ "name": "Aaron's sign", "entity": "/m/059s97" }, { "name": "Abarognosis", "entity": "/m/08gh0x" }, { "name": "Abasia", "entity": "/m/07x_xw" }, { "name": "Abcess", "entity": "/m/0lxt" }, { "name": "Abdominal angina", "entity": "/m/0ft1_3" }, { "name": "Abdominal distension", "entity": "/m/09d7vk" }, { "name": "Abdominal fullness", "entity": "/m/0dl9shd" }, { "name": "Abdominal guarding", "entity": "/m/02r0j6j" }, { "name": "Abdominal mass", "entity": "/m/0b8v9f" }, { "name": "Abdominal migraine", "entity": "/m/0kfyl_5" }, { "name": "Abdominal obesity", "entity": "/m/0f8fc" }, { "name": "Abdominal pain", "entity": "/m/02tfl8" }, { "name": "Abnormal basal metabolic rate", "entity": "/m/08x47t" }, { "name": "Abnormal posturing", "entity": "/m/08hpp7" }, { "name": "Abscess", "entity": "/m/0lxt" }, { "name": "Absent-mindedness", "entity": "/m/026__2h" }, { "name": "Acalculia", "entity": "/m/025sjm9" }, { "name": "Acanthocyte", "entity": "/m/06nyl4" }, { "name": "Acanthosis nigricans", "entity": "/m/036b82" }, { "name": "Achilles tendon rupture", "entity": "/m/06tbxm" }, { "name": "Acholia", "entity": "/m/0ryshn1" }, { "name": "Acid erosion", "entity": "/m/065tzg" }, { "name": "Acidosis", "entity": "/m/02gwty" }, { "name": "Acne", "entity": "/m/0jwqt" }, { "name": "Acneiform eruption", "entity": "/m/04jbylc" }, { "name": "Acroosteolysis", "entity": "/m/05ztxfr" }, { "name": "Actinic keratosis", "entity": "/m/04r3p5" }, { "name": "Acute chest syndrome", "entity": "/m/03m9zsx" }, { "name": "Acute kidney injury", "entity": "/m/03545w" }, { "name": "Acyanotic heart defect", "entity": "/m/03k275" }, { "name": "Adenoma sebaceum", "entity": "/m/06wcg0z" }, { "name": "Adenomyosis", "entity": "/m/054xgp" }, { "name": "Adermatoglyphia", "entity": "/m/0h3sypv" }, { "name": "Adie syndrome", "entity": "/m/08g5r9" }, { "name": "Adrenal crisis", "entity": "/m/0wqdl_y" }, { "name": "Adson's sign", "entity": "/m/045hv5" }, { "name": "Adynamia", "entity": "/m/03clsld" }, { "name": "Afterimage", "entity": "/m/02h98q" }, { "name": "Ageusia", "entity": "/m/05sfr2" }, { "name": "Agnosia", "entity": "/m/016q5d" }, { "name": "Agonal respiration", "entity": "/m/07gylr" }, { "name": "Agrammatism", "entity": "/m/0crhgf" }, { "name": "Agraphesthesia", "entity": "/m/09gdzpf" }, { "name": "Agraphia", "entity": "/m/0jwvhgg" }, { "name": "Air crescent sign", "entity": "/m/0gkfrn" }, { "name": "Air trapping", "entity": "/m/0263nnq" }, { "name": "Akathisia", "entity": "/m/01dzyw" }, { "name": "Albinism", "entity": "/m/0122t" }, { "name": "Albuminuria", "entity": "/m/0g6q2" }, { "name": "Alcohol flush reaction", "entity": "/m/05nn1b" }, { "name": "Alcoholism", "entity": "/m/012jc" }, { "name": "Alice in Wonderland syndrome", "entity": "/m/019szr" }, { "name": "Alkalosis", "entity": "/m/02gwvb" }, { "name": "Allergic bronchopulmonary aspergillosis", "entity": "/m/0cvcl5" }, { "name": "Allergic conjunctivitis", "entity": "/m/04v6d0" }, { "name": "Allergy", "entity": "/m/0fd23" }, { "name": "Allodynia", "entity": "/m/096m74" }, { "name": "Alogia", "entity": "/m/01r718" }, { "name": "Alpha 1-antitrypsin deficiency", "entity": "/m/01t4q6" }, { "name": "Amaurosis", "entity": "/m/05wt36" }, { "name": "Amaurosis fugax", "entity": "/m/036bqx" }, { "name": "Amblyopia", "entity": "/m/02s64_" }, { "name": "Ameboma", "entity": "/m/05c10rl" }, { "name": "Amenorrhoea", "entity": "/m/01j62y" }, { "name": "Amnesia", "entity": "/m/01j4hd" }, { "name": "Amylophagia", "entity": "/m/07_vwb" }, { "name": "Anagen effluvium", "entity": "/m/051vhjt" }, { "name": "Anal fissure", "entity": "/m/02gscl" }, { "name": "Anaphylaxis", "entity": "/m/0jtyb" }, { "name": "Anasarca", "entity": "/m/036br7" }, { "name": "Anejaculation", "entity": "/m/03bxghw" }, { "name": "Anemia", "entity": "/m/0lcdk" }, { "name": "Anencephaly", "entity": "/m/01hr6t" }, { "name": "Angina pectoris", "entity": "/m/0hg45" }, { "name": "Anginal equivalent", "entity": "/m/0gh8htd" }, { "name": "Angioedema", "entity": "/m/03tlvj" }, { "name": "Angioid streaks", "entity": "/m/02w1m45" }, { "name": "Angor animi", "entity": "/m/0dl9t9q" }, { "name": "Angular cheilitis", "entity": "/m/099686" }, { "name": "Anhedonia", "entity": "/m/01nvfh" }, { "name": "Aniridia", "entity": "/m/03gxt1" }, { "name": "Anisocoria", "entity": "/m/08mh71" }, { "name": "Annuloaortic ectasia", "entity": "/m/02q6sdc" }, { "name": "Anorexia", "entity": "/m/0brgy" }, { "name": "Anosmia", "entity": "/m/0m7pl" }, { "name": "Anovulatory cycle", "entity": "/m/0504pv" }, { "name": "Antepartum haemorrhage", "entity": "/m/056x7r" }, { "name": "Anterograde amnesia", "entity": "/m/02m3p2" }, { "name": "Anti-social behaviour", "entity": "/m/02l4fy" }, { "name": "Anuria", "entity": "/m/04f74cm" }, { "name": "Anxiety", "entity": "/m/0k_9" }, { "name": "Aortic unfolding", "entity": "/m/0cz8y2h" }, { "name": "Apathy", "entity": "/m/01y4zk" }, { "name": "Aphakia", "entity": "/m/0831jw" }, { "name": "Aphasia", "entity": "/m/0wnw" }, { "name": "Aphonia", "entity": "/m/025s02j" }, { "name": "Aplasia cutis congenita", "entity": "/m/05b1frk" }, { "name": "Apnea", "entity": "/m/01mr85" }, { "name": "Apraxia", "entity": "/m/0flz_" }, { "name": "Aprosodia", "entity": "/m/02rfs8c" }, { "name": "Arachnodactyly", "entity": "/m/041r6g" }, { "name": "Arcus senilis", "entity": "/m/06stpj" }, { "name": "Argyll Robertson pupil", "entity": "/m/036dkg" }, { "name": "Arthritis", "entity": "/m/0t1t" }, { "name": "Arthritis mutilans", "entity": "/m/0j_6ngk" }, { "name": "Arthrogryposis", "entity": "/m/0nrd_" }, { "name": "Arthropathy", "entity": "/m/07nsp9" }, { "name": "Asboe-Hansen sign", "entity": "/m/04q2tjp" }, { "name": "Ascites", "entity": "/m/01c24r" }, { "name": "Asperger syndrome", "entity": "/m/09cds" }, { "name": "Asphyxia", "entity": "/m/0p7w5" }, { "name": "Astasis", "entity": "/m/05pkly" }, { "name": "Asterixis", "entity": "/m/077dxt" }, { "name": "Asthma", "entity": "/m/0c78m" }, { "name": "Astigmatism", "entity": "/m/0chf1d" }, { "name": "Asynergy", "entity": "/m/02z63fn" }, { "name": "Ataxia", "entity": "/m/0l95" }, { "name": "Athetosis", "entity": "/m/03hrw8" }, { "name": "Atony", "entity": "/m/08bp0k" }, { "name": "Atrial enlargement", "entity": "/m/07k9v9w" }, { "name": "Atrial tachycardia", "entity": "/m/053y02n" }, { "name": "Atrophy", "entity": "/m/034y_l" }, { "name": "Auditory hallucination", "entity": "/m/03hfxpg" }, { "name": "Auditory verbal agnosia", "entity": "/m/090dzh" }, { "name": "Aura", "entity": "/m/07ms80" }, { "name": "Autoimmune disease", "entity": "/m/04dx3qn" }, { "name": "Autoimmune hemolytic anemia", "entity": "/m/0b1p89" }, { "name": "Automatic behavior", "entity": "/m/089ks8" }, { "name": "AV nicking", "entity": "/m/0405mqw" }, { "name": "AV nodal reentrant tachycardia", "entity": "/m/03rsgd" }, { "name": "Avoidant personality disorder", "entity": "/m/01_4_n" }, { "name": "Avolition", "entity": "/m/01sbgb" }, { "name": "Axillary lymphadenopathy", "entity": "/m/0bh6svk" }, { "name": "Azotemia", "entity": "/m/0dn4_" }, { "name": "Azotorrhea", "entity": "/m/02qdg9h" }, { "name": "B symptoms", "entity": "/m/08z394" }, { "name": "Back pain", "entity": "/m/0142ky" }, { "name": "Bacterial arthritis", "entity": "/m/02nrsk" }, { "name": "Bacterial vaginosis", "entity": "/m/01glh" }, { "name": "Bad breath", "entity": "/m/025hzf" }, { "name": "Balance disorder", "entity": "/m/0180jb" }, { "name": "Balanitis circinata", "entity": "/m/02q5q8s" }, { "name": "Ballance's sign", "entity": "/m/03h32hp" }, { "name": "Ballottement", "entity": "/m/03whwhg" }, { "name": "Bancroft's sign", "entity": "/m/0bhbpzh" }, { "name": "Barking cough", "entity": "/m/078yyj8" }, { "name": "Barrel chest", "entity": "/m/04zxhhc" }, { "name": "Beau's lines", "entity": "/m/069j_5" }, { "name": "Beck's triad", "entity": "/m/04rjcm" }, { "name": "Becker's sign", "entity": "/m/05pcqt7" }, { "name": "Beevor's sign", "entity": "/m/0bcyvy" }, { "name": "BehÃ§et's disease", "entity": "/m/025t67z" }, { "name": "Behavioral addiction", "entity": "/m/0bs79cp" }, { "name": "Behavioral symptoms", "entity": "/m/07y4v_n" }, { "name": "Bell's palsy", "entity": "/m/0dxdd" }, { "name": "Bent finger", "entity": "/m/07468xh" }, { "name": "Bigeminy", "entity": "/m/099t0f" }, { "name": "Biliary colic", "entity": "/m/026stnc" }, { "name": "Biliary dyskinesia", "entity": "/m/04cy_nk" }, { "name": "Biliary sludge", "entity": "/m/012ngbtr" }, { "name": "Bing's sign", "entity": "/m/05p4bk3" }, { "name": "Binge eating", "entity": "/m/01t96l" }, { "name": "Biot's respiration", "entity": "/m/05d44n" }, { "name": "Birthmark", "entity": "/m/01ljf2" }, { "name": "Bitot's spots", "entity": "/m/03z3vp" }, { "name": "Black eye", "entity": "/m/065wv1" }, { "name": "Black pox", "entity": "/m/05tcsy" }, { "name": "Black tarry stool", "entity": "/m/075bd16" }, { "name": "Blackout", "entity": "/m/02pnflk" }, { "name": "Bladder pain", "entity": "/m/0dl9sch" }, { "name": "Bladder spasm", "entity": "/m/02x4tcb" }, { "name": "Blank stare", "entity": "/m/06vzj_r" }, { "name": "Bleeding", "entity": "/m/012n6x" }, { "name": "Bleeding diathesis", "entity": "/m/037mv0" }, { "name": "Bleeding from anus", "entity": "/m/0dfmqkt" }, { "name": "Bleeding from ear", "entity": "/m/0dg4snt" }, { "name": "Bleeding on probing", "entity": "/m/02rtqbt" }, { "name": "Blepharospasm", "entity": "/m/08k14_" }, { "name": "Blindness", "entity": "/m/064kj9p" }, { "name": "Blister", "entity": "/m/01k1jq" }, { "name": "Bloating", "entity": "/m/011dzgb6" }, { "name": "Blood blister", "entity": "/m/05zy6c" }, { "name": "Blood hammer", "entity": "/m/0dlqb4" }, { "name": "Blood in spit", "entity": "/m/0dl9tjl" }, { "name": "Blood in stool", "entity": "/m/08cmfm" }, { "name": "Bloody show", "entity": "/m/05q5s6" }, { "name": "Blue nails", "entity": "/m/05b0h7r" }, { "name": "Blue nevus", "entity": "/m/02qgnm2" }, { "name": "Blue sclerae", "entity": "/m/0hsr1_z" }, { "name": "Blueberry muffin baby", "entity": "/m/05mxl64" }, { "name": "Blumberg sign", "entity": "/m/04mr6t" }, { "name": "Blumer's shelf", "entity": "/m/0j63q7l" }, { "name": "Blurred vision", "entity": "/m/03g_gxj" }, { "name": "Blushing", "entity": "/m/01jyxg" }, { "name": "Boas' sign", "entity": "/m/027clgs" }, { "name": "Body odor", "entity": "/m/037ywk" }, { "name": "Boil", "entity": "/m/03xp5n" }, { "name": "Bone deformities", "entity": "/m/075yfz6" }, { "name": "Bone fracture", "entity": "/m/03fz1q" }, { "name": "Bone tumor", "entity": "/m/01t125" }, { "name": "Border irregularity", "entity": "/m/04nlqr1" }, { "name": "Boredom", "entity": "/m/01j6mj" }, { "name": "Boston's sign", "entity": "/m/08zy9f" }, { "name": "Bouchard's nodes", "entity": "/m/045hxd" }, { "name": "Bounding pulse", "entity": "/m/0cfb2d" }, { "name": "Bow and arrow sign", "entity": "/m/0fmphf" }, { "name": "Bowel infarction", "entity": "/m/02r0rdw" }, { "name": "Bowel obstruction", "entity": "/m/01vzqb" }, { "name": "Brachycephaly", "entity": "/m/01hrdy" }, { "name": "Brachydactyly", "entity": "/m/0mdcl" }, { "name": "Bradycardia", "entity": "/m/01r__" }, { "name": "Bradypnea", "entity": "/m/08hy81" }, { "name": "Brain damage", "entity": "/m/01sbk1" }, { "name": "Brain death", "entity": "/m/019m0c" }, { "name": "Braxton Hicks contractions", "entity": "/m/03_81f" }, { "name": "Breakthrough bleeding", "entity": "/m/04fjyf" }, { "name": "Breast enlargement", "entity": "/m/05pdgz2" }, { "name": "Breast hematoma", "entity": "/m/012bldgw" }, { "name": "Breast hypertrophy", "entity": "/m/025t7qd" }, { "name": "Breast lump", "entity": "/m/080fvq7" }, { "name": "Breast pain", "entity": "/m/06pp7p" }, { "name": "Breastfeeding difficulties", "entity": "/m/02z1qhl" }, { "name": "Broadbent sign", "entity": "/m/05p78x6" }, { "name": "Bronchiectasis", "entity": "/m/01w_2w" }, { "name": "Bronchitis", "entity": "/m/047gmsk" }, { "name": "Bronchoconstriction", "entity": "/m/073m9q" }, { "name": "Bronchophony", "entity": "/m/027bt0g" }, { "name": "Bronchorrhea", "entity": "/m/027_4wl" }, { "name": "Bronchospasm", "entity": "/m/02_5n7" }, { "name": "Brown induration", "entity": "/m/07k9wg7" }, { "name": "Brown-SÃ©quard syndrome", "entity": "/m/03vwc5" }, { "name": "BrudziÅ„ski's sign", "entity": "/m/05p86vp" }, { "name": "Bruise", "entity": "/m/02zpsl" }, { "name": "Bruit", "entity": "/m/07qwnz" }, { "name": "Bruns nystagmus", "entity": "/m/0g9_2pv" }, { "name": "Brushfield spots", "entity": "/m/039412" }, { "name": "Bruxism", "entity": "/m/0149nm" }, { "name": "Bubo", "entity": "/m/02777pt" }, { "name": "Bulbar palsy", "entity": "/m/02qb7yy" }, { "name": "Bulging flanks", "entity": "/m/09l_s7" }, { "name": "Bullying", "entity": "/m/027vd9" }, { "name": "Bunion", "entity": "/m/01l2ky" }, { "name": "Burning mouth syndrome", "entity": "/m/03_3c6" }, { "name": "Bursitis", "entity": "/m/034z18" }, { "name": "Burton line", "entity": "/m/05pcm9t" }, { "name": "Cachexia", "entity": "/m/01wxhm" }, { "name": "CafÃ© au lait spot", "entity": "/m/04xkg4" }, { "name": "Calcaneal spur", "entity": "/m/025t1sl" }, { "name": "Calcinosis", "entity": "/m/042yl7" }, { "name": "Calcinosis cutis", "entity": "/m/042m3q" }, { "name": "Callus", "entity": "/m/01l2l9" }, { "name": "Camptodactyly", "entity": "/m/02qxxsk" }, { "name": "Cancer-related fatigue", "entity": "/m/0dllzqv" }, { "name": "Candidiasis", "entity": "/m/020gv" }, { "name": "Canker sore", "entity": "/m/05frfm" }, { "name": "Cannon A waves", "entity": "/m/05mrndk" }, { "name": "Caput medusae", "entity": "/m/049wbg" }, { "name": "Cardiac arrest", "entity": "/m/0gg4h" }, { "name": "Cardiac arrhythmia", "entity": "/m/01pf6" }, { "name": "Cardiac asthma", "entity": "/m/08fnwn" }, { "name": "Cardiomegaly", "entity": "/m/08_51g" }, { "name": "Carnett's sign", "entity": "/m/04g1lmg" }, { "name": "Carotenosis", "entity": "/m/0cdrvd" }, { "name": "Carpal tunnel syndrome", "entity": "/m/0fl_v" }, { "name": "Carvallo's sign", "entity": "/m/05p44wb" }, { "name": "Casal collar", "entity": "/m/05p45xp" }, { "name": "Castell's sign", "entity": "/m/0c9w3f" }, { "name": "Cataplexy", "entity": "/m/07f_8c" }, { "name": "Cataract", "entity": "/m/0m7h6" }, { "name": "Catatonia", "entity": "/m/01lxx" }, { "name": "Cauda equina syndrome", "entity": "/m/04yb5z" }, { "name": "Central cord syndrome", "entity": "/m/02qbn93" }, { "name": "Central facial palsy", "entity": "/m/0276115" }, { "name": "Central pontine myelinolysis", "entity": "/m/0268v" }, { "name": "Cerebellar ataxia", "entity": "/m/02vkcrn" }, { "name": "Cerebellar stroke syndrome", "entity": "/m/09gq6ht" }, { "name": "Cerebral edema", "entity": "/m/0219bz" }, { "name": "Cerebral polyopia", "entity": "/m/011q1xpz" }, { "name": "Cerebritis", "entity": "/m/03d4x24" }, { "name": "Cerebrospinal fluid leak", "entity": "/m/05f344r" }, { "name": "Cervical cancer", "entity": "/m/0d_bk" }, { "name": "Cervical lymphadenopathy", "entity": "/m/0bh9rhf" }, { "name": "Cervical motion tenderness", "entity": "/m/02vlfrb" }, { "name": "Cervicitis", "entity": "/m/020v3l" }, { "name": "Chadwick's sign", "entity": "/m/08h6km" }, { "name": "Chagoma", "entity": "/m/0jkys2b" }, { "name": "Chalazion", "entity": "/m/03gf8g" }, { "name": "Chalkstick fracture", "entity": "/m/02q2xk1" }, { "name": "Chancre", "entity": "/m/01ny_v" }, { "name": "Change in bowel habits", "entity": "/m/04mvdfs" }, { "name": "Charcotâ€“Leyden crystals", "entity": "/m/08ydrl" }, { "name": "Cheilitis", "entity": "/m/0gj51x" }, { "name": "Chemosis", "entity": "/m/04jr5f" }, { "name": "Chemotherapy-induced acral erythema", "entity": "/m/02qkht2" }, { "name": "Cherry-red spot", "entity": "/m/065yks4" }, { "name": "Chest pain", "entity": "/m/02np4v" }, { "name": "Chest Tightness", "entity": "/m/06gx48m" }, { "name": "Cheyneâ€“Stokes respiration", "entity": "/m/036k30" }, { "name": "Chills", "entity": "/m/02mdc7" }, { "name": "Choking", "entity": "/m/0168pw" }, { "name": "Cholestasis", "entity": "/m/07t2pp" }, { "name": "Choluria", "entity": "/m/0bwjd87" }, { "name": "Chordee", "entity": "/m/021xcm" }, { "name": "Chorea", "entity": "/m/03d70n" }, { "name": "Choreoathetosis", "entity": "/m/04bltj" }, { "name": "Chorioretinitis", "entity": "/m/01dl8m" }, { "name": "Choroidal neovascularization", "entity": "/m/03d0r78" }, { "name": "Chromhidrosis", "entity": "/m/09vnrh" }, { "name": "Chronic constipation", "entity": "/m/0dfmqm9" }, { "name": "Chronic cough", "entity": "/m/06h43j3" }, { "name": "Chronic diarrhea of infancy", "entity": "/m/0bh8c4z" }, { "name": "Chronic pain", "entity": "/m/012clh" }, { "name": "Chronic progressive external ophthalmoplegia", "entity": "/m/02z2637" }, { "name": "Chronic prostatitis/chronic pelvic pain syndrome", "entity": "/m/043jxv5" }, { "name": "Chronic wound", "entity": "/m/08ssqs" }, { "name": "Chvostek sign", "entity": "/m/0407j6" }, { "name": "Chyluria", "entity": "/m/02ql75c" }, { "name": "Circumstantial speech", "entity": "/m/0gh89fc" }, { "name": "Cirrhosis", "entity": "/m/097ns" }, { "name": "Clanging", "entity": "/m/0cg61" }, { "name": "Claudication", "entity": "/m/05c1gt" }, { "name": "Cleft lip and cleft palate", "entity": "/m/07y4w6s" }, { "name": "Clinodactyly", "entity": "/m/02w3jkd" }, { "name": "Clitoromegaly", "entity": "/m/04jpnx" }, { "name": "Clonus", "entity": "/m/02zdnj" }, { "name": "Clostridium difficile infection", "entity": "/m/02cxr0" }, { "name": "Clouding of consciousness", "entity": "/m/02656gy" }, { "name": "Cloudy urine", "entity": "/m/075v3bx" }, { "name": "COâ‚‚ retention", "entity": "/m/04mpx0" }, { "name": "Coagulative necrosis", "entity": "/m/03qc8xf" }, { "name": "Coagulopathy", "entity": "/m/065b00" }, { "name": "Coccydynia", "entity": "/m/031c9y" }, { "name": "Coffee ground vomiting", "entity": "/m/02n2zp" }, { "name": "Cognitive deficit", "entity": "/m/02py0vt" }, { "name": "Cold sensitivity", "entity": "/m/03c607t" }, { "name": "Cold sweat", "entity": "/m/0dfmqlr" }, { "name": "Colitis", "entity": "/m/043hy3" }, { "name": "Collapse", "entity": "/m/026gdg4" }, { "name": "Collateral circulation", "entity": "/m/03nmgjv" }, { "name": "Collective narcissism", "entity": "/m/0glrsmb" }, { "name": "Collier's sign", "entity": "/m/0kg1nvy" }, { "name": "Color blindness", "entity": "/m/022xh" }, { "name": "Coma", "entity": "/m/01qw1" }, { "name": "Comedo", "entity": "/m/02ry9q" }, { "name": "Common cold", "entity": "/m/0n073" }, { "name": "Communication deviance", "entity": "/m/011smvs0" }, { "name": "Compartment syndrome", "entity": "/m/01j0hs" }, { "name": "Compensatory hyperhidrosis", "entity": "/m/0cpdgx" }, { "name": "Compulsive behavior", "entity": "/m/0281lfw" }, { "name": "Compulsive hoarding", "entity": "/m/0240_y" }, { "name": "Concealed conduction", "entity": "/m/02v_hky" }, { "name": "Conductive hearing loss", "entity": "/m/04fmtx" }, { "name": "Condylomata lata", "entity": "/m/0czbwwx" }, { "name": "Confabulation", "entity": "/m/0371d4" }, { "name": "Confusion", "entity": "/m/06kqbx" }, { "name": "Congenital clasped thumb", "entity": "/m/0h976q1" }, { "name": "Congenital heart defect", "entity": "/m/03k22s" }, { "name": "Congenital lip pit", "entity": "/m/0b6hxcj" }, { "name": "Conjunctival suffusion", "entity": "/m/0dljk3n" }, { "name": "Conjunctivitis", "entity": "/m/0c36_" }, { "name": "Constipation", "entity": "/m/016kf9" }, { "name": "Constructional apraxia", "entity": "/m/0gj9_k1" }, { "name": "Contracture", "entity": "/m/04f49cb" }, { "name": "Convulsion", "entity": "/m/04lcpr5" }, { "name": "Cooper's sign", "entity": "/m/04gpkvs" }, { "name": "Coprolalia", "entity": "/m/02gp9x" }, { "name": "Copropraxia", "entity": "/m/0bcsx9" }, { "name": "Corectopia", "entity": "/m/0260nq7" }, { "name": "Cornea verticillata", "entity": "/m/0zdt17d" }, { "name": "Corneal abrasion", "entity": "/m/07ldcz" }, { "name": "Cornell's sign", "entity": "/m/05szbzm" }, { "name": "Corona phlebectatica", "entity": "/m/0rfdr0v" }, { "name": "Cortical blindness", "entity": "/m/089r8q" }, { "name": "Coryza", "entity": "/m/0c532h" }, { "name": "Costovertebral angle tenderness", "entity": "/m/09d1md" }, { "name": "Cotton wool spots", "entity": "/m/02qd609" }, { "name": "Cough", "entity": "/m/01b_21" }, { "name": "Coxa valga", "entity": "/m/02qvqc7" }, { "name": "Coxa vara", "entity": "/m/02lmr4" }, { "name": "Cracked Skin", "entity": "/m/06_hvl2" }, { "name": "Crackles", "entity": "/m/023rn8" }, { "name": "Cramp", "entity": "/m/024_yy" }, { "name": "Cranial nerve disease", "entity": "/m/04f7377" }, { "name": "Cranioschisis", "entity": "/m/0b6l7_3" }, { "name": "Craving", "entity": "/m/064qvry" }, { "name": "Cremasteric reflex", "entity": "/m/02ssz2" }, { "name": "Crenated tongue", "entity": "/m/0x28640" }, { "name": "Crepitus", "entity": "/m/05bws4" }, { "name": "Crescent sign", "entity": "/m/028bw97" }, { "name": "Crowding", "entity": "/m/0j29g86" }, { "name": "Crowe sign", "entity": "/m/090wkz" }, { "name": "Crying", "entity": "/m/0463cq4" }, { "name": "Cryptomenorrhea", "entity": "/m/04zjj3" }, { "name": "Cryptorchidism", "entity": "/m/025nm6" }, { "name": "Crystalluria", "entity": "/m/08k_24" }, { "name": "Cubitus valgus", "entity": "/m/09gr4q" }, { "name": "Cullen's sign", "entity": "/m/04rs9k" }, { "name": "Cushing reflex", "entity": "/m/04bj54" }, { "name": "Cushing's syndrome", "entity": "/m/0mzm2" }, { "name": "Cutaneous candidiasis", "entity": "/m/011nkgqd" }, { "name": "Cutaneous condition", "entity": "/m/08cqsh" }, { "name": "Cutis laxa", "entity": "/m/0c_0xv" }, { "name": "Cutis marmorata", "entity": "/m/0h3xwcs" }, { "name": "Cyanosis", "entity": "/m/021fq9" }, { "name": "Cycloplegia", "entity": "/m/028c4n" }, { "name": "Cyst", "entity": "/m/019rnl" }, { "name": "DÃ©viation conjuguÃ©e", "entity": "/m/0bs68yq" }, { "name": "Dacryoadenitis", "entity": "/m/046j0s" }, { "name": "Dactylitis", "entity": "/m/03_3lh" }, { "name": "Dahl's sign", "entity": "/m/05q969m" }, { "name": "Dalrymple's sign", "entity": "/m/0fltf4" }, { "name": "Dance's sign", "entity": "/m/09z36s" }, { "name": "Dandruff", "entity": "/m/022y19" }, { "name": "Darier's sign", "entity": "/m/08yzsq" }, { "name": "Dark urine", "entity": "/m/05blz8d" }, { "name": "De Musset's sign", "entity": "/m/09gl4kp" }, { "name": "Death rattle", "entity": "/m/0660m0" }, { "name": "Decoy cells", "entity": "/m/03c3c74" }, { "name": "Decreased breast size", "entity": "/m/06_mn93" }, { "name": "Decreased Libido", "entity": "/m/0dl9s30" }, { "name": "Decussation", "entity": "/m/0266tn8" }, { "name": "Deep sulcus sign", "entity": "/m/0f2l74" }, { "name": "Deep vein thrombosis", "entity": "/m/02r3jk" }, { "name": "Deepening of voice", "entity": "/m/06_mncd" }, { "name": "Defensive vomiting", "entity": "/m/08phwv" }, { "name": "Deformity", "entity": "/m/0383j_" }, { "name": "Dehydration", "entity": "/m/014961" }, { "name": "Delayed milestone", "entity": "/m/08x7wr" }, { "name": "Delayed onset muscle soreness", "entity": "/m/03dcyh" }, { "name": "Delayed puberty", "entity": "/m/02_nxt" }, { "name": "Delirium", "entity": "/m/014qfd" }, { "name": "Delirium tremens", "entity": "/m/0fpnjr" }, { "name": "Delusion", "entity": "/m/0xnpq" }, { "name": "Delusional disorder", "entity": "/m/01l7xz" }, { "name": "Delusional misidentification syndrome", "entity": "/m/021246" }, { "name": "Delusions of reference", "entity": "/m/019fy6" }, { "name": "Dementia", "entity": "/m/09klv" }, { "name": "Dense artery sign", "entity": "/m/05pc1dr" }, { "name": "Dental emergency", "entity": "/m/0bg74m" }, { "name": "Dental plaque", "entity": "/m/073t8x" }, { "name": "Dentin hypersensitivity", "entity": "/m/0d7gj3" }, { "name": "Dependent personality disorder", "entity": "/m/01sydv" }, { "name": "Depersonalization", "entity": "/m/01zn1_" }, { "name": "Depigmentation", "entity": "/m/027cv8v" }, { "name": "Depression", "entity": "/m/03f_cb" }, { "name": "Derealization", "entity": "/m/02wv6r8" }, { "name": "Dermatitis", "entity": "/m/06x09g" }, { "name": "Dermatographic urticaria", "entity": "/m/06djbj" }, { "name": "Desmoplasia", "entity": "/m/09gn45k" }, { "name": "Desquamation", "entity": "/m/05pbx5" }, { "name": "Destot's sign", "entity": "/m/05q4mnc" }, { "name": "Developmental disability", "entity": "/m/06xd3t" }, { "name": "Diabetes insipidus", "entity": "/m/0c5s4" }, { "name": "Diabetes mellitus", "entity": "/m/0c58k" }, { "name": "Diabetic dermopathy", "entity": "/m/064r6nt" }, { "name": "Diaphoresis", "entity": "/m/01q1s3" }, { "name": "Diaphragmatic Paradox", "entity": "/m/04y94ty" }, { "name": "Diarrhea", "entity": "/m/0f3kl" }, { "name": "Diastolic heart failure", "entity": "/m/02pv6ym" }, { "name": "Diastolic heart murmur", "entity": "/m/05b2cbl" }, { "name": "Diastrophic dysplasia", "entity": "/m/055lbw" }, { "name": "Diathesis", "entity": "/m/0sghsdb" }, { "name": "Dieting", "entity": "/m/02b_m" }, { "name": "Difficulty falling asleep", "entity": "/m/0dl9sx_" }, { "name": "Difficulty focusing", "entity": "/m/0dl9sw9" }, { "name": "Difficulty speaking", "entity": "/m/0dl9tkg" }, { "name": "Dimple sign", "entity": "/m/0j7mdyv" }, { "name": "Diplopia", "entity": "/m/03x17h" }, { "name": "Disappointment", "entity": "/m/01lsjf" }, { "name": "Discoloration of the legs", "entity": "/m/075v2rl" }, { "name": "Disequilibrium", "entity": "/m/076vs5y" }, { "name": "Disinhibition", "entity": "/m/06mfqk" }, { "name": "Disorganized behavior", "entity": "/m/0dl9tl2" }, { "name": "Disorientation", "entity": "/m/0dl9scp" }, { "name": "Disseminated intravascular coagulation", "entity": "/m/01jjrv" }, { "name": "Dissociation", "entity": "/m/02l_0n" }, { "name": "Dissociative disorder", "entity": "/m/07bc25" }, { "name": "Distal intestinal obstruction syndrome", "entity": "/m/0d4g_5" }, { "name": "Distal muscular dystrophy", "entity": "/m/0fm4gj" }, { "name": "Distorted vision", "entity": "/m/09rx552" }, { "name": "Distress", "entity": "/m/03cyjcw" }, { "name": "Diurnal enuresis", "entity": "/m/0gnl_f" }, { "name": "Dizziness", "entity": "/m/033mg5" }, { "name": "Doi's sign", "entity": "/m/05q6cvf" }, { "name": "Drooling", "entity": "/m/019bfk" }, { "name": "Drop attack", "entity": "/m/0crl43" }, { "name": "Drug-induced hyperthermia", "entity": "/m/026y632" }, { "name": "Drug-induced purpura", "entity": "/m/05q854j" }, { "name": "Dry cough", "entity": "/m/027fpnw" }, { "name": "Dry eye", "entity": "/m/05c7tsn" }, { "name": "Dry eye syndrome", "entity": "/m/03ckn0" }, { "name": "Dry hair", "entity": "/m/0dl9svf" }, { "name": "Dry throat", "entity": "/m/0dl9sgp" }, { "name": "Dryness", "entity": "/m/0g9_00t" }, { "name": "Dunphy sign", "entity": "/m/05mt1m8" }, { "name": "Dupuytren's contracture", "entity": "/m/036l18" }, { "name": "Duroziez's sign", "entity": "/m/076t2pw" }, { "name": "Dwarfism", "entity": "/m/010vmq" }, { "name": "Dysarthria", "entity": "/m/03ygz2" }, { "name": "Dysautonomia", "entity": "/m/02510j" }, { "name": "Dysdiadochokinesia", "entity": "/m/07yl6y" }, { "name": "Dysentery", "entity": "/m/0h3bn" }, { "name": "Dysesthesia", "entity": "/m/0264gx3" }, { "name": "Dysfunctional uterine bleeding", "entity": "/m/04cslz" }, { "name": "Dysgeusia", "entity": "/m/01d3gn" }, { "name": "Dyskinesia", "entity": "/m/03_xjz" }, { "name": "Dysmenorrhea", "entity": "/m/0255t_" }, { "name": "Dysosmia", "entity": "/m/04czcv_" }, { "name": "Dyspareunia", "entity": "/m/01qqq7" }, { "name": "Dysphagia", "entity": "/m/01bztl" }, { "name": "Dysphonia", "entity": "/m/07_7w6" }, { "name": "Dysphoria", "entity": "/m/055f85" }, { "name": "Dysplastic nail", "entity": "/m/0bh6_0r" }, { "name": "Dystonia", "entity": "/m/02_x8m" }, { "name": "Dysuria", "entity": "/m/03wblc" }, { "name": "Ear pain", "entity": "/m/05vywy" }, { "name": "Easy bruising", "entity": "/m/0dl9szn" }, { "name": "Ecchymosis", "entity": "/m/05b6rk9" }, { "name": "Echolalia", "entity": "/m/03y0cn" }, { "name": "Echopraxia", "entity": "/m/09b6_7" }, { "name": "Eclabium", "entity": "/m/04_03f6" }, { "name": "Edema", "entity": "/m/0j80c" }, { "name": "Electromagnetic hypersensitivity", "entity": "/m/0bqhl7" }, { "name": "Elevated alkaline phosphatase", "entity": "/m/063ykc9" }, { "name": "Elfin facies", "entity": "/m/04crjg4" }, { "name": "Emaciation", "entity": "/m/070kyz" }, { "name": "Embryocardia", "entity": "/m/0rytkmx" }, { "name": "Emotional detachment", "entity": "/m/092b1g" }, { "name": "Emotional distress", "entity": "/m/06x7t9c" }, { "name": "Emotional dysregulation", "entity": "/m/0b3n_k" }, { "name": "Emotional security", "entity": "/m/01hz11" }, { "name": "Enanthem", "entity": "/m/04y8g5q" }, { "name": "Encephalitis", "entity": "/m/09c_t" }, { "name": "Encephalopathy", "entity": "/m/022tc0" }, { "name": "Encopresis", "entity": "/m/0298jv" }, { "name": "Endometrial hyperplasia", "entity": "/m/02rc7qj" }, { "name": "Enlarged uterus", "entity": "/m/075k1p8" }, { "name": "Enophthalmia", "entity": "/m/08tgvr" }, { "name": "Enophthalmos", "entity": "/m/0cwyf3" }, { "name": "Enterocolitis", "entity": "/m/07y4wgq" }, { "name": "Enthesitis", "entity": "/m/0gs1mr" }, { "name": "Enthesopathy", "entity": "/m/08bvg8" }, { "name": "Enuresis", "entity": "/m/03gq2nq" }, { "name": "Eosinophilia", "entity": "/m/01jmy5" }, { "name": "Epicanthic fold", "entity": "/m/014x2z" }, { "name": "Epidermoid cyst", "entity": "/m/04mw9m" }, { "name": "Epigastric discomfort", "entity": "/m/0dl9tjd" }, { "name": "Epigastric pain", "entity": "/m/0dl9sc2" }, { "name": "Epilepsy", "entity": "/m/02vrr" }, { "name": "Epileptic seizure", "entity": "/m/06rhk" }, { "name": "Epiphora", "entity": "/m/02r3mv3" }, { "name": "Erectile dysfunction", "entity": "/m/03tkm" }, { "name": "Eructation", "entity": "/m/03q5_w" }, { "name": "Erythema", "entity": "/m/02mcv2" }, { "name": "Erythema ab igne", "entity": "/m/08wqbz" }, { "name": "Erythema chronicum migrans", "entity": "/m/0bzv6k" }, { "name": "Erythema gyratum repens", "entity": "/m/054gfnh" }, { "name": "Erythema marginatum", "entity": "/m/04nb5w" }, { "name": "Erythema multiforme", "entity": "/m/03s352" }, { "name": "Erythema nodosum", "entity": "/m/08fm2f" }, { "name": "Erythema toxicum neonatorum", "entity": "/m/09f0sx" }, { "name": "Erythrocyanosis crurum", "entity": "/m/05s_3gg" }, { "name": "Erythroleukoplakia", "entity": "/m/04r4mtm" }, { "name": "Erythromelalgia", "entity": "/m/03hcpy" }, { "name": "Erythroplakia", "entity": "/m/04trfb" }, { "name": "Eschar", "entity": "/m/03_m2p" }, { "name": "Esophageal dysphagia", "entity": "/m/047gmhy" }, { "name": "Esophageal varices", "entity": "/m/0340vp" }, { "name": "Esophagitis", "entity": "/m/01b_b2" }, { "name": "Esotropia", "entity": "/m/0184pc" }, { "name": "Eunuchism", "entity": "/m/07y4yqp" }, { "name": "Euphoria", "entity": "/m/02rj8by" }, { "name": "Evanescent", "entity": "/m/05mxfh7" }, { "name": "Ewart's sign", "entity": "/m/08zgjt" }, { "name": "Exanthem", "entity": "/m/07bblt" }, { "name": "Excessive crying", "entity": "/m/0dfmqjh" }, { "name": "Excessive daytime sleepiness", "entity": "/m/02y_82q" }, { "name": "Excruciating headache", "entity": "/m/0d83xlw" }, { "name": "Exercise intolerance", "entity": "/m/05k5sc" }, { "name": "Exercise-induced nausea", "entity": "/m/011b6z0v" }, { "name": "Exertional dyspnea", "entity": "/m/0dl9sbc" }, { "name": "Exophthalmos", "entity": "/m/05mjhy" }, { "name": "Exotropia", "entity": "/m/099x_8" }, { "name": "Extrapyramidal symptoms", "entity": "/m/09gkmws" }, { "name": "Exudate", "entity": "/m/02yj5k" }, { "name": "Eye discomfort", "entity": "/m/0dl9qcf" }, { "name": "Eye inflammation", "entity": "/m/06zxb3j" }, { "name": "Eye irritation", "entity": "/m/0dl9sgx" }, { "name": "Eye pain", "entity": "/m/05fs77x" }, { "name": "Eye sore", "entity": "/m/0dl9t6m" }, { "name": "Eye strain", "entity": "/m/07v7rh" }, { "name": "Fabella sign", "entity": "/m/02893yq" }, { "name": "Facial grimace", "entity": "/m/06w28x3" }, { "name": "Facial nerve paralysis", "entity": "/m/04mpk9" }, { "name": "Facial paralysis", "entity": "/m/07y4wlx" }, { "name": "Facial paresis", "entity": "/m/09z409" }, { "name": "Facial rash", "entity": "/m/0dl9smd" }, { "name": "Facial redness", "entity": "/m/07t7mr3" }, { "name": "Facial swelling", "entity": "/m/06_jyjk" }, { "name": "Faget sign", "entity": "/m/02qm5h6" }, { "name": "Failure to thrive", "entity": "/m/05xf16" }, { "name": "Falling", "entity": "/m/04f32c6" }, { "name": "Familial thoracic aortic aneurysm", "entity": "/m/03wzc0" }, { "name": "Far-sightedness", "entity": "/m/0248jp" }, { "name": "Fasciculation", "entity": "/m/062phb" }, { "name": "Fat pad sign", "entity": "/m/0285p8k" }, { "name": "Fatigue", "entity": "/m/01j6t0" }, { "name": "Fatigue syndrome", "entity": "/m/0dfmqjz" }, { "name": "Fatty liver", "entity": "/m/03s7fs" }, { "name": "Fear", "entity": "/m/02xrl" }, { "name": "Fear of Commitment", "entity": "/m/026r7rc" }, { "name": "Fear of falling", "entity": "/m/0278ng9" }, { "name": "Fear of the dark", "entity": "/m/03gq6y_" }, { "name": "Febrile neutrophilic dermatosis", "entity": "/m/09jw9n" }, { "name": "Febrile seizure", "entity": "/m/013q86" }, { "name": "Fecal incontinence", "entity": "/m/018h28" }, { "name": "Fecal urgency", "entity": "/m/0dl9qcx" }, { "name": "Feeding difficulties", "entity": "/m/05v24jd" }, { "name": "Feeling cold", "entity": "/m/0dl9sg9" }, { "name": "Feeling of fullness in the ear", "entity": "/m/075v3x9" }, { "name": "Feeling tense", "entity": "/m/0dl9sg2" }, { "name": "Feeling tired", "entity": "/m/0dl9tf6" }, { "name": "Female infertility", "entity": "/m/03bx9gs" }, { "name": "Fetal distress", "entity": "/m/02sj16" }, { "name": "Fetor", "entity": "/m/051ztp2" }, { "name": "Fetor hepaticus", "entity": "/m/068940" }, { "name": "Fever", "entity": "/m/0cjf0" }, { "name": "Fibrillation", "entity": "/m/0118lbwm" }, { "name": "Fibromyalgia", "entity": "/m/01v3ks" }, { "name": "Fibrosis", "entity": "/m/03nq4p" }, { "name": "Fidgeting", "entity": "/m/04y6tl1" }, { "name": "Finger numbness", "entity": "/m/0dl9t7l" }, { "name": "Flaccid paralysis", "entity": "/m/02qkp38" }, { "name": "Flashback", "entity": "/m/06jb7p" }, { "name": "Flatulence", "entity": "/m/06vg9d" }, { "name": "Flatulence", "entity": "/m/02_pz" }, { "name": "Fleischer ring", "entity": "/m/08vvjv" }, { "name": "Floater", "entity": "/m/018j1l" }, { "name": "Flushing", "entity": "/m/028n_3" }, { "name": "Focal neurologic signs", "entity": "/m/0286bt0" }, { "name": "Folate deficiency", "entity": "/m/0dt6ml" }, { "name": "Folie Ã  deux", "entity": "/m/03281" }, { "name": "Food addiction", "entity": "/m/04sws8" }, { "name": "Food craving", "entity": "/m/0b76y0" }, { "name": "Foot drop", "entity": "/m/0bcwy3" }, { "name": "Foot numbness", "entity": "/m/0dl9sn8" }, { "name": "Forchheimer spots", "entity": "/m/05q52l8" }, { "name": "Foreign body sensation", "entity": "/m/04kfh3v" }, { "name": "Forgetfulness", "entity": "/m/05bl1h2" }, { "name": "Formication", "entity": "/m/02p4g5n" }, { "name": "Fothergill's sign", "entity": "/m/0bdpwk" }, { "name": "Foul smelling urine", "entity": "/m/064f42c" }, { "name": "Fourth heart sound", "entity": "/m/04crvkn" }, { "name": "Fox's sign", "entity": "/m/05q7xv8" }, { "name": "Fragmentation of memory", "entity": "/m/0j642f1" }, { "name": "Frank's sign", "entity": "/m/04jkg8w" }, { "name": "Freckle", "entity": "/m/0fyd3" }, { "name": "Frequent respiratory infections", "entity": "/m/06h44t6" }, { "name": "Frequent urination", "entity": "/m/0c3_wg5" }, { "name": "Friedreich's sign", "entity": "/m/027m5l6" }, { "name": "Froment's sign", "entity": "/m/05l1p0" }, { "name": "Frontal release sign", "entity": "/m/03c2y05" }, { "name": "Frostbite", "entity": "/m/0213yl" }, { "name": "Fuchs' dystrophy", "entity": "/m/05pb2q" }, { "name": "Fugue state", "entity": "/m/02ybr" }, { "name": "Functio laesa", "entity": "/m/04f1nj8" }, { "name": "Furcation defect", "entity": "/m/06zlvw6" }, { "name": "Gait abnormality", "entity": "/m/06h94m" }, { "name": "Galactorrhea", "entity": "/m/03xmsb" }, { "name": "Gallop rhythm", "entity": "/m/0f87zq" }, { "name": "Gallstone", "entity": "/m/01q6mh" }, { "name": "Gangrene", "entity": "/m/01jj75" }, { "name": "Garland's triad", "entity": "/m/02pwkv7" }, { "name": "Garlic breath", "entity": "/m/0h_b7zb" }, { "name": "Gastric distension", "entity": "/m/01ppr8" }, { "name": "Gastric varices", "entity": "/m/0401r0" }, { "name": "Gastritis", "entity": "/m/03y91v" }, { "name": "Gastroesophageal reflux disease", "entity": "/m/01b_5g" }, { "name": "Gastrointestinal bleeding", "entity": "/m/03njtl" }, { "name": "Gastrointestinal Disorder", "entity": "/m/02kd1ry" }, { "name": "Gastrointestinal ulcers", "entity": "/m/04zh6_3" }, { "name": "Gastroparesis", "entity": "/m/02w1n2" }, { "name": "Gelastic seizure", "entity": "/m/0268flm" }, { "name": "Generalised tonic-clonic seizure", "entity": "/m/02r6d3v" }, { "name": "Generalized anxiety disorder", "entity": "/m/02zr3h" }, { "name": "Generalized erythema", "entity": "/m/05my3h5" }, { "name": "Genital sores", "entity": "/m/077598r" }, { "name": "Genital wart", "entity": "/m/019thv" }, { "name": "Genu varum", "entity": "/m/03pk5z" }, { "name": "Gestational hypertension", "entity": "/m/03p2br" }, { "name": "Giant-cell arteritis", "entity": "/m/07s7n" }, { "name": "Gigantism", "entity": "/m/01jmvq" }, { "name": "Gingival enlargement", "entity": "/m/02vl6qv" }, { "name": "Gingival recession", "entity": "/m/0dr8s9" }, { "name": "Gingivitis", "entity": "/m/01d20w" }, { "name": "Glabellar reflex", "entity": "/m/0b7n41" }, { "name": "Glabrousness", "entity": "/m/05__9r" }, { "name": "Gliosis", "entity": "/m/0chqj1" }, { "name": "Globus pharyngis", "entity": "/m/0czdw5" }, { "name": "Glomerulonephritis", "entity": "/m/04gfv_" }, { "name": "Glossitis", "entity": "/m/07ckc_" }, { "name": "Glossoptosis", "entity": "/m/0fkvcg" }, { "name": "Glucose-6-phosphate dehydrogenase deficiency", "entity": "/m/021tw2" }, { "name": "Glycosuria", "entity": "/m/05pcqg" }, { "name": "Goitre", "entity": "/m/036zm" }, { "name": "Golden S sign", "entity": "/m/05p6gjd" }, { "name": "Goldstein's toe sign", "entity": "/m/0f12tc" }, { "name": "Gonadal dysgenesis", "entity": "/m/02p9mm9" }, { "name": "Gonda's sign", "entity": "/m/05t0p53" }, { "name": "Goodell's sign", "entity": "/m/08kn5j" }, { "name": "Goose bumps", "entity": "/m/03ck2w" }, { "name": "Gordon's sign", "entity": "/m/05sz3_h" }, { "name": "Gorlin sign", "entity": "/m/02qlx7x" }, { "name": "Gout", "entity": "/m/0ffxt" }, { "name": "Gowers' sign", "entity": "/m/046b2p" }, { "name": "Graham Steell murmur", "entity": "/m/03cn9fh" }, { "name": "Grandiosity", "entity": "/m/041cwm" }, { "name": "Granuloma", "entity": "/m/029fv3" }, { "name": "Granuloma annulare", "entity": "/m/0cvpr9" }, { "name": "Graves' ophthalmopathy", "entity": "/m/0fl3qm" }, { "name": "Greasy hair", "entity": "/m/0nbv1vz" }, { "name": "Green stool", "entity": "/m/075g6sb" }, { "name": "Grey Turner's sign", "entity": "/m/0515k0" }, { "name": "Griffith's sign", "entity": "/m/05q5pbx" }, { "name": "Groin swelling", "entity": "/m/0dl9t17" }, { "name": "Ground-glass opacity", "entity": "/m/0j26_bj" }, { "name": "Growth hormone deficiency", "entity": "/m/02xh6k" }, { "name": "Guilt", "entity": "/m/036s6" }, { "name": "Gum sore", "entity": "/m/0dl9thm" }, { "name": "Guttate psoriasis", "entity": "/m/05c3rty" }, { "name": "Gynecologic hemorrhage", "entity": "/m/01q1wv" }, { "name": "Gynecomastia", "entity": "/m/07cszr" }, { "name": "Haemolacria", "entity": "/m/02675h9" }, { "name": "Hair loss", "entity": "/m/03bwzh1" }, { "name": "Half and half nails", "entity": "/m/05b0f3b" }, { "name": "Hallucination", "entity": "/m/0d3gy" }, { "name": "Halo sign", "entity": "/m/026f2g_" }, { "name": "Halos around lights", "entity": "/m/06_mrn4" }, { "name": "Hamman's sign", "entity": "/m/0cdg94" }, { "name": "Hammer toe", "entity": "/m/03vwp3" }, { "name": "Hampton hump", "entity": "/m/025yfnl" }, { "name": "Hand numbness", "entity": "/m/0dl9snq" }, { "name": "Hand swelling", "entity": "/m/0dl9t5l" }, { "name": "Hand tremor", "entity": "/m/0dl9sp5" }, { "name": "Happy demeanour", "entity": "/m/05v7ktz" }, { "name": "Harrison's groove", "entity": "/m/02q2vg0" }, { "name": "Head swelling", "entity": "/m/0dl9t9_" }, { "name": "Headache", "entity": "/m/0j5fv" }, { "name": "Hearing loss", "entity": "/m/014wq_" }, { "name": "Hearing problem", "entity": "/m/04tnmgr" }, { "name": "Heart block", "entity": "/m/031q2c" }, { "name": "Heart click", "entity": "/m/05mysbq" }, { "name": "Heart failure", "entity": "/m/01l2m3" }, { "name": "Heart murmur", "entity": "/m/01jg1z" }, { "name": "Heartburn", "entity": "/m/01bfsv" }, { "name": "Heat intolerance", "entity": "/m/0rpj80_" }, { "name": "Heautoscopy", "entity": "/m/026qjtk" }, { "name": "Heavy legs", "entity": "/m/051ynwt" }, { "name": "Heberden's node", "entity": "/m/054s8y" }, { "name": "Hegar's sign", "entity": "/m/084stp" }, { "name": "Heinz body", "entity": "/m/0c58b0" }, { "name": "Hemangioma", "entity": "/m/03jcdy" }, { "name": "Hematemesis", "entity": "/m/02n2t1" }, { "name": "Hematidrosis", "entity": "/m/01p1by" }, { "name": "Hematochezia", "entity": "/m/02n2gk" }, { "name": "Hematoma", "entity": "/m/032ssz" }, { "name": "Hematospermia", "entity": "/m/0bblkc" }, { "name": "Hematuria", "entity": "/m/02sc7d" }, { "name": "Hemihypertrophy", "entity": "/m/03h1038" }, { "name": "Hemiparesis", "entity": "/m/03j3s" }, { "name": "Hemiparesthesia", "entity": "/m/0r3w6pn" }, { "name": "Hemiplegia", "entity": "/m/04n8p1" }, { "name": "Hemispatial neglect", "entity": "/m/03ttjj" }, { "name": "Hemolysis", "entity": "/m/0j8q4" }, { "name": "Hemolytic anemia", "entity": "/m/02skgx" }, { "name": "Hemoperitoneum", "entity": "/m/0g9qbf" }, { "name": "Hemoptysis", "entity": "/m/01g920" }, { "name": "Hemosiderinuria", "entity": "/m/02w7_tf" }, { "name": "Hemothorax", "entity": "/m/06rt3n" }, { "name": "Hemotympanum", "entity": "/m/04gvbrl" }, { "name": "Hepatic encephalopathy", "entity": "/m/046cxb" }, { "name": "Hepatomegaly", "entity": "/m/055_gj" }, { "name": "Hepatopulmonary syndrome", "entity": "/m/0273jfd" }, { "name": "Hepatorenal syndrome", "entity": "/m/06vqzq" }, { "name": "Hepatosplenomegaly", "entity": "/m/03zr21" }, { "name": "Hepatotoxicity", "entity": "/m/02clhl" }, { "name": "Hereditary multiple exostoses", "entity": "/m/03y9lb" }, { "name": "Heterochromia", "entity": "/m/02w_rc" }, { "name": "Hibernating myocardium", "entity": "/m/031ryh" }, { "name": "Hiccup", "entity": "/m/02p3nc" }, { "name": "Hickey", "entity": "/m/02497k" }, { "name": "High fever", "entity": "/m/0dl9tl9" }, { "name": "High-arched palate", "entity": "/m/0135xpqd" }, { "name": "High-grade fever", "entity": "/m/06_9btt" }, { "name": "HigoumÃ©nakis' sign", "entity": "/m/03hkgqq" }, { "name": "Hirano body", "entity": "/m/074fyv" }, { "name": "Hirsutism", "entity": "/m/0ps0b" }, { "name": "HIV disease-related drug reaction", "entity": "/m/05f44rg" }, { "name": "Hives", "entity": "/m/03nky3" }, { "name": "Hoffmann's sign", "entity": "/m/08fkxt" }, { "name": "Hollenhorst plaque", "entity": "/m/0c2pby" }, { "name": "Homans sign", "entity": "/m/08ytrd" }, { "name": "Homicidal ideation", "entity": "/m/04125r2" }, { "name": "Hoover's sign", "entity": "/m/04q33th" }, { "name": "Hoover's sign", "entity": "/m/04q27cv" }, { "name": "Horner's syndrome", "entity": "/m/04v0fj" }, { "name": "Horseshoe kidney", "entity": "/m/06gfc6" }, { "name": "Hostility", "entity": "/m/02p74_2" }, { "name": "Hot flash", "entity": "/m/033488" }, { "name": "Howshipâ€“Romberg sign", "entity": "/m/04n3pf3" }, { "name": "Hunger", "entity": "/m/0135xt" }, { "name": "Hutchinson's pupil", "entity": "/m/05q4106" }, { "name": "Hutchinson's sign", "entity": "/m/05q9wp1" }, { "name": "Hutchinson's teeth", "entity": "/m/036mdg" }, { "name": "Hydrocele", "entity": "/m/04vy02" }, { "name": "Hydrocephalus", "entity": "/m/01cw5r" }, { "name": "Hyperactivity", "entity": "/m/04txf7" }, { "name": "Hyperacusis", "entity": "/m/04xpzs" }, { "name": "Hyperaemia", "entity": "/m/08859_" }, { "name": "Hyperalgesia", "entity": "/m/03z_m7" }, { "name": "Hyperammonemia", "entity": "/m/02p0x7" }, { "name": "Hyperandrogenism", "entity": "/m/04n7g6q" }, { "name": "Hypercalcaemia", "entity": "/m/02k540" }, { "name": "Hypercalciuria", "entity": "/m/03bxj79" }, { "name": "Hypercapnia", "entity": "/m/02hlph" }, { "name": "Hypercholesterolemia", "entity": "/m/02k7pj" }, { "name": "Hyperekplexia", "entity": "/m/0c4304" }, { "name": "Hyperemesis gravidarum", "entity": "/m/06t7dc" }, { "name": "Hypereosinophilia", "entity": "/m/0gty88" }, { "name": "Hyperesthesia", "entity": "/m/0btccj" }, { "name": "Hyperestrogenism", "entity": "/m/0j_5n3_" }, { "name": "Hyperglycemia", "entity": "/m/0kfqw" }, { "name": "Hypergraphia", "entity": "/m/02hgsj" }, { "name": "Hyperhidrosis", "entity": "/m/03jbly" }, { "name": "Hyperkalemia", "entity": "/m/037h0g" }, { "name": "Hyperkeratosis", "entity": "/m/05qymp" }, { "name": "Hyperkinesia", "entity": "/m/027p8_f" }, { "name": "Hyperlipidemia", "entity": "/m/05f45h" }, { "name": "Hypermobility", "entity": "/m/0b9f_5" }, { "name": "Hypernatremia", "entity": "/m/03xr5j" }, { "name": "Hyperosmia", "entity": "/m/02x39__" }, { "name": "Hyperoxia", "entity": "/m/06wcg52" }, { "name": "Hyperpathia", "entity": "/m/02731s6" }, { "name": "Hyperphosphatemia", "entity": "/m/042g01" }, { "name": "Hyperpigmentation", "entity": "/m/046z7d" }, { "name": "Hyperreflexia", "entity": "/m/04bl90" }, { "name": "Hypersalivation", "entity": "/m/0fpjgc1" }, { "name": "Hypersexuality", "entity": "/m/01g5ln" }, { "name": "Hypersomnia", "entity": "/m/03cfcn" }, { "name": "Hypertelorism", "entity": "/m/08wwvw" }, { "name": "Hypertension", "entity": "/m/0k95h" }, { "name": "Hyperthermia", "entity": "/m/0k10t" }, { "name": "Hyperthyroidism", "entity": "/m/03hz0" }, { "name": "Hypertonia", "entity": "/m/092xnv" }, { "name": "Hypertrichosis", "entity": "/m/04lj5j" }, { "name": "Hypertriglyceridemia", "entity": "/m/02_sbz" }, { "name": "Hypertrophic osteoarthropathy", "entity": "/m/04czf0w" }, { "name": "Hypertrophy", "entity": "/m/02vrdn" }, { "name": "Hyperuricemia", "entity": "/m/02hl8g" }, { "name": "Hyperventilation", "entity": "/m/021m_f" }, { "name": "Hypervigilance", "entity": "/m/085x_0" }, { "name": "Hyphema", "entity": "/m/08dkq0" }, { "name": "Hypnic jerk", "entity": "/m/01_wn1" }, { "name": "Hypoactive sexual desire disorder", "entity": "/m/0255l5" }, { "name": "Hypoalbuminemia", "entity": "/m/09bl05" }, { "name": "Hypobulia", "entity": "/m/0h1gt3g" }, { "name": "Hypocalcaemia", "entity": "/m/02k53m" }, { "name": "Hypocalciuria", "entity": "/m/0463t6w" }, { "name": "Hypodactylia", "entity": "/m/0df47x" }, { "name": "Hypoesthesia", "entity": "/m/027q6ds" }, { "name": "Hypogeusia", "entity": "/m/02qgl1w" }, { "name": "Hypoglycemia", "entity": "/m/03gwt" }, { "name": "Hypogonadism", "entity": "/m/038k4x" }, { "name": "Hypogonadotropic hypogonadism", "entity": "/m/0j_33wy" }, { "name": "Hypohidrosis", "entity": "/m/04yfs7" }, { "name": "Hypokalemia", "entity": "/m/03vmt0" }, { "name": "Hypokinesia", "entity": "/m/06_8j3" }, { "name": "Hypomania", "entity": "/m/0bk6q" }, { "name": "Hypomelanic macules", "entity": "/m/0ht87t7" }, { "name": "Hypomenorrhea", "entity": "/m/0412nq4" }, { "name": "Hypomimia", "entity": "/m/0262l9q" }, { "name": "Hypoparathyroidism", "entity": "/m/0340yl" }, { "name": "Hypophonia", "entity": "/m/0bbv3wx" }, { "name": "Hypopigmentation", "entity": "/m/048hpn" }, { "name": "Hyporeflexia", "entity": "/m/0dr4b5" }, { "name": "Hyposmia", "entity": "/m/0fjwcj" }, { "name": "Hypotension", "entity": "/m/02hvph" }, { "name": "Hypothermia", "entity": "/m/012rps" }, { "name": "Hypothyroidism", "entity": "/m/0hg11" }, { "name": "Hypotonia", "entity": "/m/03wbww" }, { "name": "Hypouricemia", "entity": "/m/09_m33" }, { "name": "Hypoventilation", "entity": "/m/02fwvl" }, { "name": "Hypovolemia", "entity": "/m/02hwb2" }, { "name": "Hypoxemia", "entity": "/m/025sd3c" }, { "name": "Hypoxia", "entity": "/m/03gns" }, { "name": "Hypsarrhythmia", "entity": "/m/0cdwzx" }, { "name": "Ichthyosis", "entity": "/m/02wgfv" }, { "name": "Ileus", "entity": "/m/0443mq" }, { "name": "Illusory palinopsia", "entity": "/m/011q023m" }, { "name": "Imbalance", "entity": "/m/0dl9tjv" }, { "name": "Immobility", "entity": "/m/0dl9s9q" }, { "name": "Immunodeficiency", "entity": "/m/02yg4w" }, { "name": "Immunosuppression", "entity": "/m/016mlj" }, { "name": "Impetigo", "entity": "/m/0mzty" }, { "name": "Implantation bleeding", "entity": "/m/013027b9" }, { "name": "Impulsivity", "entity": "/m/03d5xbx" }, { "name": "Inattention", "entity": "/m/0dl9szx" }, { "name": "Incoherent speech", "entity": "/m/0dl9t8x" }, { "name": "Incontinence", "entity": "/m/04zvx6w" }, { "name": "Incoordination", "entity": "/m/0dl9t2h" }, { "name": "Increased vaginal discharge", "entity": "/m/04tnn60" }, { "name": "Indigestion", "entity": "/m/04kl78" }, { "name": "Infarction", "entity": "/m/02vnfx" }, { "name": "Infection", "entity": "/m/098s1" }, { "name": "Inferiority complex", "entity": "/m/03c9vn" }, { "name": "Infertility", "entity": "/m/018g78" }, { "name": "Inflammation", "entity": "/m/0j7_w" }, { "name": "Inflammatory bowel disease", "entity": "/m/02x0yg" }, { "name": "Influenza-like illness", "entity": "/m/05_5py4" }, { "name": "Ingrown hair", "entity": "/m/0cmmcy" }, { "name": "Inguinal lymphadenopathy", "entity": "/m/0dl9spk" }, { "name": "Insomnia", "entity": "/m/0ddwt" }, { "name": "Intellectual disability", "entity": "/m/09fz4" }, { "name": "Intention tremor", "entity": "/m/0ccqn_" }, { "name": "Intermittent claudication", "entity": "/m/04qydt" }, { "name": "Internal bleeding", "entity": "/m/02xb32" }, { "name": "Internuclear ophthalmoplegia", "entity": "/m/08hkdc" }, { "name": "Interrupted aortic arch", "entity": "/m/0gkds8" }, { "name": "Intertrigo", "entity": "/m/05l4gz" }, { "name": "Intestinal cramps", "entity": "/m/0dl9th4" }, { "name": "Intestinal pseudo-obstruction", "entity": "/m/0bj09q" }, { "name": "Intestinal varices", "entity": "/m/0401rc" }, { "name": "Intracerebral hemorrhage", "entity": "/m/08g5q7" }, { "name": "Intracranial aneurysm", "entity": "/m/01g45j" }, { "name": "Intranodal palisaded myofibroblastoma", "entity": "/m/0h7msvs" }, { "name": "Intrauterine growth restriction", "entity": "/m/05pdffb" }, { "name": "Inverse psoriasis", "entity": "/m/05mrtv4" }, { "name": "Inverted nipple", "entity": "/m/071nxk" }, { "name": "Iritis", "entity": "/m/04jy9m" }, { "name": "Iron deficiency", "entity": "/m/014x04" }, { "name": "Iron overload", "entity": "/m/02n_ct" }, { "name": "Irregular breathing", "entity": "/m/0dl9s_l" }, { "name": "Irregular menstruation", "entity": "/m/05bm66n" }, { "name": "Irritability", "entity": "/m/083h_x" }, { "name": "Irritable male syndrome", "entity": "/m/05t28b" }, { "name": "Irritant diaper dermatitis", "entity": "/m/025r6w" }, { "name": "Ischemia", "entity": "/m/02gr6s" }, { "name": "Isosthenuria", "entity": "/m/026f2q6" }, { "name": "Itch", "entity": "/m/04kllm9" }, { "name": "Itchy eyes", "entity": "/m/0654nrv" }, { "name": "Itchy scalp", "entity": "/m/0775b_h" }, { "name": "Jaundice", "entity": "/m/0hgxh" }, { "name": "Jaw claudication", "entity": "/m/012n8p91" }, { "name": "Joffroy's sign", "entity": "/m/05q9ykd" }, { "name": "Joint effusion", "entity": "/m/0b74b60" }, { "name": "Joint locking", "entity": "/m/05p2zl8" }, { "name": "Joint pain", "entity": "/m/021hck" }, { "name": "Joint stiffness", "entity": "/m/088b11" }, { "name": "Joint swelling", "entity": "/m/0dl9s7p" }, { "name": "Jugular venous pressure", "entity": "/m/03f3w1" }, { "name": "Kanavel's cardinal signs", "entity": "/m/05q61pp" }, { "name": "Kaposi's sarcoma", "entity": "/m/0bqpg" }, { "name": "Kayserâ€“Fleischer ring", "entity": "/m/036mhw" }, { "name": "Kehr's sign", "entity": "/m/046y3g" }, { "name": "Kelly's sign", "entity": "/m/05q7d_4" }, { "name": "Keratitis", "entity": "/m/02dfr6" }, { "name": "Keratocyst", "entity": "/m/09rvk1t" }, { "name": "Kerley lines", "entity": "/m/0ck_v6" }, { "name": "Kerr's sign", "entity": "/m/0j7l6mj" }, { "name": "Ketoacidosis", "entity": "/m/02mwg6" }, { "name": "Ketonuria", "entity": "/m/095xr2" }, { "name": "Khodadoust line", "entity": "/m/0b6n52c" }, { "name": "Kidney Damage", "entity": "/m/02kb_v7" }, { "name": "Kidney failure", "entity": "/m/01psyx" }, { "name": "Kidney pain", "entity": "/m/0dl9t4p" }, { "name": "Kidney stone", "entity": "/m/09hbx" }, { "name": "Kinking hair", "entity": "/m/05b1qcr" }, { "name": "Knee effusion", "entity": "/m/03bxmbn" }, { "name": "Knee pain", "entity": "/m/09v868h" }, { "name": "Kocher's sign", "entity": "/m/0bbvr3p" }, { "name": "Koebner phenomenon", "entity": "/m/0gffcz" }, { "name": "Koeppe's nodules", "entity": "/m/05q5xyj" }, { "name": "Koilonychia", "entity": "/m/0gj4qx" }, { "name": "Koplik's spots", "entity": "/m/038d_j" }, { "name": "Kussmaul breathing", "entity": "/m/036mkm" }, { "name": "Kussmaul's sign", "entity": "/m/03f1lf" }, { "name": "Kyphosis", "entity": "/m/02jrl1" }, { "name": "LÃ©pine's sign", "entity": "/m/0gtxsrh" }, { "name": "Labor pain", "entity": "/m/07y4z32" }, { "name": "Labored breathing", "entity": "/m/09k6f04" }, { "name": "Lack of concentration", "entity": "/m/06wfn90" }, { "name": "Lacrimation", "entity": "/m/0dl9sy8" }, { "name": "Lactose intolerance", "entity": "/m/0fp3b" }, { "name": "Ladin's sign", "entity": "/m/05q3xhg" }, { "name": "Lancisi's sign", "entity": "/m/05q49dz" }, { "name": "Lanugo", "entity": "/m/04g22n" }, { "name": "Large feet", "entity": "/m/06vz7h7" }, { "name": "Laryngeal cleft", "entity": "/m/0bbvqnv" }, { "name": "Laryngitis", "entity": "/m/02l37c" }, { "name": "Laryngopharyngeal reflux", "entity": "/m/047bx2y" }, { "name": "Laryngospasm", "entity": "/m/08zhxx" }, { "name": "Lazarus sign", "entity": "/m/063_d30" }, { "name": "Leaning to one side", "entity": "/m/0703vzb" }, { "name": "Learning disability", "entity": "/m/02qwpq0" }, { "name": "Left Bundle Branch Block", "entity": "/m/09k76g" }, { "name": "Left ventricular hypertrophy", "entity": "/m/04dxph" }, { "name": "Leg cramps", "entity": "/m/0dl9s41" }, { "name": "Leserâ€“TrÃ©lat sign", "entity": "/m/08zm6q" }, { "name": "Lesion", "entity": "/m/01w0hx" }, { "name": "Lethargy", "entity": "/m/012815pn" }, { "name": "Leucocoria", "entity": "/m/0bswkr" }, { "name": "Leukemia", "entity": "/m/04psf" }, { "name": "Leukemia cutis", "entity": "/m/0642tmh" }, { "name": "Leukocytosis", "entity": "/m/03btw1" }, { "name": "Leukopenia", "entity": "/m/03zrfj" }, { "name": "Leukoplakia", "entity": "/m/03l365" }, { "name": "Leukorrhea", "entity": "/m/06kjt9" }, { "name": "Levine's sign", "entity": "/m/064v9c" }, { "name": "Lhermitte's sign", "entity": "/m/064n9x" }, { "name": "Lightheadedness", "entity": "/m/079p0q" }, { "name": "Limbus sign", "entity": "/m/0hzqvxv" }, { "name": "Limited symptom attack", "entity": "/m/02v_qsl" }, { "name": "Limp", "entity": "/m/04plrq" }, { "name": "Lines of Zahn", "entity": "/m/0286w6_" }, { "name": "Lip numbness", "entity": "/m/0dl9tgq" }, { "name": "Lipodermatosclerosis", "entity": "/m/04jh911" }, { "name": "Lipodystrophy", "entity": "/m/01l2st" }, { "name": "Lisch nodule", "entity": "/m/03yztw" }, { "name": "Lisker's sign", "entity": "/m/0958cm" }, { "name": "Litten's sign", "entity": "/m/05s_27m" }, { "name": "Livedo racemosa", "entity": "/m/0cz8jtj" }, { "name": "Livedo reticularis", "entity": "/m/08wrk9" }, { "name": "Livedoid vasculitis", "entity": "/m/06ztvxs" }, { "name": "Liver failure", "entity": "/m/02psvcf" }, { "name": "Liver pain", "entity": "/m/0dl9t2y" }, { "name": "Lloyd's sign", "entity": "/m/04lf42r" }, { "name": "Locked-in syndrome", "entity": "/m/014mtn" }, { "name": "Logorrhea", "entity": "/m/09v4pxz" }, { "name": "Loneliness", "entity": "/m/05c7vv" }, { "name": "Lordosis", "entity": "/m/03_039" }, { "name": "Loss of height", "entity": "/m/06vymcn" }, { "name": "Loss of interest", "entity": "/m/06wfz5f" }, { "name": "Loud breathing", "entity": "/m/04rkydh" }, { "name": "Low back pain", "entity": "/m/020hwm" }, { "name": "Low birth weight", "entity": "/m/0dl9s49" }, { "name": "Low-set ears", "entity": "/m/04ct6c6" }, { "name": "Lowenberg's sign", "entity": "/m/0bh8863" }, { "name": "Lower motor neuron lesion", "entity": "/m/02q_qps" }, { "name": "Lower respiratory tract infection", "entity": "/m/03txkl" }, { "name": "Lucid interval", "entity": "/m/08sx5r" }, { "name": "Lumbar hyperlordosis", "entity": "/m/057nwjj" }, { "name": "Lump in the palm", "entity": "/m/07475k7" }, { "name": "Lump on the eyelid", "entity": "/m/072b9px" }, { "name": "Lupus headache", "entity": "/m/05f4z9f" }, { "name": "Lymphedema", "entity": "/m/04r36" }, { "name": "Lymphocytopenia", "entity": "/m/08z6j9" }, { "name": "Lymphocytosis", "entity": "/m/01jn3l" }, { "name": "Lymphoid hyperplasia", "entity": "/m/03cs5n6" }, { "name": "MÃ_ller's sign", "entity": "/m/0fltlr" }, { "name": "MÃ¶bius sign", "entity": "/m/05s_wdw" }, { "name": "Macewen's sign", "entity": "/m/049z6g" }, { "name": "Macrocephaly", "entity": "/m/07b8s3" }, { "name": "Macroglossia", "entity": "/m/069j2k" }, { "name": "Maculopapular rash", "entity": "/m/05lrqf" }, { "name": "Magnan's sign", "entity": "/m/05s_78v" }, { "name": "Magnetic gait", "entity": "/m/04csj2b" }, { "name": "Major depressive disorder", "entity": "/m/02bft" }, { "name": "Major depressive episode", "entity": "/m/0bf0tv" }, { "name": "Malabsorption", "entity": "/m/03f07j" }, { "name": "Malaise", "entity": "/m/0418s3" }, { "name": "Malar flush", "entity": "/m/0tkcw_z" }, { "name": "Malar rash", "entity": "/m/04t_81" }, { "name": "Male infertility", "entity": "/m/03bx917" }, { "name": "Malnutrition", "entity": "/m/01m4w4" }, { "name": "Malocclusion", "entity": "/m/06r0ps" }, { "name": "Mania", "entity": "/m/05417" }, { "name": "Manic episode", "entity": "/m/01srx9" }, { "name": "Markle sign", "entity": "/m/05s_kz_" }, { "name": "Mass on penis", "entity": "/m/075yg4y" }, { "name": "Matchbox sign", "entity": "/m/04f68fy" }, { "name": "Mechanism of action", "entity": "/m/0d2x17" }, { "name": "Mediastinal fibrosis", "entity": "/m/0f9f42" }, { "name": "Medulloblastoma", "entity": "/m/0bbl62" }, { "name": "Megacolon", "entity": "/m/07qctz" }, { "name": "Megaloblast", "entity": "/m/04f2b7p" }, { "name": "Melancholia", "entity": "/m/057vp" }, { "name": "Melanocytic nevus", "entity": "/m/0dc28" }, { "name": "Melasma", "entity": "/m/04z9bf" }, { "name": "Melena", "entity": "/m/02n2tg" }, { "name": "Memory impairment", "entity": "/m/03z97xk" }, { "name": "Meningism", "entity": "/m/04v_ml" }, { "name": "Meningitis", "entity": "/m/09d11" }, { "name": "Menorrhagia", "entity": "/m/031c33" }, { "name": "Menstrual disorder", "entity": "/m/0b5pfn" }, { "name": "Mental disorder", "entity": "/m/04x4r" }, { "name": "Mental space", "entity": "/m/0swnk68" }, { "name": "Metabolic acidosis", "entity": "/m/04tksh" }, { "name": "Metabolic alkalosis", "entity": "/m/025sktj" }, { "name": "Metamorphopsia", "entity": "/m/0j3cg_n" }, { "name": "Metaplasia", "entity": "/m/059h7h" }, { "name": "Metastatic liver disease", "entity": "/m/047cg9y" }, { "name": "Methemoglobinemia", "entity": "/m/01npzs" }, { "name": "Metrorrhagia", "entity": "/m/08_6kp" }, { "name": "Microalbuminuria", "entity": "/m/07y7r4" }, { "name": "Microcalcification", "entity": "/m/095qsg" }, { "name": "Microcephaly", "entity": "/m/01hrbm" }, { "name": "Micrognathism", "entity": "/m/0gjf_1" }, { "name": "Micrographia", "entity": "/m/0ch8r9" }, { "name": "Micromastia", "entity": "/m/09pv41" }, { "name": "Microorchidism", "entity": "/m/06_vzzv" }, { "name": "Micropolygyria", "entity": "/m/03c3y1s" }, { "name": "Micropsia", "entity": "/m/04fznr6" }, { "name": "Midcycle spotting", "entity": "/m/0dl9t3s" }, { "name": "Middle back pain", "entity": "/m/09rlb3" }, { "name": "Migraine", "entity": "/m/05904" }, { "name": "Mild cough", "entity": "/m/0dl9qdv" }, { "name": "Mild depression", "entity": "/m/0dl9t8d" }, { "name": "Mild fever", "entity": "/m/0dl9qd_" }, { "name": "Milium", "entity": "/m/0527by" }, { "name": "Miosis", "entity": "/m/03smvc" }, { "name": "Mitral valve prolapse", "entity": "/m/02np4g" }, { "name": "Mixed affective state", "entity": "/m/05mzxw" }, { "name": "Monoclonal gammopathy", "entity": "/m/05fc8yb" }, { "name": "Monomelic amyotrophy", "entity": "/m/06399d" }, { "name": "Monoparesis - leg", "entity": "/m/0dl9s__" }, { "name": "Monoplegia", "entity": "/m/08bnqd" }, { "name": "Monothematic delusion", "entity": "/m/08vx8s" }, { "name": "Mood disorder", "entity": "/m/0drn8" }, { "name": "Mood swing", "entity": "/m/022y3k" }, { "name": "Moodiness", "entity": "/m/0dl9stt" }, { "name": "Moon face", "entity": "/m/02prmbk" }, { "name": "Morning sickness", "entity": "/m/01j9hg" }, { "name": "Morphea", "entity": "/m/09lkp9" }, { "name": "Morsicatio buccarum", "entity": "/m/0bwgtst" }, { "name": "Motion sickness", "entity": "/m/0gxcc" }, { "name": "Motor restlessness", "entity": "/m/07873tt" }, { "name": "Motor Skills Disorders", "entity": "/m/05m9tg" }, { "name": "Mottled skin", "entity": "/m/0dl9srn" }, { "name": "Mouth breathing", "entity": "/m/08gzn6" }, { "name": "Mouth lesion", "entity": "/m/0dl9s61" }, { "name": "Mouth sore", "entity": "/m/0dl9syy" }, { "name": "Movement disorders", "entity": "/m/03whtc" }, { "name": "Mucopurulent discharge", "entity": "/m/0c0g_p" }, { "name": "Mucosal lentigines", "entity": "/m/064klw1" }, { "name": "Muehrcke's nails", "entity": "/m/02z08b_" }, { "name": "Mulberry molar", "entity": "/m/0crg69x" }, { "name": "Mulder's sign", "entity": "/m/02ql7wc" }, { "name": "Multiple organ dysfunction syndrome", "entity": "/m/03hnn3" }, { "name": "Mumoli's sign", "entity": "/m/027jv1q" }, { "name": "Munro's microabscess", "entity": "/m/05m_jf3" }, { "name": "Munson's sign", "entity": "/m/0415_dy" }, { "name": "Murphy's sign", "entity": "/m/071ttc" }, { "name": "Muscle atrophy", "entity": "/m/0dds0h" }, { "name": "Muscle contraction", "entity": "/m/046xb9" }, { "name": "Muscle pain", "entity": "/m/013677" }, { "name": "Muscle rigidity", "entity": "/m/0dl9r5h" }, { "name": "Muscle weakness", "entity": "/m/0927l7" }, { "name": "Muscular stiffness", "entity": "/m/0dl9s8r" }, { "name": "Musculoskeletal pain", "entity": "/m/04klj9n" }, { "name": "Musical hallucinations", "entity": "/m/0p8zvc5" }, { "name": "Muteness", "entity": "/m/0287zzh" }, { "name": "Mydriasis", "entity": "/m/01dhgh" }, { "name": "Myelodysplastic syndrome", "entity": "/m/019gky" }, { "name": "Myelopathy", "entity": "/m/04_1ntx" }, { "name": "Myerson's sign", "entity": "/m/04vvbx" }, { "name": "Myocardial infarction", "entity": "/m/0gk4g" }, { "name": "Myocardial scarring", "entity": "/m/06w7x1v" }, { "name": "Myoclonus", "entity": "/m/02_mfs" }, { "name": "Myoglobinuria", "entity": "/m/08bbk2" }, { "name": "Myopathic gait", "entity": "/m/04cw8c5" }, { "name": "Myopathy", "entity": "/m/058k0k" }, { "name": "Myxedema", "entity": "/m/02wp6c" }, { "name": "Nagayama's spots", "entity": "/m/0c41jph" }, { "name": "Nail clubbing", "entity": "/m/02qbnn" }, { "name": "Nail pitting", "entity": "/m/010pyz4s" }, { "name": "Narcissism", "entity": "/m/0dvxcy" }, { "name": "Narrow stools", "entity": "/m/04mvdf9" }, { "name": "Nasal breathing", "entity": "/m/09prs9" }, { "name": "Nasal congestion", "entity": "/m/05s5v6" }, { "name": "Nasal polyp", "entity": "/m/034hsj" }, { "name": "Nasal septum deviation", "entity": "/m/05cz29" }, { "name": "Nausea", "entity": "/m/0gxb2" }, { "name": "Near-sightedness", "entity": "/m/0m2w3" }, { "name": "Neck mass", "entity": "/m/0crhp0y" }, { "name": "Neck pain", "entity": "/m/02r3cvb" }, { "name": "Neck rash", "entity": "/m/0dl9tg2" }, { "name": "Neck spasm", "entity": "/m/043s7zg" }, { "name": "Neck stiffness", "entity": "/m/0bmgh43" }, { "name": "Neck swelling", "entity": "/m/0dl9t66" }, { "name": "Necrobiosis", "entity": "/m/03m3q96" }, { "name": "Necrolytic acral erythema", "entity": "/m/0c3x745" }, { "name": "Necrosis", "entity": "/m/09yql" }, { "name": "Neonatal jaundice", "entity": "/m/074hph" }, { "name": "Neovascularization", "entity": "/m/0bk1jp" }, { "name": "Nephritic syndrome", "entity": "/m/06yg6t" }, { "name": "Nephrocalcinosis", "entity": "/m/02py_03" }, { "name": "Nephromegaly", "entity": "/m/043ryvl" }, { "name": "Nephrotic syndrome", "entity": "/m/01n597" }, { "name": "Nerve injury", "entity": "/m/02pm604" }, { "name": "Neuralgia", "entity": "/m/05kzxm" }, { "name": "Neurofibroma", "entity": "/m/08gljx" }, { "name": "Neurogenic claudication", "entity": "/m/02x2gtl" }, { "name": "Neuroinflammation", "entity": "/m/0zbvc0s" }, { "name": "Neuropathic Pain", "entity": "/m/09gnhp2" }, { "name": "Neutrophilia", "entity": "/m/01jjvn" }, { "name": "Nevus spilus", "entity": "/m/05m_5tq" }, { "name": "Nicoladoni sign", "entity": "/m/04mxtkc" }, { "name": "Nicotine withdrawal", "entity": "/m/027ymbg" }, { "name": "Night sweats", "entity": "/m/04klgqw" }, { "name": "Night terror", "entity": "/m/0272zb" }, { "name": "Nightmare", "entity": "/m/0cjgc" }, { "name": "Nikolsky's sign", "entity": "/m/096_r8" }, { "name": "Nipple discharge", "entity": "/m/04696g" }, { "name": "Nipple tenderness", "entity": "/m/04mv7sh" }, { "name": "Nocturia", "entity": "/m/0868jh" }, { "name": "Nocturnal Cough", "entity": "/m/06gx48f" }, { "name": "Nocturnal enuresis", "entity": "/m/01wy8y" }, { "name": "Nodule", "entity": "/m/0905_p" }, { "name": "Nonossifying fibroma", "entity": "/m/05p2wz1" }, { "name": "Nosebleed", "entity": "/m/02zbth" }, { "name": "Nosophobia", "entity": "/m/027__kf" }, { "name": "Nuclear sclerosis", "entity": "/m/0bbmp2" }, { "name": "Nucleated red blood cell", "entity": "/m/012w48z4" }, { "name": "Numbness in leg", "entity": "/m/0dl9tg8" }, { "name": "Numbness of face", "entity": "/m/0dl9sm4" }, { "name": "Nyctalopia", "entity": "/m/04970l" }, { "name": "Nystagmus", "entity": "/m/01skrq" }, { "name": "Obesity", "entity": "/m/0fltx" }, { "name": "Obstructed defecation", "entity": "/m/0m0ph75" }, { "name": "Obtundation", "entity": "/m/0b0kl9" }, { "name": "Obturator sign", "entity": "/m/0d0_xj" }, { "name": "Ocular rosacea", "entity": "/m/03rd74" }, { "name": "Oculocutaneous albinism", "entity": "/m/047glfs" }, { "name": "odd sensations", "entity": "/m/011l_39k" }, { "name": "Odynophagia", "entity": "/m/0997hp" }, { "name": "Odynorgasmia", "entity": "/m/03cx4hf" }, { "name": "Oily skin", "entity": "/m/0dl9sfn" }, { "name": "Oligodactyly", "entity": "/m/0b743ls" }, { "name": "Oligomenorrhea", "entity": "/m/04yyq8" }, { "name": "Oligospermia", "entity": "/m/06z9sn" }, { "name": "Oliguria", "entity": "/m/04b1kq" }, { "name": "Oliver's sign", "entity": "/m/0c2p34" }, { "name": "One hip higher than the other", "entity": "/m/0703vvz" }, { "name": "Oneiroid syndrome", "entity": "/m/027g3ht" }, { "name": "Onychocryptosis", "entity": "/m/0476hh" }, { "name": "Onychorrhexis", "entity": "/m/090ryn" }, { "name": "Onychoschizia", "entity": "/m/05b2v23" }, { "name": "Ophthalmoparesis", "entity": "/m/08grsz" }, { "name": "Opisthotonus", "entity": "/m/04bm26" }, { "name": "Oppenheim's sign", "entity": "/m/04qb4w9" }, { "name": "Opportunistic infection", "entity": "/m/064f44" }, { "name": "Optic nerve hypoplasia", "entity": "/m/03qvff" }, { "name": "Optic neuritis", "entity": "/m/05pzb" }, { "name": "Optic papillitis", "entity": "/m/065zh_3" }, { "name": "Oral bleeding", "entity": "/m/04r4mtz" }, { "name": "Oral infection", "entity": "/m/05blzpg" }, { "name": "Oral Manifestations", "entity": "/m/07y4xdl" }, { "name": "Organ dysfunction", "entity": "/m/04y5q8x" }, { "name": "Organomegaly", "entity": "/m/06b4_8" }, { "name": "Orofacial pain", "entity": "/m/0wf_p0n" }, { "name": "Oropharyngeal dysphagia", "entity": "/m/047gmhk" }, { "name": "Orthopnea", "entity": "/m/02lmp9" }, { "name": "Orthostatic hypertension", "entity": "/m/0hn9q6v" }, { "name": "Orthostatic hypotension", "entity": "/m/0pv4d" }, { "name": "Oscillopsia", "entity": "/m/06c4t0" }, { "name": "Osler's node", "entity": "/m/04ndcq" }, { "name": "Ossification", "entity": "/m/050qm0" }, { "name": "Osteitis fibrosa cystica", "entity": "/m/08wf7p" }, { "name": "Osteomalacia", "entity": "/m/02npcz" }, { "name": "Osteopenia", "entity": "/m/04zh7_m" }, { "name": "Osteophyte", "entity": "/m/03kb14" }, { "name": "Osteoporosis", "entity": "/m/05mdx" }, { "name": "Osteoporosis circumscripta", "entity": "/m/0gk_k_6" }, { "name": "Otitis", "entity": "/m/0743mf" }, { "name": "Otitis externa", "entity": "/m/04w68t" }, { "name": "Otorrhea", "entity": "/m/04kd970" }, { "name": "Ovarian apoplexy", "entity": "/m/0dllr8l" }, { "name": "Overweight", "entity": "/m/01t6qr" }, { "name": "Ovulation induction", "entity": "/m/0bbvjx1" }, { "name": "Paget's disease of the breast", "entity": "/m/0360ph" }, { "name": "Pain", "entity": "/m/062t2" }, { "name": "Pain asymbolia", "entity": "/m/05dp09" }, { "name": "Pain behind the eyes", "entity": "/m/0gk93mt" }, { "name": "Pain in limb", "entity": "/m/07vwp80" }, { "name": "Pale feces", "entity": "/m/06gb5_z" }, { "name": "Palilalia", "entity": "/m/06qqyb" }, { "name": "Palinopsia", "entity": "/m/06rxny" }, { "name": "Palla's sign", "entity": "/m/05sygqd" }, { "name": "Pallor", "entity": "/m/03skrx" }, { "name": "Palmar erythema", "entity": "/m/071rm6" }, { "name": "Palpable purpura", "entity": "/m/0dl9s6w" }, { "name": "Palpitations", "entity": "/m/029ggh" }, { "name": "Pancolitis", "entity": "/m/03c8wh1" }, { "name": "Pancreatitis", "entity": "/m/0h1wz" }, { "name": "Pancytopenia", "entity": "/m/063jn6" }, { "name": "Panic", "entity": "/m/01t09s" }, { "name": "Panic attack", "entity": "/m/0g88b" }, { "name": "Papilledema", "entity": "/m/01c9lj" }, { "name": "Papillomatosis", "entity": "/m/04q1s_9" }, { "name": "Papule", "entity": "/m/04xgtj" }, { "name": "Parakeratosis", "entity": "/m/04q8vlf" }, { "name": "Paralysis", "entity": "/m/05sj8" }, { "name": "Paranoia", "entity": "/m/063zb" }, { "name": "Paraphasia", "entity": "/m/02qdsw7" }, { "name": "Paraplegia", "entity": "/m/0251gx" }, { "name": "Paresis", "entity": "/m/01ny_g" }, { "name": "Paresthesia", "entity": "/m/023m3v" }, { "name": "Parkinsonian gait", "entity": "/m/0bwj7fw" }, { "name": "Parkinsonism", "entity": "/m/0dcs4" }, { "name": "Parosmia", "entity": "/m/065swx" }, { "name": "Paroxysmal nocturnal dyspnea", "entity": "/m/0gttzbm" }, { "name": "Parrot's sign", "entity": "/m/0711g3" }, { "name": "Pastia's lines", "entity": "/m/05t0qts" }, { "name": "Pathological jealousy", "entity": "/m/01l954" }, { "name": "Pathological lying", "entity": "/m/089sp6" }, { "name": "Pauci-immune", "entity": "/m/05b4v5v" }, { "name": "Peanut allergy", "entity": "/m/085pjw" }, { "name": "Peau d'orange", "entity": "/m/09szn7" }, { "name": "Pectus carinatum", "entity": "/m/05l8yp" }, { "name": "Pectus excavatum", "entity": "/m/03750f" }, { "name": "Pelvic inflammatory disease", "entity": "/m/064fq" }, { "name": "Pelvic lipomatosis", "entity": "/m/0kr76" }, { "name": "Pelvic organ prolapse", "entity": "/m/07kyr1" }, { "name": "Pemberton's sign", "entity": "/m/038dtb" }, { "name": "Penile discharge", "entity": "/m/059nnns" }, { "name": "Penis shortening", "entity": "/m/075yg5b" }, { "name": "Peribronchial cuffing", "entity": "/m/03hk_lf" }, { "name": "Pericardial effusion", "entity": "/m/08z994" }, { "name": "Pericardial friction rub", "entity": "/m/0879yd" }, { "name": "Pericarditis", "entity": "/m/032snl" }, { "name": "Perichondritis", "entity": "/m/0c012dy" }, { "name": "Periorbital dark circles", "entity": "/m/04cbz5" }, { "name": "Periorbital puffiness", "entity": "/m/027pqtp" }, { "name": "Peripheral edema", "entity": "/m/06v6kk" }, { "name": "Peripheral neuropathy", "entity": "/m/02w1fx" }, { "name": "Peritonsillar abscess", "entity": "/m/04b586" }, { "name": "Persecutory delusion", "entity": "/m/09g6vr0" }, { "name": "Perseveration", "entity": "/m/0dkpdn" }, { "name": "Persistent edema of rosacea", "entity": "/m/0521vqs" }, { "name": "Persistent headache", "entity": "/m/0dl9tb6" }, { "name": "Persistent hunger", "entity": "/m/075g6s4" }, { "name": "Persistent truncus arteriosus", "entity": "/m/07dlyv" }, { "name": "Persistent urge to urinate", "entity": "/m/075v3bq" }, { "name": "Persistent vegetative state", "entity": "/m/01rvjp" }, { "name": "Personality change", "entity": "/m/0dl9rz6" }, { "name": "Perspiration", "entity": "/m/0k9qw" }, { "name": "Petechia", "entity": "/m/04c2n0" }, { "name": "Phantom pain", "entity": "/m/065_qd" }, { "name": "Phantom vibration syndrome", "entity": "/m/0gcq2w" }, { "name": "Phantosmia", "entity": "/m/0d7sj2" }, { "name": "Pharyngitis", "entity": "/m/01gkcc" }, { "name": "Phlebitis", "entity": "/m/03rwrr" }, { "name": "Phlegm", "entity": "/m/01s3l8" }, { "name": "Phocomelia", "entity": "/m/0jzx0" }, { "name": "Phonological deficit", "entity": "/m/02rr053" }, { "name": "Phonophobia", "entity": "/m/08r62l" }, { "name": "Phosphene", "entity": "/m/038s2d" }, { "name": "Photodermatitis", "entity": "/m/03c2dk" }, { "name": "Photophobia", "entity": "/m/02lv8g" }, { "name": "Photopsia", "entity": "/m/09p809" }, { "name": "Photosensitivity in humans", "entity": "/m/07k9gz9" }, { "name": "Phototoxicity", "entity": "/m/067w_4" }, { "name": "Phrenitis", "entity": "/m/047cfz7" }, { "name": "Phyllodes tumor", "entity": "/m/07mvcp" }, { "name": "Physical dependence", "entity": "/m/059w29" }, { "name": "Pica", "entity": "/m/01b8zz" }, { "name": "Pili torti", "entity": "/m/0462xkz" }, { "name": "Pinch mark", "entity": "/m/0bhbwcq" }, { "name": "Piskacek's sign", "entity": "/m/03gr_p9" }, { "name": "Placental abruption", "entity": "/m/0508hk" }, { "name": "Plaque", "entity": "/m/04q1ncc" }, { "name": "Platypnea", "entity": "/m/03d6pnm" }, { "name": "Pleocytosis", "entity": "/m/02q7v1x" }, { "name": "Pleural friction rub", "entity": "/m/04lgt34" }, { "name": "Plummer's nail", "entity": "/m/05s_9d1" }, { "name": "Pneumatosis intestinalis", "entity": "/m/0f47kd" }, { "name": "Pneumaturia", "entity": "/m/02qwdjd" }, { "name": "Pneumonia", "entity": "/m/0dq9p" }, { "name": "Pneumonia alba", "entity": "/m/0gjbz4s" }, { "name": "Pneumothorax", "entity": "/m/01q1sz" }, { "name": "Polyarthritis", "entity": "/m/06hxx0" }, { "name": "Polycythemia", "entity": "/m/02k88f" }, { "name": "Polydipsia", "entity": "/m/02v6kp" }, { "name": "Polyneuropathy", "entity": "/m/03cx49" }, { "name": "Polyphagia", "entity": "/m/03gncj" }, { "name": "Polyuria", "entity": "/m/01m3h8" }, { "name": "Poor appetite", "entity": "/m/0dl9sbn" }, { "name": "Poor balance", "entity": "/m/0dl9sfw" }, { "name": "Poor coordination", "entity": "/m/076r60r" }, { "name": "Poor feeding", "entity": "/m/0dl9t5t" }, { "name": "Poor wound healing", "entity": "/m/06c4xv3" }, { "name": "Portal hypertension", "entity": "/m/034h9r" }, { "name": "Post herniorraphy pain syndrome", "entity": "/m/0ggb_w" }, { "name": "Post-concussion syndrome", "entity": "/m/09qljf" }, { "name": "Post-dural-puncture headache", "entity": "/m/03hlfpv" }, { "name": "Post-nasal drip", "entity": "/m/0615kf" }, { "name": "Post-Operative Pain", "entity": "/m/04yjg7n" }, { "name": "Post-traumatic seizure", "entity": "/m/03qcvl0" }, { "name": "Post-void dribbling", "entity": "/m/0bl95z" }, { "name": "Postictal state", "entity": "/m/0ctw0q" }, { "name": "Postinflammatory hyperpigmentation", "entity": "/m/05c4p7_" }, { "name": "Postoperative nausea and vomiting", "entity": "/m/035vzc" }, { "name": "Postorgasmic illness syndrome", "entity": "/m/05p5_7y" }, { "name": "Postural instability", "entity": "/m/04dng0v" }, { "name": "Postural orthostatic tachycardia syndrome", "entity": "/m/04l6qx" }, { "name": "Pratt's sign", "entity": "/m/043s66f" }, { "name": "Pre-eclampsia", "entity": "/m/025lwc" }, { "name": "Precocious puberty", "entity": "/m/02_nx2" }, { "name": "Prehn's sign", "entity": "/m/0c81h2" }, { "name": "Prehypertension", "entity": "/m/03cz_hv" }, { "name": "Premature atrial contraction", "entity": "/m/04kgzqg" }, { "name": "Premature ejaculation", "entity": "/m/01qqp1" }, { "name": "Premature hair whitening", "entity": "/m/06_5xc6" }, { "name": "Premature ventricular contraction", "entity": "/m/01hjkt" }, { "name": "Premenstrual syndrome", "entity": "/m/01fxrj" }, { "name": "Pressure of speech", "entity": "/m/08k8yw" }, { "name": "Presystolic murmur", "entity": "/m/0n48mtn" }, { "name": "Pretibial myxedema", "entity": "/m/0bdky5" }, { "name": "Priapism", "entity": "/m/0ldwy" }, { "name": "Primarily obsessional obsessive compulsive disorder", "entity": "/m/04n4w2k" }, { "name": "Proctitis", "entity": "/m/06rf7m" }, { "name": "Prodrome", "entity": "/m/01k7nc" }, { "name": "Productive cough", "entity": "/m/03gtw0t" }, { "name": "Prognathism", "entity": "/m/06g3nz" }, { "name": "Prolapse", "entity": "/m/01jcd6" }, { "name": "Propulsive gait", "entity": "/m/04cvmpm" }, { "name": "Prostate pain", "entity": "/m/0dl9sqm" }, { "name": "Proteinuria", "entity": "/m/012zf3" }, { "name": "Protruding Tongue", "entity": "/m/05t2w3m" }, { "name": "Prurigo", "entity": "/m/0gk2pb" }, { "name": "Pruritic papular eruption of HIV disease", "entity": "/m/0bhc5r2" }, { "name": "Pruritus ani", "entity": "/m/02pq2mj" }, { "name": "Pruritus of genital organs", "entity": "/m/07vwn8h" }, { "name": "Pruritus vulvae", "entity": "/m/05mvdqy" }, { "name": "Pseudarthrosis", "entity": "/m/05_3zr" }, { "name": "Pseudoachondroplasia", "entity": "/m/026ljcg" }, { "name": "Pseudobulbar affect", "entity": "/m/04lg5mq" }, { "name": "Pseudodiarrhea", "entity": "/m/0bjszh" }, { "name": "Pseudohallucination", "entity": "/m/04q2n9f" }, { "name": "Pseudohypertension", "entity": "/m/0691c5" }, { "name": "Pseudomembrane", "entity": "/m/06vxvm8" }, { "name": "Pseudomyopia", "entity": "/m/026689f" }, { "name": "Pseudopolyps", "entity": "/m/0hzpvq0" }, { "name": "Psoas sign", "entity": "/m/0751ss" }, { "name": "Psoriatic erythroderma", "entity": "/m/05c4nbg" }, { "name": "Psychogenic amnesia", "entity": "/m/09hgk_" }, { "name": "Psychogenic pain", "entity": "/m/04ygjf4" }, { "name": "Psychomotor agitation", "entity": "/m/05p8sj" }, { "name": "Psychomotor retardation", "entity": "/m/03ytmb" }, { "name": "Psychoorganic syndrome", "entity": "/m/098crk" }, { "name": "Psychosis", "entity": "/m/063yv" }, { "name": "Psychotic break", "entity": "/m/03l9p5" }, { "name": "Ptosis", "entity": "/m/0gdsn5" }, { "name": "Puddle sign", "entity": "/m/03c15k9" }, { "name": "Pulmonary consolidation", "entity": "/m/0b7jt4" }, { "name": "Pulmonary edema", "entity": "/m/0260ph" }, { "name": "Pulmonary hemorrhage", "entity": "/m/06t860" }, { "name": "Pulmonary hypertension", "entity": "/m/031wv7" }, { "name": "Pulmonary infiltrate", "entity": "/m/0yn_knd" }, { "name": "Pulmonary insufficiency", "entity": "/m/03cg1lz" }, { "name": "Pulmonary shunt", "entity": "/m/027x98v" }, { "name": "Pulsus alternans", "entity": "/m/02rxk72" }, { "name": "Pulsus bigeminus", "entity": "/m/0267wp8" }, { "name": "Pulsus paradoxus", "entity": "/m/087c0d" }, { "name": "Purple urine bag syndrome", "entity": "/m/06w5dlj" }, { "name": "Purpura", "entity": "/m/04c2m8" }, { "name": "Pus", "entity": "/m/01s2ly" }, { "name": "Pustule", "entity": "/m/01fxyp" }, { "name": "Pustulosis", "entity": "/m/0f7x8r" }, { "name": "Pyelonephritis", "entity": "/m/04_rt_" }, { "name": "Pyoderma gangrenosum", "entity": "/m/08s9h0" }, { "name": "Pyostomatitis vegetans", "entity": "/m/06w1x7x" }, { "name": "Pyuria", "entity": "/m/08bp74" }, { "name": "Raccoon eyes", "entity": "/m/08810p" }, { "name": "Racing thoughts", "entity": "/m/03nps17" }, { "name": "Radiculopathy", "entity": "/m/02pfkpc" }, { "name": "Rash on the palms and soles", "entity": "/m/0dl9qg2" }, { "name": "Raynaud syndrome", "entity": "/m/02v2jk" }, { "name": "Rectal discharge", "entity": "/m/0dl9s9j" }, { "name": "Rectal pain", "entity": "/m/0b74tbc" }, { "name": "Rectal prolapse", "entity": "/m/03080q" }, { "name": "Rectal tenesmus", "entity": "/m/04yfk_" }, { "name": "Recurrent infection", "entity": "/m/0dl9spc" }, { "name": "Red eye", "entity": "/m/04pxm5" }, { "name": "Red nose", "entity": "/m/0dl9tc8" }, { "name": "Red rash", "entity": "/m/0dl9tmf" }, { "name": "Red spots", "entity": "/m/0dl9tm6" }, { "name": "Reduced affect display", "entity": "/m/08z6vk" }, { "name": "Regurgitation", "entity": "/m/0fv217" }, { "name": "Regurgitation", "entity": "/m/0fv203" }, { "name": "Regurgitation with acid", "entity": "/m/0dl9td4" }, { "name": "Religious delusion", "entity": "/m/0h_9sk9" }, { "name": "Remitting seronegative symmetrical synovitis with pitting edema", "entity": "/m/05f6gm1" }, { "name": "Renal colic", "entity": "/m/06phzx" }, { "name": "Renal cyst", "entity": "/m/0b77v22" }, { "name": "Respiratory acidosis", "entity": "/m/04tkvk" }, { "name": "Respiratory arrest", "entity": "/m/037c4l" }, { "name": "Respiratory distress", "entity": "/m/0jwzzd9" }, { "name": "Respiratory failure", "entity": "/m/019dmc" }, { "name": "Respiratory tract infection", "entity": "/m/0117wzhd" }, { "name": "Restless legs syndrome", "entity": "/m/01jyld" }, { "name": "Restricted behavior", "entity": "/m/05nmqpm" }, { "name": "Retching", "entity": "/m/02rjt8c" }, { "name": "Reticulocytosis", "entity": "/m/05d54_" }, { "name": "Retinal degeneration", "entity": "/m/05zn7mq" }, { "name": "Retrograde amnesia", "entity": "/m/040z8c" }, { "name": "Retroperitoneal fibrosis", "entity": "/m/09z7xt" }, { "name": "Reynolds' pentad", "entity": "/m/0ggv_7" }, { "name": "Rheum", "entity": "/m/02p1kqs" }, { "name": "Rheumatoid nodule", "entity": "/m/03m6bb0" }, { "name": "Rheumatoid nodulosis", "entity": "/m/0b767p_" }, { "name": "Rhinitis", "entity": "/m/02mdz9" }, { "name": "Rhinophyma", "entity": "/m/0dyhxj" }, { "name": "Rhinorrhea", "entity": "/m/06p_bp" }, { "name": "Rhonchi", "entity": "/m/09jv3z" }, { "name": "Riedel's thyroiditis", "entity": "/m/02rjq7r" }, { "name": "Right atrial enlargement", "entity": "/m/07kj55d" }, { "name": "Right ventricular hypertrophy", "entity": "/m/025tjvy" }, { "name": "Right-sided aortic arch", "entity": "/m/0knm7d1" }, { "name": "Rigler's sign", "entity": "/m/09b5_f" }, { "name": "Risus sardonicus", "entity": "/m/09s7_h" }, { "name": "Romana's sign", "entity": "/m/02q4nr8" }, { "name": "Rose spots", "entity": "/m/0bj2by" }, { "name": "Rosenstein's sign", "entity": "/m/0crclyl" }, { "name": "Rossolimo's sign", "entity": "/m/05s_tyf" }, { "name": "Roth's spot", "entity": "/m/038dpt" }, { "name": "Rough skin", "entity": "/m/07t7mz6" }, { "name": "Rovsing's sign", "entity": "/m/04dbtp" }, { "name": "Rumination", "entity": "/m/04grp19" }, { "name": "Rumination syndrome", "entity": "/m/09spqk" }, { "name": "Rumpelâ€“Leede sign", "entity": "/m/05q6gh9" }, { "name": "Running amok", "entity": "/m/014sp" }, { "name": "Russell's sign", "entity": "/m/082wyl" }, { "name": "Sacroiliac joint dysfunction", "entity": "/m/0gtybk6" }, { "name": "Sadness", "entity": "/m/02y_3dj" }, { "name": "Sail sign of the chest", "entity": "/m/0h1hr7b" }, { "name": "Salt craving", "entity": "/m/0dl9sqv" }, { "name": "Salus's sign", "entity": "/m/05sxjn6" }, { "name": "Scaly skin", "entity": "/m/06_2b8m" }, { "name": "Scaphocephaly", "entity": "/m/01hrg2" }, { "name": "Scar", "entity": "/m/0kbct" }, { "name": "Scarring hair loss", "entity": "/m/05222s7" }, { "name": "Schaeffer's sign", "entity": "/m/05s_28n" }, { "name": "Schizophasia", "entity": "/m/05qtd5" }, { "name": "Sciatica", "entity": "/m/01_wxr" }, { "name": "Scissor gait", "entity": "/m/04czg7h" }, { "name": "Scleritis", "entity": "/m/08gppk" }, { "name": "Sclerodactyly", "entity": "/m/05z058" }, { "name": "Scleroderma", "entity": "/m/05m_zv2" }, { "name": "Scoliosis", "entity": "/m/0yvgr" }, { "name": "Scotoma", "entity": "/m/03gzmf" }, { "name": "Screaming", "entity": "/m/03qc9zr" }, { "name": "Seborrheic dermatitis", "entity": "/m/02cvvl" }, { "name": "Second-degree atrioventricular block", "entity": "/m/031s_5" }, { "name": "Secondary lymphedema", "entity": "/m/05q9_31" }, { "name": "Sedation", "entity": "/m/019bf4" }, { "name": "Seeing problems", "entity": "/m/0h80_xb" }, { "name": "Seeing spots", "entity": "/m/0dl9qgk" }, { "name": "Seidel sign", "entity": "/m/047m0zn" }, { "name": "Self-destructive behaviour", "entity": "/m/026qvtc" }, { "name": "Self-harm", "entity": "/m/013cc9" }, { "name": "Sensorineural hearing loss", "entity": "/m/04fmz1" }, { "name": "Sensory ataxia", "entity": "/m/07_bsl" }, { "name": "Sensory phenomena", "entity": "/m/0h0qbm" }, { "name": "Sentinel loop", "entity": "/m/04q3mxq" }, { "name": "Septic shock", "entity": "/m/029mr9" }, { "name": "Serotonin syndrome", "entity": "/m/079hg" }, { "name": "Sexual anhedonia", "entity": "/m/0gfg_0y" }, { "name": "Sexual dysfunction", "entity": "/m/0255qr" }, { "name": "Sexual headache", "entity": "/m/07c5n9" }, { "name": "Sexual obsessions", "entity": "/m/027tv8t" }, { "name": "Shakiness", "entity": "/m/0dl9sxs" }, { "name": "Shaking of hands", "entity": "/m/0dl9tfw" }, { "name": "Shallow breathing", "entity": "/m/08wqjw" }, { "name": "Shame", "entity": "/m/0164bb" }, { "name": "Shawl scrotum", "entity": "/m/025_mtj" }, { "name": "Sherren's triangle", "entity": "/m/0hr6yls" }, { "name": "Shivering", "entity": "/m/04fv7w" }, { "name": "Shock", "entity": "/m/012n6d" }, { "name": "Short bowel syndrome", "entity": "/m/04mr0d" }, { "name": "Short neck", "entity": "/m/07746vw" }, { "name": "Short stature", "entity": "/m/06y96j" }, { "name": "Shortness of breath", "entity": "/m/01cdt5" }, { "name": "Shyness", "entity": "/m/01dl7h" }, { "name": "Siegrist streaks", "entity": "/m/02x0gvb" }, { "name": "Sign of Hertoghe", "entity": "/m/05t0j4w" }, { "name": "Silhouette sign", "entity": "/m/0bbz9bz" }, { "name": "Simultanagnosia", "entity": "/m/09g711n" }, { "name": "Single transverse palmar crease", "entity": "/m/04fl9l" }, { "name": "Sinus bradycardia", "entity": "/m/06rsk8" }, { "name": "Sinus tachycardia", "entity": "/m/06rsny" }, { "name": "Sinus tract", "entity": "/m/03h0kh2" }, { "name": "Sinusitis", "entity": "/m/072hv" }, { "name": "Sister Mary Joseph nodule", "entity": "/m/08wnv9" }, { "name": "Sitting disability", "entity": "/m/0dvg7b" }, { "name": "Skin and skin structure infection", "entity": "/m/09gp35z" }, { "name": "Skin bumps", "entity": "/m/0dl9tdk" }, { "name": "Skin burning sensation", "entity": "/m/04kd9f3" }, { "name": "Skin fissure", "entity": "/m/0gmcs4z" }, { "name": "Skin infection", "entity": "/m/05m_2vv" }, { "name": "Skin lesion", "entity": "/m/04dfkg" }, { "name": "Skin manifestations of sarcoidosis", "entity": "/m/05zr0l8" }, { "name": "Skin pop scar", "entity": "/m/09v60_p" }, { "name": "Skin rash", "entity": "/m/0v4rnx" }, { "name": "Skin tag", "entity": "/m/0fktd" }, { "name": "Skip lesion", "entity": "/m/0c3y21x" }, { "name": "Skull bossing", "entity": "/m/0j260bd" }, { "name": "Sleep apnea", "entity": "/m/071d3" }, { "name": "Sleep deprivation", "entity": "/m/017tfz" }, { "name": "Sleep disorder", "entity": "/m/0cnmb" }, { "name": "Sleep paralysis", "entity": "/m/01jb2q" }, { "name": "Sleeping difficulty", "entity": "/m/0dl9sgh" }, { "name": "Slipped capital femoral epiphysis", "entity": "/m/07bztx" }, { "name": "SLUDGE syndrome", "entity": "/m/025yc7f" }, { "name": "Slurred speech", "entity": "/m/03z97xw" }, { "name": "Sneeze", "entity": "/m/01hsr_" }, { "name": "Snoring", "entity": "/m/01d3sd" }, { "name": "Social isolation", "entity": "/m/0c_k31" }, { "name": "Soft erections", "entity": "/m/075yg5j" }, { "name": "Somatoparaphrenia", "entity": "/m/02qd2dt" }, { "name": "Somnolence", "entity": "/m/0311pr" }, { "name": "Sonographic Murphy sign", "entity": "/m/0gx2ttd" }, { "name": "Soot tattoo", "entity": "/m/09v87qm" }, { "name": "Sore on tongue", "entity": "/m/0dl9thc" }, { "name": "Sore throat", "entity": "/m/0b76bty" }, { "name": "Spalding's sign", "entity": "/m/0bh88t5" }, { "name": "Spasm", "entity": "/m/04zjnsf" }, { "name": "Spasm of accommodation", "entity": "/m/02q477l" }, { "name": "Spasmodic dysphonia", "entity": "/m/07d0js" }, { "name": "Spastic gait", "entity": "/m/04cv6sj" }, { "name": "Spastic hemiplegia", "entity": "/m/0j3gp5p" }, { "name": "Spasticity", "entity": "/m/0p9n0" }, { "name": "Speech delay", "entity": "/m/0726rf" }, { "name": "Speech disorder", "entity": "/m/0133cx" }, { "name": "Speech loss", "entity": "/m/0dl9t3k" }, { "name": "Spider angioma", "entity": "/m/090j35" }, { "name": "Spiking temperature", "entity": "/m/0dl9s_b" }, { "name": "Spinal tumor", "entity": "/m/03znrn" }, { "name": "Spitz nevus", "entity": "/m/05mxp8t" }, { "name": "Splenomegaly", "entity": "/m/03zqp2" }, { "name": "Splinter hemorrhage", "entity": "/m/047qslv" }, { "name": "Splitting", "entity": "/m/02q48gs" }, { "name": "Sputum", "entity": "/m/01jmfg" }, { "name": "Squeamishness", "entity": "/m/076zwwj" }, { "name": "ST depression", "entity": "/m/05p5h7r" }, { "name": "Stage fright", "entity": "/m/02v58l" }, { "name": "Starvation", "entity": "/m/01flyj" }, { "name": "Stasis dermatitis", "entity": "/m/04q_81" }, { "name": "Status epilepticus", "entity": "/m/06382k" }, { "name": "Steatorrhea", "entity": "/m/03_7qy" }, { "name": "Steeple sign", "entity": "/m/02777d4" }, { "name": "Stellwag's sign", "entity": "/m/02z14sp" }, { "name": "Stemmer's sign", "entity": "/m/0fq0v0v" }, { "name": "Stenosis", "entity": "/m/032llx" }, { "name": "Stereotypy", "entity": "/m/0dg_lc" }, { "name": "Stertor", "entity": "/m/0d4b5s" }, { "name": "Stiff Finger", "entity": "/m/07468xq" }, { "name": "Stiffness", "entity": "/m/02dzkc" }, { "name": "Stilted speech", "entity": "/m/0h_d29d" }, { "name": "Stimming", "entity": "/m/0ch68q" }, { "name": "Stimson line", "entity": "/m/0jt1lyb" }, { "name": "Stinging sensation", "entity": "/m/05nb6gp" }, { "name": "Stomach rumble", "entity": "/m/01g90h" }, { "name": "Stomatitis", "entity": "/m/06jf34" }, { "name": "Stork leg", "entity": "/m/05v23cw" }, { "name": "StrÃ_mpell's sign", "entity": "/m/05t03d3" }, { "name": "Strabismus", "entity": "/m/02s645" }, { "name": "Strangury", "entity": "/m/078v5g" }, { "name": "Stransky's sign", "entity": "/m/05s_76s" }, { "name": "Strawberry tongue", "entity": "/m/027sbw1" }, { "name": "Stress", "entity": "/m/012lyw" }, { "name": "Stretch marks", "entity": "/m/056g4k" }, { "name": "Stridor", "entity": "/m/05rtnw" }, { "name": "String sign", "entity": "/m/02r50n7" }, { "name": "Stroke", "entity": "/m/02y0js" }, { "name": "Stunted growth", "entity": "/m/09g54b" }, { "name": "Stupor", "entity": "/m/08gxks" }, { "name": "Stuttering", "entity": "/m/070yw" }, { "name": "Subclinical seizure", "entity": "/m/02r_80w" }, { "name": "Subcutaneous emphysema", "entity": "/m/0464mv7" }, { "name": "Subjective tinnitus", "entity": "/m/09rqdw4" }, { "name": "Substance abuse", "entity": "/m/0p_cr" }, { "name": "Substance dependence", "entity": "/m/0466pc0" }, { "name": "Sudden cardiac death", "entity": "/m/0d_mn0" }, { "name": "Sudden visual loss", "entity": "/m/09rq8z1" }, { "name": "Suicidal ideation", "entity": "/m/09zn19" }, { "name": "Sulcus sign", "entity": "/m/0892ty" }, { "name": "Sundowning", "entity": "/m/04jmkz7" }, { "name": "Superior vena cava syndrome", "entity": "/m/04tr95" }, { "name": "Supraventricular tachycardia", "entity": "/m/03k_qd" }, { "name": "Swelling", "entity": "/m/09bdp3" }, { "name": "Swelling behind the ear", "entity": "/m/075z7_q" }, { "name": "Swelling of finger", "entity": "/m/0dl9sn1" }, { "name": "Swelling of scrotum", "entity": "/m/0dl9swy" }, { "name": "Swelling of skin", "entity": "/m/0dl9swq" }, { "name": "Swollen feet", "entity": "/m/0dl9t52" }, { "name": "Swollen legs", "entity": "/m/0dl9t72" }, { "name": "Swollen lymph nodes", "entity": "/m/03yzl6" }, { "name": "Swollen testicle", "entity": "/m/059nnnk" }, { "name": "Swollen tonsils", "entity": "/m/06tr55s" }, { "name": "Sydenham's chorea", "entity": "/m/04jr23" }, { "name": "Syncope", "entity": "/m/04jpj9y" }, { "name": "Syndrome of inappropriate antidiuretic hormone secretion", "entity": "/m/03zzcc" }, { "name": "Syndrome of subjective doubles", "entity": "/m/05rxzz" }, { "name": "Synechia", "entity": "/m/037xdl" }, { "name": "Synovitis", "entity": "/m/07yqh1" }, { "name": "Systemic inflammation", "entity": "/m/03h0d95" }, { "name": "Systolic heart murmur", "entity": "/m/05b5h0l" }, { "name": "Tachycardia", "entity": "/m/0156z4" }, { "name": "Tachylalia", "entity": "/m/03m9zmr" }, { "name": "Tachypnea", "entity": "/m/03w94wq" }, { "name": "Tactile hallucination", "entity": "/m/0zc0wnd" }, { "name": "Tanning dependence", "entity": "/m/03crfch" }, { "name": "Tardive dyskinesia", "entity": "/m/01vl0h" }, { "name": "Target cell", "entity": "/m/05rhhy" }, { "name": "Telangiectasia", "entity": "/m/0500_3" }, { "name": "Tenderness", "entity": "/m/03m4j90" }, { "name": "Tendinitis", "entity": "/m/01kcp2" }, { "name": "Tenesmus", "entity": "/m/05t0_0l" }, { "name": "Tenosynovitis", "entity": "/m/01nzjv" }, { "name": "Teratospermia", "entity": "/m/0523q1y" }, { "name": "Terry's nails", "entity": "/m/02py3_7" }, { "name": "Tertiary hyperparathyroidism", "entity": "/m/0bfvmv" }, { "name": "Tet spells", "entity": "/m/074x0fv" }, { "name": "Tetanic contraction", "entity": "/m/026m6v" }, { "name": "Tetany", "entity": "/m/02pnp2q" }, { "name": "Tetralogy of Fallot", "entity": "/m/01k4yc" }, { "name": "Tetraplegia", "entity": "/m/01bpld" }, { "name": "Thick skin", "entity": "/m/06vwpmt" }, { "name": "Thin skin", "entity": "/m/0dl9szd" }, { "name": "Third-degree atrioventricular block", "entity": "/m/02zcgm" }, { "name": "Thirst", "entity": "/m/02jx54" }, { "name": "Thought blocking", "entity": "/m/0cmcngp" }, { "name": "Thought disorder", "entity": "/m/01p1zm" }, { "name": "Thought insertion", "entity": "/m/09lpg2" }, { "name": "Thousand-yard stare", "entity": "/m/05dzzb" }, { "name": "Throat clearing", "entity": "/m/0dl9sf8" }, { "name": "Throat irritation", "entity": "/m/0b6kt_8" }, { "name": "Throbbing headache", "entity": "/m/02kby4d" }, { "name": "Thrombocytopenia", "entity": "/m/02kgmg" }, { "name": "Thrombocytosis", "entity": "/m/03btxg" }, { "name": "Thrombosis", "entity": "/m/018_pw" }, { "name": "Thumbprint sign", "entity": "/m/02777qv" }, { "name": "Thyroid disease", "entity": "/m/05n00c6" }, { "name": "Thyroid nodule", "entity": "/m/05l6q9" }, { "name": "Tic", "entity": "/m/02gpbb" }, { "name": "Tinel's sign", "entity": "/m/04bn2w" }, { "name": "Tingling feet", "entity": "/m/0dl9tlk" }, { "name": "Tingling fingers", "entity": "/m/0dl9tff" }, { "name": "Tingling lips", "entity": "/m/0dl9tgy" }, { "name": "Tingling of hands", "entity": "/m/0dl9tlr" }, { "name": "Tingling of toes", "entity": "/m/0dl9tlz" }, { "name": "Tinnitus", "entity": "/m/0pv6y" }, { "name": "Toe numbness", "entity": "/m/0dl9t7w" }, { "name": "Toe walking", "entity": "/m/02rm_y4" }, { "name": "Tongue numbness", "entity": "/m/0dl9t26" }, { "name": "Tongue swelling", "entity": "/m/0dl9sjq" }, { "name": "Tonsillitis", "entity": "/m/03ng0t" }, { "name": "Tooth decay", "entity": "/m/025j63" }, { "name": "Tooth loss", "entity": "/m/02q28kg" }, { "name": "Tooth mobility", "entity": "/m/010f9grj" }, { "name": "Toothache", "entity": "/m/045c85" }, { "name": "Tophus", "entity": "/m/04bm_r" }, { "name": "Topographical disorientation", "entity": "/m/0fq316n" }, { "name": "Torticollis", "entity": "/m/01q136" }, { "name": "Tram track", "entity": "/m/03hk_dl" }, { "name": "Transudate", "entity": "/m/02wv9sp" }, { "name": "Tree-in-bud sign", "entity": "/m/03cr019" }, { "name": "Trembling", "entity": "/m/0dl9sdm" }, { "name": "Tremor", "entity": "/m/09d28" }, { "name": "Trendelenburg gait", "entity": "/m/09sdrd" }, { "name": "Trendelenburg's sign", "entity": "/m/07h5sd" }, { "name": "Trepopnea", "entity": "/m/025x27t" }, { "name": "Trichiasis", "entity": "/m/04m9wt" }, { "name": "Trichomegaly", "entity": "/m/09k5ncy" }, { "name": "Trichoptilosis", "entity": "/m/0269y8n" }, { "name": "Trichotillomania", "entity": "/m/0h_8y" }, { "name": "Trigeminal autonomic cephalalgia", "entity": "/m/011vmjv8" }, { "name": "Tripe palms", "entity": "/m/09k5vq8" }, { "name": "Trismus", "entity": "/m/01fgvy" }, { "name": "Troisier's sign", "entity": "/m/037xnt" }, { "name": "Trousseau sign of latent tetany", "entity": "/m/02pnnwh" }, { "name": "Trousseau sign of malignancy", "entity": "/m/02pnnwv" }, { "name": "Tuberculoma", "entity": "/m/01181t6w" }, { "name": "Tullio phenomenon", "entity": "/m/02rlx5d" }, { "name": "Tunnel vision", "entity": "/m/01z0b9" }, { "name": "Type 2 diabetes", "entity": "/m/0146bp" }, { "name": "Unable to balance", "entity": "/m/0dl9stl" }, { "name": "Unconsciousness", "entity": "/m/04kfhc9" }, { "name": "Underweight", "entity": "/m/0844zv" }, { "name": "Uneven waist", "entity": "/m/0703vrt" }, { "name": "Unintentional Weight Loss", "entity": "/m/06wfm2h" }, { "name": "Unresponsiveness", "entity": "/m/0dl9st5" }, { "name": "Unsteadiness", "entity": "/m/01y2h01" }, { "name": "Unsteady gait", "entity": "/m/0dl9s9y" }, { "name": "Upper gastrointestinal bleeding", "entity": "/m/02n2jh" }, { "name": "Upper motor neuron lesion", "entity": "/m/052f98" }, { "name": "Upper respiratory tract infection", "entity": "/m/02wmyj" }, { "name": "Uremia", "entity": "/m/02f8hm" }, { "name": "Uremic fetor", "entity": "/m/0g9wnz_" }, { "name": "Urethritis", "entity": "/m/07wvs" }, { "name": "Urge incontinence", "entity": "/m/0bmbd36" }, { "name": "Urge to move", "entity": "/m/07873v5" }, { "name": "Urinary dribbling", "entity": "/m/0dl9s5v" }, { "name": "Urinary hesitancy", "entity": "/m/04qyzpf" }, { "name": "Urinary incontinence", "entity": "/m/018h13" }, { "name": "Urinary retention", "entity": "/m/045y32" }, { "name": "Urinary tract infection", "entity": "/m/07x16" }, { "name": "Urinary urgency", "entity": "/m/0fvh3d" }, { "name": "Urine odor", "entity": "/m/0dl9thx" }, { "name": "Uterine contraction", "entity": "/m/02shy2" }, { "name": "Uveitis", "entity": "/m/040_ch" }, { "name": "Uveoparotitis", "entity": "/m/0h6m4f" }, { "name": "Vaginal bleeding", "entity": "/m/055k6m" }, { "name": "Vaginal bulge", "entity": "/m/0dl9qhh" }, { "name": "Vaginal discharge", "entity": "/m/07k9rmb" }, { "name": "Vaginal dryness", "entity": "/m/0dl9stc" }, { "name": "Vaginal flatulence", "entity": "/m/017ts5" }, { "name": "Vaginal itching", "entity": "/m/0dl9s54" }, { "name": "Vaginal odor", "entity": "/m/05bjlj4" }, { "name": "Vaginal tenderness", "entity": "/m/05bl1y2" }, { "name": "Vaginitis", "entity": "/m/01vcpr" }, { "name": "Varicose veins", "entity": "/m/081dp" }, { "name": "Vascular Leak", "entity": "/m/06vzydh" }, { "name": "Vascular malformation", "entity": "/m/079tpsw" }, { "name": "Vascular occlusion", "entity": "/m/0b6h30_" }, { "name": "Vasculitis", "entity": "/m/0317gc" }, { "name": "Vaso-occlusive crisis", "entity": "/m/03nxk25" }, { "name": "Vasoconstriction", "entity": "/m/02wv6ss" }, { "name": "Vasodilation", "entity": "/m/0fkcf" }, { "name": "Vasovagal syncope", "entity": "/m/039y0d" }, { "name": "Vegetation", "entity": "/m/04gp557" }, { "name": "Vegetative symptoms", "entity": "/m/076zcl" }, { "name": "Vegetative-vascular dystonia", "entity": "/m/0wbjrwb" }, { "name": "Velopharyngeal inadequacy", "entity": "/m/0fqvw9" }, { "name": "Venous stasis", "entity": "/m/04jj6yp" }, { "name": "Ventricular outflow tract obstruction", "entity": "/m/0gjdgxg" }, { "name": "Ventricular septal defect", "entity": "/m/03k28n" }, { "name": "Ventricular tachycardia", "entity": "/m/025v410" }, { "name": "Verbosity", "entity": "/m/045rjv" }, { "name": "Vertigo", "entity": "/m/07rwf2" }, { "name": "Vesical tenesmus", "entity": "/m/08gxj7" }, { "name": "Viral pneumonia", "entity": "/m/07fn78" }, { "name": "Virilization", "entity": "/m/032zt5" }, { "name": "Virtual reality sickness", "entity": "/m/011c6z46" }, { "name": "Vision disorder", "entity": "/m/04jmzm5" }, { "name": "Vision loss", "entity": "/m/04t973" }, { "name": "Visual acuity", "entity": "/m/02_g1v" }, { "name": "Visual agnosia", "entity": "/m/08gvtg" }, { "name": "Visual snow", "entity": "/m/0379jz" }, { "name": "Vitamin B12 deficiency", "entity": "/m/02x2xmj" }, { "name": "Vitamin deficiency", "entity": "/m/0q42v" }, { "name": "Voice change", "entity": "/m/0hzmhkt" }, { "name": "Vomiting", "entity": "/m/012qjw" }, { "name": "Von Braun-Fernwald's sign", "entity": "/m/05t0hc2" }, { "name": "Von Graefe's sign", "entity": "/m/09tktp" }, { "name": "Vulvar vestibulitis", "entity": "/m/0h7q7v0" }, { "name": "Vulvitis", "entity": "/m/06qjbg" }, { "name": "Vulvodynia", "entity": "/m/08099" }, { "name": "Wandering", "entity": "/m/04jmb5n" }, { "name": "Wanderlust", "entity": "/m/038ytw" }, { "name": "Warm skin", "entity": "/m/06_hyyd" }, { "name": "Wart", "entity": "/m/086hz" }, { "name": "Wasting", "entity": "/m/01dpzh" }, { "name": "Water retention", "entity": "/m/05s_d8r" }, { "name": "Waterâ€“electrolyte imbalance", "entity": "/m/03nkmb" }, { "name": "Watery diarrhea", "entity": "/m/06vys2w" }, { "name": "Watery stool", "entity": "/m/0dl9sc9" }, { "name": "Watson's water hammer pulse", "entity": "/m/038dp3" }, { "name": "Waxy flexibility", "entity": "/m/02q672l" }, { "name": "Waxy skin", "entity": "/m/064p33j" }, { "name": "Weak pulse", "entity": "/m/06b0xmk" }, { "name": "Weak urinary stream", "entity": "/m/0dl9t0v" }, { "name": "Weakness", "entity": "/m/0119nqlg" }, { "name": "Weakness of limb", "entity": "/m/0dl9t83" }, { "name": "Weakness of the arms and legs", "entity": "/m/0h80_xq" }, { "name": "Weather pains", "entity": "/m/07k3xc6" }, { "name": "Webbed neck", "entity": "/m/01cn60" }, { "name": "Weight gain", "entity": "/m/03bx2xc" }, { "name": "Weight loss", "entity": "/m/023s6n" }, { "name": "Westermark sign", "entity": "/m/025yl42" }, { "name": "Westphal's sign", "entity": "/m/02qd587" }, { "name": "Wheals", "entity": "/m/079y7m" }, { "name": "Wheeze", "entity": "/m/07mzm6" }, { "name": "White stool", "entity": "/m/0dl9qht" }, { "name": "White tongue", "entity": "/m/0dl9shv" }, { "name": "Widened mediastinum", "entity": "/m/0917_9" }, { "name": "Widow's peak", "entity": "/m/03d23v" }, { "name": "Winterbottom's sign", "entity": "/m/095yj5" }, { "name": "Witzelsucht", "entity": "/m/06f89r" }, { "name": "Word salad", "entity": "/m/02nj2r" }, { "name": "Work aversion", "entity": "/m/02w795_" }, { "name": "Wound", "entity": "/m/01xrk2" }, { "name": "Wrinkle", "entity": "/m/02_x63" }, { "name": "Xanthoma", "entity": "/m/02gl_t" }, { "name": "Xanthoma striatum palmare", "entity": "/m/07k6xsb" }, { "name": "Xanthopsia", "entity": "/m/0268n_w" }, { "name": "Xanthosis", "entity": "/m/02rxmf6" }, { "name": "Xeroderma", "entity": "/m/08xv95" }, { "name": "Xerophthalmia", "entity": "/m/0517c6" }, { "name": "Xerostomia", "entity": "/m/04d7y3" }, { "name": "Yawn", "entity": "/m/01j423" }, { "name": "Yellow eyes", "entity": "/m/0dl9tcq" }, { "name": "Zenker's degeneration", "entity": "/m/03p_fd" }];
-
-	var countries = exports.countries = [{ iso: "", name: "World" }, { iso: "AF", name: "Afghanistan" }, { iso: "AX", name: "Åland" }, { iso: "AL", name: "Albania" }, { iso: "DZ", name: "Algeria" }, { iso: "AS", name: "American Samoa" }, { iso: "AD", name: "Andorra" }, { iso: "AO", name: "Angola" }, { iso: "AI", name: "Anguilla" }, { iso: "AQ", name: "Antarctica" }, { iso: "AG", name: "Antigua and Barbuda" }, { iso: "AR", name: "Argentina" }, { iso: "AM", name: "Armenia" }, { iso: "AW", name: "Aruba" }, { iso: "AU", name: "Australia" }, { iso: "AT", name: "Austria" }, { iso: "AZ", name: "Azerbaijan" }, { iso: "BS", name: "Bahamas" }, { iso: "BH", name: "Bahrain" }, { iso: "BD", name: "Bangladesh" }, { iso: "BB", name: "Barbados" }, { iso: "BY", name: "Belarus" }, { iso: "BE", name: "Belgium" }, { iso: "BZ", name: "Belize" }, { iso: "BJ", name: "Benin" }, { iso: "BM", name: "Bermuda" }, { iso: "BT", name: "Bhutan" }, { iso: "BO", name: "Bolivia" }, { iso: "BQ", name: "Bonaire" }, { iso: "BA", name: "Bosnia and Herzegovina" }, { iso: "BW", name: "Botswana" }, { iso: "BV", name: "Bouvet Island" }, { iso: "BR", name: "Brazil" }, { iso: "IO", name: "British Indian Ocean Territory" }, { iso: "VG", name: "British Virgin Islands" }, { iso: "BN", name: "Brunei" }, { iso: "BG", name: "Bulgaria" }, { iso: "BF", name: "Burkina Faso" }, { iso: "BI", name: "Burundi" }, { iso: "KH", name: "Cambodia" }, { iso: "CM", name: "Cameroon" }, { iso: "CA", name: "Canada" }, { iso: "CV", name: "Cape Verde" }, { iso: "KY", name: "Cayman Islands" }, { iso: "CF", name: "Central African Republic" }, { iso: "TD", name: "Chad" }, { iso: "CL", name: "Chile" }, { iso: "CN", name: "China" }, { iso: "CX", name: "Christmas Island" }, { iso: "CC", name: "Cocos [Keeling] Islands" }, { iso: "CO", name: "Colombia" }, { iso: "KM", name: "Comoros" }, { iso: "CK", name: "Cook Islands" }, { iso: "CR", name: "Costa Rica" }, { iso: "HR", name: "Croatia" }, { iso: "CU", name: "Cuba" }, { iso: "CW", name: "Curacao" }, { iso: "CY", name: "Cyprus" }, { iso: "CZ", name: "Czechia" }, { iso: "CD", name: "Democratic Republic of the Congo" }, { iso: "DK", name: "Denmark" }, { iso: "DJ", name: "Djibouti" }, { iso: "DM", name: "Dominica" }, { iso: "DO", name: "Dominican Republic" }, { iso: "TL", name: "East Timor" }, { iso: "EC", name: "Ecuador" }, { iso: "EG", name: "Egypt" }, { iso: "SV", name: "El Salvador" }, { iso: "GQ", name: "Equatorial Guinea" }, { iso: "ER", name: "Eritrea" }, { iso: "EE", name: "Estonia" }, { iso: "ET", name: "Ethiopia" }, { iso: "FK", name: "Falkland Islands" }, { iso: "FO", name: "Faroe Islands" }, { iso: "FJ", name: "Fiji" }, { iso: "FI", name: "Finland" }, { iso: "FR", name: "France" }, { iso: "GF", name: "French Guiana" }, { iso: "PF", name: "French Polynesia" }, { iso: "TF", name: "French Southern Territories" }, { iso: "GA", name: "Gabon" }, { iso: "GM", name: "Gambia" }, { iso: "GE", name: "Georgia" }, { iso: "DE", name: "Germany" }, { iso: "GH", name: "Ghana" }, { iso: "GI", name: "Gibraltar" }, { iso: "GR", name: "Greece" }, { iso: "GL", name: "Greenland" }, { iso: "GD", name: "Grenada" }, { iso: "GP", name: "Guadeloupe" }, { iso: "GU", name: "Guam" }, { iso: "GT", name: "Guatemala" }, { iso: "GG", name: "Guernsey" }, { iso: "GN", name: "Guinea" }, { iso: "GW", name: "Guinea-Bissau" }, { iso: "GY", name: "Guyana" }, { iso: "HT", name: "Haiti" }, { iso: "HM", name: "Heard Island and McDonald Islands" }, { iso: "HN", name: "Honduras" }, { iso: "HK", name: "Hong Kong" }, { iso: "HU", name: "Hungary" }, { iso: "IS", name: "Iceland" }, { iso: "IN", name: "India" }, { iso: "ID", name: "Indonesia" }, { iso: "IR", name: "Iran" }, { iso: "IQ", name: "Iraq" }, { iso: "IE", name: "Ireland" }, { iso: "IM", name: "Isle of Man" }, { iso: "IL", name: "Israel" }, { iso: "IT", name: "Italy" }, { iso: "CI", name: "Ivory Coast" }, { iso: "JM", name: "Jamaica" }, { iso: "JP", name: "Japan" }, { iso: "JE", name: "Jersey" }, { iso: "JO", name: "Jordan" }, { iso: "KZ", name: "Kazakhstan" }, { iso: "KE", name: "Kenya" }, { iso: "KI", name: "Kiribati" }, { iso: "XK", name: "Kosovo" }, { iso: "KW", name: "Kuwait" }, { iso: "KG", name: "Kyrgyzstan" }, { iso: "LA", name: "Laos" }, { iso: "LV", name: "Latvia" }, { iso: "LB", name: "Lebanon" }, { iso: "LS", name: "Lesotho" }, { iso: "LR", name: "Liberia" }, { iso: "LY", name: "Libya" }, { iso: "LI", name: "Liechtenstein" }, { iso: "LT", name: "Lithuania" }, { iso: "LU", name: "Luxembourg" }, { iso: "MO", name: "Macao" }, { iso: "MK", name: "Macedonia" }, { iso: "MG", name: "Madagascar" }, { iso: "MW", name: "Malawi" }, { iso: "MY", name: "Malaysia" }, { iso: "MV", name: "Maldives" }, { iso: "ML", name: "Mali" }, { iso: "MT", name: "Malta" }, { iso: "MH", name: "Marshall Islands" }, { iso: "MQ", name: "Martinique" }, { iso: "MR", name: "Mauritania" }, { iso: "MU", name: "Mauritius" }, { iso: "YT", name: "Mayotte" }, { iso: "MX", name: "Mexico" }, { iso: "FM", name: "Micronesia" }, { iso: "MD", name: "Moldova" }, { iso: "MC", name: "Monaco" }, { iso: "MN", name: "Mongolia" }, { iso: "ME", name: "Montenegro" }, { iso: "MS", name: "Montserrat" }, { iso: "MA", name: "Morocco" }, { iso: "MZ", name: "Mozambique" }, { iso: "MM", name: "Myanmar [Burma]" }, { iso: "NA", name: "Namibia" }, { iso: "NR", name: "Nauru" }, { iso: "NP", name: "Nepal" }, { iso: "NL", name: "Netherlands" }, { iso: "AN", name: "Netherlands Antilles" }, { iso: "NC", name: "New Caledonia" }, { iso: "NZ", name: "New Zealand" }, { iso: "NI", name: "Nicaragua" }, { iso: "NE", name: "Niger" }, { iso: "NG", name: "Nigeria" }, { iso: "NU", name: "Niue" }, { iso: "NF", name: "Norfolk Island" }, { iso: "KP", name: "North Korea" }, { iso: "MP", name: "Northern Mariana Islands" }, { iso: "NO", name: "Norway" }, { iso: "OM", name: "Oman" }, { iso: "PK", name: "Pakistan" }, { iso: "PW", name: "Palau" }, { iso: "PS", name: "Palestine" }, { iso: "PA", name: "Panama" }, { iso: "PG", name: "Papua New Guinea" }, { iso: "PY", name: "Paraguay" }, { iso: "PE", name: "Peru" }, { iso: "PH", name: "Philippines" }, { iso: "PN", name: "Pitcairn Islands" }, { iso: "PL", name: "Poland" }, { iso: "PT", name: "Portugal" }, { iso: "PR", name: "Puerto Rico" }, { iso: "QA", name: "Qatar" }, { iso: "CG", name: "Republic of the Congo" }, { iso: "RE", name: "Réunion" }, { iso: "RO", name: "Romania" }, { iso: "RU", name: "Russia" }, { iso: "RW", name: "Rwanda" }, { iso: "BL", name: "Saint Barthélemy" }, { iso: "SH", name: "Saint Helena" }, { iso: "KN", name: "Saint Kitts and Nevis" }, { iso: "LC", name: "Saint Lucia" }, { iso: "MF", name: "Saint Martin" }, { iso: "PM", name: "Saint Pierre and Miquelon" }, { iso: "VC", name: "Saint Vincent and the Grenadines" }, { iso: "WS", name: "Samoa" }, { iso: "SM", name: "San Marino" }, { iso: "ST", name: "São Tomé and Príncipe" }, { iso: "SA", name: "Saudi Arabia" }, { iso: "SN", name: "Senegal" }, { iso: "RS", name: "Serbia" }, { iso: "CS", name: "Serbia and Montenegro" }, { iso: "SC", name: "Seychelles" }, { iso: "SL", name: "Sierra Leone" }, { iso: "SG", name: "Singapore" }, { iso: "SX", name: "Sint Maarten" }, { iso: "SK", name: "Slovakia" }, { iso: "SI", name: "Slovenia" }, { iso: "SB", name: "Solomon Islands" }, { iso: "SO", name: "Somalia" }, { iso: "ZA", name: "South Africa" }, { iso: "GS", name: "South Georgia and the South Sandwich Islands" }, { iso: "KR", name: "South Korea" }, { iso: "SS", name: "South Sudan" }, { iso: "ES", name: "Spain" }, { iso: "LK", name: "Sri Lanka" }, { iso: "SD", name: "Sudan" }, { iso: "SR", name: "Suriname" }, { iso: "SJ", name: "Svalbard and Jan Mayen" }, { iso: "SZ", name: "Swaziland" }, { iso: "SE", name: "Sweden" }, { iso: "CH", name: "Switzerland" }, { iso: "SY", name: "Syria" }, { iso: "TW", name: "Taiwan" }, { iso: "TJ", name: "Tajikistan" }, { iso: "TZ", name: "Tanzania" }, { iso: "TH", name: "Thailand" }, { iso: "TG", name: "Togo" }, { iso: "TK", name: "Tokelau" }, { iso: "TO", name: "Tonga" }, { iso: "TT", name: "Trinidad and Tobago" }, { iso: "TN", name: "Tunisia" }, { iso: "TR", name: "Turkey" }, { iso: "TM", name: "Turkmenistan" }, { iso: "TC", name: "Turks and Caicos Islands" }, { iso: "TV", name: "Tuvalu" }, { iso: "UM", name: "U.S. Minor Outlying Islands" }, { iso: "VI", name: "U.S. Virgin Islands" }, { iso: "UG", name: "Uganda" }, { iso: "UA", name: "Ukraine" }, { iso: "AE", name: "United Arab Emirates" }, { iso: "GB", name: "United Kingdom" }, { iso: "US", name: "United States" }, { iso: "UY", name: "Uruguay" }, { iso: "UZ", name: "Uzbekistan" }, { iso: "VU", name: "Vanuatu" }, { iso: "VA", name: "Vatican City" }, { iso: "VE", name: "Venezuela" }, { iso: "VN", name: "Vietnam" }, { iso: "WF", name: "Wallis and Futuna" }, { iso: "EH", name: "Western Sahara" }, { iso: "YE", name: "Yemen" }, { iso: "ZM", name: "Zambia" }, { iso: "ZW", name: "Zimbabwe" }];
-
-/***/ }),
-/* 4 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -675,7 +2814,7 @@
 	// Libraries
 
 
-	var _d = __webpack_require__(5);
+	var _d = __webpack_require__(25);
 
 	var d3 = _interopRequireWildcard(_d);
 
@@ -693,8 +2832,8 @@
 	    this.data = [];
 	    this.type = type;
 	    this.margin = { top: 4, right: 0, bottom: 32, left: 32 };
-	    this.width = 400 - (this.margin.left + this.margin.right);
-	    this.height = 300 - (this.margin.top + this.margin.bottom);
+	    this.width = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
+	    this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
 	    this.createElements(parentContainer);
 	  }
 
@@ -824,7 +2963,7 @@
 	}();
 
 /***/ }),
-/* 5 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org Version 4.8.0. Copyright 2017 Mike Bostock.
@@ -17503,1188 +19642,7 @@
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var TrendsAPI = exports.TrendsAPI = function () {
-	  function TrendsAPI() {
-	    _classCallCheck(this, TrendsAPI);
-
-	    console.log('TrendsAPI');
-	  }
-
-	  _createClass(TrendsAPI, [{
-	    key: 'setup',
-	    value: function setup(callback) {
-	      var self = this;
-	      __webpack_require__(7)().then(function (gapi) {
-	        console.log('GoogleAPI library loaded');
-	        gapi.load('client', start);
-
-	        function start() {
-	          var apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
-	          var id = 'diseases';
-	          gapi.client.init({
-	            'apiKey': apiKey,
-	            'clientId': 'diseases.apps.googleusercontent.com'
-	          }).then(function () {
-	            console.log('GoogleAPI client initialized');
-	            self.gapi = gapi;
-	            if (callback) {
-	              callback();
-	            }
-	          });
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'getTrends',
-	    value: function getTrends(filter, callback) {
-	      console.log('Requesting data for:', filter);
-
-	      var geo = filter.geo;
-	      var terms = filter.terms;
-
-	      var path = 'https://www.googleapis.com/trends/v1beta/graph?';
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var t = _step.value;
-
-	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      if (geo.iso !== '') {
-	        path += 'restrictions.geo=' + geo.iso;
-	      }
-	      console.log(path);
-	      this.gapi.client.request({
-	        'path': path
-	      }).then(function (response) {
-	        callback(response.result);
-	      }, function (reason) {
-	        console.log('Error: ' + reason.result.error.message);
-	      });
-	    }
-	  }]);
-
-	  return TrendsAPI;
-	}(); //  weak
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/** @module google-client-api */
-
-	var scriptjs = __webpack_require__( 8 ),
-		promise = __webpack_require__( 9 );
-
-	var callbacks = [];
-
-	global.$$onClientLoad = function() {
-
-		for( var i = 0, len = callbacks.length; i < len; i++ ) {
-
-			doResolve.apply( undefined, callbacks[ i ] );
-		}
-	};
-
-	function doResolve( resolve, onComplete ) {
-
-		resolve( global.gapi );
-
-		if( onComplete )
-			onComplete( global.gapi );
-	}
-
-
-	/** 
-	 * This module is a function which will return a Google Client API object 
-	 * (https://developers.google.com/api-client-library/javascript/dev/dev_jscript) assynchronously.
-	 *
-	 * This function returns a promise. (if you're into promises) Which will return the gapi Object.
-	 *
-	 * If you're not into promises then you can simply call this function and pass in a callback object.
-	 * 
-	 * @param  {Function} onComplete an optional callback which will return the Google Client API Object.
-	 * @return {Promise} This function also returns a promise if you're into promises which will
-	 *                   return the Google Client API Object.
-	 *
-	 * @example Using with Promise
-	 * require( 'google-client-api' )().then( function( gapi ) {
-	 * 	// Do something with the gapi object
-	 * });
-	 *
-	 * @example Using with callback
-	 * require( 'google-client-api' )( function( gapi ) {
-	 * 	// Do something with the gapi object
-	 * });
-	 */
-	module.exports = function( onComplete ) {
-
-		return new promise( function( resolve, reject ) {
-
-			if( global.gapi ) {
-
-				doResolve( resolve, onComplete );
-			} else {
-
-				callbacks.push( [ resolve, onComplete ] );
-
-				if( callbacks.length == 1 ) {
-
-					scriptjs( 'https://apis.google.com/js/client.js?onload=$$onClientLoad' );
-				}
-			}
-		});
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  * $script.js JS loader & dependency manager
-	  * https://github.com/ded/script.js
-	  * (c) Dustin Diaz 2014 | License MIT
-	  */
-
-	(function (name, definition) {
-	  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-	  else if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-	  else this[name] = definition()
-	})('$script', function () {
-	  var doc = document
-	    , head = doc.getElementsByTagName('head')[0]
-	    , s = 'string'
-	    , f = false
-	    , push = 'push'
-	    , readyState = 'readyState'
-	    , onreadystatechange = 'onreadystatechange'
-	    , list = {}
-	    , ids = {}
-	    , delay = {}
-	    , scripts = {}
-	    , scriptpath
-	    , urlArgs
-
-	  function every(ar, fn) {
-	    for (var i = 0, j = ar.length; i < j; ++i) if (!fn(ar[i])) return f
-	    return 1
-	  }
-	  function each(ar, fn) {
-	    every(ar, function (el) {
-	      return !fn(el)
-	    })
-	  }
-
-	  function $script(paths, idOrDone, optDone) {
-	    paths = paths[push] ? paths : [paths]
-	    var idOrDoneIsDone = idOrDone && idOrDone.call
-	      , done = idOrDoneIsDone ? idOrDone : optDone
-	      , id = idOrDoneIsDone ? paths.join('') : idOrDone
-	      , queue = paths.length
-	    function loopFn(item) {
-	      return item.call ? item() : list[item]
-	    }
-	    function callback() {
-	      if (!--queue) {
-	        list[id] = 1
-	        done && done()
-	        for (var dset in delay) {
-	          every(dset.split('|'), loopFn) && !each(delay[dset], loopFn) && (delay[dset] = [])
-	        }
-	      }
-	    }
-	    setTimeout(function () {
-	      each(paths, function loading(path, force) {
-	        if (path === null) return callback()
-	        
-	        if (!force && !/^https?:\/\//.test(path) && scriptpath) {
-	          path = (path.indexOf('.js') === -1) ? scriptpath + path + '.js' : scriptpath + path;
-	        }
-	        
-	        if (scripts[path]) {
-	          if (id) ids[id] = 1
-	          return (scripts[path] == 2) ? callback() : setTimeout(function () { loading(path, true) }, 0)
-	        }
-
-	        scripts[path] = 1
-	        if (id) ids[id] = 1
-	        create(path, callback)
-	      })
-	    }, 0)
-	    return $script
-	  }
-
-	  function create(path, fn) {
-	    var el = doc.createElement('script'), loaded
-	    el.onload = el.onerror = el[onreadystatechange] = function () {
-	      if ((el[readyState] && !(/^c|loade/.test(el[readyState]))) || loaded) return;
-	      el.onload = el[onreadystatechange] = null
-	      loaded = 1
-	      scripts[path] = 2
-	      fn()
-	    }
-	    el.async = 1
-	    el.src = urlArgs ? path + (path.indexOf('?') === -1 ? '?' : '&') + urlArgs : path;
-	    head.insertBefore(el, head.lastChild)
-	  }
-
-	  $script.get = create
-
-	  $script.order = function (scripts, id, done) {
-	    (function callback(s) {
-	      s = scripts.shift()
-	      !scripts.length ? $script(s, id, done) : $script(s, callback)
-	    }())
-	  }
-
-	  $script.path = function (p) {
-	    scriptpath = p
-	  }
-	  $script.urlArgs = function (str) {
-	    urlArgs = str;
-	  }
-	  $script.ready = function (deps, ready, req) {
-	    deps = deps[push] ? deps : [deps]
-	    var missing = [];
-	    !each(deps, function (dep) {
-	      list[dep] || missing[push](dep);
-	    }) && every(deps, function (dep) {return list[dep]}) ?
-	      ready() : !function (key) {
-	      delay[key] = delay[key] || []
-	      delay[key][push](ready)
-	      req && req(missing)
-	    }(deps.join('|'))
-	    return $script
-	  }
-
-	  $script.done = function (idOrDone) {
-	    $script([null], idOrDone)
-	  }
-
-	  return $script
-	});
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = __webpack_require__(10)
-	__webpack_require__(15)
-	__webpack_require__(16)
-	__webpack_require__(17)
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var asap = __webpack_require__(11)
-
-	module.exports = Promise;
-	function Promise(fn) {
-	  if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new')
-	  if (typeof fn !== 'function') throw new TypeError('not a function')
-	  var state = null
-	  var value = null
-	  var deferreds = []
-	  var self = this
-
-	  this.then = function(onFulfilled, onRejected) {
-	    return new self.constructor(function(resolve, reject) {
-	      handle(new Handler(onFulfilled, onRejected, resolve, reject))
-	    })
-	  }
-
-	  function handle(deferred) {
-	    if (state === null) {
-	      deferreds.push(deferred)
-	      return
-	    }
-	    asap(function() {
-	      var cb = state ? deferred.onFulfilled : deferred.onRejected
-	      if (cb === null) {
-	        (state ? deferred.resolve : deferred.reject)(value)
-	        return
-	      }
-	      var ret
-	      try {
-	        ret = cb(value)
-	      }
-	      catch (e) {
-	        deferred.reject(e)
-	        return
-	      }
-	      deferred.resolve(ret)
-	    })
-	  }
-
-	  function resolve(newValue) {
-	    try { //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-	      if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.')
-	      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
-	        var then = newValue.then
-	        if (typeof then === 'function') {
-	          doResolve(then.bind(newValue), resolve, reject)
-	          return
-	        }
-	      }
-	      state = true
-	      value = newValue
-	      finale()
-	    } catch (e) { reject(e) }
-	  }
-
-	  function reject(newValue) {
-	    state = false
-	    value = newValue
-	    finale()
-	  }
-
-	  function finale() {
-	    for (var i = 0, len = deferreds.length; i < len; i++)
-	      handle(deferreds[i])
-	    deferreds = null
-	  }
-
-	  doResolve(fn, resolve, reject)
-	}
-
-
-	function Handler(onFulfilled, onRejected, resolve, reject){
-	  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null
-	  this.onRejected = typeof onRejected === 'function' ? onRejected : null
-	  this.resolve = resolve
-	  this.reject = reject
-	}
-
-	/**
-	 * Take a potentially misbehaving resolver function and make sure
-	 * onFulfilled and onRejected are only called once.
-	 *
-	 * Makes no guarantees about asynchrony.
-	 */
-	function doResolve(fn, onFulfilled, onRejected) {
-	  var done = false;
-	  try {
-	    fn(function (value) {
-	      if (done) return
-	      done = true
-	      onFulfilled(value)
-	    }, function (reason) {
-	      if (done) return
-	      done = true
-	      onRejected(reason)
-	    })
-	  } catch (ex) {
-	    if (done) return
-	    done = true
-	    onRejected(ex)
-	  }
-	}
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {
-	// Use the fastest possible means to execute a task in a future turn
-	// of the event loop.
-
-	// linked list of tasks (single, with head node)
-	var head = {task: void 0, next: null};
-	var tail = head;
-	var flushing = false;
-	var requestFlush = void 0;
-	var isNodeJS = false;
-
-	function flush() {
-	    /* jshint loopfunc: true */
-
-	    while (head.next) {
-	        head = head.next;
-	        var task = head.task;
-	        head.task = void 0;
-	        var domain = head.domain;
-
-	        if (domain) {
-	            head.domain = void 0;
-	            domain.enter();
-	        }
-
-	        try {
-	            task();
-
-	        } catch (e) {
-	            if (isNodeJS) {
-	                // In node, uncaught exceptions are considered fatal errors.
-	                // Re-throw them synchronously to interrupt flushing!
-
-	                // Ensure continuation if the uncaught exception is suppressed
-	                // listening "uncaughtException" events (as domains does).
-	                // Continue in next event to avoid tick recursion.
-	                if (domain) {
-	                    domain.exit();
-	                }
-	                setTimeout(flush, 0);
-	                if (domain) {
-	                    domain.enter();
-	                }
-
-	                throw e;
-
-	            } else {
-	                // In browsers, uncaught exceptions are not fatal.
-	                // Re-throw them asynchronously to avoid slow-downs.
-	                setTimeout(function() {
-	                   throw e;
-	                }, 0);
-	            }
-	        }
-
-	        if (domain) {
-	            domain.exit();
-	        }
-	    }
-
-	    flushing = false;
-	}
-
-	if (typeof process !== "undefined" && process.nextTick) {
-	    // Node.js before 0.9. Note that some fake-Node environments, like the
-	    // Mocha test runner, introduce a `process` global without a `nextTick`.
-	    isNodeJS = true;
-
-	    requestFlush = function () {
-	        process.nextTick(flush);
-	    };
-
-	} else if (typeof setImmediate === "function") {
-	    // In IE10, Node.js 0.9+, or https://github.com/NobleJS/setImmediate
-	    if (typeof window !== "undefined") {
-	        requestFlush = setImmediate.bind(window, flush);
-	    } else {
-	        requestFlush = function () {
-	            setImmediate(flush);
-	        };
-	    }
-
-	} else if (typeof MessageChannel !== "undefined") {
-	    // modern browsers
-	    // http://www.nonblocking.io/2011/06/windownexttick.html
-	    var channel = new MessageChannel();
-	    channel.port1.onmessage = flush;
-	    requestFlush = function () {
-	        channel.port2.postMessage(0);
-	    };
-
-	} else {
-	    // old browsers
-	    requestFlush = function () {
-	        setTimeout(flush, 0);
-	    };
-	}
-
-	function asap(task) {
-	    tail = tail.next = {
-	        task: task,
-	        domain: isNodeJS && process.domain,
-	        next: null
-	    };
-
-	    if (!flushing) {
-	        flushing = true;
-	        requestFlush();
-	    }
-	};
-
-	module.exports = asap;
-
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(13).setImmediate))
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
-	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
-	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-
-
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-
-
-
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-	process.prependListener = noop;
-	process.prependOnceListener = noop;
-
-	process.listeners = function (name) { return [] }
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	var apply = Function.prototype.apply;
-
-	// DOM APIs, for completeness
-
-	exports.setTimeout = function() {
-	  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-	};
-	exports.setInterval = function() {
-	  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-	};
-	exports.clearTimeout =
-	exports.clearInterval = function(timeout) {
-	  if (timeout) {
-	    timeout.close();
-	  }
-	};
-
-	function Timeout(id, clearFn) {
-	  this._id = id;
-	  this._clearFn = clearFn;
-	}
-	Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-	Timeout.prototype.close = function() {
-	  this._clearFn.call(window, this._id);
-	};
-
-	// Does not start the time, just sets up the members needed.
-	exports.enroll = function(item, msecs) {
-	  clearTimeout(item._idleTimeoutId);
-	  item._idleTimeout = msecs;
-	};
-
-	exports.unenroll = function(item) {
-	  clearTimeout(item._idleTimeoutId);
-	  item._idleTimeout = -1;
-	};
-
-	exports._unrefActive = exports.active = function(item) {
-	  clearTimeout(item._idleTimeoutId);
-
-	  var msecs = item._idleTimeout;
-	  if (msecs >= 0) {
-	    item._idleTimeoutId = setTimeout(function onTimeout() {
-	      if (item._onTimeout)
-	        item._onTimeout();
-	    }, msecs);
-	  }
-	};
-
-	// setimmediate attaches itself to the global object
-	__webpack_require__(14);
-	exports.setImmediate = setImmediate;
-	exports.clearImmediate = clearImmediate;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
-	    "use strict";
-
-	    if (global.setImmediate) {
-	        return;
-	    }
-
-	    var nextHandle = 1; // Spec says greater than zero
-	    var tasksByHandle = {};
-	    var currentlyRunningATask = false;
-	    var doc = global.document;
-	    var registerImmediate;
-
-	    function setImmediate(callback) {
-	      // Callback can either be a function or a string
-	      if (typeof callback !== "function") {
-	        callback = new Function("" + callback);
-	      }
-	      // Copy function arguments
-	      var args = new Array(arguments.length - 1);
-	      for (var i = 0; i < args.length; i++) {
-	          args[i] = arguments[i + 1];
-	      }
-	      // Store and register the task
-	      var task = { callback: callback, args: args };
-	      tasksByHandle[nextHandle] = task;
-	      registerImmediate(nextHandle);
-	      return nextHandle++;
-	    }
-
-	    function clearImmediate(handle) {
-	        delete tasksByHandle[handle];
-	    }
-
-	    function run(task) {
-	        var callback = task.callback;
-	        var args = task.args;
-	        switch (args.length) {
-	        case 0:
-	            callback();
-	            break;
-	        case 1:
-	            callback(args[0]);
-	            break;
-	        case 2:
-	            callback(args[0], args[1]);
-	            break;
-	        case 3:
-	            callback(args[0], args[1], args[2]);
-	            break;
-	        default:
-	            callback.apply(undefined, args);
-	            break;
-	        }
-	    }
-
-	    function runIfPresent(handle) {
-	        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-	        // So if we're currently running a task, we'll need to delay this invocation.
-	        if (currentlyRunningATask) {
-	            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-	            // "too much recursion" error.
-	            setTimeout(runIfPresent, 0, handle);
-	        } else {
-	            var task = tasksByHandle[handle];
-	            if (task) {
-	                currentlyRunningATask = true;
-	                try {
-	                    run(task);
-	                } finally {
-	                    clearImmediate(handle);
-	                    currentlyRunningATask = false;
-	                }
-	            }
-	        }
-	    }
-
-	    function installNextTickImplementation() {
-	        registerImmediate = function(handle) {
-	            process.nextTick(function () { runIfPresent(handle); });
-	        };
-	    }
-
-	    function canUsePostMessage() {
-	        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-	        // where `global.postMessage` means something completely different and can't be used for this purpose.
-	        if (global.postMessage && !global.importScripts) {
-	            var postMessageIsAsynchronous = true;
-	            var oldOnMessage = global.onmessage;
-	            global.onmessage = function() {
-	                postMessageIsAsynchronous = false;
-	            };
-	            global.postMessage("", "*");
-	            global.onmessage = oldOnMessage;
-	            return postMessageIsAsynchronous;
-	        }
-	    }
-
-	    function installPostMessageImplementation() {
-	        // Installs an event handler on `global` for the `message` event: see
-	        // * https://developer.mozilla.org/en/DOM/window.postMessage
-	        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-	        var messagePrefix = "setImmediate$" + Math.random() + "$";
-	        var onGlobalMessage = function(event) {
-	            if (event.source === global &&
-	                typeof event.data === "string" &&
-	                event.data.indexOf(messagePrefix) === 0) {
-	                runIfPresent(+event.data.slice(messagePrefix.length));
-	            }
-	        };
-
-	        if (global.addEventListener) {
-	            global.addEventListener("message", onGlobalMessage, false);
-	        } else {
-	            global.attachEvent("onmessage", onGlobalMessage);
-	        }
-
-	        registerImmediate = function(handle) {
-	            global.postMessage(messagePrefix + handle, "*");
-	        };
-	    }
-
-	    function installMessageChannelImplementation() {
-	        var channel = new MessageChannel();
-	        channel.port1.onmessage = function(event) {
-	            var handle = event.data;
-	            runIfPresent(handle);
-	        };
-
-	        registerImmediate = function(handle) {
-	            channel.port2.postMessage(handle);
-	        };
-	    }
-
-	    function installReadyStateChangeImplementation() {
-	        var html = doc.documentElement;
-	        registerImmediate = function(handle) {
-	            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-	            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-	            var script = doc.createElement("script");
-	            script.onreadystatechange = function () {
-	                runIfPresent(handle);
-	                script.onreadystatechange = null;
-	                html.removeChild(script);
-	                script = null;
-	            };
-	            html.appendChild(script);
-	        };
-	    }
-
-	    function installSetTimeoutImplementation() {
-	        registerImmediate = function(handle) {
-	            setTimeout(runIfPresent, 0, handle);
-	        };
-	    }
-
-	    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-	    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-	    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-	    // Don't get fooled by e.g. browserify environments.
-	    if ({}.toString.call(global.process) === "[object process]") {
-	        // For Node.js before 0.9
-	        installNextTickImplementation();
-
-	    } else if (canUsePostMessage()) {
-	        // For non-IE10 modern browsers
-	        installPostMessageImplementation();
-
-	    } else if (global.MessageChannel) {
-	        // For web workers, where supported
-	        installMessageChannelImplementation();
-
-	    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-	        // For IE 6–8
-	        installReadyStateChangeImplementation();
-
-	    } else {
-	        // For older browsers
-	        installSetTimeoutImplementation();
-	    }
-
-	    attachTo.setImmediate = setImmediate;
-	    attachTo.clearImmediate = clearImmediate;
-	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)))
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Promise = __webpack_require__(10)
-	var asap = __webpack_require__(11)
-
-	module.exports = Promise
-	Promise.prototype.done = function (onFulfilled, onRejected) {
-	  var self = arguments.length ? this.then.apply(this, arguments) : this
-	  self.then(null, function (err) {
-	    asap(function () {
-	      throw err
-	    })
-	  })
-	}
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	//This file contains the ES6 extensions to the core Promises/A+ API
-
-	var Promise = __webpack_require__(10)
-	var asap = __webpack_require__(11)
-
-	module.exports = Promise
-
-	/* Static Functions */
-
-	function ValuePromise(value) {
-	  this.then = function (onFulfilled) {
-	    if (typeof onFulfilled !== 'function') return this
-	    return new Promise(function (resolve, reject) {
-	      asap(function () {
-	        try {
-	          resolve(onFulfilled(value))
-	        } catch (ex) {
-	          reject(ex);
-	        }
-	      })
-	    })
-	  }
-	}
-	ValuePromise.prototype = Promise.prototype
-
-	var TRUE = new ValuePromise(true)
-	var FALSE = new ValuePromise(false)
-	var NULL = new ValuePromise(null)
-	var UNDEFINED = new ValuePromise(undefined)
-	var ZERO = new ValuePromise(0)
-	var EMPTYSTRING = new ValuePromise('')
-
-	Promise.resolve = function (value) {
-	  if (value instanceof Promise) return value
-
-	  if (value === null) return NULL
-	  if (value === undefined) return UNDEFINED
-	  if (value === true) return TRUE
-	  if (value === false) return FALSE
-	  if (value === 0) return ZERO
-	  if (value === '') return EMPTYSTRING
-
-	  if (typeof value === 'object' || typeof value === 'function') {
-	    try {
-	      var then = value.then
-	      if (typeof then === 'function') {
-	        return new Promise(then.bind(value))
-	      }
-	    } catch (ex) {
-	      return new Promise(function (resolve, reject) {
-	        reject(ex)
-	      })
-	    }
-	  }
-
-	  return new ValuePromise(value)
-	}
-
-	Promise.all = function (arr) {
-	  var args = Array.prototype.slice.call(arr)
-
-	  return new Promise(function (resolve, reject) {
-	    if (args.length === 0) return resolve([])
-	    var remaining = args.length
-	    function res(i, val) {
-	      try {
-	        if (val && (typeof val === 'object' || typeof val === 'function')) {
-	          var then = val.then
-	          if (typeof then === 'function') {
-	            then.call(val, function (val) { res(i, val) }, reject)
-	            return
-	          }
-	        }
-	        args[i] = val
-	        if (--remaining === 0) {
-	          resolve(args);
-	        }
-	      } catch (ex) {
-	        reject(ex)
-	      }
-	    }
-	    for (var i = 0; i < args.length; i++) {
-	      res(i, args[i])
-	    }
-	  })
-	}
-
-	Promise.reject = function (value) {
-	  return new Promise(function (resolve, reject) { 
-	    reject(value);
-	  });
-	}
-
-	Promise.race = function (values) {
-	  return new Promise(function (resolve, reject) { 
-	    values.forEach(function(value){
-	      Promise.resolve(value).then(resolve, reject);
-	    })
-	  });
-	}
-
-	/* Prototype Methods */
-
-	Promise.prototype['catch'] = function (onRejected) {
-	  return this.then(null, onRejected);
-	}
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	//This file contains then/promise specific extensions that are only useful for node.js interop
-
-	var Promise = __webpack_require__(10)
-	var asap = __webpack_require__(11)
-
-	module.exports = Promise
-
-	/* Static Functions */
-
-	Promise.denodeify = function (fn, argumentCount) {
-	  argumentCount = argumentCount || Infinity
-	  return function () {
-	    var self = this
-	    var args = Array.prototype.slice.call(arguments)
-	    return new Promise(function (resolve, reject) {
-	      while (args.length && args.length > argumentCount) {
-	        args.pop()
-	      }
-	      args.push(function (err, res) {
-	        if (err) reject(err)
-	        else resolve(res)
-	      })
-	      var res = fn.apply(self, args)
-	      if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
-	        resolve(res)
-	      }
-	    })
-	  }
-	}
-	Promise.nodeify = function (fn) {
-	  return function () {
-	    var args = Array.prototype.slice.call(arguments)
-	    var callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
-	    var ctx = this
-	    try {
-	      return fn.apply(this, arguments).nodeify(callback, ctx)
-	    } catch (ex) {
-	      if (callback === null || typeof callback == 'undefined') {
-	        return new Promise(function (resolve, reject) { reject(ex) })
-	      } else {
-	        asap(function () {
-	          callback.call(ctx, ex)
-	        })
-	      }
-	    }
-	  }
-	}
-
-	Promise.prototype.nodeify = function (callback, ctx) {
-	  if (typeof callback != 'function') return this
-
-	  this.then(function (value) {
-	    asap(function () {
-	      callback.call(ctx, null, value)
-	    })
-	  }, function (err) {
-	    asap(function () {
-	      callback.call(ctx, err)
-	    })
-	  })
-	}
-
-
-/***/ }),
-/* 18 */
+/* 26 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -18754,7 +19712,51 @@
 	}();
 
 /***/ }),
-/* 19 */
+/* 27 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.arrayIsEqual = arrayIsEqual;
+	function arrayIsEqual(array1, array2) {
+	  if (!array1 || !array2) return false;
+
+	  // compare lengths - can save a lot of time
+	  if (array1.length != array2.length) return false;
+
+	  for (var i = 0, l = array1.length; i < l; i++) {
+	    // Check if we have nested arrays
+	    if (array1[i] instanceof Array && array2[i] instanceof Array) {
+	      // recurse into the nested arrays
+	      if (!array1[i].equals(array2[i])) return false;
+	    } else if (array1[i] != array2[i]) {
+	      // Warning - two different object instances will never be equal: {x:20} != {x:20}
+	      return false;
+	    }
+	  }
+	  return true;
+	}
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var dummyData = exports.dummyData = ['seasonal: -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188, -0.269323791524419, 2.2482627681031, 3.57650060574365, 0.852883707458106, -0.406273305231392, -1.85527817870041, -3.66281291595825, -0.147784962758097, -0.549931123173776, 0.099403610042704, 0.290255869754918, -0.175902420650188 trend: 37.762528901914, 38.3315239226386, 38.9005189433633, 39.4485470988465, 39.9965752543297, 40.5206806715379, 41.0447860887462, 41.3886322650334, 41.7324784413207, 41.7392572020122, 41.7460359627038, 41.5791064446562, 41.4121769266086, 41.1318212828417, 40.8514656390748, 40.6780349987404, 40.5046043584061, 40.5188632422699, 40.5331221261337, 40.5695070279037, 40.6058919296737, 40.534033062029, 40.4621741943843, 40.3049506383617, 40.147727082339, 39.8594446639334, 39.5711622455278, 39.3068081546365, 39.0424540637451, 38.9053150746276, 38.76817608551, 38.6574114282917, 38.5466467710734, 38.4349433301189, 38.3232398891643, 38.2776037657757, 38.231967642387, 38.2472198122293, 38.2624719820716, 38.4289927329503, 38.595513483829, 38.9671421872068, 39.3387708905846, 39.7824300831314, 40.2260892756782, 40.6093568888705, 40.9926245020627, 41.2865237478593, 41.5804229936559, 41.8262308468391, 42.0720387000224, 42.3926667022274, 42.7132947044324, 43.148555962762, 43.5838172210916, 44.128353255787, 44.6728892904824, 45.1988109033336, 45.7247325161847, 46.2134328179009, 46.7021331196171, 47.1574972398801, 47.6128613601431, 48.0357596401487, 48.4586579201543, 48.9013681841982, 49.3440784482421, 49.7656456434357, 50.1872128386294, 50.5929227496707, 50.998632660712, 51.3422682876776, 51.6859039146432, 52.05906244743, 52.4322209802168, 52.8736664341601, 53.3151118881033, 53.6981592404157, 54.0812065927281, 54.4214366146818, 54.7616666366355, 55.1333674620577, 55.5050682874799, 55.9004303235463, 56.2957923596128, 56.7875182780576, 57.2792441965025, 57.860022572452, 58.4408009484015, 59.0992251419377, 59.7576493354738, 60.4654881464552, 61.1733269574365, 61.9446115433358, 62.7158961292352, 63.4904979396724, 64.2650997501097, 64.9579658512425, 65.6508319523754, 66.3117714490589, 66.9727109457423, 67.4444559885474, 67.9162010313524, 68.3551428948972, 68.7940847584419, 69.4016724310113, 70.0092601035807, 70.6069822095218, 71.2047043154629, 71.8677988915912, 72.5308934677195, 73.2418887830691, 73.9528840984187, 74.5029020446274, 75.0529199908361, 75.5894024603802, 76.1258849299243, 76.7715622423254, 77.4172395547264, 78.0803114155812, 78.743383276436, 79.3595450195791, 79.9757067627222, 80.4065486314354, 80.8373905001485, 81.0899663533168, 81.342542206485, 81.5837620601726, 81.8249819138603, 82.1654352421156, 82.5058885703709, 83.0139746446069, 83.5220607188428, 84.0903057594762, 84.6585508001096, 85.1276593494974, 85.5967678988852, 86.011438809179, 86.4261097194727, 86.7790958667048, 87.1320820139368, 87.5471548654305, 87.9622277169241, 88.4219343412198, 88.8816409655154, 89.3548562942496, 89.8280716229839, 90.14530578964, 90.4625399562962, 90.6314383206203, 90.8003366849444, 91.1376860832641, 91.4750354815838, 91.8546816677125, 92.2343278538412, 92.6367825338066, 93.039237213772, 93.4815058198052, 93.9237744258383, 94.3825244273239, 94.8412744288096', 'seasonal: 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021, -0.709603606916, 0.0519826228390245, 0.640487396472756, 0.342931210399428, 0.192131883178771, -0.381628279865114, -1.128645803378, 0.715438259050382, 0.246898579450001, 0.294283187762515, -0.076262316346816, -0.188013096579021 trend: 14.3578199572843, 14.5195946201682, 14.6813692830522, 14.8302914069663, 14.9792135308805, 15.1242938739813, 15.269374217082, 15.3718287974637, 15.4742833778453, 15.4876649147358, 15.5010464516262, 15.4718230633834, 15.4425996751405, 15.4105404361473, 15.3784811971541, 15.3328983462791, 15.2873154954041, 15.2392561019736, 15.1911967085432, 15.1568110745783, 15.1224254406135, 15.0837155181007, 15.0450055955879, 15.026612520556, 15.0082194455241, 14.990380961039, 14.9725424765538, 14.9430978831242, 14.9136532896945, 14.9183321225634, 14.9230109554322, 14.9441936007067, 14.9653762459811, 14.9563536457965, 14.9473310456118, 14.9000384794828, 14.8527459133538, 14.8013391868136, 14.7499324602735, 14.6932306248692, 14.6365287894648, 14.594713369661, 14.5528979498572, 14.5370907096426, 14.521283469428, 14.4856523152637, 14.4500211610993, 14.4001438455218, 14.3502665299443, 14.347175550043, 14.3440845701418, 14.3621855827124, 14.380286595283, 14.4016213949616, 14.4229561946402, 14.4659112301919, 14.5088662657436, 14.5417226649858, 14.574579064228, 14.6355886297172, 14.6965981952064, 14.8256163515569, 14.9546345079075, 15.0903738776158, 15.2261132473242, 15.3671273622559, 15.5081414771876, 15.6514538961445, 15.7947663151013, 15.9173037473833, 16.0398411796653, 16.1341850114871, 16.2285288433089, 16.3413820838349, 16.4542353243609, 16.5709743832642, 16.6877134421674, 16.7817031551808, 16.8756928681942, 16.9774651936794, 17.0792375191646, 17.1984732010251, 17.3177088828855, 17.4286690010625, 17.5396291192395, 17.6687942910293, 17.7979594628191, 17.9434935492305, 18.0890276356418, 18.2488252542452, 18.4086228728486, 18.5599852965853, 18.711347720322, 18.8544074628668, 18.9974672054117, 19.1313290625803, 19.265190919749, 19.3824369425128, 19.4996829652766, 19.6313937608381, 19.7631045563997, 19.8925827099423, 20.0220608634849, 20.1283483615619, 20.2346358596388, 20.3386801270773, 20.4427243945158, 20.5269080527314, 20.611091710947, 20.6744471369078, 20.7378025628686, 20.8529634853855, 20.9681244079024, 21.0996052678197, 21.2310861277371, 21.3607093447727, 21.4903325618084, 21.6532403499474, 21.8161481380863, 22.0027630594274, 22.1893779807684, 22.3317609981907, 22.474144015613, 22.5702998130241, 22.6664556104352, 22.7430503317079, 22.8196450529806, 22.8662025303359, 22.9127600076912, 22.980391894265, 23.0480237808387, 23.1848043356962, 23.3215848905536, 23.4565496653722, 23.5915144401907, 23.7118683228628, 23.8322222055349, 23.9695363167402, 24.1068504279456, 24.2424326268297, 24.3780148257137, 24.5178297480231, 24.6576446703324, 24.7802017100922, 24.9027587498519, 24.9740476783147, 25.0453366067775, 25.1050395869173, 25.1647425670571, 25.2312252924397, 25.2977080178222, 25.4136226077212, 25.5295371976202, 25.7007806907945, 25.8720241839688, 26.0342260716288, 26.1964279592888, 26.3592020810185, 26.5219762027481, 26.6822329596632, 26.8424897165783', 'seasonal: 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177, -1.30106770010339, -0.575703984947206, 0.611455950652216, 0.498619188396571, 0.513612608179808, -0.482560634213124, -3.04752971214141, 1.34329755660831, 0.968998123450569, 1.5746581176622, 0.206874676817746, -0.310654115938177 trend: 27.3986322370905, 27.714526301855, 28.0304203666196, 28.321109636283, 28.6117989059464, 28.8801131483429, 29.1484273907393, 29.4058697028756, 29.6633120150119, 29.7721956440063, 29.8810792730007, 29.8957972702914, 29.9105152675822, 30.0758586985843, 30.2412021295865, 30.424220870771, 30.6072396119555, 30.7302979449746, 30.8533562779936, 30.8683459167139, 30.8833355554341, 30.7551976144338, 30.6270596734335, 30.4904118272885, 30.3537639811434, 30.308506237194, 30.2632484932446, 30.265871750764, 30.2684950082833, 30.3381427035903, 30.4077903988972, 30.4500887476555, 30.4923870964139, 30.4202022145751, 30.3480173327364, 30.3402347735406, 30.3324522143448, 30.4265158112843, 30.5205794082239, 30.6390633360859, 30.7575472639479, 30.9433855074682, 31.1292237509885, 31.2796825034448, 31.4301412559011, 31.5000701248447, 31.5699989937882, 31.6616635874825, 31.7533281811767, 31.8810646737642, 32.0088011663516, 32.2005498135123, 32.3922984606731, 32.6494748609359, 32.9066512611987, 33.1818769337738, 33.4571026063488, 33.7938090797627, 34.1305155531766, 34.5067416197967, 34.8829676864167, 35.2850098959484, 35.68705210548, 36.1262427814549, 36.5654334574298, 36.9990478678129, 37.4326622781959, 37.6817440153009, 37.9308257524059, 38.1079958307612, 38.2851659091164, 38.4475542694649, 38.6099426298133, 38.7578741529403, 38.9058056760673, 39.2497721993034, 39.5937387225395, 40.0547645570899, 40.5157903916403, 41.0155887503635, 41.5153871090867, 42.0069628430308, 42.498538576975, 42.9065504230989, 43.3145622692229, 43.7117525360835, 44.1089428029441, 44.4888638166499, 44.8687848303557, 45.3068910470509, 45.7449972637461, 46.270464146007, 46.795931028268, 47.3686441381757, 47.9413572480833, 48.5528946859882, 49.164432123893, 49.7867059757355, 50.408979827578, 51.015751656055, 51.6225234845321, 52.1585529638902, 52.6945824432484, 53.2053427506706, 53.7161030580927, 54.2204344975437, 54.7247659369946, 55.1567875585755, 55.5888091801564, 55.9909462273812, 56.3930832746059, 56.8388840661498, 57.2846848576937, 57.6457286743269, 58.0067724909601, 58.4411047733521, 58.875437055744, 59.4543768050557, 60.0333165543673, 60.5859588098427, 61.1386010653181, 61.5632256419185, 61.9878502185188, 62.3548932760562, 62.7219363335935, 63.1281807472289, 63.5344251608643, 64.0066277172409, 64.4788302736176, 65.1697337048494, 65.8606371360812, 66.6376887705037, 67.4147404049262, 68.0068574144586, 68.598974423991, 69.0856959137771, 69.5724174035631, 70.0343736248878, 70.4963298462125, 70.9248447588789, 71.3533596715453, 71.9500491954437, 72.5467387193421, 72.9548513383565, 73.3629639573709, 73.68026507407, 73.9975661907689, 74.3054165268165, 74.6132668628641, 74.862645186733, 75.1120235106019, 75.6635322942038, 76.2150410778058, 76.970228085594, 77.7254150933821, 78.4988887205338, 79.2723623476855, 80.0548184083599, 80.8372744690344, 81.6163958655883, 82.3955172621422'];
+
+	var terms = exports.terms = [{ "name": "Aaron's sign", "entity": "/m/059s97" }, { "name": "Abarognosis", "entity": "/m/08gh0x" }, { "name": "Abasia", "entity": "/m/07x_xw" }, { "name": "Abcess", "entity": "/m/0lxt" }, { "name": "Abdominal angina", "entity": "/m/0ft1_3" }, { "name": "Abdominal distension", "entity": "/m/09d7vk" }, { "name": "Abdominal fullness", "entity": "/m/0dl9shd" }, { "name": "Abdominal guarding", "entity": "/m/02r0j6j" }, { "name": "Abdominal mass", "entity": "/m/0b8v9f" }, { "name": "Abdominal migraine", "entity": "/m/0kfyl_5" }, { "name": "Abdominal obesity", "entity": "/m/0f8fc" }, { "name": "Abdominal pain", "entity": "/m/02tfl8" }, { "name": "Abnormal basal metabolic rate", "entity": "/m/08x47t" }, { "name": "Abnormal posturing", "entity": "/m/08hpp7" }, { "name": "Abscess", "entity": "/m/0lxt" }, { "name": "Absent-mindedness", "entity": "/m/026__2h" }, { "name": "Acalculia", "entity": "/m/025sjm9" }, { "name": "Acanthocyte", "entity": "/m/06nyl4" }, { "name": "Acanthosis nigricans", "entity": "/m/036b82" }, { "name": "Achilles tendon rupture", "entity": "/m/06tbxm" }, { "name": "Acholia", "entity": "/m/0ryshn1" }, { "name": "Acid erosion", "entity": "/m/065tzg" }, { "name": "Acidosis", "entity": "/m/02gwty" }, { "name": "Acne", "entity": "/m/0jwqt" }, { "name": "Acneiform eruption", "entity": "/m/04jbylc" }, { "name": "Acroosteolysis", "entity": "/m/05ztxfr" }, { "name": "Actinic keratosis", "entity": "/m/04r3p5" }, { "name": "Acute chest syndrome", "entity": "/m/03m9zsx" }, { "name": "Acute kidney injury", "entity": "/m/03545w" }, { "name": "Acyanotic heart defect", "entity": "/m/03k275" }, { "name": "Adenoma sebaceum", "entity": "/m/06wcg0z" }, { "name": "Adenomyosis", "entity": "/m/054xgp" }, { "name": "Adermatoglyphia", "entity": "/m/0h3sypv" }, { "name": "Adie syndrome", "entity": "/m/08g5r9" }, { "name": "Adrenal crisis", "entity": "/m/0wqdl_y" }, { "name": "Adson's sign", "entity": "/m/045hv5" }, { "name": "Adynamia", "entity": "/m/03clsld" }, { "name": "Afterimage", "entity": "/m/02h98q" }, { "name": "Ageusia", "entity": "/m/05sfr2" }, { "name": "Agnosia", "entity": "/m/016q5d" }, { "name": "Agonal respiration", "entity": "/m/07gylr" }, { "name": "Agrammatism", "entity": "/m/0crhgf" }, { "name": "Agraphesthesia", "entity": "/m/09gdzpf" }, { "name": "Agraphia", "entity": "/m/0jwvhgg" }, { "name": "Air crescent sign", "entity": "/m/0gkfrn" }, { "name": "Air trapping", "entity": "/m/0263nnq" }, { "name": "Akathisia", "entity": "/m/01dzyw" }, { "name": "Albinism", "entity": "/m/0122t" }, { "name": "Albuminuria", "entity": "/m/0g6q2" }, { "name": "Alcohol flush reaction", "entity": "/m/05nn1b" }, { "name": "Alcoholism", "entity": "/m/012jc" }, { "name": "Alice in Wonderland syndrome", "entity": "/m/019szr" }, { "name": "Alkalosis", "entity": "/m/02gwvb" }, { "name": "Allergic bronchopulmonary aspergillosis", "entity": "/m/0cvcl5" }, { "name": "Allergic conjunctivitis", "entity": "/m/04v6d0" }, { "name": "Allergy", "entity": "/m/0fd23" }, { "name": "Allodynia", "entity": "/m/096m74" }, { "name": "Alogia", "entity": "/m/01r718" }, { "name": "Alpha 1-antitrypsin deficiency", "entity": "/m/01t4q6" }, { "name": "Amaurosis", "entity": "/m/05wt36" }, { "name": "Amaurosis fugax", "entity": "/m/036bqx" }, { "name": "Amblyopia", "entity": "/m/02s64_" }, { "name": "Ameboma", "entity": "/m/05c10rl" }, { "name": "Amenorrhoea", "entity": "/m/01j62y" }, { "name": "Amnesia", "entity": "/m/01j4hd" }, { "name": "Amylophagia", "entity": "/m/07_vwb" }, { "name": "Anagen effluvium", "entity": "/m/051vhjt" }, { "name": "Anal fissure", "entity": "/m/02gscl" }, { "name": "Anaphylaxis", "entity": "/m/0jtyb" }, { "name": "Anasarca", "entity": "/m/036br7" }, { "name": "Anejaculation", "entity": "/m/03bxghw" }, { "name": "Anemia", "entity": "/m/0lcdk" }, { "name": "Anencephaly", "entity": "/m/01hr6t" }, { "name": "Angina pectoris", "entity": "/m/0hg45" }, { "name": "Anginal equivalent", "entity": "/m/0gh8htd" }, { "name": "Angioedema", "entity": "/m/03tlvj" }, { "name": "Angioid streaks", "entity": "/m/02w1m45" }, { "name": "Angor animi", "entity": "/m/0dl9t9q" }, { "name": "Angular cheilitis", "entity": "/m/099686" }, { "name": "Anhedonia", "entity": "/m/01nvfh" }, { "name": "Aniridia", "entity": "/m/03gxt1" }, { "name": "Anisocoria", "entity": "/m/08mh71" }, { "name": "Annuloaortic ectasia", "entity": "/m/02q6sdc" }, { "name": "Anorexia", "entity": "/m/0brgy" }, { "name": "Anosmia", "entity": "/m/0m7pl" }, { "name": "Anovulatory cycle", "entity": "/m/0504pv" }, { "name": "Antepartum haemorrhage", "entity": "/m/056x7r" }, { "name": "Anterograde amnesia", "entity": "/m/02m3p2" }, { "name": "Anti-social behaviour", "entity": "/m/02l4fy" }, { "name": "Anuria", "entity": "/m/04f74cm" }, { "name": "Anxiety", "entity": "/m/0k_9" }, { "name": "Aortic unfolding", "entity": "/m/0cz8y2h" }, { "name": "Apathy", "entity": "/m/01y4zk" }, { "name": "Aphakia", "entity": "/m/0831jw" }, { "name": "Aphasia", "entity": "/m/0wnw" }, { "name": "Aphonia", "entity": "/m/025s02j" }, { "name": "Aplasia cutis congenita", "entity": "/m/05b1frk" }, { "name": "Apnea", "entity": "/m/01mr85" }, { "name": "Apraxia", "entity": "/m/0flz_" }, { "name": "Aprosodia", "entity": "/m/02rfs8c" }, { "name": "Arachnodactyly", "entity": "/m/041r6g" }, { "name": "Arcus senilis", "entity": "/m/06stpj" }, { "name": "Argyll Robertson pupil", "entity": "/m/036dkg" }, { "name": "Arthritis", "entity": "/m/0t1t" }, { "name": "Arthritis mutilans", "entity": "/m/0j_6ngk" }, { "name": "Arthrogryposis", "entity": "/m/0nrd_" }, { "name": "Arthropathy", "entity": "/m/07nsp9" }, { "name": "Asboe-Hansen sign", "entity": "/m/04q2tjp" }, { "name": "Ascites", "entity": "/m/01c24r" }, { "name": "Asperger syndrome", "entity": "/m/09cds" }, { "name": "Asphyxia", "entity": "/m/0p7w5" }, { "name": "Astasis", "entity": "/m/05pkly" }, { "name": "Asterixis", "entity": "/m/077dxt" }, { "name": "Asthma", "entity": "/m/0c78m" }, { "name": "Astigmatism", "entity": "/m/0chf1d" }, { "name": "Asynergy", "entity": "/m/02z63fn" }, { "name": "Ataxia", "entity": "/m/0l95" }, { "name": "Athetosis", "entity": "/m/03hrw8" }, { "name": "Atony", "entity": "/m/08bp0k" }, { "name": "Atrial enlargement", "entity": "/m/07k9v9w" }, { "name": "Atrial tachycardia", "entity": "/m/053y02n" }, { "name": "Atrophy", "entity": "/m/034y_l" }, { "name": "Auditory hallucination", "entity": "/m/03hfxpg" }, { "name": "Auditory verbal agnosia", "entity": "/m/090dzh" }, { "name": "Aura", "entity": "/m/07ms80" }, { "name": "Autoimmune disease", "entity": "/m/04dx3qn" }, { "name": "Autoimmune hemolytic anemia", "entity": "/m/0b1p89" }, { "name": "Automatic behavior", "entity": "/m/089ks8" }, { "name": "AV nicking", "entity": "/m/0405mqw" }, { "name": "AV nodal reentrant tachycardia", "entity": "/m/03rsgd" }, { "name": "Avoidant personality disorder", "entity": "/m/01_4_n" }, { "name": "Avolition", "entity": "/m/01sbgb" }, { "name": "Axillary lymphadenopathy", "entity": "/m/0bh6svk" }, { "name": "Azotemia", "entity": "/m/0dn4_" }, { "name": "Azotorrhea", "entity": "/m/02qdg9h" }, { "name": "B symptoms", "entity": "/m/08z394" }, { "name": "Back pain", "entity": "/m/0142ky" }, { "name": "Bacterial arthritis", "entity": "/m/02nrsk" }, { "name": "Bacterial vaginosis", "entity": "/m/01glh" }, { "name": "Bad breath", "entity": "/m/025hzf" }, { "name": "Balance disorder", "entity": "/m/0180jb" }, { "name": "Balanitis circinata", "entity": "/m/02q5q8s" }, { "name": "Ballance's sign", "entity": "/m/03h32hp" }, { "name": "Ballottement", "entity": "/m/03whwhg" }, { "name": "Bancroft's sign", "entity": "/m/0bhbpzh" }, { "name": "Barking cough", "entity": "/m/078yyj8" }, { "name": "Barrel chest", "entity": "/m/04zxhhc" }, { "name": "Beau's lines", "entity": "/m/069j_5" }, { "name": "Beck's triad", "entity": "/m/04rjcm" }, { "name": "Becker's sign", "entity": "/m/05pcqt7" }, { "name": "Beevor's sign", "entity": "/m/0bcyvy" }, { "name": "BehÃ§et's disease", "entity": "/m/025t67z" }, { "name": "Behavioral addiction", "entity": "/m/0bs79cp" }, { "name": "Behavioral symptoms", "entity": "/m/07y4v_n" }, { "name": "Bell's palsy", "entity": "/m/0dxdd" }, { "name": "Bent finger", "entity": "/m/07468xh" }, { "name": "Bigeminy", "entity": "/m/099t0f" }, { "name": "Biliary colic", "entity": "/m/026stnc" }, { "name": "Biliary dyskinesia", "entity": "/m/04cy_nk" }, { "name": "Biliary sludge", "entity": "/m/012ngbtr" }, { "name": "Bing's sign", "entity": "/m/05p4bk3" }, { "name": "Binge eating", "entity": "/m/01t96l" }, { "name": "Biot's respiration", "entity": "/m/05d44n" }, { "name": "Birthmark", "entity": "/m/01ljf2" }, { "name": "Bitot's spots", "entity": "/m/03z3vp" }, { "name": "Black eye", "entity": "/m/065wv1" }, { "name": "Black pox", "entity": "/m/05tcsy" }, { "name": "Black tarry stool", "entity": "/m/075bd16" }, { "name": "Blackout", "entity": "/m/02pnflk" }, { "name": "Bladder pain", "entity": "/m/0dl9sch" }, { "name": "Bladder spasm", "entity": "/m/02x4tcb" }, { "name": "Blank stare", "entity": "/m/06vzj_r" }, { "name": "Bleeding", "entity": "/m/012n6x" }, { "name": "Bleeding diathesis", "entity": "/m/037mv0" }, { "name": "Bleeding from anus", "entity": "/m/0dfmqkt" }, { "name": "Bleeding from ear", "entity": "/m/0dg4snt" }, { "name": "Bleeding on probing", "entity": "/m/02rtqbt" }, { "name": "Blepharospasm", "entity": "/m/08k14_" }, { "name": "Blindness", "entity": "/m/064kj9p" }, { "name": "Blister", "entity": "/m/01k1jq" }, { "name": "Bloating", "entity": "/m/011dzgb6" }, { "name": "Blood blister", "entity": "/m/05zy6c" }, { "name": "Blood hammer", "entity": "/m/0dlqb4" }, { "name": "Blood in spit", "entity": "/m/0dl9tjl" }, { "name": "Blood in stool", "entity": "/m/08cmfm" }, { "name": "Bloody show", "entity": "/m/05q5s6" }, { "name": "Blue nails", "entity": "/m/05b0h7r" }, { "name": "Blue nevus", "entity": "/m/02qgnm2" }, { "name": "Blue sclerae", "entity": "/m/0hsr1_z" }, { "name": "Blueberry muffin baby", "entity": "/m/05mxl64" }, { "name": "Blumberg sign", "entity": "/m/04mr6t" }, { "name": "Blumer's shelf", "entity": "/m/0j63q7l" }, { "name": "Blurred vision", "entity": "/m/03g_gxj" }, { "name": "Blushing", "entity": "/m/01jyxg" }, { "name": "Boas' sign", "entity": "/m/027clgs" }, { "name": "Body odor", "entity": "/m/037ywk" }, { "name": "Boil", "entity": "/m/03xp5n" }, { "name": "Bone deformities", "entity": "/m/075yfz6" }, { "name": "Bone fracture", "entity": "/m/03fz1q" }, { "name": "Bone tumor", "entity": "/m/01t125" }, { "name": "Border irregularity", "entity": "/m/04nlqr1" }, { "name": "Boredom", "entity": "/m/01j6mj" }, { "name": "Boston's sign", "entity": "/m/08zy9f" }, { "name": "Bouchard's nodes", "entity": "/m/045hxd" }, { "name": "Bounding pulse", "entity": "/m/0cfb2d" }, { "name": "Bow and arrow sign", "entity": "/m/0fmphf" }, { "name": "Bowel infarction", "entity": "/m/02r0rdw" }, { "name": "Bowel obstruction", "entity": "/m/01vzqb" }, { "name": "Brachycephaly", "entity": "/m/01hrdy" }, { "name": "Brachydactyly", "entity": "/m/0mdcl" }, { "name": "Bradycardia", "entity": "/m/01r__" }, { "name": "Bradypnea", "entity": "/m/08hy81" }, { "name": "Brain damage", "entity": "/m/01sbk1" }, { "name": "Brain death", "entity": "/m/019m0c" }, { "name": "Braxton Hicks contractions", "entity": "/m/03_81f" }, { "name": "Breakthrough bleeding", "entity": "/m/04fjyf" }, { "name": "Breast enlargement", "entity": "/m/05pdgz2" }, { "name": "Breast hematoma", "entity": "/m/012bldgw" }, { "name": "Breast hypertrophy", "entity": "/m/025t7qd" }, { "name": "Breast lump", "entity": "/m/080fvq7" }, { "name": "Breast pain", "entity": "/m/06pp7p" }, { "name": "Breastfeeding difficulties", "entity": "/m/02z1qhl" }, { "name": "Broadbent sign", "entity": "/m/05p78x6" }, { "name": "Bronchiectasis", "entity": "/m/01w_2w" }, { "name": "Bronchitis", "entity": "/m/047gmsk" }, { "name": "Bronchoconstriction", "entity": "/m/073m9q" }, { "name": "Bronchophony", "entity": "/m/027bt0g" }, { "name": "Bronchorrhea", "entity": "/m/027_4wl" }, { "name": "Bronchospasm", "entity": "/m/02_5n7" }, { "name": "Brown induration", "entity": "/m/07k9wg7" }, { "name": "Brown-SÃ©quard syndrome", "entity": "/m/03vwc5" }, { "name": "BrudziÅ„ski's sign", "entity": "/m/05p86vp" }, { "name": "Bruise", "entity": "/m/02zpsl" }, { "name": "Bruit", "entity": "/m/07qwnz" }, { "name": "Bruns nystagmus", "entity": "/m/0g9_2pv" }, { "name": "Brushfield spots", "entity": "/m/039412" }, { "name": "Bruxism", "entity": "/m/0149nm" }, { "name": "Bubo", "entity": "/m/02777pt" }, { "name": "Bulbar palsy", "entity": "/m/02qb7yy" }, { "name": "Bulging flanks", "entity": "/m/09l_s7" }, { "name": "Bullying", "entity": "/m/027vd9" }, { "name": "Bunion", "entity": "/m/01l2ky" }, { "name": "Burning mouth syndrome", "entity": "/m/03_3c6" }, { "name": "Bursitis", "entity": "/m/034z18" }, { "name": "Burton line", "entity": "/m/05pcm9t" }, { "name": "Cachexia", "entity": "/m/01wxhm" }, { "name": "CafÃ© au lait spot", "entity": "/m/04xkg4" }, { "name": "Calcaneal spur", "entity": "/m/025t1sl" }, { "name": "Calcinosis", "entity": "/m/042yl7" }, { "name": "Calcinosis cutis", "entity": "/m/042m3q" }, { "name": "Callus", "entity": "/m/01l2l9" }, { "name": "Camptodactyly", "entity": "/m/02qxxsk" }, { "name": "Cancer-related fatigue", "entity": "/m/0dllzqv" }, { "name": "Candidiasis", "entity": "/m/020gv" }, { "name": "Canker sore", "entity": "/m/05frfm" }, { "name": "Cannon A waves", "entity": "/m/05mrndk" }, { "name": "Caput medusae", "entity": "/m/049wbg" }, { "name": "Cardiac arrest", "entity": "/m/0gg4h" }, { "name": "Cardiac arrhythmia", "entity": "/m/01pf6" }, { "name": "Cardiac asthma", "entity": "/m/08fnwn" }, { "name": "Cardiomegaly", "entity": "/m/08_51g" }, { "name": "Carnett's sign", "entity": "/m/04g1lmg" }, { "name": "Carotenosis", "entity": "/m/0cdrvd" }, { "name": "Carpal tunnel syndrome", "entity": "/m/0fl_v" }, { "name": "Carvallo's sign", "entity": "/m/05p44wb" }, { "name": "Casal collar", "entity": "/m/05p45xp" }, { "name": "Castell's sign", "entity": "/m/0c9w3f" }, { "name": "Cataplexy", "entity": "/m/07f_8c" }, { "name": "Cataract", "entity": "/m/0m7h6" }, { "name": "Catatonia", "entity": "/m/01lxx" }, { "name": "Cauda equina syndrome", "entity": "/m/04yb5z" }, { "name": "Central cord syndrome", "entity": "/m/02qbn93" }, { "name": "Central facial palsy", "entity": "/m/0276115" }, { "name": "Central pontine myelinolysis", "entity": "/m/0268v" }, { "name": "Cerebellar ataxia", "entity": "/m/02vkcrn" }, { "name": "Cerebellar stroke syndrome", "entity": "/m/09gq6ht" }, { "name": "Cerebral edema", "entity": "/m/0219bz" }, { "name": "Cerebral polyopia", "entity": "/m/011q1xpz" }, { "name": "Cerebritis", "entity": "/m/03d4x24" }, { "name": "Cerebrospinal fluid leak", "entity": "/m/05f344r" }, { "name": "Cervical cancer", "entity": "/m/0d_bk" }, { "name": "Cervical lymphadenopathy", "entity": "/m/0bh9rhf" }, { "name": "Cervical motion tenderness", "entity": "/m/02vlfrb" }, { "name": "Cervicitis", "entity": "/m/020v3l" }, { "name": "Chadwick's sign", "entity": "/m/08h6km" }, { "name": "Chagoma", "entity": "/m/0jkys2b" }, { "name": "Chalazion", "entity": "/m/03gf8g" }, { "name": "Chalkstick fracture", "entity": "/m/02q2xk1" }, { "name": "Chancre", "entity": "/m/01ny_v" }, { "name": "Change in bowel habits", "entity": "/m/04mvdfs" }, { "name": "Charcotâ€“Leyden crystals", "entity": "/m/08ydrl" }, { "name": "Cheilitis", "entity": "/m/0gj51x" }, { "name": "Chemosis", "entity": "/m/04jr5f" }, { "name": "Chemotherapy-induced acral erythema", "entity": "/m/02qkht2" }, { "name": "Cherry-red spot", "entity": "/m/065yks4" }, { "name": "Chest pain", "entity": "/m/02np4v" }, { "name": "Chest Tightness", "entity": "/m/06gx48m" }, { "name": "Cheyneâ€“Stokes respiration", "entity": "/m/036k30" }, { "name": "Chills", "entity": "/m/02mdc7" }, { "name": "Choking", "entity": "/m/0168pw" }, { "name": "Cholestasis", "entity": "/m/07t2pp" }, { "name": "Choluria", "entity": "/m/0bwjd87" }, { "name": "Chordee", "entity": "/m/021xcm" }, { "name": "Chorea", "entity": "/m/03d70n" }, { "name": "Choreoathetosis", "entity": "/m/04bltj" }, { "name": "Chorioretinitis", "entity": "/m/01dl8m" }, { "name": "Choroidal neovascularization", "entity": "/m/03d0r78" }, { "name": "Chromhidrosis", "entity": "/m/09vnrh" }, { "name": "Chronic constipation", "entity": "/m/0dfmqm9" }, { "name": "Chronic cough", "entity": "/m/06h43j3" }, { "name": "Chronic diarrhea of infancy", "entity": "/m/0bh8c4z" }, { "name": "Chronic pain", "entity": "/m/012clh" }, { "name": "Chronic progressive external ophthalmoplegia", "entity": "/m/02z2637" }, { "name": "Chronic prostatitis/chronic pelvic pain syndrome", "entity": "/m/043jxv5" }, { "name": "Chronic wound", "entity": "/m/08ssqs" }, { "name": "Chvostek sign", "entity": "/m/0407j6" }, { "name": "Chyluria", "entity": "/m/02ql75c" }, { "name": "Circumstantial speech", "entity": "/m/0gh89fc" }, { "name": "Cirrhosis", "entity": "/m/097ns" }, { "name": "Clanging", "entity": "/m/0cg61" }, { "name": "Claudication", "entity": "/m/05c1gt" }, { "name": "Cleft lip and cleft palate", "entity": "/m/07y4w6s" }, { "name": "Clinodactyly", "entity": "/m/02w3jkd" }, { "name": "Clitoromegaly", "entity": "/m/04jpnx" }, { "name": "Clonus", "entity": "/m/02zdnj" }, { "name": "Clostridium difficile infection", "entity": "/m/02cxr0" }, { "name": "Clouding of consciousness", "entity": "/m/02656gy" }, { "name": "Cloudy urine", "entity": "/m/075v3bx" }, { "name": "COâ‚‚ retention", "entity": "/m/04mpx0" }, { "name": "Coagulative necrosis", "entity": "/m/03qc8xf" }, { "name": "Coagulopathy", "entity": "/m/065b00" }, { "name": "Coccydynia", "entity": "/m/031c9y" }, { "name": "Coffee ground vomiting", "entity": "/m/02n2zp" }, { "name": "Cognitive deficit", "entity": "/m/02py0vt" }, { "name": "Cold sensitivity", "entity": "/m/03c607t" }, { "name": "Cold sweat", "entity": "/m/0dfmqlr" }, { "name": "Colitis", "entity": "/m/043hy3" }, { "name": "Collapse", "entity": "/m/026gdg4" }, { "name": "Collateral circulation", "entity": "/m/03nmgjv" }, { "name": "Collective narcissism", "entity": "/m/0glrsmb" }, { "name": "Collier's sign", "entity": "/m/0kg1nvy" }, { "name": "Color blindness", "entity": "/m/022xh" }, { "name": "Coma", "entity": "/m/01qw1" }, { "name": "Comedo", "entity": "/m/02ry9q" }, { "name": "Common cold", "entity": "/m/0n073" }, { "name": "Communication deviance", "entity": "/m/011smvs0" }, { "name": "Compartment syndrome", "entity": "/m/01j0hs" }, { "name": "Compensatory hyperhidrosis", "entity": "/m/0cpdgx" }, { "name": "Compulsive behavior", "entity": "/m/0281lfw" }, { "name": "Compulsive hoarding", "entity": "/m/0240_y" }, { "name": "Concealed conduction", "entity": "/m/02v_hky" }, { "name": "Conductive hearing loss", "entity": "/m/04fmtx" }, { "name": "Condylomata lata", "entity": "/m/0czbwwx" }, { "name": "Confabulation", "entity": "/m/0371d4" }, { "name": "Confusion", "entity": "/m/06kqbx" }, { "name": "Congenital clasped thumb", "entity": "/m/0h976q1" }, { "name": "Congenital heart defect", "entity": "/m/03k22s" }, { "name": "Congenital lip pit", "entity": "/m/0b6hxcj" }, { "name": "Conjunctival suffusion", "entity": "/m/0dljk3n" }, { "name": "Conjunctivitis", "entity": "/m/0c36_" }, { "name": "Constipation", "entity": "/m/016kf9" }, { "name": "Constructional apraxia", "entity": "/m/0gj9_k1" }, { "name": "Contracture", "entity": "/m/04f49cb" }, { "name": "Convulsion", "entity": "/m/04lcpr5" }, { "name": "Cooper's sign", "entity": "/m/04gpkvs" }, { "name": "Coprolalia", "entity": "/m/02gp9x" }, { "name": "Copropraxia", "entity": "/m/0bcsx9" }, { "name": "Corectopia", "entity": "/m/0260nq7" }, { "name": "Cornea verticillata", "entity": "/m/0zdt17d" }, { "name": "Corneal abrasion", "entity": "/m/07ldcz" }, { "name": "Cornell's sign", "entity": "/m/05szbzm" }, { "name": "Corona phlebectatica", "entity": "/m/0rfdr0v" }, { "name": "Cortical blindness", "entity": "/m/089r8q" }, { "name": "Coryza", "entity": "/m/0c532h" }, { "name": "Costovertebral angle tenderness", "entity": "/m/09d1md" }, { "name": "Cotton wool spots", "entity": "/m/02qd609" }, { "name": "Cough", "entity": "/m/01b_21" }, { "name": "Coxa valga", "entity": "/m/02qvqc7" }, { "name": "Coxa vara", "entity": "/m/02lmr4" }, { "name": "Cracked Skin", "entity": "/m/06_hvl2" }, { "name": "Crackles", "entity": "/m/023rn8" }, { "name": "Cramp", "entity": "/m/024_yy" }, { "name": "Cranial nerve disease", "entity": "/m/04f7377" }, { "name": "Cranioschisis", "entity": "/m/0b6l7_3" }, { "name": "Craving", "entity": "/m/064qvry" }, { "name": "Cremasteric reflex", "entity": "/m/02ssz2" }, { "name": "Crenated tongue", "entity": "/m/0x28640" }, { "name": "Crepitus", "entity": "/m/05bws4" }, { "name": "Crescent sign", "entity": "/m/028bw97" }, { "name": "Crowding", "entity": "/m/0j29g86" }, { "name": "Crowe sign", "entity": "/m/090wkz" }, { "name": "Crying", "entity": "/m/0463cq4" }, { "name": "Cryptomenorrhea", "entity": "/m/04zjj3" }, { "name": "Cryptorchidism", "entity": "/m/025nm6" }, { "name": "Crystalluria", "entity": "/m/08k_24" }, { "name": "Cubitus valgus", "entity": "/m/09gr4q" }, { "name": "Cullen's sign", "entity": "/m/04rs9k" }, { "name": "Cushing reflex", "entity": "/m/04bj54" }, { "name": "Cushing's syndrome", "entity": "/m/0mzm2" }, { "name": "Cutaneous candidiasis", "entity": "/m/011nkgqd" }, { "name": "Cutaneous condition", "entity": "/m/08cqsh" }, { "name": "Cutis laxa", "entity": "/m/0c_0xv" }, { "name": "Cutis marmorata", "entity": "/m/0h3xwcs" }, { "name": "Cyanosis", "entity": "/m/021fq9" }, { "name": "Cycloplegia", "entity": "/m/028c4n" }, { "name": "Cyst", "entity": "/m/019rnl" }, { "name": "DÃ©viation conjuguÃ©e", "entity": "/m/0bs68yq" }, { "name": "Dacryoadenitis", "entity": "/m/046j0s" }, { "name": "Dactylitis", "entity": "/m/03_3lh" }, { "name": "Dahl's sign", "entity": "/m/05q969m" }, { "name": "Dalrymple's sign", "entity": "/m/0fltf4" }, { "name": "Dance's sign", "entity": "/m/09z36s" }, { "name": "Dandruff", "entity": "/m/022y19" }, { "name": "Darier's sign", "entity": "/m/08yzsq" }, { "name": "Dark urine", "entity": "/m/05blz8d" }, { "name": "De Musset's sign", "entity": "/m/09gl4kp" }, { "name": "Death rattle", "entity": "/m/0660m0" }, { "name": "Decoy cells", "entity": "/m/03c3c74" }, { "name": "Decreased breast size", "entity": "/m/06_mn93" }, { "name": "Decreased Libido", "entity": "/m/0dl9s30" }, { "name": "Decussation", "entity": "/m/0266tn8" }, { "name": "Deep sulcus sign", "entity": "/m/0f2l74" }, { "name": "Deep vein thrombosis", "entity": "/m/02r3jk" }, { "name": "Deepening of voice", "entity": "/m/06_mncd" }, { "name": "Defensive vomiting", "entity": "/m/08phwv" }, { "name": "Deformity", "entity": "/m/0383j_" }, { "name": "Dehydration", "entity": "/m/014961" }, { "name": "Delayed milestone", "entity": "/m/08x7wr" }, { "name": "Delayed onset muscle soreness", "entity": "/m/03dcyh" }, { "name": "Delayed puberty", "entity": "/m/02_nxt" }, { "name": "Delirium", "entity": "/m/014qfd" }, { "name": "Delirium tremens", "entity": "/m/0fpnjr" }, { "name": "Delusion", "entity": "/m/0xnpq" }, { "name": "Delusional disorder", "entity": "/m/01l7xz" }, { "name": "Delusional misidentification syndrome", "entity": "/m/021246" }, { "name": "Delusions of reference", "entity": "/m/019fy6" }, { "name": "Dementia", "entity": "/m/09klv" }, { "name": "Dense artery sign", "entity": "/m/05pc1dr" }, { "name": "Dental emergency", "entity": "/m/0bg74m" }, { "name": "Dental plaque", "entity": "/m/073t8x" }, { "name": "Dentin hypersensitivity", "entity": "/m/0d7gj3" }, { "name": "Dependent personality disorder", "entity": "/m/01sydv" }, { "name": "Depersonalization", "entity": "/m/01zn1_" }, { "name": "Depigmentation", "entity": "/m/027cv8v" }, { "name": "Depression", "entity": "/m/03f_cb" }, { "name": "Derealization", "entity": "/m/02wv6r8" }, { "name": "Dermatitis", "entity": "/m/06x09g" }, { "name": "Dermatographic urticaria", "entity": "/m/06djbj" }, { "name": "Desmoplasia", "entity": "/m/09gn45k" }, { "name": "Desquamation", "entity": "/m/05pbx5" }, { "name": "Destot's sign", "entity": "/m/05q4mnc" }, { "name": "Developmental disability", "entity": "/m/06xd3t" }, { "name": "Diabetes insipidus", "entity": "/m/0c5s4" }, { "name": "Diabetes mellitus", "entity": "/m/0c58k" }, { "name": "Diabetic dermopathy", "entity": "/m/064r6nt" }, { "name": "Diaphoresis", "entity": "/m/01q1s3" }, { "name": "Diaphragmatic Paradox", "entity": "/m/04y94ty" }, { "name": "Diarrhea", "entity": "/m/0f3kl" }, { "name": "Diastolic heart failure", "entity": "/m/02pv6ym" }, { "name": "Diastolic heart murmur", "entity": "/m/05b2cbl" }, { "name": "Diastrophic dysplasia", "entity": "/m/055lbw" }, { "name": "Diathesis", "entity": "/m/0sghsdb" }, { "name": "Dieting", "entity": "/m/02b_m" }, { "name": "Difficulty falling asleep", "entity": "/m/0dl9sx_" }, { "name": "Difficulty focusing", "entity": "/m/0dl9sw9" }, { "name": "Difficulty speaking", "entity": "/m/0dl9tkg" }, { "name": "Dimple sign", "entity": "/m/0j7mdyv" }, { "name": "Diplopia", "entity": "/m/03x17h" }, { "name": "Disappointment", "entity": "/m/01lsjf" }, { "name": "Discoloration of the legs", "entity": "/m/075v2rl" }, { "name": "Disequilibrium", "entity": "/m/076vs5y" }, { "name": "Disinhibition", "entity": "/m/06mfqk" }, { "name": "Disorganized behavior", "entity": "/m/0dl9tl2" }, { "name": "Disorientation", "entity": "/m/0dl9scp" }, { "name": "Disseminated intravascular coagulation", "entity": "/m/01jjrv" }, { "name": "Dissociation", "entity": "/m/02l_0n" }, { "name": "Dissociative disorder", "entity": "/m/07bc25" }, { "name": "Distal intestinal obstruction syndrome", "entity": "/m/0d4g_5" }, { "name": "Distal muscular dystrophy", "entity": "/m/0fm4gj" }, { "name": "Distorted vision", "entity": "/m/09rx552" }, { "name": "Distress", "entity": "/m/03cyjcw" }, { "name": "Diurnal enuresis", "entity": "/m/0gnl_f" }, { "name": "Dizziness", "entity": "/m/033mg5" }, { "name": "Doi's sign", "entity": "/m/05q6cvf" }, { "name": "Drooling", "entity": "/m/019bfk" }, { "name": "Drop attack", "entity": "/m/0crl43" }, { "name": "Drug-induced hyperthermia", "entity": "/m/026y632" }, { "name": "Drug-induced purpura", "entity": "/m/05q854j" }, { "name": "Dry cough", "entity": "/m/027fpnw" }, { "name": "Dry eye", "entity": "/m/05c7tsn" }, { "name": "Dry eye syndrome", "entity": "/m/03ckn0" }, { "name": "Dry hair", "entity": "/m/0dl9svf" }, { "name": "Dry throat", "entity": "/m/0dl9sgp" }, { "name": "Dryness", "entity": "/m/0g9_00t" }, { "name": "Dunphy sign", "entity": "/m/05mt1m8" }, { "name": "Dupuytren's contracture", "entity": "/m/036l18" }, { "name": "Duroziez's sign", "entity": "/m/076t2pw" }, { "name": "Dwarfism", "entity": "/m/010vmq" }, { "name": "Dysarthria", "entity": "/m/03ygz2" }, { "name": "Dysautonomia", "entity": "/m/02510j" }, { "name": "Dysdiadochokinesia", "entity": "/m/07yl6y" }, { "name": "Dysentery", "entity": "/m/0h3bn" }, { "name": "Dysesthesia", "entity": "/m/0264gx3" }, { "name": "Dysfunctional uterine bleeding", "entity": "/m/04cslz" }, { "name": "Dysgeusia", "entity": "/m/01d3gn" }, { "name": "Dyskinesia", "entity": "/m/03_xjz" }, { "name": "Dysmenorrhea", "entity": "/m/0255t_" }, { "name": "Dysosmia", "entity": "/m/04czcv_" }, { "name": "Dyspareunia", "entity": "/m/01qqq7" }, { "name": "Dysphagia", "entity": "/m/01bztl" }, { "name": "Dysphonia", "entity": "/m/07_7w6" }, { "name": "Dysphoria", "entity": "/m/055f85" }, { "name": "Dysplastic nail", "entity": "/m/0bh6_0r" }, { "name": "Dystonia", "entity": "/m/02_x8m" }, { "name": "Dysuria", "entity": "/m/03wblc" }, { "name": "Ear pain", "entity": "/m/05vywy" }, { "name": "Easy bruising", "entity": "/m/0dl9szn" }, { "name": "Ecchymosis", "entity": "/m/05b6rk9" }, { "name": "Echolalia", "entity": "/m/03y0cn" }, { "name": "Echopraxia", "entity": "/m/09b6_7" }, { "name": "Eclabium", "entity": "/m/04_03f6" }, { "name": "Edema", "entity": "/m/0j80c" }, { "name": "Electromagnetic hypersensitivity", "entity": "/m/0bqhl7" }, { "name": "Elevated alkaline phosphatase", "entity": "/m/063ykc9" }, { "name": "Elfin facies", "entity": "/m/04crjg4" }, { "name": "Emaciation", "entity": "/m/070kyz" }, { "name": "Embryocardia", "entity": "/m/0rytkmx" }, { "name": "Emotional detachment", "entity": "/m/092b1g" }, { "name": "Emotional distress", "entity": "/m/06x7t9c" }, { "name": "Emotional dysregulation", "entity": "/m/0b3n_k" }, { "name": "Emotional security", "entity": "/m/01hz11" }, { "name": "Enanthem", "entity": "/m/04y8g5q" }, { "name": "Encephalitis", "entity": "/m/09c_t" }, { "name": "Encephalopathy", "entity": "/m/022tc0" }, { "name": "Encopresis", "entity": "/m/0298jv" }, { "name": "Endometrial hyperplasia", "entity": "/m/02rc7qj" }, { "name": "Enlarged uterus", "entity": "/m/075k1p8" }, { "name": "Enophthalmia", "entity": "/m/08tgvr" }, { "name": "Enophthalmos", "entity": "/m/0cwyf3" }, { "name": "Enterocolitis", "entity": "/m/07y4wgq" }, { "name": "Enthesitis", "entity": "/m/0gs1mr" }, { "name": "Enthesopathy", "entity": "/m/08bvg8" }, { "name": "Enuresis", "entity": "/m/03gq2nq" }, { "name": "Eosinophilia", "entity": "/m/01jmy5" }, { "name": "Epicanthic fold", "entity": "/m/014x2z" }, { "name": "Epidermoid cyst", "entity": "/m/04mw9m" }, { "name": "Epigastric discomfort", "entity": "/m/0dl9tjd" }, { "name": "Epigastric pain", "entity": "/m/0dl9sc2" }, { "name": "Epilepsy", "entity": "/m/02vrr" }, { "name": "Epileptic seizure", "entity": "/m/06rhk" }, { "name": "Epiphora", "entity": "/m/02r3mv3" }, { "name": "Erectile dysfunction", "entity": "/m/03tkm" }, { "name": "Eructation", "entity": "/m/03q5_w" }, { "name": "Erythema", "entity": "/m/02mcv2" }, { "name": "Erythema ab igne", "entity": "/m/08wqbz" }, { "name": "Erythema chronicum migrans", "entity": "/m/0bzv6k" }, { "name": "Erythema gyratum repens", "entity": "/m/054gfnh" }, { "name": "Erythema marginatum", "entity": "/m/04nb5w" }, { "name": "Erythema multiforme", "entity": "/m/03s352" }, { "name": "Erythema nodosum", "entity": "/m/08fm2f" }, { "name": "Erythema toxicum neonatorum", "entity": "/m/09f0sx" }, { "name": "Erythrocyanosis crurum", "entity": "/m/05s_3gg" }, { "name": "Erythroleukoplakia", "entity": "/m/04r4mtm" }, { "name": "Erythromelalgia", "entity": "/m/03hcpy" }, { "name": "Erythroplakia", "entity": "/m/04trfb" }, { "name": "Eschar", "entity": "/m/03_m2p" }, { "name": "Esophageal dysphagia", "entity": "/m/047gmhy" }, { "name": "Esophageal varices", "entity": "/m/0340vp" }, { "name": "Esophagitis", "entity": "/m/01b_b2" }, { "name": "Esotropia", "entity": "/m/0184pc" }, { "name": "Eunuchism", "entity": "/m/07y4yqp" }, { "name": "Euphoria", "entity": "/m/02rj8by" }, { "name": "Evanescent", "entity": "/m/05mxfh7" }, { "name": "Ewart's sign", "entity": "/m/08zgjt" }, { "name": "Exanthem", "entity": "/m/07bblt" }, { "name": "Excessive crying", "entity": "/m/0dfmqjh" }, { "name": "Excessive daytime sleepiness", "entity": "/m/02y_82q" }, { "name": "Excruciating headache", "entity": "/m/0d83xlw" }, { "name": "Exercise intolerance", "entity": "/m/05k5sc" }, { "name": "Exercise-induced nausea", "entity": "/m/011b6z0v" }, { "name": "Exertional dyspnea", "entity": "/m/0dl9sbc" }, { "name": "Exophthalmos", "entity": "/m/05mjhy" }, { "name": "Exotropia", "entity": "/m/099x_8" }, { "name": "Extrapyramidal symptoms", "entity": "/m/09gkmws" }, { "name": "Exudate", "entity": "/m/02yj5k" }, { "name": "Eye discomfort", "entity": "/m/0dl9qcf" }, { "name": "Eye inflammation", "entity": "/m/06zxb3j" }, { "name": "Eye irritation", "entity": "/m/0dl9sgx" }, { "name": "Eye pain", "entity": "/m/05fs77x" }, { "name": "Eye sore", "entity": "/m/0dl9t6m" }, { "name": "Eye strain", "entity": "/m/07v7rh" }, { "name": "Fabella sign", "entity": "/m/02893yq" }, { "name": "Facial grimace", "entity": "/m/06w28x3" }, { "name": "Facial nerve paralysis", "entity": "/m/04mpk9" }, { "name": "Facial paralysis", "entity": "/m/07y4wlx" }, { "name": "Facial paresis", "entity": "/m/09z409" }, { "name": "Facial rash", "entity": "/m/0dl9smd" }, { "name": "Facial redness", "entity": "/m/07t7mr3" }, { "name": "Facial swelling", "entity": "/m/06_jyjk" }, { "name": "Faget sign", "entity": "/m/02qm5h6" }, { "name": "Failure to thrive", "entity": "/m/05xf16" }, { "name": "Falling", "entity": "/m/04f32c6" }, { "name": "Familial thoracic aortic aneurysm", "entity": "/m/03wzc0" }, { "name": "Far-sightedness", "entity": "/m/0248jp" }, { "name": "Fasciculation", "entity": "/m/062phb" }, { "name": "Fat pad sign", "entity": "/m/0285p8k" }, { "name": "Fatigue", "entity": "/m/01j6t0" }, { "name": "Fatigue syndrome", "entity": "/m/0dfmqjz" }, { "name": "Fatty liver", "entity": "/m/03s7fs" }, { "name": "Fear", "entity": "/m/02xrl" }, { "name": "Fear of Commitment", "entity": "/m/026r7rc" }, { "name": "Fear of falling", "entity": "/m/0278ng9" }, { "name": "Fear of the dark", "entity": "/m/03gq6y_" }, { "name": "Febrile neutrophilic dermatosis", "entity": "/m/09jw9n" }, { "name": "Febrile seizure", "entity": "/m/013q86" }, { "name": "Fecal incontinence", "entity": "/m/018h28" }, { "name": "Fecal urgency", "entity": "/m/0dl9qcx" }, { "name": "Feeding difficulties", "entity": "/m/05v24jd" }, { "name": "Feeling cold", "entity": "/m/0dl9sg9" }, { "name": "Feeling of fullness in the ear", "entity": "/m/075v3x9" }, { "name": "Feeling tense", "entity": "/m/0dl9sg2" }, { "name": "Feeling tired", "entity": "/m/0dl9tf6" }, { "name": "Female infertility", "entity": "/m/03bx9gs" }, { "name": "Fetal distress", "entity": "/m/02sj16" }, { "name": "Fetor", "entity": "/m/051ztp2" }, { "name": "Fetor hepaticus", "entity": "/m/068940" }, { "name": "Fever", "entity": "/m/0cjf0" }, { "name": "Fibrillation", "entity": "/m/0118lbwm" }, { "name": "Fibromyalgia", "entity": "/m/01v3ks" }, { "name": "Fibrosis", "entity": "/m/03nq4p" }, { "name": "Fidgeting", "entity": "/m/04y6tl1" }, { "name": "Finger numbness", "entity": "/m/0dl9t7l" }, { "name": "Flaccid paralysis", "entity": "/m/02qkp38" }, { "name": "Flashback", "entity": "/m/06jb7p" }, { "name": "Flatulence", "entity": "/m/06vg9d" }, { "name": "Flatulence", "entity": "/m/02_pz" }, { "name": "Fleischer ring", "entity": "/m/08vvjv" }, { "name": "Floater", "entity": "/m/018j1l" }, { "name": "Flushing", "entity": "/m/028n_3" }, { "name": "Focal neurologic signs", "entity": "/m/0286bt0" }, { "name": "Folate deficiency", "entity": "/m/0dt6ml" }, { "name": "Folie Ã  deux", "entity": "/m/03281" }, { "name": "Food addiction", "entity": "/m/04sws8" }, { "name": "Food craving", "entity": "/m/0b76y0" }, { "name": "Foot drop", "entity": "/m/0bcwy3" }, { "name": "Foot numbness", "entity": "/m/0dl9sn8" }, { "name": "Forchheimer spots", "entity": "/m/05q52l8" }, { "name": "Foreign body sensation", "entity": "/m/04kfh3v" }, { "name": "Forgetfulness", "entity": "/m/05bl1h2" }, { "name": "Formication", "entity": "/m/02p4g5n" }, { "name": "Fothergill's sign", "entity": "/m/0bdpwk" }, { "name": "Foul smelling urine", "entity": "/m/064f42c" }, { "name": "Fourth heart sound", "entity": "/m/04crvkn" }, { "name": "Fox's sign", "entity": "/m/05q7xv8" }, { "name": "Fragmentation of memory", "entity": "/m/0j642f1" }, { "name": "Frank's sign", "entity": "/m/04jkg8w" }, { "name": "Freckle", "entity": "/m/0fyd3" }, { "name": "Frequent respiratory infections", "entity": "/m/06h44t6" }, { "name": "Frequent urination", "entity": "/m/0c3_wg5" }, { "name": "Friedreich's sign", "entity": "/m/027m5l6" }, { "name": "Froment's sign", "entity": "/m/05l1p0" }, { "name": "Frontal release sign", "entity": "/m/03c2y05" }, { "name": "Frostbite", "entity": "/m/0213yl" }, { "name": "Fuchs' dystrophy", "entity": "/m/05pb2q" }, { "name": "Fugue state", "entity": "/m/02ybr" }, { "name": "Functio laesa", "entity": "/m/04f1nj8" }, { "name": "Furcation defect", "entity": "/m/06zlvw6" }, { "name": "Gait abnormality", "entity": "/m/06h94m" }, { "name": "Galactorrhea", "entity": "/m/03xmsb" }, { "name": "Gallop rhythm", "entity": "/m/0f87zq" }, { "name": "Gallstone", "entity": "/m/01q6mh" }, { "name": "Gangrene", "entity": "/m/01jj75" }, { "name": "Garland's triad", "entity": "/m/02pwkv7" }, { "name": "Garlic breath", "entity": "/m/0h_b7zb" }, { "name": "Gastric distension", "entity": "/m/01ppr8" }, { "name": "Gastric varices", "entity": "/m/0401r0" }, { "name": "Gastritis", "entity": "/m/03y91v" }, { "name": "Gastroesophageal reflux disease", "entity": "/m/01b_5g" }, { "name": "Gastrointestinal bleeding", "entity": "/m/03njtl" }, { "name": "Gastrointestinal Disorder", "entity": "/m/02kd1ry" }, { "name": "Gastrointestinal ulcers", "entity": "/m/04zh6_3" }, { "name": "Gastroparesis", "entity": "/m/02w1n2" }, { "name": "Gelastic seizure", "entity": "/m/0268flm" }, { "name": "Generalised tonic-clonic seizure", "entity": "/m/02r6d3v" }, { "name": "Generalized anxiety disorder", "entity": "/m/02zr3h" }, { "name": "Generalized erythema", "entity": "/m/05my3h5" }, { "name": "Genital sores", "entity": "/m/077598r" }, { "name": "Genital wart", "entity": "/m/019thv" }, { "name": "Genu varum", "entity": "/m/03pk5z" }, { "name": "Gestational hypertension", "entity": "/m/03p2br" }, { "name": "Giant-cell arteritis", "entity": "/m/07s7n" }, { "name": "Gigantism", "entity": "/m/01jmvq" }, { "name": "Gingival enlargement", "entity": "/m/02vl6qv" }, { "name": "Gingival recession", "entity": "/m/0dr8s9" }, { "name": "Gingivitis", "entity": "/m/01d20w" }, { "name": "Glabellar reflex", "entity": "/m/0b7n41" }, { "name": "Glabrousness", "entity": "/m/05__9r" }, { "name": "Gliosis", "entity": "/m/0chqj1" }, { "name": "Globus pharyngis", "entity": "/m/0czdw5" }, { "name": "Glomerulonephritis", "entity": "/m/04gfv_" }, { "name": "Glossitis", "entity": "/m/07ckc_" }, { "name": "Glossoptosis", "entity": "/m/0fkvcg" }, { "name": "Glucose-6-phosphate dehydrogenase deficiency", "entity": "/m/021tw2" }, { "name": "Glycosuria", "entity": "/m/05pcqg" }, { "name": "Goitre", "entity": "/m/036zm" }, { "name": "Golden S sign", "entity": "/m/05p6gjd" }, { "name": "Goldstein's toe sign", "entity": "/m/0f12tc" }, { "name": "Gonadal dysgenesis", "entity": "/m/02p9mm9" }, { "name": "Gonda's sign", "entity": "/m/05t0p53" }, { "name": "Goodell's sign", "entity": "/m/08kn5j" }, { "name": "Goose bumps", "entity": "/m/03ck2w" }, { "name": "Gordon's sign", "entity": "/m/05sz3_h" }, { "name": "Gorlin sign", "entity": "/m/02qlx7x" }, { "name": "Gout", "entity": "/m/0ffxt" }, { "name": "Gowers' sign", "entity": "/m/046b2p" }, { "name": "Graham Steell murmur", "entity": "/m/03cn9fh" }, { "name": "Grandiosity", "entity": "/m/041cwm" }, { "name": "Granuloma", "entity": "/m/029fv3" }, { "name": "Granuloma annulare", "entity": "/m/0cvpr9" }, { "name": "Graves' ophthalmopathy", "entity": "/m/0fl3qm" }, { "name": "Greasy hair", "entity": "/m/0nbv1vz" }, { "name": "Green stool", "entity": "/m/075g6sb" }, { "name": "Grey Turner's sign", "entity": "/m/0515k0" }, { "name": "Griffith's sign", "entity": "/m/05q5pbx" }, { "name": "Groin swelling", "entity": "/m/0dl9t17" }, { "name": "Ground-glass opacity", "entity": "/m/0j26_bj" }, { "name": "Growth hormone deficiency", "entity": "/m/02xh6k" }, { "name": "Guilt", "entity": "/m/036s6" }, { "name": "Gum sore", "entity": "/m/0dl9thm" }, { "name": "Guttate psoriasis", "entity": "/m/05c3rty" }, { "name": "Gynecologic hemorrhage", "entity": "/m/01q1wv" }, { "name": "Gynecomastia", "entity": "/m/07cszr" }, { "name": "Haemolacria", "entity": "/m/02675h9" }, { "name": "Hair loss", "entity": "/m/03bwzh1" }, { "name": "Half and half nails", "entity": "/m/05b0f3b" }, { "name": "Hallucination", "entity": "/m/0d3gy" }, { "name": "Halo sign", "entity": "/m/026f2g_" }, { "name": "Halos around lights", "entity": "/m/06_mrn4" }, { "name": "Hamman's sign", "entity": "/m/0cdg94" }, { "name": "Hammer toe", "entity": "/m/03vwp3" }, { "name": "Hampton hump", "entity": "/m/025yfnl" }, { "name": "Hand numbness", "entity": "/m/0dl9snq" }, { "name": "Hand swelling", "entity": "/m/0dl9t5l" }, { "name": "Hand tremor", "entity": "/m/0dl9sp5" }, { "name": "Happy demeanour", "entity": "/m/05v7ktz" }, { "name": "Harrison's groove", "entity": "/m/02q2vg0" }, { "name": "Head swelling", "entity": "/m/0dl9t9_" }, { "name": "Headache", "entity": "/m/0j5fv" }, { "name": "Hearing loss", "entity": "/m/014wq_" }, { "name": "Hearing problem", "entity": "/m/04tnmgr" }, { "name": "Heart block", "entity": "/m/031q2c" }, { "name": "Heart click", "entity": "/m/05mysbq" }, { "name": "Heart failure", "entity": "/m/01l2m3" }, { "name": "Heart murmur", "entity": "/m/01jg1z" }, { "name": "Heartburn", "entity": "/m/01bfsv" }, { "name": "Heat intolerance", "entity": "/m/0rpj80_" }, { "name": "Heautoscopy", "entity": "/m/026qjtk" }, { "name": "Heavy legs", "entity": "/m/051ynwt" }, { "name": "Heberden's node", "entity": "/m/054s8y" }, { "name": "Hegar's sign", "entity": "/m/084stp" }, { "name": "Heinz body", "entity": "/m/0c58b0" }, { "name": "Hemangioma", "entity": "/m/03jcdy" }, { "name": "Hematemesis", "entity": "/m/02n2t1" }, { "name": "Hematidrosis", "entity": "/m/01p1by" }, { "name": "Hematochezia", "entity": "/m/02n2gk" }, { "name": "Hematoma", "entity": "/m/032ssz" }, { "name": "Hematospermia", "entity": "/m/0bblkc" }, { "name": "Hematuria", "entity": "/m/02sc7d" }, { "name": "Hemihypertrophy", "entity": "/m/03h1038" }, { "name": "Hemiparesis", "entity": "/m/03j3s" }, { "name": "Hemiparesthesia", "entity": "/m/0r3w6pn" }, { "name": "Hemiplegia", "entity": "/m/04n8p1" }, { "name": "Hemispatial neglect", "entity": "/m/03ttjj" }, { "name": "Hemolysis", "entity": "/m/0j8q4" }, { "name": "Hemolytic anemia", "entity": "/m/02skgx" }, { "name": "Hemoperitoneum", "entity": "/m/0g9qbf" }, { "name": "Hemoptysis", "entity": "/m/01g920" }, { "name": "Hemosiderinuria", "entity": "/m/02w7_tf" }, { "name": "Hemothorax", "entity": "/m/06rt3n" }, { "name": "Hemotympanum", "entity": "/m/04gvbrl" }, { "name": "Hepatic encephalopathy", "entity": "/m/046cxb" }, { "name": "Hepatomegaly", "entity": "/m/055_gj" }, { "name": "Hepatopulmonary syndrome", "entity": "/m/0273jfd" }, { "name": "Hepatorenal syndrome", "entity": "/m/06vqzq" }, { "name": "Hepatosplenomegaly", "entity": "/m/03zr21" }, { "name": "Hepatotoxicity", "entity": "/m/02clhl" }, { "name": "Hereditary multiple exostoses", "entity": "/m/03y9lb" }, { "name": "Heterochromia", "entity": "/m/02w_rc" }, { "name": "Hibernating myocardium", "entity": "/m/031ryh" }, { "name": "Hiccup", "entity": "/m/02p3nc" }, { "name": "Hickey", "entity": "/m/02497k" }, { "name": "High fever", "entity": "/m/0dl9tl9" }, { "name": "High-arched palate", "entity": "/m/0135xpqd" }, { "name": "High-grade fever", "entity": "/m/06_9btt" }, { "name": "HigoumÃ©nakis' sign", "entity": "/m/03hkgqq" }, { "name": "Hirano body", "entity": "/m/074fyv" }, { "name": "Hirsutism", "entity": "/m/0ps0b" }, { "name": "HIV disease-related drug reaction", "entity": "/m/05f44rg" }, { "name": "Hives", "entity": "/m/03nky3" }, { "name": "Hoffmann's sign", "entity": "/m/08fkxt" }, { "name": "Hollenhorst plaque", "entity": "/m/0c2pby" }, { "name": "Homans sign", "entity": "/m/08ytrd" }, { "name": "Homicidal ideation", "entity": "/m/04125r2" }, { "name": "Hoover's sign", "entity": "/m/04q33th" }, { "name": "Hoover's sign", "entity": "/m/04q27cv" }, { "name": "Horner's syndrome", "entity": "/m/04v0fj" }, { "name": "Horseshoe kidney", "entity": "/m/06gfc6" }, { "name": "Hostility", "entity": "/m/02p74_2" }, { "name": "Hot flash", "entity": "/m/033488" }, { "name": "Howshipâ€“Romberg sign", "entity": "/m/04n3pf3" }, { "name": "Hunger", "entity": "/m/0135xt" }, { "name": "Hutchinson's pupil", "entity": "/m/05q4106" }, { "name": "Hutchinson's sign", "entity": "/m/05q9wp1" }, { "name": "Hutchinson's teeth", "entity": "/m/036mdg" }, { "name": "Hydrocele", "entity": "/m/04vy02" }, { "name": "Hydrocephalus", "entity": "/m/01cw5r" }, { "name": "Hyperactivity", "entity": "/m/04txf7" }, { "name": "Hyperacusis", "entity": "/m/04xpzs" }, { "name": "Hyperaemia", "entity": "/m/08859_" }, { "name": "Hyperalgesia", "entity": "/m/03z_m7" }, { "name": "Hyperammonemia", "entity": "/m/02p0x7" }, { "name": "Hyperandrogenism", "entity": "/m/04n7g6q" }, { "name": "Hypercalcaemia", "entity": "/m/02k540" }, { "name": "Hypercalciuria", "entity": "/m/03bxj79" }, { "name": "Hypercapnia", "entity": "/m/02hlph" }, { "name": "Hypercholesterolemia", "entity": "/m/02k7pj" }, { "name": "Hyperekplexia", "entity": "/m/0c4304" }, { "name": "Hyperemesis gravidarum", "entity": "/m/06t7dc" }, { "name": "Hypereosinophilia", "entity": "/m/0gty88" }, { "name": "Hyperesthesia", "entity": "/m/0btccj" }, { "name": "Hyperestrogenism", "entity": "/m/0j_5n3_" }, { "name": "Hyperglycemia", "entity": "/m/0kfqw" }, { "name": "Hypergraphia", "entity": "/m/02hgsj" }, { "name": "Hyperhidrosis", "entity": "/m/03jbly" }, { "name": "Hyperkalemia", "entity": "/m/037h0g" }, { "name": "Hyperkeratosis", "entity": "/m/05qymp" }, { "name": "Hyperkinesia", "entity": "/m/027p8_f" }, { "name": "Hyperlipidemia", "entity": "/m/05f45h" }, { "name": "Hypermobility", "entity": "/m/0b9f_5" }, { "name": "Hypernatremia", "entity": "/m/03xr5j" }, { "name": "Hyperosmia", "entity": "/m/02x39__" }, { "name": "Hyperoxia", "entity": "/m/06wcg52" }, { "name": "Hyperpathia", "entity": "/m/02731s6" }, { "name": "Hyperphosphatemia", "entity": "/m/042g01" }, { "name": "Hyperpigmentation", "entity": "/m/046z7d" }, { "name": "Hyperreflexia", "entity": "/m/04bl90" }, { "name": "Hypersalivation", "entity": "/m/0fpjgc1" }, { "name": "Hypersexuality", "entity": "/m/01g5ln" }, { "name": "Hypersomnia", "entity": "/m/03cfcn" }, { "name": "Hypertelorism", "entity": "/m/08wwvw" }, { "name": "Hypertension", "entity": "/m/0k95h" }, { "name": "Hyperthermia", "entity": "/m/0k10t" }, { "name": "Hyperthyroidism", "entity": "/m/03hz0" }, { "name": "Hypertonia", "entity": "/m/092xnv" }, { "name": "Hypertrichosis", "entity": "/m/04lj5j" }, { "name": "Hypertriglyceridemia", "entity": "/m/02_sbz" }, { "name": "Hypertrophic osteoarthropathy", "entity": "/m/04czf0w" }, { "name": "Hypertrophy", "entity": "/m/02vrdn" }, { "name": "Hyperuricemia", "entity": "/m/02hl8g" }, { "name": "Hyperventilation", "entity": "/m/021m_f" }, { "name": "Hypervigilance", "entity": "/m/085x_0" }, { "name": "Hyphema", "entity": "/m/08dkq0" }, { "name": "Hypnic jerk", "entity": "/m/01_wn1" }, { "name": "Hypoactive sexual desire disorder", "entity": "/m/0255l5" }, { "name": "Hypoalbuminemia", "entity": "/m/09bl05" }, { "name": "Hypobulia", "entity": "/m/0h1gt3g" }, { "name": "Hypocalcaemia", "entity": "/m/02k53m" }, { "name": "Hypocalciuria", "entity": "/m/0463t6w" }, { "name": "Hypodactylia", "entity": "/m/0df47x" }, { "name": "Hypoesthesia", "entity": "/m/027q6ds" }, { "name": "Hypogeusia", "entity": "/m/02qgl1w" }, { "name": "Hypoglycemia", "entity": "/m/03gwt" }, { "name": "Hypogonadism", "entity": "/m/038k4x" }, { "name": "Hypogonadotropic hypogonadism", "entity": "/m/0j_33wy" }, { "name": "Hypohidrosis", "entity": "/m/04yfs7" }, { "name": "Hypokalemia", "entity": "/m/03vmt0" }, { "name": "Hypokinesia", "entity": "/m/06_8j3" }, { "name": "Hypomania", "entity": "/m/0bk6q" }, { "name": "Hypomelanic macules", "entity": "/m/0ht87t7" }, { "name": "Hypomenorrhea", "entity": "/m/0412nq4" }, { "name": "Hypomimia", "entity": "/m/0262l9q" }, { "name": "Hypoparathyroidism", "entity": "/m/0340yl" }, { "name": "Hypophonia", "entity": "/m/0bbv3wx" }, { "name": "Hypopigmentation", "entity": "/m/048hpn" }, { "name": "Hyporeflexia", "entity": "/m/0dr4b5" }, { "name": "Hyposmia", "entity": "/m/0fjwcj" }, { "name": "Hypotension", "entity": "/m/02hvph" }, { "name": "Hypothermia", "entity": "/m/012rps" }, { "name": "Hypothyroidism", "entity": "/m/0hg11" }, { "name": "Hypotonia", "entity": "/m/03wbww" }, { "name": "Hypouricemia", "entity": "/m/09_m33" }, { "name": "Hypoventilation", "entity": "/m/02fwvl" }, { "name": "Hypovolemia", "entity": "/m/02hwb2" }, { "name": "Hypoxemia", "entity": "/m/025sd3c" }, { "name": "Hypoxia", "entity": "/m/03gns" }, { "name": "Hypsarrhythmia", "entity": "/m/0cdwzx" }, { "name": "Ichthyosis", "entity": "/m/02wgfv" }, { "name": "Ileus", "entity": "/m/0443mq" }, { "name": "Illusory palinopsia", "entity": "/m/011q023m" }, { "name": "Imbalance", "entity": "/m/0dl9tjv" }, { "name": "Immobility", "entity": "/m/0dl9s9q" }, { "name": "Immunodeficiency", "entity": "/m/02yg4w" }, { "name": "Immunosuppression", "entity": "/m/016mlj" }, { "name": "Impetigo", "entity": "/m/0mzty" }, { "name": "Implantation bleeding", "entity": "/m/013027b9" }, { "name": "Impulsivity", "entity": "/m/03d5xbx" }, { "name": "Inattention", "entity": "/m/0dl9szx" }, { "name": "Incoherent speech", "entity": "/m/0dl9t8x" }, { "name": "Incontinence", "entity": "/m/04zvx6w" }, { "name": "Incoordination", "entity": "/m/0dl9t2h" }, { "name": "Increased vaginal discharge", "entity": "/m/04tnn60" }, { "name": "Indigestion", "entity": "/m/04kl78" }, { "name": "Infarction", "entity": "/m/02vnfx" }, { "name": "Infection", "entity": "/m/098s1" }, { "name": "Inferiority complex", "entity": "/m/03c9vn" }, { "name": "Infertility", "entity": "/m/018g78" }, { "name": "Inflammation", "entity": "/m/0j7_w" }, { "name": "Inflammatory bowel disease", "entity": "/m/02x0yg" }, { "name": "Influenza-like illness", "entity": "/m/05_5py4" }, { "name": "Ingrown hair", "entity": "/m/0cmmcy" }, { "name": "Inguinal lymphadenopathy", "entity": "/m/0dl9spk" }, { "name": "Insomnia", "entity": "/m/0ddwt" }, { "name": "Intellectual disability", "entity": "/m/09fz4" }, { "name": "Intention tremor", "entity": "/m/0ccqn_" }, { "name": "Intermittent claudication", "entity": "/m/04qydt" }, { "name": "Internal bleeding", "entity": "/m/02xb32" }, { "name": "Internuclear ophthalmoplegia", "entity": "/m/08hkdc" }, { "name": "Interrupted aortic arch", "entity": "/m/0gkds8" }, { "name": "Intertrigo", "entity": "/m/05l4gz" }, { "name": "Intestinal cramps", "entity": "/m/0dl9th4" }, { "name": "Intestinal pseudo-obstruction", "entity": "/m/0bj09q" }, { "name": "Intestinal varices", "entity": "/m/0401rc" }, { "name": "Intracerebral hemorrhage", "entity": "/m/08g5q7" }, { "name": "Intracranial aneurysm", "entity": "/m/01g45j" }, { "name": "Intranodal palisaded myofibroblastoma", "entity": "/m/0h7msvs" }, { "name": "Intrauterine growth restriction", "entity": "/m/05pdffb" }, { "name": "Inverse psoriasis", "entity": "/m/05mrtv4" }, { "name": "Inverted nipple", "entity": "/m/071nxk" }, { "name": "Iritis", "entity": "/m/04jy9m" }, { "name": "Iron deficiency", "entity": "/m/014x04" }, { "name": "Iron overload", "entity": "/m/02n_ct" }, { "name": "Irregular breathing", "entity": "/m/0dl9s_l" }, { "name": "Irregular menstruation", "entity": "/m/05bm66n" }, { "name": "Irritability", "entity": "/m/083h_x" }, { "name": "Irritable male syndrome", "entity": "/m/05t28b" }, { "name": "Irritant diaper dermatitis", "entity": "/m/025r6w" }, { "name": "Ischemia", "entity": "/m/02gr6s" }, { "name": "Isosthenuria", "entity": "/m/026f2q6" }, { "name": "Itch", "entity": "/m/04kllm9" }, { "name": "Itchy eyes", "entity": "/m/0654nrv" }, { "name": "Itchy scalp", "entity": "/m/0775b_h" }, { "name": "Jaundice", "entity": "/m/0hgxh" }, { "name": "Jaw claudication", "entity": "/m/012n8p91" }, { "name": "Joffroy's sign", "entity": "/m/05q9ykd" }, { "name": "Joint effusion", "entity": "/m/0b74b60" }, { "name": "Joint locking", "entity": "/m/05p2zl8" }, { "name": "Joint pain", "entity": "/m/021hck" }, { "name": "Joint stiffness", "entity": "/m/088b11" }, { "name": "Joint swelling", "entity": "/m/0dl9s7p" }, { "name": "Jugular venous pressure", "entity": "/m/03f3w1" }, { "name": "Kanavel's cardinal signs", "entity": "/m/05q61pp" }, { "name": "Kaposi's sarcoma", "entity": "/m/0bqpg" }, { "name": "Kayserâ€“Fleischer ring", "entity": "/m/036mhw" }, { "name": "Kehr's sign", "entity": "/m/046y3g" }, { "name": "Kelly's sign", "entity": "/m/05q7d_4" }, { "name": "Keratitis", "entity": "/m/02dfr6" }, { "name": "Keratocyst", "entity": "/m/09rvk1t" }, { "name": "Kerley lines", "entity": "/m/0ck_v6" }, { "name": "Kerr's sign", "entity": "/m/0j7l6mj" }, { "name": "Ketoacidosis", "entity": "/m/02mwg6" }, { "name": "Ketonuria", "entity": "/m/095xr2" }, { "name": "Khodadoust line", "entity": "/m/0b6n52c" }, { "name": "Kidney Damage", "entity": "/m/02kb_v7" }, { "name": "Kidney failure", "entity": "/m/01psyx" }, { "name": "Kidney pain", "entity": "/m/0dl9t4p" }, { "name": "Kidney stone", "entity": "/m/09hbx" }, { "name": "Kinking hair", "entity": "/m/05b1qcr" }, { "name": "Knee effusion", "entity": "/m/03bxmbn" }, { "name": "Knee pain", "entity": "/m/09v868h" }, { "name": "Kocher's sign", "entity": "/m/0bbvr3p" }, { "name": "Koebner phenomenon", "entity": "/m/0gffcz" }, { "name": "Koeppe's nodules", "entity": "/m/05q5xyj" }, { "name": "Koilonychia", "entity": "/m/0gj4qx" }, { "name": "Koplik's spots", "entity": "/m/038d_j" }, { "name": "Kussmaul breathing", "entity": "/m/036mkm" }, { "name": "Kussmaul's sign", "entity": "/m/03f1lf" }, { "name": "Kyphosis", "entity": "/m/02jrl1" }, { "name": "LÃ©pine's sign", "entity": "/m/0gtxsrh" }, { "name": "Labor pain", "entity": "/m/07y4z32" }, { "name": "Labored breathing", "entity": "/m/09k6f04" }, { "name": "Lack of concentration", "entity": "/m/06wfn90" }, { "name": "Lacrimation", "entity": "/m/0dl9sy8" }, { "name": "Lactose intolerance", "entity": "/m/0fp3b" }, { "name": "Ladin's sign", "entity": "/m/05q3xhg" }, { "name": "Lancisi's sign", "entity": "/m/05q49dz" }, { "name": "Lanugo", "entity": "/m/04g22n" }, { "name": "Large feet", "entity": "/m/06vz7h7" }, { "name": "Laryngeal cleft", "entity": "/m/0bbvqnv" }, { "name": "Laryngitis", "entity": "/m/02l37c" }, { "name": "Laryngopharyngeal reflux", "entity": "/m/047bx2y" }, { "name": "Laryngospasm", "entity": "/m/08zhxx" }, { "name": "Lazarus sign", "entity": "/m/063_d30" }, { "name": "Leaning to one side", "entity": "/m/0703vzb" }, { "name": "Learning disability", "entity": "/m/02qwpq0" }, { "name": "Left Bundle Branch Block", "entity": "/m/09k76g" }, { "name": "Left ventricular hypertrophy", "entity": "/m/04dxph" }, { "name": "Leg cramps", "entity": "/m/0dl9s41" }, { "name": "Leserâ€“TrÃ©lat sign", "entity": "/m/08zm6q" }, { "name": "Lesion", "entity": "/m/01w0hx" }, { "name": "Lethargy", "entity": "/m/012815pn" }, { "name": "Leucocoria", "entity": "/m/0bswkr" }, { "name": "Leukemia", "entity": "/m/04psf" }, { "name": "Leukemia cutis", "entity": "/m/0642tmh" }, { "name": "Leukocytosis", "entity": "/m/03btw1" }, { "name": "Leukopenia", "entity": "/m/03zrfj" }, { "name": "Leukoplakia", "entity": "/m/03l365" }, { "name": "Leukorrhea", "entity": "/m/06kjt9" }, { "name": "Levine's sign", "entity": "/m/064v9c" }, { "name": "Lhermitte's sign", "entity": "/m/064n9x" }, { "name": "Lightheadedness", "entity": "/m/079p0q" }, { "name": "Limbus sign", "entity": "/m/0hzqvxv" }, { "name": "Limited symptom attack", "entity": "/m/02v_qsl" }, { "name": "Limp", "entity": "/m/04plrq" }, { "name": "Lines of Zahn", "entity": "/m/0286w6_" }, { "name": "Lip numbness", "entity": "/m/0dl9tgq" }, { "name": "Lipodermatosclerosis", "entity": "/m/04jh911" }, { "name": "Lipodystrophy", "entity": "/m/01l2st" }, { "name": "Lisch nodule", "entity": "/m/03yztw" }, { "name": "Lisker's sign", "entity": "/m/0958cm" }, { "name": "Litten's sign", "entity": "/m/05s_27m" }, { "name": "Livedo racemosa", "entity": "/m/0cz8jtj" }, { "name": "Livedo reticularis", "entity": "/m/08wrk9" }, { "name": "Livedoid vasculitis", "entity": "/m/06ztvxs" }, { "name": "Liver failure", "entity": "/m/02psvcf" }, { "name": "Liver pain", "entity": "/m/0dl9t2y" }, { "name": "Lloyd's sign", "entity": "/m/04lf42r" }, { "name": "Locked-in syndrome", "entity": "/m/014mtn" }, { "name": "Logorrhea", "entity": "/m/09v4pxz" }, { "name": "Loneliness", "entity": "/m/05c7vv" }, { "name": "Lordosis", "entity": "/m/03_039" }, { "name": "Loss of height", "entity": "/m/06vymcn" }, { "name": "Loss of interest", "entity": "/m/06wfz5f" }, { "name": "Loud breathing", "entity": "/m/04rkydh" }, { "name": "Low back pain", "entity": "/m/020hwm" }, { "name": "Low birth weight", "entity": "/m/0dl9s49" }, { "name": "Low-set ears", "entity": "/m/04ct6c6" }, { "name": "Lowenberg's sign", "entity": "/m/0bh8863" }, { "name": "Lower motor neuron lesion", "entity": "/m/02q_qps" }, { "name": "Lower respiratory tract infection", "entity": "/m/03txkl" }, { "name": "Lucid interval", "entity": "/m/08sx5r" }, { "name": "Lumbar hyperlordosis", "entity": "/m/057nwjj" }, { "name": "Lump in the palm", "entity": "/m/07475k7" }, { "name": "Lump on the eyelid", "entity": "/m/072b9px" }, { "name": "Lupus headache", "entity": "/m/05f4z9f" }, { "name": "Lymphedema", "entity": "/m/04r36" }, { "name": "Lymphocytopenia", "entity": "/m/08z6j9" }, { "name": "Lymphocytosis", "entity": "/m/01jn3l" }, { "name": "Lymphoid hyperplasia", "entity": "/m/03cs5n6" }, { "name": "MÃ_ller's sign", "entity": "/m/0fltlr" }, { "name": "MÃ¶bius sign", "entity": "/m/05s_wdw" }, { "name": "Macewen's sign", "entity": "/m/049z6g" }, { "name": "Macrocephaly", "entity": "/m/07b8s3" }, { "name": "Macroglossia", "entity": "/m/069j2k" }, { "name": "Maculopapular rash", "entity": "/m/05lrqf" }, { "name": "Magnan's sign", "entity": "/m/05s_78v" }, { "name": "Magnetic gait", "entity": "/m/04csj2b" }, { "name": "Major depressive disorder", "entity": "/m/02bft" }, { "name": "Major depressive episode", "entity": "/m/0bf0tv" }, { "name": "Malabsorption", "entity": "/m/03f07j" }, { "name": "Malaise", "entity": "/m/0418s3" }, { "name": "Malar flush", "entity": "/m/0tkcw_z" }, { "name": "Malar rash", "entity": "/m/04t_81" }, { "name": "Male infertility", "entity": "/m/03bx917" }, { "name": "Malnutrition", "entity": "/m/01m4w4" }, { "name": "Malocclusion", "entity": "/m/06r0ps" }, { "name": "Mania", "entity": "/m/05417" }, { "name": "Manic episode", "entity": "/m/01srx9" }, { "name": "Markle sign", "entity": "/m/05s_kz_" }, { "name": "Mass on penis", "entity": "/m/075yg4y" }, { "name": "Matchbox sign", "entity": "/m/04f68fy" }, { "name": "Mechanism of action", "entity": "/m/0d2x17" }, { "name": "Mediastinal fibrosis", "entity": "/m/0f9f42" }, { "name": "Medulloblastoma", "entity": "/m/0bbl62" }, { "name": "Megacolon", "entity": "/m/07qctz" }, { "name": "Megaloblast", "entity": "/m/04f2b7p" }, { "name": "Melancholia", "entity": "/m/057vp" }, { "name": "Melanocytic nevus", "entity": "/m/0dc28" }, { "name": "Melasma", "entity": "/m/04z9bf" }, { "name": "Melena", "entity": "/m/02n2tg" }, { "name": "Memory impairment", "entity": "/m/03z97xk" }, { "name": "Meningism", "entity": "/m/04v_ml" }, { "name": "Meningitis", "entity": "/m/09d11" }, { "name": "Menorrhagia", "entity": "/m/031c33" }, { "name": "Menstrual disorder", "entity": "/m/0b5pfn" }, { "name": "Mental disorder", "entity": "/m/04x4r" }, { "name": "Mental space", "entity": "/m/0swnk68" }, { "name": "Metabolic acidosis", "entity": "/m/04tksh" }, { "name": "Metabolic alkalosis", "entity": "/m/025sktj" }, { "name": "Metamorphopsia", "entity": "/m/0j3cg_n" }, { "name": "Metaplasia", "entity": "/m/059h7h" }, { "name": "Metastatic liver disease", "entity": "/m/047cg9y" }, { "name": "Methemoglobinemia", "entity": "/m/01npzs" }, { "name": "Metrorrhagia", "entity": "/m/08_6kp" }, { "name": "Microalbuminuria", "entity": "/m/07y7r4" }, { "name": "Microcalcification", "entity": "/m/095qsg" }, { "name": "Microcephaly", "entity": "/m/01hrbm" }, { "name": "Micrognathism", "entity": "/m/0gjf_1" }, { "name": "Micrographia", "entity": "/m/0ch8r9" }, { "name": "Micromastia", "entity": "/m/09pv41" }, { "name": "Microorchidism", "entity": "/m/06_vzzv" }, { "name": "Micropolygyria", "entity": "/m/03c3y1s" }, { "name": "Micropsia", "entity": "/m/04fznr6" }, { "name": "Midcycle spotting", "entity": "/m/0dl9t3s" }, { "name": "Middle back pain", "entity": "/m/09rlb3" }, { "name": "Migraine", "entity": "/m/05904" }, { "name": "Mild cough", "entity": "/m/0dl9qdv" }, { "name": "Mild depression", "entity": "/m/0dl9t8d" }, { "name": "Mild fever", "entity": "/m/0dl9qd_" }, { "name": "Milium", "entity": "/m/0527by" }, { "name": "Miosis", "entity": "/m/03smvc" }, { "name": "Mitral valve prolapse", "entity": "/m/02np4g" }, { "name": "Mixed affective state", "entity": "/m/05mzxw" }, { "name": "Monoclonal gammopathy", "entity": "/m/05fc8yb" }, { "name": "Monomelic amyotrophy", "entity": "/m/06399d" }, { "name": "Monoparesis - leg", "entity": "/m/0dl9s__" }, { "name": "Monoplegia", "entity": "/m/08bnqd" }, { "name": "Monothematic delusion", "entity": "/m/08vx8s" }, { "name": "Mood disorder", "entity": "/m/0drn8" }, { "name": "Mood swing", "entity": "/m/022y3k" }, { "name": "Moodiness", "entity": "/m/0dl9stt" }, { "name": "Moon face", "entity": "/m/02prmbk" }, { "name": "Morning sickness", "entity": "/m/01j9hg" }, { "name": "Morphea", "entity": "/m/09lkp9" }, { "name": "Morsicatio buccarum", "entity": "/m/0bwgtst" }, { "name": "Motion sickness", "entity": "/m/0gxcc" }, { "name": "Motor restlessness", "entity": "/m/07873tt" }, { "name": "Motor Skills Disorders", "entity": "/m/05m9tg" }, { "name": "Mottled skin", "entity": "/m/0dl9srn" }, { "name": "Mouth breathing", "entity": "/m/08gzn6" }, { "name": "Mouth lesion", "entity": "/m/0dl9s61" }, { "name": "Mouth sore", "entity": "/m/0dl9syy" }, { "name": "Movement disorders", "entity": "/m/03whtc" }, { "name": "Mucopurulent discharge", "entity": "/m/0c0g_p" }, { "name": "Mucosal lentigines", "entity": "/m/064klw1" }, { "name": "Muehrcke's nails", "entity": "/m/02z08b_" }, { "name": "Mulberry molar", "entity": "/m/0crg69x" }, { "name": "Mulder's sign", "entity": "/m/02ql7wc" }, { "name": "Multiple organ dysfunction syndrome", "entity": "/m/03hnn3" }, { "name": "Mumoli's sign", "entity": "/m/027jv1q" }, { "name": "Munro's microabscess", "entity": "/m/05m_jf3" }, { "name": "Munson's sign", "entity": "/m/0415_dy" }, { "name": "Murphy's sign", "entity": "/m/071ttc" }, { "name": "Muscle atrophy", "entity": "/m/0dds0h" }, { "name": "Muscle contraction", "entity": "/m/046xb9" }, { "name": "Muscle pain", "entity": "/m/013677" }, { "name": "Muscle rigidity", "entity": "/m/0dl9r5h" }, { "name": "Muscle weakness", "entity": "/m/0927l7" }, { "name": "Muscular stiffness", "entity": "/m/0dl9s8r" }, { "name": "Musculoskeletal pain", "entity": "/m/04klj9n" }, { "name": "Musical hallucinations", "entity": "/m/0p8zvc5" }, { "name": "Muteness", "entity": "/m/0287zzh" }, { "name": "Mydriasis", "entity": "/m/01dhgh" }, { "name": "Myelodysplastic syndrome", "entity": "/m/019gky" }, { "name": "Myelopathy", "entity": "/m/04_1ntx" }, { "name": "Myerson's sign", "entity": "/m/04vvbx" }, { "name": "Myocardial infarction", "entity": "/m/0gk4g" }, { "name": "Myocardial scarring", "entity": "/m/06w7x1v" }, { "name": "Myoclonus", "entity": "/m/02_mfs" }, { "name": "Myoglobinuria", "entity": "/m/08bbk2" }, { "name": "Myopathic gait", "entity": "/m/04cw8c5" }, { "name": "Myopathy", "entity": "/m/058k0k" }, { "name": "Myxedema", "entity": "/m/02wp6c" }, { "name": "Nagayama's spots", "entity": "/m/0c41jph" }, { "name": "Nail clubbing", "entity": "/m/02qbnn" }, { "name": "Nail pitting", "entity": "/m/010pyz4s" }, { "name": "Narcissism", "entity": "/m/0dvxcy" }, { "name": "Narrow stools", "entity": "/m/04mvdf9" }, { "name": "Nasal breathing", "entity": "/m/09prs9" }, { "name": "Nasal congestion", "entity": "/m/05s5v6" }, { "name": "Nasal polyp", "entity": "/m/034hsj" }, { "name": "Nasal septum deviation", "entity": "/m/05cz29" }, { "name": "Nausea", "entity": "/m/0gxb2" }, { "name": "Near-sightedness", "entity": "/m/0m2w3" }, { "name": "Neck mass", "entity": "/m/0crhp0y" }, { "name": "Neck pain", "entity": "/m/02r3cvb" }, { "name": "Neck rash", "entity": "/m/0dl9tg2" }, { "name": "Neck spasm", "entity": "/m/043s7zg" }, { "name": "Neck stiffness", "entity": "/m/0bmgh43" }, { "name": "Neck swelling", "entity": "/m/0dl9t66" }, { "name": "Necrobiosis", "entity": "/m/03m3q96" }, { "name": "Necrolytic acral erythema", "entity": "/m/0c3x745" }, { "name": "Necrosis", "entity": "/m/09yql" }, { "name": "Neonatal jaundice", "entity": "/m/074hph" }, { "name": "Neovascularization", "entity": "/m/0bk1jp" }, { "name": "Nephritic syndrome", "entity": "/m/06yg6t" }, { "name": "Nephrocalcinosis", "entity": "/m/02py_03" }, { "name": "Nephromegaly", "entity": "/m/043ryvl" }, { "name": "Nephrotic syndrome", "entity": "/m/01n597" }, { "name": "Nerve injury", "entity": "/m/02pm604" }, { "name": "Neuralgia", "entity": "/m/05kzxm" }, { "name": "Neurofibroma", "entity": "/m/08gljx" }, { "name": "Neurogenic claudication", "entity": "/m/02x2gtl" }, { "name": "Neuroinflammation", "entity": "/m/0zbvc0s" }, { "name": "Neuropathic Pain", "entity": "/m/09gnhp2" }, { "name": "Neutrophilia", "entity": "/m/01jjvn" }, { "name": "Nevus spilus", "entity": "/m/05m_5tq" }, { "name": "Nicoladoni sign", "entity": "/m/04mxtkc" }, { "name": "Nicotine withdrawal", "entity": "/m/027ymbg" }, { "name": "Night sweats", "entity": "/m/04klgqw" }, { "name": "Night terror", "entity": "/m/0272zb" }, { "name": "Nightmare", "entity": "/m/0cjgc" }, { "name": "Nikolsky's sign", "entity": "/m/096_r8" }, { "name": "Nipple discharge", "entity": "/m/04696g" }, { "name": "Nipple tenderness", "entity": "/m/04mv7sh" }, { "name": "Nocturia", "entity": "/m/0868jh" }, { "name": "Nocturnal Cough", "entity": "/m/06gx48f" }, { "name": "Nocturnal enuresis", "entity": "/m/01wy8y" }, { "name": "Nodule", "entity": "/m/0905_p" }, { "name": "Nonossifying fibroma", "entity": "/m/05p2wz1" }, { "name": "Nosebleed", "entity": "/m/02zbth" }, { "name": "Nosophobia", "entity": "/m/027__kf" }, { "name": "Nuclear sclerosis", "entity": "/m/0bbmp2" }, { "name": "Nucleated red blood cell", "entity": "/m/012w48z4" }, { "name": "Numbness in leg", "entity": "/m/0dl9tg8" }, { "name": "Numbness of face", "entity": "/m/0dl9sm4" }, { "name": "Nyctalopia", "entity": "/m/04970l" }, { "name": "Nystagmus", "entity": "/m/01skrq" }, { "name": "Obesity", "entity": "/m/0fltx" }, { "name": "Obstructed defecation", "entity": "/m/0m0ph75" }, { "name": "Obtundation", "entity": "/m/0b0kl9" }, { "name": "Obturator sign", "entity": "/m/0d0_xj" }, { "name": "Ocular rosacea", "entity": "/m/03rd74" }, { "name": "Oculocutaneous albinism", "entity": "/m/047glfs" }, { "name": "odd sensations", "entity": "/m/011l_39k" }, { "name": "Odynophagia", "entity": "/m/0997hp" }, { "name": "Odynorgasmia", "entity": "/m/03cx4hf" }, { "name": "Oily skin", "entity": "/m/0dl9sfn" }, { "name": "Oligodactyly", "entity": "/m/0b743ls" }, { "name": "Oligomenorrhea", "entity": "/m/04yyq8" }, { "name": "Oligospermia", "entity": "/m/06z9sn" }, { "name": "Oliguria", "entity": "/m/04b1kq" }, { "name": "Oliver's sign", "entity": "/m/0c2p34" }, { "name": "One hip higher than the other", "entity": "/m/0703vvz" }, { "name": "Oneiroid syndrome", "entity": "/m/027g3ht" }, { "name": "Onychocryptosis", "entity": "/m/0476hh" }, { "name": "Onychorrhexis", "entity": "/m/090ryn" }, { "name": "Onychoschizia", "entity": "/m/05b2v23" }, { "name": "Ophthalmoparesis", "entity": "/m/08grsz" }, { "name": "Opisthotonus", "entity": "/m/04bm26" }, { "name": "Oppenheim's sign", "entity": "/m/04qb4w9" }, { "name": "Opportunistic infection", "entity": "/m/064f44" }, { "name": "Optic nerve hypoplasia", "entity": "/m/03qvff" }, { "name": "Optic neuritis", "entity": "/m/05pzb" }, { "name": "Optic papillitis", "entity": "/m/065zh_3" }, { "name": "Oral bleeding", "entity": "/m/04r4mtz" }, { "name": "Oral infection", "entity": "/m/05blzpg" }, { "name": "Oral Manifestations", "entity": "/m/07y4xdl" }, { "name": "Organ dysfunction", "entity": "/m/04y5q8x" }, { "name": "Organomegaly", "entity": "/m/06b4_8" }, { "name": "Orofacial pain", "entity": "/m/0wf_p0n" }, { "name": "Oropharyngeal dysphagia", "entity": "/m/047gmhk" }, { "name": "Orthopnea", "entity": "/m/02lmp9" }, { "name": "Orthostatic hypertension", "entity": "/m/0hn9q6v" }, { "name": "Orthostatic hypotension", "entity": "/m/0pv4d" }, { "name": "Oscillopsia", "entity": "/m/06c4t0" }, { "name": "Osler's node", "entity": "/m/04ndcq" }, { "name": "Ossification", "entity": "/m/050qm0" }, { "name": "Osteitis fibrosa cystica", "entity": "/m/08wf7p" }, { "name": "Osteomalacia", "entity": "/m/02npcz" }, { "name": "Osteopenia", "entity": "/m/04zh7_m" }, { "name": "Osteophyte", "entity": "/m/03kb14" }, { "name": "Osteoporosis", "entity": "/m/05mdx" }, { "name": "Osteoporosis circumscripta", "entity": "/m/0gk_k_6" }, { "name": "Otitis", "entity": "/m/0743mf" }, { "name": "Otitis externa", "entity": "/m/04w68t" }, { "name": "Otorrhea", "entity": "/m/04kd970" }, { "name": "Ovarian apoplexy", "entity": "/m/0dllr8l" }, { "name": "Overweight", "entity": "/m/01t6qr" }, { "name": "Ovulation induction", "entity": "/m/0bbvjx1" }, { "name": "Paget's disease of the breast", "entity": "/m/0360ph" }, { "name": "Pain", "entity": "/m/062t2" }, { "name": "Pain asymbolia", "entity": "/m/05dp09" }, { "name": "Pain behind the eyes", "entity": "/m/0gk93mt" }, { "name": "Pain in limb", "entity": "/m/07vwp80" }, { "name": "Pale feces", "entity": "/m/06gb5_z" }, { "name": "Palilalia", "entity": "/m/06qqyb" }, { "name": "Palinopsia", "entity": "/m/06rxny" }, { "name": "Palla's sign", "entity": "/m/05sygqd" }, { "name": "Pallor", "entity": "/m/03skrx" }, { "name": "Palmar erythema", "entity": "/m/071rm6" }, { "name": "Palpable purpura", "entity": "/m/0dl9s6w" }, { "name": "Palpitations", "entity": "/m/029ggh" }, { "name": "Pancolitis", "entity": "/m/03c8wh1" }, { "name": "Pancreatitis", "entity": "/m/0h1wz" }, { "name": "Pancytopenia", "entity": "/m/063jn6" }, { "name": "Panic", "entity": "/m/01t09s" }, { "name": "Panic attack", "entity": "/m/0g88b" }, { "name": "Papilledema", "entity": "/m/01c9lj" }, { "name": "Papillomatosis", "entity": "/m/04q1s_9" }, { "name": "Papule", "entity": "/m/04xgtj" }, { "name": "Parakeratosis", "entity": "/m/04q8vlf" }, { "name": "Paralysis", "entity": "/m/05sj8" }, { "name": "Paranoia", "entity": "/m/063zb" }, { "name": "Paraphasia", "entity": "/m/02qdsw7" }, { "name": "Paraplegia", "entity": "/m/0251gx" }, { "name": "Paresis", "entity": "/m/01ny_g" }, { "name": "Paresthesia", "entity": "/m/023m3v" }, { "name": "Parkinsonian gait", "entity": "/m/0bwj7fw" }, { "name": "Parkinsonism", "entity": "/m/0dcs4" }, { "name": "Parosmia", "entity": "/m/065swx" }, { "name": "Paroxysmal nocturnal dyspnea", "entity": "/m/0gttzbm" }, { "name": "Parrot's sign", "entity": "/m/0711g3" }, { "name": "Pastia's lines", "entity": "/m/05t0qts" }, { "name": "Pathological jealousy", "entity": "/m/01l954" }, { "name": "Pathological lying", "entity": "/m/089sp6" }, { "name": "Pauci-immune", "entity": "/m/05b4v5v" }, { "name": "Peanut allergy", "entity": "/m/085pjw" }, { "name": "Peau d'orange", "entity": "/m/09szn7" }, { "name": "Pectus carinatum", "entity": "/m/05l8yp" }, { "name": "Pectus excavatum", "entity": "/m/03750f" }, { "name": "Pelvic inflammatory disease", "entity": "/m/064fq" }, { "name": "Pelvic lipomatosis", "entity": "/m/0kr76" }, { "name": "Pelvic organ prolapse", "entity": "/m/07kyr1" }, { "name": "Pemberton's sign", "entity": "/m/038dtb" }, { "name": "Penile discharge", "entity": "/m/059nnns" }, { "name": "Penis shortening", "entity": "/m/075yg5b" }, { "name": "Peribronchial cuffing", "entity": "/m/03hk_lf" }, { "name": "Pericardial effusion", "entity": "/m/08z994" }, { "name": "Pericardial friction rub", "entity": "/m/0879yd" }, { "name": "Pericarditis", "entity": "/m/032snl" }, { "name": "Perichondritis", "entity": "/m/0c012dy" }, { "name": "Periorbital dark circles", "entity": "/m/04cbz5" }, { "name": "Periorbital puffiness", "entity": "/m/027pqtp" }, { "name": "Peripheral edema", "entity": "/m/06v6kk" }, { "name": "Peripheral neuropathy", "entity": "/m/02w1fx" }, { "name": "Peritonsillar abscess", "entity": "/m/04b586" }, { "name": "Persecutory delusion", "entity": "/m/09g6vr0" }, { "name": "Perseveration", "entity": "/m/0dkpdn" }, { "name": "Persistent edema of rosacea", "entity": "/m/0521vqs" }, { "name": "Persistent headache", "entity": "/m/0dl9tb6" }, { "name": "Persistent hunger", "entity": "/m/075g6s4" }, { "name": "Persistent truncus arteriosus", "entity": "/m/07dlyv" }, { "name": "Persistent urge to urinate", "entity": "/m/075v3bq" }, { "name": "Persistent vegetative state", "entity": "/m/01rvjp" }, { "name": "Personality change", "entity": "/m/0dl9rz6" }, { "name": "Perspiration", "entity": "/m/0k9qw" }, { "name": "Petechia", "entity": "/m/04c2n0" }, { "name": "Phantom pain", "entity": "/m/065_qd" }, { "name": "Phantom vibration syndrome", "entity": "/m/0gcq2w" }, { "name": "Phantosmia", "entity": "/m/0d7sj2" }, { "name": "Pharyngitis", "entity": "/m/01gkcc" }, { "name": "Phlebitis", "entity": "/m/03rwrr" }, { "name": "Phlegm", "entity": "/m/01s3l8" }, { "name": "Phocomelia", "entity": "/m/0jzx0" }, { "name": "Phonological deficit", "entity": "/m/02rr053" }, { "name": "Phonophobia", "entity": "/m/08r62l" }, { "name": "Phosphene", "entity": "/m/038s2d" }, { "name": "Photodermatitis", "entity": "/m/03c2dk" }, { "name": "Photophobia", "entity": "/m/02lv8g" }, { "name": "Photopsia", "entity": "/m/09p809" }, { "name": "Photosensitivity in humans", "entity": "/m/07k9gz9" }, { "name": "Phototoxicity", "entity": "/m/067w_4" }, { "name": "Phrenitis", "entity": "/m/047cfz7" }, { "name": "Phyllodes tumor", "entity": "/m/07mvcp" }, { "name": "Physical dependence", "entity": "/m/059w29" }, { "name": "Pica", "entity": "/m/01b8zz" }, { "name": "Pili torti", "entity": "/m/0462xkz" }, { "name": "Pinch mark", "entity": "/m/0bhbwcq" }, { "name": "Piskacek's sign", "entity": "/m/03gr_p9" }, { "name": "Placental abruption", "entity": "/m/0508hk" }, { "name": "Plaque", "entity": "/m/04q1ncc" }, { "name": "Platypnea", "entity": "/m/03d6pnm" }, { "name": "Pleocytosis", "entity": "/m/02q7v1x" }, { "name": "Pleural friction rub", "entity": "/m/04lgt34" }, { "name": "Plummer's nail", "entity": "/m/05s_9d1" }, { "name": "Pneumatosis intestinalis", "entity": "/m/0f47kd" }, { "name": "Pneumaturia", "entity": "/m/02qwdjd" }, { "name": "Pneumonia", "entity": "/m/0dq9p" }, { "name": "Pneumonia alba", "entity": "/m/0gjbz4s" }, { "name": "Pneumothorax", "entity": "/m/01q1sz" }, { "name": "Polyarthritis", "entity": "/m/06hxx0" }, { "name": "Polycythemia", "entity": "/m/02k88f" }, { "name": "Polydipsia", "entity": "/m/02v6kp" }, { "name": "Polyneuropathy", "entity": "/m/03cx49" }, { "name": "Polyphagia", "entity": "/m/03gncj" }, { "name": "Polyuria", "entity": "/m/01m3h8" }, { "name": "Poor appetite", "entity": "/m/0dl9sbn" }, { "name": "Poor balance", "entity": "/m/0dl9sfw" }, { "name": "Poor coordination", "entity": "/m/076r60r" }, { "name": "Poor feeding", "entity": "/m/0dl9t5t" }, { "name": "Poor wound healing", "entity": "/m/06c4xv3" }, { "name": "Portal hypertension", "entity": "/m/034h9r" }, { "name": "Post herniorraphy pain syndrome", "entity": "/m/0ggb_w" }, { "name": "Post-concussion syndrome", "entity": "/m/09qljf" }, { "name": "Post-dural-puncture headache", "entity": "/m/03hlfpv" }, { "name": "Post-nasal drip", "entity": "/m/0615kf" }, { "name": "Post-Operative Pain", "entity": "/m/04yjg7n" }, { "name": "Post-traumatic seizure", "entity": "/m/03qcvl0" }, { "name": "Post-void dribbling", "entity": "/m/0bl95z" }, { "name": "Postictal state", "entity": "/m/0ctw0q" }, { "name": "Postinflammatory hyperpigmentation", "entity": "/m/05c4p7_" }, { "name": "Postoperative nausea and vomiting", "entity": "/m/035vzc" }, { "name": "Postorgasmic illness syndrome", "entity": "/m/05p5_7y" }, { "name": "Postural instability", "entity": "/m/04dng0v" }, { "name": "Postural orthostatic tachycardia syndrome", "entity": "/m/04l6qx" }, { "name": "Pratt's sign", "entity": "/m/043s66f" }, { "name": "Pre-eclampsia", "entity": "/m/025lwc" }, { "name": "Precocious puberty", "entity": "/m/02_nx2" }, { "name": "Prehn's sign", "entity": "/m/0c81h2" }, { "name": "Prehypertension", "entity": "/m/03cz_hv" }, { "name": "Premature atrial contraction", "entity": "/m/04kgzqg" }, { "name": "Premature ejaculation", "entity": "/m/01qqp1" }, { "name": "Premature hair whitening", "entity": "/m/06_5xc6" }, { "name": "Premature ventricular contraction", "entity": "/m/01hjkt" }, { "name": "Premenstrual syndrome", "entity": "/m/01fxrj" }, { "name": "Pressure of speech", "entity": "/m/08k8yw" }, { "name": "Presystolic murmur", "entity": "/m/0n48mtn" }, { "name": "Pretibial myxedema", "entity": "/m/0bdky5" }, { "name": "Priapism", "entity": "/m/0ldwy" }, { "name": "Primarily obsessional obsessive compulsive disorder", "entity": "/m/04n4w2k" }, { "name": "Proctitis", "entity": "/m/06rf7m" }, { "name": "Prodrome", "entity": "/m/01k7nc" }, { "name": "Productive cough", "entity": "/m/03gtw0t" }, { "name": "Prognathism", "entity": "/m/06g3nz" }, { "name": "Prolapse", "entity": "/m/01jcd6" }, { "name": "Propulsive gait", "entity": "/m/04cvmpm" }, { "name": "Prostate pain", "entity": "/m/0dl9sqm" }, { "name": "Proteinuria", "entity": "/m/012zf3" }, { "name": "Protruding Tongue", "entity": "/m/05t2w3m" }, { "name": "Prurigo", "entity": "/m/0gk2pb" }, { "name": "Pruritic papular eruption of HIV disease", "entity": "/m/0bhc5r2" }, { "name": "Pruritus ani", "entity": "/m/02pq2mj" }, { "name": "Pruritus of genital organs", "entity": "/m/07vwn8h" }, { "name": "Pruritus vulvae", "entity": "/m/05mvdqy" }, { "name": "Pseudarthrosis", "entity": "/m/05_3zr" }, { "name": "Pseudoachondroplasia", "entity": "/m/026ljcg" }, { "name": "Pseudobulbar affect", "entity": "/m/04lg5mq" }, { "name": "Pseudodiarrhea", "entity": "/m/0bjszh" }, { "name": "Pseudohallucination", "entity": "/m/04q2n9f" }, { "name": "Pseudohypertension", "entity": "/m/0691c5" }, { "name": "Pseudomembrane", "entity": "/m/06vxvm8" }, { "name": "Pseudomyopia", "entity": "/m/026689f" }, { "name": "Pseudopolyps", "entity": "/m/0hzpvq0" }, { "name": "Psoas sign", "entity": "/m/0751ss" }, { "name": "Psoriatic erythroderma", "entity": "/m/05c4nbg" }, { "name": "Psychogenic amnesia", "entity": "/m/09hgk_" }, { "name": "Psychogenic pain", "entity": "/m/04ygjf4" }, { "name": "Psychomotor agitation", "entity": "/m/05p8sj" }, { "name": "Psychomotor retardation", "entity": "/m/03ytmb" }, { "name": "Psychoorganic syndrome", "entity": "/m/098crk" }, { "name": "Psychosis", "entity": "/m/063yv" }, { "name": "Psychotic break", "entity": "/m/03l9p5" }, { "name": "Ptosis", "entity": "/m/0gdsn5" }, { "name": "Puddle sign", "entity": "/m/03c15k9" }, { "name": "Pulmonary consolidation", "entity": "/m/0b7jt4" }, { "name": "Pulmonary edema", "entity": "/m/0260ph" }, { "name": "Pulmonary hemorrhage", "entity": "/m/06t860" }, { "name": "Pulmonary hypertension", "entity": "/m/031wv7" }, { "name": "Pulmonary infiltrate", "entity": "/m/0yn_knd" }, { "name": "Pulmonary insufficiency", "entity": "/m/03cg1lz" }, { "name": "Pulmonary shunt", "entity": "/m/027x98v" }, { "name": "Pulsus alternans", "entity": "/m/02rxk72" }, { "name": "Pulsus bigeminus", "entity": "/m/0267wp8" }, { "name": "Pulsus paradoxus", "entity": "/m/087c0d" }, { "name": "Purple urine bag syndrome", "entity": "/m/06w5dlj" }, { "name": "Purpura", "entity": "/m/04c2m8" }, { "name": "Pus", "entity": "/m/01s2ly" }, { "name": "Pustule", "entity": "/m/01fxyp" }, { "name": "Pustulosis", "entity": "/m/0f7x8r" }, { "name": "Pyelonephritis", "entity": "/m/04_rt_" }, { "name": "Pyoderma gangrenosum", "entity": "/m/08s9h0" }, { "name": "Pyostomatitis vegetans", "entity": "/m/06w1x7x" }, { "name": "Pyuria", "entity": "/m/08bp74" }, { "name": "Raccoon eyes", "entity": "/m/08810p" }, { "name": "Racing thoughts", "entity": "/m/03nps17" }, { "name": "Radiculopathy", "entity": "/m/02pfkpc" }, { "name": "Rash on the palms and soles", "entity": "/m/0dl9qg2" }, { "name": "Raynaud syndrome", "entity": "/m/02v2jk" }, { "name": "Rectal discharge", "entity": "/m/0dl9s9j" }, { "name": "Rectal pain", "entity": "/m/0b74tbc" }, { "name": "Rectal prolapse", "entity": "/m/03080q" }, { "name": "Rectal tenesmus", "entity": "/m/04yfk_" }, { "name": "Recurrent infection", "entity": "/m/0dl9spc" }, { "name": "Red eye", "entity": "/m/04pxm5" }, { "name": "Red nose", "entity": "/m/0dl9tc8" }, { "name": "Red rash", "entity": "/m/0dl9tmf" }, { "name": "Red spots", "entity": "/m/0dl9tm6" }, { "name": "Reduced affect display", "entity": "/m/08z6vk" }, { "name": "Regurgitation", "entity": "/m/0fv217" }, { "name": "Regurgitation", "entity": "/m/0fv203" }, { "name": "Regurgitation with acid", "entity": "/m/0dl9td4" }, { "name": "Religious delusion", "entity": "/m/0h_9sk9" }, { "name": "Remitting seronegative symmetrical synovitis with pitting edema", "entity": "/m/05f6gm1" }, { "name": "Renal colic", "entity": "/m/06phzx" }, { "name": "Renal cyst", "entity": "/m/0b77v22" }, { "name": "Respiratory acidosis", "entity": "/m/04tkvk" }, { "name": "Respiratory arrest", "entity": "/m/037c4l" }, { "name": "Respiratory distress", "entity": "/m/0jwzzd9" }, { "name": "Respiratory failure", "entity": "/m/019dmc" }, { "name": "Respiratory tract infection", "entity": "/m/0117wzhd" }, { "name": "Restless legs syndrome", "entity": "/m/01jyld" }, { "name": "Restricted behavior", "entity": "/m/05nmqpm" }, { "name": "Retching", "entity": "/m/02rjt8c" }, { "name": "Reticulocytosis", "entity": "/m/05d54_" }, { "name": "Retinal degeneration", "entity": "/m/05zn7mq" }, { "name": "Retrograde amnesia", "entity": "/m/040z8c" }, { "name": "Retroperitoneal fibrosis", "entity": "/m/09z7xt" }, { "name": "Reynolds' pentad", "entity": "/m/0ggv_7" }, { "name": "Rheum", "entity": "/m/02p1kqs" }, { "name": "Rheumatoid nodule", "entity": "/m/03m6bb0" }, { "name": "Rheumatoid nodulosis", "entity": "/m/0b767p_" }, { "name": "Rhinitis", "entity": "/m/02mdz9" }, { "name": "Rhinophyma", "entity": "/m/0dyhxj" }, { "name": "Rhinorrhea", "entity": "/m/06p_bp" }, { "name": "Rhonchi", "entity": "/m/09jv3z" }, { "name": "Riedel's thyroiditis", "entity": "/m/02rjq7r" }, { "name": "Right atrial enlargement", "entity": "/m/07kj55d" }, { "name": "Right ventricular hypertrophy", "entity": "/m/025tjvy" }, { "name": "Right-sided aortic arch", "entity": "/m/0knm7d1" }, { "name": "Rigler's sign", "entity": "/m/09b5_f" }, { "name": "Risus sardonicus", "entity": "/m/09s7_h" }, { "name": "Romana's sign", "entity": "/m/02q4nr8" }, { "name": "Rose spots", "entity": "/m/0bj2by" }, { "name": "Rosenstein's sign", "entity": "/m/0crclyl" }, { "name": "Rossolimo's sign", "entity": "/m/05s_tyf" }, { "name": "Roth's spot", "entity": "/m/038dpt" }, { "name": "Rough skin", "entity": "/m/07t7mz6" }, { "name": "Rovsing's sign", "entity": "/m/04dbtp" }, { "name": "Rumination", "entity": "/m/04grp19" }, { "name": "Rumination syndrome", "entity": "/m/09spqk" }, { "name": "Rumpelâ€“Leede sign", "entity": "/m/05q6gh9" }, { "name": "Running amok", "entity": "/m/014sp" }, { "name": "Russell's sign", "entity": "/m/082wyl" }, { "name": "Sacroiliac joint dysfunction", "entity": "/m/0gtybk6" }, { "name": "Sadness", "entity": "/m/02y_3dj" }, { "name": "Sail sign of the chest", "entity": "/m/0h1hr7b" }, { "name": "Salt craving", "entity": "/m/0dl9sqv" }, { "name": "Salus's sign", "entity": "/m/05sxjn6" }, { "name": "Scaly skin", "entity": "/m/06_2b8m" }, { "name": "Scaphocephaly", "entity": "/m/01hrg2" }, { "name": "Scar", "entity": "/m/0kbct" }, { "name": "Scarring hair loss", "entity": "/m/05222s7" }, { "name": "Schaeffer's sign", "entity": "/m/05s_28n" }, { "name": "Schizophasia", "entity": "/m/05qtd5" }, { "name": "Sciatica", "entity": "/m/01_wxr" }, { "name": "Scissor gait", "entity": "/m/04czg7h" }, { "name": "Scleritis", "entity": "/m/08gppk" }, { "name": "Sclerodactyly", "entity": "/m/05z058" }, { "name": "Scleroderma", "entity": "/m/05m_zv2" }, { "name": "Scoliosis", "entity": "/m/0yvgr" }, { "name": "Scotoma", "entity": "/m/03gzmf" }, { "name": "Screaming", "entity": "/m/03qc9zr" }, { "name": "Seborrheic dermatitis", "entity": "/m/02cvvl" }, { "name": "Second-degree atrioventricular block", "entity": "/m/031s_5" }, { "name": "Secondary lymphedema", "entity": "/m/05q9_31" }, { "name": "Sedation", "entity": "/m/019bf4" }, { "name": "Seeing problems", "entity": "/m/0h80_xb" }, { "name": "Seeing spots", "entity": "/m/0dl9qgk" }, { "name": "Seidel sign", "entity": "/m/047m0zn" }, { "name": "Self-destructive behaviour", "entity": "/m/026qvtc" }, { "name": "Self-harm", "entity": "/m/013cc9" }, { "name": "Sensorineural hearing loss", "entity": "/m/04fmz1" }, { "name": "Sensory ataxia", "entity": "/m/07_bsl" }, { "name": "Sensory phenomena", "entity": "/m/0h0qbm" }, { "name": "Sentinel loop", "entity": "/m/04q3mxq" }, { "name": "Septic shock", "entity": "/m/029mr9" }, { "name": "Serotonin syndrome", "entity": "/m/079hg" }, { "name": "Sexual anhedonia", "entity": "/m/0gfg_0y" }, { "name": "Sexual dysfunction", "entity": "/m/0255qr" }, { "name": "Sexual headache", "entity": "/m/07c5n9" }, { "name": "Sexual obsessions", "entity": "/m/027tv8t" }, { "name": "Shakiness", "entity": "/m/0dl9sxs" }, { "name": "Shaking of hands", "entity": "/m/0dl9tfw" }, { "name": "Shallow breathing", "entity": "/m/08wqjw" }, { "name": "Shame", "entity": "/m/0164bb" }, { "name": "Shawl scrotum", "entity": "/m/025_mtj" }, { "name": "Sherren's triangle", "entity": "/m/0hr6yls" }, { "name": "Shivering", "entity": "/m/04fv7w" }, { "name": "Shock", "entity": "/m/012n6d" }, { "name": "Short bowel syndrome", "entity": "/m/04mr0d" }, { "name": "Short neck", "entity": "/m/07746vw" }, { "name": "Short stature", "entity": "/m/06y96j" }, { "name": "Shortness of breath", "entity": "/m/01cdt5" }, { "name": "Shyness", "entity": "/m/01dl7h" }, { "name": "Siegrist streaks", "entity": "/m/02x0gvb" }, { "name": "Sign of Hertoghe", "entity": "/m/05t0j4w" }, { "name": "Silhouette sign", "entity": "/m/0bbz9bz" }, { "name": "Simultanagnosia", "entity": "/m/09g711n" }, { "name": "Single transverse palmar crease", "entity": "/m/04fl9l" }, { "name": "Sinus bradycardia", "entity": "/m/06rsk8" }, { "name": "Sinus tachycardia", "entity": "/m/06rsny" }, { "name": "Sinus tract", "entity": "/m/03h0kh2" }, { "name": "Sinusitis", "entity": "/m/072hv" }, { "name": "Sister Mary Joseph nodule", "entity": "/m/08wnv9" }, { "name": "Sitting disability", "entity": "/m/0dvg7b" }, { "name": "Skin and skin structure infection", "entity": "/m/09gp35z" }, { "name": "Skin bumps", "entity": "/m/0dl9tdk" }, { "name": "Skin burning sensation", "entity": "/m/04kd9f3" }, { "name": "Skin fissure", "entity": "/m/0gmcs4z" }, { "name": "Skin infection", "entity": "/m/05m_2vv" }, { "name": "Skin lesion", "entity": "/m/04dfkg" }, { "name": "Skin manifestations of sarcoidosis", "entity": "/m/05zr0l8" }, { "name": "Skin pop scar", "entity": "/m/09v60_p" }, { "name": "Skin rash", "entity": "/m/0v4rnx" }, { "name": "Skin tag", "entity": "/m/0fktd" }, { "name": "Skip lesion", "entity": "/m/0c3y21x" }, { "name": "Skull bossing", "entity": "/m/0j260bd" }, { "name": "Sleep apnea", "entity": "/m/071d3" }, { "name": "Sleep deprivation", "entity": "/m/017tfz" }, { "name": "Sleep disorder", "entity": "/m/0cnmb" }, { "name": "Sleep paralysis", "entity": "/m/01jb2q" }, { "name": "Sleeping difficulty", "entity": "/m/0dl9sgh" }, { "name": "Slipped capital femoral epiphysis", "entity": "/m/07bztx" }, { "name": "SLUDGE syndrome", "entity": "/m/025yc7f" }, { "name": "Slurred speech", "entity": "/m/03z97xw" }, { "name": "Sneeze", "entity": "/m/01hsr_" }, { "name": "Snoring", "entity": "/m/01d3sd" }, { "name": "Social isolation", "entity": "/m/0c_k31" }, { "name": "Soft erections", "entity": "/m/075yg5j" }, { "name": "Somatoparaphrenia", "entity": "/m/02qd2dt" }, { "name": "Somnolence", "entity": "/m/0311pr" }, { "name": "Sonographic Murphy sign", "entity": "/m/0gx2ttd" }, { "name": "Soot tattoo", "entity": "/m/09v87qm" }, { "name": "Sore on tongue", "entity": "/m/0dl9thc" }, { "name": "Sore throat", "entity": "/m/0b76bty" }, { "name": "Spalding's sign", "entity": "/m/0bh88t5" }, { "name": "Spasm", "entity": "/m/04zjnsf" }, { "name": "Spasm of accommodation", "entity": "/m/02q477l" }, { "name": "Spasmodic dysphonia", "entity": "/m/07d0js" }, { "name": "Spastic gait", "entity": "/m/04cv6sj" }, { "name": "Spastic hemiplegia", "entity": "/m/0j3gp5p" }, { "name": "Spasticity", "entity": "/m/0p9n0" }, { "name": "Speech delay", "entity": "/m/0726rf" }, { "name": "Speech disorder", "entity": "/m/0133cx" }, { "name": "Speech loss", "entity": "/m/0dl9t3k" }, { "name": "Spider angioma", "entity": "/m/090j35" }, { "name": "Spiking temperature", "entity": "/m/0dl9s_b" }, { "name": "Spinal tumor", "entity": "/m/03znrn" }, { "name": "Spitz nevus", "entity": "/m/05mxp8t" }, { "name": "Splenomegaly", "entity": "/m/03zqp2" }, { "name": "Splinter hemorrhage", "entity": "/m/047qslv" }, { "name": "Splitting", "entity": "/m/02q48gs" }, { "name": "Sputum", "entity": "/m/01jmfg" }, { "name": "Squeamishness", "entity": "/m/076zwwj" }, { "name": "ST depression", "entity": "/m/05p5h7r" }, { "name": "Stage fright", "entity": "/m/02v58l" }, { "name": "Starvation", "entity": "/m/01flyj" }, { "name": "Stasis dermatitis", "entity": "/m/04q_81" }, { "name": "Status epilepticus", "entity": "/m/06382k" }, { "name": "Steatorrhea", "entity": "/m/03_7qy" }, { "name": "Steeple sign", "entity": "/m/02777d4" }, { "name": "Stellwag's sign", "entity": "/m/02z14sp" }, { "name": "Stemmer's sign", "entity": "/m/0fq0v0v" }, { "name": "Stenosis", "entity": "/m/032llx" }, { "name": "Stereotypy", "entity": "/m/0dg_lc" }, { "name": "Stertor", "entity": "/m/0d4b5s" }, { "name": "Stiff Finger", "entity": "/m/07468xq" }, { "name": "Stiffness", "entity": "/m/02dzkc" }, { "name": "Stilted speech", "entity": "/m/0h_d29d" }, { "name": "Stimming", "entity": "/m/0ch68q" }, { "name": "Stimson line", "entity": "/m/0jt1lyb" }, { "name": "Stinging sensation", "entity": "/m/05nb6gp" }, { "name": "Stomach rumble", "entity": "/m/01g90h" }, { "name": "Stomatitis", "entity": "/m/06jf34" }, { "name": "Stork leg", "entity": "/m/05v23cw" }, { "name": "StrÃ_mpell's sign", "entity": "/m/05t03d3" }, { "name": "Strabismus", "entity": "/m/02s645" }, { "name": "Strangury", "entity": "/m/078v5g" }, { "name": "Stransky's sign", "entity": "/m/05s_76s" }, { "name": "Strawberry tongue", "entity": "/m/027sbw1" }, { "name": "Stress", "entity": "/m/012lyw" }, { "name": "Stretch marks", "entity": "/m/056g4k" }, { "name": "Stridor", "entity": "/m/05rtnw" }, { "name": "String sign", "entity": "/m/02r50n7" }, { "name": "Stroke", "entity": "/m/02y0js" }, { "name": "Stunted growth", "entity": "/m/09g54b" }, { "name": "Stupor", "entity": "/m/08gxks" }, { "name": "Stuttering", "entity": "/m/070yw" }, { "name": "Subclinical seizure", "entity": "/m/02r_80w" }, { "name": "Subcutaneous emphysema", "entity": "/m/0464mv7" }, { "name": "Subjective tinnitus", "entity": "/m/09rqdw4" }, { "name": "Substance abuse", "entity": "/m/0p_cr" }, { "name": "Substance dependence", "entity": "/m/0466pc0" }, { "name": "Sudden cardiac death", "entity": "/m/0d_mn0" }, { "name": "Sudden visual loss", "entity": "/m/09rq8z1" }, { "name": "Suicidal ideation", "entity": "/m/09zn19" }, { "name": "Sulcus sign", "entity": "/m/0892ty" }, { "name": "Sundowning", "entity": "/m/04jmkz7" }, { "name": "Superior vena cava syndrome", "entity": "/m/04tr95" }, { "name": "Supraventricular tachycardia", "entity": "/m/03k_qd" }, { "name": "Swelling", "entity": "/m/09bdp3" }, { "name": "Swelling behind the ear", "entity": "/m/075z7_q" }, { "name": "Swelling of finger", "entity": "/m/0dl9sn1" }, { "name": "Swelling of scrotum", "entity": "/m/0dl9swy" }, { "name": "Swelling of skin", "entity": "/m/0dl9swq" }, { "name": "Swollen feet", "entity": "/m/0dl9t52" }, { "name": "Swollen legs", "entity": "/m/0dl9t72" }, { "name": "Swollen lymph nodes", "entity": "/m/03yzl6" }, { "name": "Swollen testicle", "entity": "/m/059nnnk" }, { "name": "Swollen tonsils", "entity": "/m/06tr55s" }, { "name": "Sydenham's chorea", "entity": "/m/04jr23" }, { "name": "Syncope", "entity": "/m/04jpj9y" }, { "name": "Syndrome of inappropriate antidiuretic hormone secretion", "entity": "/m/03zzcc" }, { "name": "Syndrome of subjective doubles", "entity": "/m/05rxzz" }, { "name": "Synechia", "entity": "/m/037xdl" }, { "name": "Synovitis", "entity": "/m/07yqh1" }, { "name": "Systemic inflammation", "entity": "/m/03h0d95" }, { "name": "Systolic heart murmur", "entity": "/m/05b5h0l" }, { "name": "Tachycardia", "entity": "/m/0156z4" }, { "name": "Tachylalia", "entity": "/m/03m9zmr" }, { "name": "Tachypnea", "entity": "/m/03w94wq" }, { "name": "Tactile hallucination", "entity": "/m/0zc0wnd" }, { "name": "Tanning dependence", "entity": "/m/03crfch" }, { "name": "Tardive dyskinesia", "entity": "/m/01vl0h" }, { "name": "Target cell", "entity": "/m/05rhhy" }, { "name": "Telangiectasia", "entity": "/m/0500_3" }, { "name": "Tenderness", "entity": "/m/03m4j90" }, { "name": "Tendinitis", "entity": "/m/01kcp2" }, { "name": "Tenesmus", "entity": "/m/05t0_0l" }, { "name": "Tenosynovitis", "entity": "/m/01nzjv" }, { "name": "Teratospermia", "entity": "/m/0523q1y" }, { "name": "Terry's nails", "entity": "/m/02py3_7" }, { "name": "Tertiary hyperparathyroidism", "entity": "/m/0bfvmv" }, { "name": "Tet spells", "entity": "/m/074x0fv" }, { "name": "Tetanic contraction", "entity": "/m/026m6v" }, { "name": "Tetany", "entity": "/m/02pnp2q" }, { "name": "Tetralogy of Fallot", "entity": "/m/01k4yc" }, { "name": "Tetraplegia", "entity": "/m/01bpld" }, { "name": "Thick skin", "entity": "/m/06vwpmt" }, { "name": "Thin skin", "entity": "/m/0dl9szd" }, { "name": "Third-degree atrioventricular block", "entity": "/m/02zcgm" }, { "name": "Thirst", "entity": "/m/02jx54" }, { "name": "Thought blocking", "entity": "/m/0cmcngp" }, { "name": "Thought disorder", "entity": "/m/01p1zm" }, { "name": "Thought insertion", "entity": "/m/09lpg2" }, { "name": "Thousand-yard stare", "entity": "/m/05dzzb" }, { "name": "Throat clearing", "entity": "/m/0dl9sf8" }, { "name": "Throat irritation", "entity": "/m/0b6kt_8" }, { "name": "Throbbing headache", "entity": "/m/02kby4d" }, { "name": "Thrombocytopenia", "entity": "/m/02kgmg" }, { "name": "Thrombocytosis", "entity": "/m/03btxg" }, { "name": "Thrombosis", "entity": "/m/018_pw" }, { "name": "Thumbprint sign", "entity": "/m/02777qv" }, { "name": "Thyroid disease", "entity": "/m/05n00c6" }, { "name": "Thyroid nodule", "entity": "/m/05l6q9" }, { "name": "Tic", "entity": "/m/02gpbb" }, { "name": "Tinel's sign", "entity": "/m/04bn2w" }, { "name": "Tingling feet", "entity": "/m/0dl9tlk" }, { "name": "Tingling fingers", "entity": "/m/0dl9tff" }, { "name": "Tingling lips", "entity": "/m/0dl9tgy" }, { "name": "Tingling of hands", "entity": "/m/0dl9tlr" }, { "name": "Tingling of toes", "entity": "/m/0dl9tlz" }, { "name": "Tinnitus", "entity": "/m/0pv6y" }, { "name": "Toe numbness", "entity": "/m/0dl9t7w" }, { "name": "Toe walking", "entity": "/m/02rm_y4" }, { "name": "Tongue numbness", "entity": "/m/0dl9t26" }, { "name": "Tongue swelling", "entity": "/m/0dl9sjq" }, { "name": "Tonsillitis", "entity": "/m/03ng0t" }, { "name": "Tooth decay", "entity": "/m/025j63" }, { "name": "Tooth loss", "entity": "/m/02q28kg" }, { "name": "Tooth mobility", "entity": "/m/010f9grj" }, { "name": "Toothache", "entity": "/m/045c85" }, { "name": "Tophus", "entity": "/m/04bm_r" }, { "name": "Topographical disorientation", "entity": "/m/0fq316n" }, { "name": "Torticollis", "entity": "/m/01q136" }, { "name": "Tram track", "entity": "/m/03hk_dl" }, { "name": "Transudate", "entity": "/m/02wv9sp" }, { "name": "Tree-in-bud sign", "entity": "/m/03cr019" }, { "name": "Trembling", "entity": "/m/0dl9sdm" }, { "name": "Tremor", "entity": "/m/09d28" }, { "name": "Trendelenburg gait", "entity": "/m/09sdrd" }, { "name": "Trendelenburg's sign", "entity": "/m/07h5sd" }, { "name": "Trepopnea", "entity": "/m/025x27t" }, { "name": "Trichiasis", "entity": "/m/04m9wt" }, { "name": "Trichomegaly", "entity": "/m/09k5ncy" }, { "name": "Trichoptilosis", "entity": "/m/0269y8n" }, { "name": "Trichotillomania", "entity": "/m/0h_8y" }, { "name": "Trigeminal autonomic cephalalgia", "entity": "/m/011vmjv8" }, { "name": "Tripe palms", "entity": "/m/09k5vq8" }, { "name": "Trismus", "entity": "/m/01fgvy" }, { "name": "Troisier's sign", "entity": "/m/037xnt" }, { "name": "Trousseau sign of latent tetany", "entity": "/m/02pnnwh" }, { "name": "Trousseau sign of malignancy", "entity": "/m/02pnnwv" }, { "name": "Tuberculoma", "entity": "/m/01181t6w" }, { "name": "Tullio phenomenon", "entity": "/m/02rlx5d" }, { "name": "Tunnel vision", "entity": "/m/01z0b9" }, { "name": "Type 2 diabetes", "entity": "/m/0146bp" }, { "name": "Unable to balance", "entity": "/m/0dl9stl" }, { "name": "Unconsciousness", "entity": "/m/04kfhc9" }, { "name": "Underweight", "entity": "/m/0844zv" }, { "name": "Uneven waist", "entity": "/m/0703vrt" }, { "name": "Unintentional Weight Loss", "entity": "/m/06wfm2h" }, { "name": "Unresponsiveness", "entity": "/m/0dl9st5" }, { "name": "Unsteadiness", "entity": "/m/01y2h01" }, { "name": "Unsteady gait", "entity": "/m/0dl9s9y" }, { "name": "Upper gastrointestinal bleeding", "entity": "/m/02n2jh" }, { "name": "Upper motor neuron lesion", "entity": "/m/052f98" }, { "name": "Upper respiratory tract infection", "entity": "/m/02wmyj" }, { "name": "Uremia", "entity": "/m/02f8hm" }, { "name": "Uremic fetor", "entity": "/m/0g9wnz_" }, { "name": "Urethritis", "entity": "/m/07wvs" }, { "name": "Urge incontinence", "entity": "/m/0bmbd36" }, { "name": "Urge to move", "entity": "/m/07873v5" }, { "name": "Urinary dribbling", "entity": "/m/0dl9s5v" }, { "name": "Urinary hesitancy", "entity": "/m/04qyzpf" }, { "name": "Urinary incontinence", "entity": "/m/018h13" }, { "name": "Urinary retention", "entity": "/m/045y32" }, { "name": "Urinary tract infection", "entity": "/m/07x16" }, { "name": "Urinary urgency", "entity": "/m/0fvh3d" }, { "name": "Urine odor", "entity": "/m/0dl9thx" }, { "name": "Uterine contraction", "entity": "/m/02shy2" }, { "name": "Uveitis", "entity": "/m/040_ch" }, { "name": "Uveoparotitis", "entity": "/m/0h6m4f" }, { "name": "Vaginal bleeding", "entity": "/m/055k6m" }, { "name": "Vaginal bulge", "entity": "/m/0dl9qhh" }, { "name": "Vaginal discharge", "entity": "/m/07k9rmb" }, { "name": "Vaginal dryness", "entity": "/m/0dl9stc" }, { "name": "Vaginal flatulence", "entity": "/m/017ts5" }, { "name": "Vaginal itching", "entity": "/m/0dl9s54" }, { "name": "Vaginal odor", "entity": "/m/05bjlj4" }, { "name": "Vaginal tenderness", "entity": "/m/05bl1y2" }, { "name": "Vaginitis", "entity": "/m/01vcpr" }, { "name": "Varicose veins", "entity": "/m/081dp" }, { "name": "Vascular Leak", "entity": "/m/06vzydh" }, { "name": "Vascular malformation", "entity": "/m/079tpsw" }, { "name": "Vascular occlusion", "entity": "/m/0b6h30_" }, { "name": "Vasculitis", "entity": "/m/0317gc" }, { "name": "Vaso-occlusive crisis", "entity": "/m/03nxk25" }, { "name": "Vasoconstriction", "entity": "/m/02wv6ss" }, { "name": "Vasodilation", "entity": "/m/0fkcf" }, { "name": "Vasovagal syncope", "entity": "/m/039y0d" }, { "name": "Vegetation", "entity": "/m/04gp557" }, { "name": "Vegetative symptoms", "entity": "/m/076zcl" }, { "name": "Vegetative-vascular dystonia", "entity": "/m/0wbjrwb" }, { "name": "Velopharyngeal inadequacy", "entity": "/m/0fqvw9" }, { "name": "Venous stasis", "entity": "/m/04jj6yp" }, { "name": "Ventricular outflow tract obstruction", "entity": "/m/0gjdgxg" }, { "name": "Ventricular septal defect", "entity": "/m/03k28n" }, { "name": "Ventricular tachycardia", "entity": "/m/025v410" }, { "name": "Verbosity", "entity": "/m/045rjv" }, { "name": "Vertigo", "entity": "/m/07rwf2" }, { "name": "Vesical tenesmus", "entity": "/m/08gxj7" }, { "name": "Viral pneumonia", "entity": "/m/07fn78" }, { "name": "Virilization", "entity": "/m/032zt5" }, { "name": "Virtual reality sickness", "entity": "/m/011c6z46" }, { "name": "Vision disorder", "entity": "/m/04jmzm5" }, { "name": "Vision loss", "entity": "/m/04t973" }, { "name": "Visual acuity", "entity": "/m/02_g1v" }, { "name": "Visual agnosia", "entity": "/m/08gvtg" }, { "name": "Visual snow", "entity": "/m/0379jz" }, { "name": "Vitamin B12 deficiency", "entity": "/m/02x2xmj" }, { "name": "Vitamin deficiency", "entity": "/m/0q42v" }, { "name": "Voice change", "entity": "/m/0hzmhkt" }, { "name": "Vomiting", "entity": "/m/012qjw" }, { "name": "Von Braun-Fernwald's sign", "entity": "/m/05t0hc2" }, { "name": "Von Graefe's sign", "entity": "/m/09tktp" }, { "name": "Vulvar vestibulitis", "entity": "/m/0h7q7v0" }, { "name": "Vulvitis", "entity": "/m/06qjbg" }, { "name": "Vulvodynia", "entity": "/m/08099" }, { "name": "Wandering", "entity": "/m/04jmb5n" }, { "name": "Wanderlust", "entity": "/m/038ytw" }, { "name": "Warm skin", "entity": "/m/06_hyyd" }, { "name": "Wart", "entity": "/m/086hz" }, { "name": "Wasting", "entity": "/m/01dpzh" }, { "name": "Water retention", "entity": "/m/05s_d8r" }, { "name": "Waterâ€“electrolyte imbalance", "entity": "/m/03nkmb" }, { "name": "Watery diarrhea", "entity": "/m/06vys2w" }, { "name": "Watery stool", "entity": "/m/0dl9sc9" }, { "name": "Watson's water hammer pulse", "entity": "/m/038dp3" }, { "name": "Waxy flexibility", "entity": "/m/02q672l" }, { "name": "Waxy skin", "entity": "/m/064p33j" }, { "name": "Weak pulse", "entity": "/m/06b0xmk" }, { "name": "Weak urinary stream", "entity": "/m/0dl9t0v" }, { "name": "Weakness", "entity": "/m/0119nqlg" }, { "name": "Weakness of limb", "entity": "/m/0dl9t83" }, { "name": "Weakness of the arms and legs", "entity": "/m/0h80_xq" }, { "name": "Weather pains", "entity": "/m/07k3xc6" }, { "name": "Webbed neck", "entity": "/m/01cn60" }, { "name": "Weight gain", "entity": "/m/03bx2xc" }, { "name": "Weight loss", "entity": "/m/023s6n" }, { "name": "Westermark sign", "entity": "/m/025yl42" }, { "name": "Westphal's sign", "entity": "/m/02qd587" }, { "name": "Wheals", "entity": "/m/079y7m" }, { "name": "Wheeze", "entity": "/m/07mzm6" }, { "name": "White stool", "entity": "/m/0dl9qht" }, { "name": "White tongue", "entity": "/m/0dl9shv" }, { "name": "Widened mediastinum", "entity": "/m/0917_9" }, { "name": "Widow's peak", "entity": "/m/03d23v" }, { "name": "Winterbottom's sign", "entity": "/m/095yj5" }, { "name": "Witzelsucht", "entity": "/m/06f89r" }, { "name": "Word salad", "entity": "/m/02nj2r" }, { "name": "Work aversion", "entity": "/m/02w795_" }, { "name": "Wound", "entity": "/m/01xrk2" }, { "name": "Wrinkle", "entity": "/m/02_x63" }, { "name": "Xanthoma", "entity": "/m/02gl_t" }, { "name": "Xanthoma striatum palmare", "entity": "/m/07k6xsb" }, { "name": "Xanthopsia", "entity": "/m/0268n_w" }, { "name": "Xanthosis", "entity": "/m/02rxmf6" }, { "name": "Xeroderma", "entity": "/m/08xv95" }, { "name": "Xerophthalmia", "entity": "/m/0517c6" }, { "name": "Xerostomia", "entity": "/m/04d7y3" }, { "name": "Yawn", "entity": "/m/01j423" }, { "name": "Yellow eyes", "entity": "/m/0dl9tcq" }, { "name": "Zenker's degeneration", "entity": "/m/03p_fd" }];
+
+	var countries = exports.countries = [{ iso: "world", name: "World", "article": true }, { iso: "AF", name: "Afghanistan", "article": false }, { iso: "AX", name: "Åland", "article": false }, { iso: "AL", name: "Albania", "article": false }, { iso: "DZ", name: "Algeria", "article": false }, { iso: "AS", name: "American Samoa", "article": true }, { iso: "AD", name: "Andorra", "article": false }, { iso: "AO", name: "Angola", "article": false }, { iso: "AI", name: "Anguilla", "article": false }, { iso: "AQ", name: "Antarctica", "article": false }, { iso: "AG", name: "Antigua and Barbuda", "article": false }, { iso: "AR", name: "Argentina", "article": false }, { iso: "AM", name: "Armenia", "article": false }, { iso: "AW", name: "Aruba", "article": false }, { iso: "AU", name: "Australia", "article": false }, { iso: "AT", name: "Austria", "article": false }, { iso: "AZ", name: "Azerbaijan", "article": false }, { iso: "BS", name: "Bahamas", "article": true }, { iso: "BH", name: "Bahrain", "article": false }, { iso: "BD", name: "Bangladesh", "article": false }, { iso: "BB", name: "Barbados", "article": false }, { iso: "BY", name: "Belarus", "article": false }, { iso: "BE", name: "Belgium", "article": false }, { iso: "BZ", name: "Belize", "article": false }, { iso: "BJ", name: "Benin", "article": false }, { iso: "BM", name: "Bermuda", "article": false }, { iso: "BT", name: "Bhutan", "article": false }, { iso: "BO", name: "Bolivia", "article": false }, { iso: "BQ", name: "Bonaire", "article": false }, { iso: "BA", name: "Bosnia and Herzegovina", "article": false }, { iso: "BW", name: "Botswana", "article": false }, { iso: "BV", name: "Bouvet Island", "article": false }, { iso: "BR", name: "Brazil", "article": false }, { iso: "IO", name: "British Indian Ocean Territory", "article": true }, { iso: "VG", name: "British Virgin Islands", "article": true }, { iso: "BN", name: "Brunei", "article": false }, { iso: "BG", name: "Bulgaria", "article": false }, { iso: "BF", name: "Burkina Faso", "article": false }, { iso: "BI", name: "Burundi", "article": false }, { iso: "KH", name: "Cambodia", "article": false }, { iso: "CM", name: "Cameroon", "article": false }, { iso: "CA", name: "Canada", "article": false }, { iso: "CV", name: "Cape Verde", "article": false }, { iso: "KY", name: "Cayman Islands", "article": false }, { iso: "CF", name: "Central African Republic", "article": false }, { iso: "TD", name: "Chad", "article": false }, { iso: "CL", name: "Chile", "article": false }, { iso: "CN", name: "China", "article": false }, { iso: "CX", name: "Christmas Island", "article": false }, { iso: "CC", name: "Cocos [Keeling] Islands", "article": false }, { iso: "CO", name: "Colombia", "article": false }, { iso: "KM", name: "Comoros", "article": false }, { iso: "CK", name: "Cook Islands", "article": false }, { iso: "CR", name: "Costa Rica", "article": false }, { iso: "HR", name: "Croatia", "article": false }, { iso: "CU", name: "Cuba", "article": false }, { iso: "CW", name: "Curacao", "article": false }, { iso: "CY", name: "Cyprus", "article": false }, { iso: "CZ", name: "Czechia", "article": false }, { iso: "CD", name: "Democratic Republic of the Congo", "article": false }, { iso: "DK", name: "Denmark", "article": false }, { iso: "DJ", name: "Djibouti", "article": false }, { iso: "DM", name: "Dominica", "article": false }, { iso: "DO", name: "Dominican Republic", "article": false }, { iso: "TL", name: "East Timor", "article": false }, { iso: "EC", name: "Ecuador", "article": false }, { iso: "EG", name: "Egypt", "article": false }, { iso: "SV", name: "El Salvador", "article": false }, { iso: "GQ", name: "Equatorial Guinea", "article": false }, { iso: "ER", name: "Eritrea", "article": false }, { iso: "EE", name: "Estonia", "article": false }, { iso: "ET", name: "Ethiopia", "article": false }, { iso: "FK", name: "Falkland Islands", "article": false }, { iso: "FO", name: "Faroe Islands", "article": false }, { iso: "FJ", name: "Fiji", "article": false }, { iso: "FI", name: "Finland", "article": false }, { iso: "FR", name: "France", "article": false }, { iso: "GF", name: "French Guiana", "article": false }, { iso: "PF", name: "French Polynesia", "article": false }, { iso: "TF", name: "French Southern Territories", "article": false }, { iso: "GA", name: "Gabon", "article": false }, { iso: "GM", name: "Gambia", "article": false }, { iso: "GE", name: "Georgia", "article": false }, { iso: "DE", name: "Germany", "article": false }, { iso: "GH", name: "Ghana", "article": false }, { iso: "GI", name: "Gibraltar", "article": false }, { iso: "GR", name: "Greece", "article": false }, { iso: "GL", name: "Greenland", "article": false }, { iso: "GD", name: "Grenada", "article": false }, { iso: "GP", name: "Guadeloupe", "article": false }, { iso: "GU", name: "Guam", "article": false }, { iso: "GT", name: "Guatemala", "article": false }, { iso: "GG", name: "Guernsey", "article": false }, { iso: "GN", name: "Guinea", "article": false }, { iso: "GW", name: "Guinea-Bissau", "article": false }, { iso: "GY", name: "Guyana", "article": false }, { iso: "HT", name: "Haiti", "article": false }, { iso: "HM", name: "Heard Island and McDonald Islands", "article": false }, { iso: "HN", name: "Honduras", "article": false }, { iso: "HK", name: "Hong Kong", "article": false }, { iso: "HU", name: "Hungary", "article": false }, { iso: "IS", name: "Iceland", "article": false }, { iso: "IN", name: "India", "article": false }, { iso: "ID", name: "Indonesia", "article": false }, { iso: "IR", name: "Iran", "article": false }, { iso: "IQ", name: "Iraq", "article": false }, { iso: "IE", name: "Ireland", "article": false }, { iso: "IM", name: "Isle of Man", "article": false }, { iso: "IL", name: "Israel", "article": false }, { iso: "IT", name: "Italy", "article": false }, { iso: "CI", name: "Ivory Coast", "article": false }, { iso: "JM", name: "Jamaica", "article": false }, { iso: "JP", name: "Japan", "article": false }, { iso: "JE", name: "Jersey", "article": false }, { iso: "JO", name: "Jordan", "article": false }, { iso: "KZ", name: "Kazakhstan", "article": false }, { iso: "KE", name: "Kenya", "article": false }, { iso: "KI", name: "Kiribati", "article": false }, { iso: "XK", name: "Kosovo", "article": false }, { iso: "KW", name: "Kuwait", "article": false }, { iso: "KG", name: "Kyrgyzstan", "article": false }, { iso: "LA", name: "Laos", "article": false }, { iso: "LV", name: "Latvia", "article": false }, { iso: "LB", name: "Lebanon", "article": false }, { iso: "LS", name: "Lesotho", "article": false }, { iso: "LR", name: "Liberia", "article": false }, { iso: "LY", name: "Libya", "article": false }, { iso: "LI", name: "Liechtenstein", "article": false }, { iso: "LT", name: "Lithuania", "article": false }, { iso: "LU", name: "Luxembourg", "article": false }, { iso: "MO", name: "Macao", "article": false }, { iso: "MK", name: "Macedonia", "article": false }, { iso: "MG", name: "Madagascar", "article": false }, { iso: "MW", name: "Malawi", "article": false }, { iso: "MY", name: "Malaysia", "article": false }, { iso: "MV", name: "Maldives", "article": false }, { iso: "ML", name: "Mali", "article": false }, { iso: "MT", name: "Malta", "article": false }, { iso: "MH", name: "Marshall Islands", "article": false }, { iso: "MQ", name: "Martinique", "article": false }, { iso: "MR", name: "Mauritania", "article": false }, { iso: "MU", name: "Mauritius", "article": false }, { iso: "YT", name: "Mayotte", "article": false }, { iso: "MX", name: "Mexico", "article": false }, { iso: "FM", name: "Micronesia", "article": false }, { iso: "MD", name: "Moldova", "article": false }, { iso: "MC", name: "Monaco", "article": false }, { iso: "MN", name: "Mongolia", "article": false }, { iso: "ME", name: "Montenegro", "article": false }, { iso: "MS", name: "Montserrat", "article": false }, { iso: "MA", name: "Morocco", "article": false }, { iso: "MZ", name: "Mozambique", "article": false }, { iso: "MM", name: "Myanmar [Burma]", "article": false }, { iso: "NA", name: "Namibia", "article": false }, { iso: "NR", name: "Nauru", "article": false }, { iso: "NP", name: "Nepal", "article": false }, { iso: "NL", name: "Netherlands", "article": false }, { iso: "AN", name: "Netherlands Antilles", "article": false }, { iso: "NC", name: "New Caledonia", "article": false }, { iso: "NZ", name: "New Zealand", "article": false }, { iso: "NI", name: "Nicaragua", "article": false }, { iso: "NE", name: "Niger", "article": false }, { iso: "NG", name: "Nigeria", "article": false }, { iso: "NU", name: "Niue", "article": false }, { iso: "NF", name: "Norfolk Island", "article": false }, { iso: "KP", name: "North Korea", "article": false }, { iso: "MP", name: "Northern Mariana Islands", "article": false }, { iso: "NO", name: "Norway", "article": false }, { iso: "OM", name: "Oman", "article": false }, { iso: "PK", name: "Pakistan", "article": false }, { iso: "PW", name: "Palau", "article": false }, { iso: "PS", name: "Palestine", "article": false }, { iso: "PA", name: "Panama", "article": false }, { iso: "PG", name: "Papua New Guinea", "article": false }, { iso: "PY", name: "Paraguay", "article": false }, { iso: "PE", name: "Peru", "article": false }, { iso: "PH", name: "Philippines", "article": false }, { iso: "PN", name: "Pitcairn Islands", "article": false }, { iso: "PL", name: "Poland", "article": false }, { iso: "PT", name: "Portugal", "article": false }, { iso: "PR", name: "Puerto Rico", "article": false }, { iso: "QA", name: "Qatar", "article": false }, { iso: "CG", name: "Republic of the Congo", "article": false }, { iso: "RE", name: "Réunion", "article": false }, { iso: "RO", name: "Romania", "article": false }, { iso: "RU", name: "Russia", "article": false }, { iso: "RW", name: "Rwanda", "article": false }, { iso: "BL", name: "Saint Barthélemy", "article": false }, { iso: "SH", name: "Saint Helena", "article": false }, { iso: "KN", name: "Saint Kitts and Nevis", "article": false }, { iso: "LC", name: "Saint Lucia", "article": false }, { iso: "MF", name: "Saint Martin", "article": false }, { iso: "PM", name: "Saint Pierre and Miquelon", "article": false }, { iso: "VC", name: "Saint Vincent and the Grenadines", "article": false }, { iso: "WS", name: "Samoa", "article": false }, { iso: "SM", name: "San Marino", "article": false }, { iso: "ST", name: "São Tomé and Príncipe", "article": false }, { iso: "SA", name: "Saudi Arabia", "article": false }, { iso: "SN", name: "Senegal", "article": false }, { iso: "RS", name: "Serbia", "article": false }, { iso: "CS", name: "Serbia and Montenegro", "article": false }, { iso: "SC", name: "Seychelles", "article": false }, { iso: "SL", name: "Sierra Leone", "article": false }, { iso: "SG", name: "Singapore", "article": false }, { iso: "SX", name: "Sint Maarten", "article": false }, { iso: "SK", name: "Slovakia", "article": false }, { iso: "SI", name: "Slovenia", "article": false }, { iso: "SB", name: "Solomon Islands", "article": false }, { iso: "SO", name: "Somalia", "article": false }, { iso: "ZA", name: "South Africa", "article": false }, { iso: "GS", name: "South Georgia and the South Sandwich Islands", "article": false }, { iso: "KR", name: "South Korea", "article": false }, { iso: "SS", name: "South Sudan", "article": false }, { iso: "ES", name: "Spain", "article": false }, { iso: "LK", name: "Sri Lanka", "article": false }, { iso: "SD", name: "Sudan", "article": false }, { iso: "SR", name: "Suriname", "article": false }, { iso: "SJ", name: "Svalbard and Jan Mayen", "article": false }, { iso: "SZ", name: "Swaziland", "article": false }, { iso: "SE", name: "Sweden", "article": false }, { iso: "CH", name: "Switzerland", "article": false }, { iso: "SY", name: "Syria", "article": false }, { iso: "TW", name: "Taiwan", "article": false }, { iso: "TJ", name: "Tajikistan", "article": false }, { iso: "TZ", name: "Tanzania", "article": false }, { iso: "TH", name: "Thailand", "article": false }, { iso: "TG", name: "Togo", "article": false }, { iso: "TK", name: "Tokelau", "article": false }, { iso: "TO", name: "Tonga", "article": false }, { iso: "TT", name: "Trinidad and Tobago", "article": false }, { iso: "TN", name: "Tunisia", "article": false }, { iso: "TR", name: "Turkey", "article": false }, { iso: "TM", name: "Turkmenistan", "article": false }, { iso: "TC", name: "Turks and Caicos Islands", "article": false }, { iso: "TV", name: "Tuvalu", "article": false }, { iso: "UM", name: "U.S. Minor Outlying Islands", "article": false }, { iso: "VI", name: "U.S. Virgin Islands", "article": false }, { iso: "UG", name: "Uganda", "article": false }, { iso: "UA", name: "Ukraine", "article": false }, { iso: "AE", name: "United Arab Emirates", "article": false }, { iso: "GB", name: "United Kingdom", "article": false }, { iso: "US", name: "United States", "article": false }, { iso: "UY", name: "Uruguay", "article": false }, { iso: "UZ", name: "Uzbekistan", "article": false }, { iso: "VU", name: "Vanuatu", "article": false }, { iso: "VA", name: "Vatican City", "article": false }, { iso: "VE", name: "Venezuela", "article": false }, { iso: "VN", name: "Vietnam", "article": false }, { iso: "WF", name: "Wallis and Futuna", "article": false }, { iso: "EH", name: "Western Sahara", "article": false }, { iso: "YE", name: "Yemen", "article": false }, { iso: "ZM", name: "Zambia", "article": false }, { iso: "ZW", name: "Zimbabwe", "article": false }];
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18778,7 +19780,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(20),__webpack_require__(21),__webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(30),__webpack_require__(31),__webpack_require__(32)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -21952,7 +22954,7 @@
 	}));
 
 /***/ }),
-/* 20 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -32211,7 +33213,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32715,7 +33717,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32855,16 +33857,16 @@
 	}));
 
 /***/ }),
-/* 23 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(24);
+	var content = __webpack_require__(34);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(26)(content, {});
+	var update = __webpack_require__(19)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -32881,10 +33883,10 @@
 	}
 
 /***/ }),
-/* 24 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(25)();
+	exports = module.exports = __webpack_require__(18)();
 	// imports
 
 
@@ -32895,331 +33897,23 @@
 
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ }),
-/* 27 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(28);
+	var content = __webpack_require__(36);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(26)(content, {});
+	var update = __webpack_require__(19)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./app.scss", function() {
-				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./app.scss");
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./explore.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./explore.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -33229,15 +33923,100 @@
 	}
 
 /***/ }),
-/* 28 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(25)();
+	exports = module.exports = __webpack_require__(18)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "body .test h1 {\n  color: white; }\n\n.hidden {\n  display: none; }\n\n.selectize-control.multi .selectize-input.items div.item {\n  background-color: transparent; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n    color: #FA8200; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n    color: #FF91E6; }\n  .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n    color: #009DF7; }\n\n.charts-container {\n  width: 100%; }\n\nsvg.chart-canvas {\n  display: block;\n  width: 400px;\n  height: 300px;\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n#loader-container {\n  position: absolute;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100;\n  background-color: rgba(0, 0, 0, 0.24); }\n  #loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n.selectize-input {\n  border: 0;\n  box-shadow: none;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  .selectize-input .item {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n\n.selectize-control.multi {\n  text-align: center;\n  height: 40px; }\n  .selectize-control.multi .selectize-input.items {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .selectize-control.multi .selectize-input.items div.item {\n      background-color: transparent; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n        color: #FA8200; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n        color: #FF91E6; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n        color: #009DF7; }\n\n.selectize-dropdown {\n  text-align: left; }\n\n#explore {\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n  #explore .filters-menu {\n    line-height: 40px; }\n    #explore .filters-menu .disease-select {\n      min-width: 50%; }\n      #explore .filters-menu .disease-select .selectize-input {\n        width: 50%; }\n    #explore .filters-menu .geo-select {\n      width: 280px;\n      display: inline-block;\n      vertical-align: top; }\n      #explore .filters-menu .geo-select .selectize-input {\n        text-align: left; }\n    #explore .filters-menu .sentence-item {\n      display: inline-block; }\n    #explore .filters-menu .confirm-nav {\n      display: inline-block; }\n      #explore .filters-menu .confirm-nav.hidden {\n        display: none; }\n  #explore .charts-container {\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n    height: 45vh; }\n    #explore .charts-container .chart-item {\n      width: calc((100% - 20px*5)/2);\n      height: 100%; }\n    #explore .charts-container .chart-toggle-bar {\n      width: 60px;\n      margin: 0 20px;\n      display: flex;\n      flex-direction: column;\n      text-align: center; }\n      #explore .charts-container .chart-toggle-bar .toggle-bar-titles {\n        flex-grow: 1;\n        display: flex;\n        flex-direction: row;\n        align-items: center; }\n        #explore .charts-container .chart-toggle-bar .toggle-bar-titles span {\n          width: 200px;\n          margin: 0 -100% 0 -100%;\n          transform: rotate(-90deg);\n          text-align: center;\n          font-size: 11px;\n          font-family: \"Heebo\", sans-serif;\n          font-weight: 900;\n          text-transform: uppercase;\n          letter-spacing: 1px; }\n      #explore .charts-container .chart-toggle-bar p {\n        width: 100%;\n        height: 32px;\n        text-align: center; }\n        #explore .charts-container .chart-toggle-bar p .icon {\n          display: inline-block; }\n  #explore .bottom-container {\n    width: 100%;\n    height: 30vh;\n    padding-top: 20px; }\n    #explore .bottom-container .top-queries-container {\n      width: calc((100% - 20px*5)/2);\n      height: 100%;\n      border: 1px solid #DDD;\n      display: flex;\n      flex-direction: column; }\n      #explore .bottom-container .top-queries-container.hidden {\n        display: none; }\n      #explore .bottom-container .top-queries-container .top-queries-list {\n        flex-grow: 1;\n        overflow-y: auto; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.About = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	// Libraries
+
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var About = exports.About = function () {
+	  function About(parentContainer) {
+	    _classCallCheck(this, About);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(About, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'about';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+	    }
+	  }]);
+
+	  return About;
+	}();
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(39);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(19)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./App.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./App.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(18)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 
