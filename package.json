@@ -4,8 +4,9 @@
   "description": "Diseases Dataviz",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "NODE_ENV=DEVELOPMENT webpack-dev-server",
+    "build": "NODE_ENV=STAGING webpack",
+    "deploy": "NODE_ENV=PRODUCTION webpack"
   },
   "author": "Gabriel Gianordoli",
   "license": "",

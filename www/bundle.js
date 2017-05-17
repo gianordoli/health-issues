@@ -78,7 +78,7 @@
 
 	  function loadShinyAPI() {
 	    var shinyAPI = new _ShinyAPI.ShinyAPI();
-	    if (ENV !== 'DEVELOPMENT') {
+	    if (true) {
 	      shinyAPI.setup(function () {
 	        loadTrendsAPI(shinyAPI);
 	      });
@@ -137,7 +137,7 @@
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ENV);
+	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
 	    loadShinyAPI();
 	  };
 
@@ -270,7 +270,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (ENV === 'PRODUCTION') {
+	          if (true) {
 	            apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
 	            id = 'diseases-production';
 	          } else {

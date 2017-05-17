@@ -11,6 +11,11 @@ module.exports = {
 		contentBase: './www',
 		port: 3000
 	},
+  plugins: [ 
+      new webpack.DefinePlugin({
+          ENV: JSON.stringify(process.env.NODE_ENV),
+      }),
+  ],
 	module: {
 		loaders: [
 			{
