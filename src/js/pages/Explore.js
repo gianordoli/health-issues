@@ -336,31 +336,35 @@ export class Explore {
     chartsContainer.appendChild(chartItem);
     this.seasonalChart = new LineChart(chartItem, 'seasonal');
 
-    const chartToggleBar = document.createElement('div');
-    chartToggleBar.classList.add('chart-toggle-bar');
-    chartsContainer.appendChild(chartToggleBar);
+    const toggleBar = document.createElement('div');
+    toggleBar.classList.add('toggle-bar');
+    elementsContainer.appendChild(toggleBar);
 
-    const toggleBarTitles = document.createElement('div');
-    toggleBarTitles.classList.add('toggle-bar-titles');
-    chartToggleBar.appendChild(toggleBarTitles);
-
-    const seasonalTitle = document.createElement('span');
-    seasonalTitle.innerHTML = 'Seasonal';
-    toggleBarTitles.appendChild(seasonalTitle);
-
-    const trendTitle = document.createElement('span');
-    trendTitle.innerHTML = 'Trend';
-    toggleBarTitles.appendChild(trendTitle);
-
-    const p = document.createElement('p');
-    chartToggleBar.appendChild(p);
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('button-container');
+    toggleBar.appendChild(buttonContainer);
 
     this.mergeButton = document.createElement('a');
     const { mergeButton } = this;
     mergeButton.classList.add('icon');
     bindHandleChange = evt => this.toggleChartMerge(evt, this);
     mergeButton.addEventListener('click', bindHandleChange);
-    p.appendChild(mergeButton);
+    buttonContainer.appendChild(mergeButton);
+
+    const titlesContainer = document.createElement('div');
+    titlesContainer.classList.add('titles-container');
+    toggleBar.appendChild(titlesContainer);
+
+    let title = document.createElement('p');
+    title.classList.add('title');
+    title.innerHTML = 'Seasonal';
+    titlesContainer.appendChild(title);
+
+    title = document.createElement('p');
+    title.classList.add('title');
+    title.innerHTML = 'Trend';
+    titlesContainer.appendChild(title);
+
 
     // Trend chart
     chartItem = document.createElement('div');
