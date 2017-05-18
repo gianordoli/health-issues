@@ -194,8 +194,11 @@ svg.chart-canvas {
 
   transition: opacity 0.5s ease-out, height 0.5s ease-out;
 
+  &:first-child {
+    margin-bottom: 30px;
+  }
+
   &.hidden-canvas {
-    display: block;
     opacity: 0;
     height: 0;
   }
@@ -210,12 +213,21 @@ svg.chart-canvas {
 
   g.axis {
 
-    path {
-        stroke: none;
-    }
-
     line {
       stroke: $color-0;
+    }
+
+    &.x {
+      path {
+        stroke: $color-0;
+        stroke-opacity: 0.24;
+      }
+    }
+
+    &.y {
+      path {
+        stroke-opacity: 0;
+      }
     }
   }
 
@@ -225,6 +237,10 @@ svg.chart-canvas {
       &:nth-child(2) { stroke: $color-2; }
       &:nth-child(3) { stroke: $color-3; }
     }
+  }
+
+  text {
+    fill: $color-0;
   }
 }
 
