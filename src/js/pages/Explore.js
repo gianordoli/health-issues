@@ -117,7 +117,7 @@ export class Explore {
     log.info('confirmFilters');
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: true, isLoading: true });
+    self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: false, isLoading: true });
     self.getTrendsAPIGraph();
   }
 
@@ -125,12 +125,12 @@ export class Explore {
     let { isMerged } = self.data;
     isMerged = isMerged ? false : true;
     this.seasonalChart.hide();
-    this.updateData({ isMerged: isMerged, isChanging: true });
+    this.updateData({ isMerged: isMerged });
   }
 
   loadCurated(filter: Filter) {
     const { terms, geo } = filter;
-    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isChanging: true, isLoading: true });
+    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
     this.confirmNav.classList.add('hidden');
     this.getTrendsAPIGraph();
   }
@@ -401,6 +401,7 @@ export class Explore {
     }
     this.data = data;
     log.info(this.data);
+    log.info(this.data.isChanging);
     this.updateElements();
   }
 
@@ -421,41 +422,43 @@ export class Explore {
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    if(isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
+    if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
       seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-      this.updateData({ isChanging: false });
-    }
 
-    let isEmpty = true;
-    topQueriesList.innerHTML = '';
-    for(let i = 0; i < topQueries.length; i++) {
-      if (topQueries[i].item) {
-        isEmpty = false;
-        const listContainer = document.createElement('div');
-        listContainer.classList.add('list-container');
-        topQueriesList.appendChild(listContainer);
+      if (topQueries.length > 0) {
 
-        const term = document.createElement('p');
-        term.innerHTML = diseases[i].name;
-        listContainer.appendChild(term);
+        let isEmpty = true;
+        topQueriesList.innerHTML = '';
+        for(let i = 0; i < topQueries.length; i++) {
+          if (topQueries[i].item) {
+            isEmpty = false;
+            const listContainer = document.createElement('div');
+            listContainer.classList.add('list-container');
+            topQueriesList.appendChild(listContainer);
 
-        const list = document.createElement('ul');
-        listContainer.appendChild(list);
+            const term = document.createElement('p');
+            term.innerHTML = diseases[i].name;
+            listContainer.appendChild(term);
 
-        for(const q of topQueries[i].item) {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = q.title;
-          list.appendChild(listItem);
+            const list = document.createElement('ul');
+            listContainer.appendChild(list);
+
+            for(const q of topQueries[i].item) {
+              const listItem = document.createElement('li');
+              listItem.innerHTML = q.title;
+              list.appendChild(listItem);
+            }
+          }
         }
-      }
-    }
-    const parent = topQueriesList.parentElement;
-    if (parent) {
-      if (isEmpty) {
-        parent.classList.add('hidden');
-      } else {
-        parent.classList.remove('hidden');
+        const parent = topQueriesList.parentElement;
+        if (parent) {
+          if (isEmpty) {
+            parent.classList.add('hidden');
+          } else {
+            parent.classList.remove('hidden');
+          }
+        }
       }
     }
   }
