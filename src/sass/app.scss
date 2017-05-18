@@ -8,7 +8,6 @@ $color-1: #FA8200;
 $color-2: #FF91E6;
 $color-3: #009DF7;
 
-
 //---------------------- LAYOUT ----------------------//
 $col-gutter-small: 12px;
 $col-gutter-large: 20px;
@@ -47,7 +46,7 @@ $font-mono: 'Inconsolata', monospace;
   font-family: $font-sans;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;  
+  letter-spacing: 1px;
 
   @include for-phone-down {
 
@@ -170,7 +169,7 @@ body {
 }
 
 .page {
-  
+
   width: 100%;
   min-height: 100vh;
   margin: 0;
@@ -180,7 +179,7 @@ body {
 
   @include for-phone-down {
     padding: $col-gutter-small;
-  }    
+  }
 }
 
 .filters-menu {
@@ -195,10 +194,6 @@ svg.chart-canvas {
 
   transition: opacity 0.5s ease-out, height 0.5s ease-out;
 
-  &:first-child {
-    margin-bottom: 30px;
-  }
-
   &.hidden-canvas {
     display: block;
     opacity: 0;
@@ -208,15 +203,15 @@ svg.chart-canvas {
   path {
     fill: none;
   }
-  
+
   path, line {
     stroke-width: 2px;
   }
 
   g.axis {
 
-    text {
-
+    path {
+        stroke: none;
     }
 
     line {
