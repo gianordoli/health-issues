@@ -82,11 +82,17 @@ export class LineChart {
       .range([0, width])
       .domain( d3.extent(data[0].points, function(p) { return p.date }) );
 
-    let yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
-    let yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
+    let yMin, yMax;
+
     if (type === 'seasonal') {
-      yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
-      yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
+      yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
+      yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
+      const maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
+      yMin = maxRange > 20 ? -maxRange : -20;
+      yMax = maxRange > 20 ? maxRange : 20;
+      // yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
+      // yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
+
     } else {
       yMin = 0;
       yMax = 100;
