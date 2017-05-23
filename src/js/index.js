@@ -45,9 +45,9 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    new Ranking(trendsAPI);
+    // new Ranking(trendsAPI);
 
-    // const home = new Home(elementsContainer, trendsAPI);
+    const home = new Home(elementsContainer, trendsAPI);
     // const intro = new Intro(elementsContainer);
     // const curated = new Curated(elementsContainer);
     // const explore = new Explore(elementsContainer, shinyAPI, trendsAPI);

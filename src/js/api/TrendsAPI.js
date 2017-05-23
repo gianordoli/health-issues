@@ -69,11 +69,11 @@ export class TrendsAPI {
     this.executeCall(path, callback);
   }
 
-  getTopQueries(filter: Filter, index: number, callback) {
+  getTopQueries(filter: Filter, callback) {
     log.info('getTopQueries for:', filter);
     const { geo } = filter;
     const { terms } = filter;
-    const term = terms[index];
+    const term = terms[0];
     let path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity) + '&';
     if (geo.iso !== 'world') {
       path += 'restrictions.geo='+geo.iso;

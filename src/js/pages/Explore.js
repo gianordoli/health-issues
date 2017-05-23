@@ -156,9 +156,10 @@ export class Explore {
     const { diseases, geo } = this.data;
     let { topQueries } = this.data;
     const index = topQueries.length;
+    const disease = diseases[index];
     const self = this;
 
-    self.trendsAPI.getTopQueries({terms: diseases, geo: geo}, index, function(val){
+    self.trendsAPI.getTopQueries({terms: [disease], geo: geo}, function(val){
       log.info('From Google Trends: ', val);
       topQueries = topQueries.concat(val);
       self.updateData({topQueries});
