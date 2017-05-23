@@ -24,7 +24,6 @@ export class TrendsAPI {
             apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
             id = 'diseases-production';
           } else {
-            log.info('staging');
             apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
             id = 'diseases';
           }
@@ -80,6 +79,21 @@ export class TrendsAPI {
       path += 'restrictions.geo='+geo.iso;
     }
     log.info(path);
+    this.executeCall(path, callback);
+  }
+
+  getGraphAverages(filter: Filter, callback) {
+    // log.info('getGraphAverages for:', filter);
+    const { geo } = filter;
+    const { terms } = filter;
+    let path = 'https://www.googleapis.com/trends/v1beta/graphAverages?';
+    for (const t of terms) {
+      path += 'terms=' + encodeURIComponent(t.entity) + '&';
+    }
+    if (geo.iso !== 'world') {
+      path += 'restrictions.geo='+geo.iso;
+    }
+    // log.info(path);
     this.executeCall(path, callback);
   }
 }

@@ -2,7 +2,8 @@
 
 export type Term = {
   entity: string,
-  name: string
+  name: string,
+  alias: string
 }
 
 export type Geo = {
@@ -32,4 +33,13 @@ export type TrendsAPIQuery = {
 
 export type TrendsAPITopQueries = {
   item: TrendsAPIQuery[]
+}
+
+export type TrendsAPIAverage = {
+  term: string,
+  value: number
+}
+
+export type TrendsAPIGraphAverages = {
+  averages: TrendsAPIAverage[]
 }

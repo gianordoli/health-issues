@@ -1,55 +1,41 @@
 // @flow weak
 
-// Components
-import { TrendsAPI } from './TrendsAPI';
+import { TrendsAPI } from '../api/TrendsAPI';
+import type { Term, Geo, Filter, TrendsAPIGraphAverages } from '../util/types';
+import { terms, countries } from '../util/data.js';
+import log from 'loglevel';
 
-// Types
-import type { Term, Geo, Filter, TrendsAPIData } from './types'
+export default class Ranking {
 
-// Data
-import { terms, countries } from './util.js';
-
-export class Ranking {
-
-  data: {
-    diseases: string,
-    i: number
-  }
+  data: TrendsAPIGraphAverages;
+  term1: Term;
   trendsAPI: TrendsAPI;
 
-  constructor() {
+  constructor(trendsAPI: TrendsAPI) {
+    log.info('Ranking');
     this.data = {
-      diseases: '',
-      i: 2325
-    }
-    const self = this;
-    this.trendsAPI = new TrendsAPI();
-    this.trendsAPI.setup(function(){
-      self.callTrendsApi(self);
-    });
-
+      averages: []
+    };
+    this.trendsAPI = trendsAPI;
+    // this.term1 = terms.find(t => t.name === 'Influenza');
+    // this.term1 = terms.find(t => t.name === 'Abarognosis');
+    // this.term1 = terms.find(t => t.name === 'Measles');
+    this.term1 = terms.find(t => t.name === 'Amnesia');
+    this.callTrendsApi();
   }
 
-  callTrendsApi(self){
-    let { i, diseases } = self.data;
-
-    self.trendsAPI.getTrends({terms: [terms[i]], geo: countries[0]}, function(val){
+  callTrendsApi(){
+    const { averages } = this.data;
+    const { term1 } = this;
+    const index = averages.length;
+    const term2 = terms[index];
+    const self = this;
+    self.trendsAPI.getGraphAverages({terms: [term1, term2], geo: countries[0]}, function(val){
       console.log('From Google Trends: ', val);
-
-      let hasData = 0;
-      for (const p of val.lines[0].points) {
-        if (p.value !== 0) {
-          hasData = 1;
-          break;
-        }
-      }
-
-      self.updateData({
-          diseases: diseases + hasData + '\t' + terms[i].name + '\t' + terms[i].entity + '\n',
-          i: i+1
-      })      
-
-      if (i < terms.length - 1) {
+      log.info(`${term1.name} ${val.averages[0].value} x ${val.averages[1].value} ${term2.name}`);
+      self.updateData(val.averages);
+      if (averages.length < terms.length) {
+      // if (index < 40) {
         setTimeout(function(){
           self.callTrendsApi(self);
         }, 1000);
@@ -58,12 +44,8 @@ export class Ranking {
   }
 
   updateData(obj) {
-    let { data } = this;
-    for (const key in obj) {
-      data[key] = obj[key];
-    }
-    this.data = data;
-    console.log(this.data);
+    this.data.averages.push(obj);
+    log.info(this.data.averages);
   }
 
 }

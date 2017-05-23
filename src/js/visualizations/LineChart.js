@@ -1,9 +1,6 @@
 // @flow weak
 
-// Types
-import type { TrendsAPIGraph } from '../util/types'
-
-// Libraries
+import type { TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
 
 export class LineChart {
