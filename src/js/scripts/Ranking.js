@@ -2,7 +2,7 @@
 
 import { TrendsAPI } from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPIGraphAverages } from '../util/types';
-import { terms, countries } from '../util/data.js';
+import { averages, terms, countries } from '../util/data.js';
 import log from 'loglevel';
 
 export default class Ranking {
@@ -14,7 +14,7 @@ export default class Ranking {
   constructor(trendsAPI: TrendsAPI) {
     log.info('Ranking');
     this.data = {
-      averages: []
+      averages: averages
     };
     this.trendsAPI = trendsAPI;
     // this.term1 = terms.find(t => t.name === 'Influenza');
@@ -38,7 +38,7 @@ export default class Ranking {
       // if (index < 40) {
         setTimeout(function(){
           self.callTrendsApi(self);
-        }, 1000);
+        }, 2000);
       }
     });
   }
