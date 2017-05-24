@@ -13,7 +13,9 @@ export type Geo = {
 
 export type Filter = {
   terms: Term[],
-  geo: Geo
+  geo: Geo,
+  startDate?: '',
+  endDate?: ''
 }
 
 export type TrendsAPIPoint = {

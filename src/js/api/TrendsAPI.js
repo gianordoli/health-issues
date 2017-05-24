@@ -65,7 +65,6 @@ export class TrendsAPI {
     if (geo.iso !== 'world') {
       path += 'restrictions.geo='+geo.iso;
     }
-    log.info(path);
     this.executeCall(path, callback);
   }
 
@@ -74,11 +73,16 @@ export class TrendsAPI {
     const { geo } = filter;
     const { terms } = filter;
     const term = terms[0];
-    let path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity) + '&';
+    let path = `https://www.googleapis.com/trends/v1beta/topQueries?term=${encodeURIComponent(term.entity)}`;
     if (geo.iso !== 'world') {
-      path += 'restrictions.geo='+geo.iso;
+      path += `&restrictions.geo=${geo.iso}`;
     }
-    log.info(path);
+    if (filter.startDate) {
+      path += `&restrictions.startDate=${filter.startDate}`;
+    }
+    if (filter.endDate) {
+      path += `&restrictions.endDate=${filter.endDate}`;
+    }
     this.executeCall(path, callback);
   }
 
@@ -93,7 +97,6 @@ export class TrendsAPI {
     if (geo.iso !== 'world') {
       path += 'restrictions.geo='+geo.iso;
     }
-    // log.info(path);
     this.executeCall(path, callback);
   }
 }

@@ -32,7 +32,8 @@ export class Home {
   }
 
   getRandomDisease(ignore?: string) {
-    let topTerms = ['Pain', 'Fever', 'Influenza', 'Infection'];
+    // Pain: bug; Stress, Fever: not that many results
+    let topTerms = ['Headache', 'Infection', 'Fatigue'];
     if (ignore) {
       topTerms = topTerms.filter(t => t !== ignore);
     }
@@ -45,12 +46,22 @@ export class Home {
     return countries.find(c => c.iso === country);
   }
 
+  getPrevMonth() {
+    const prevMonthDate = new Date();
+    prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+    const year = prevMonthDate.getFullYear();
+    let month = (new Date()).getMonth();
+    month = month < 10 ? `0${month}` : month;
+    return `${year}-${month}`;
+  }
+
   getUserCountry(callback) {
     log.info('getUserCountry');
     const self = this;
     $.get("https://ipinfo.io", function(response) {
       const { country } = response;
-      const geo = self.countryToGeo(country);
+      // const geo = self.countryToGeo(country);
+      const geo = self.countryToGeo('AF');
       callback(geo);
     }, 'jsonp');
   }
@@ -60,10 +71,15 @@ export class Home {
     const { geo, disease } = this.data;
 
     const self = this;
-    self.trendsAPI.getTopQueries({terms: [disease], geo: geo}, function(val){
+    const filter = {
+      terms: [disease],
+      geo,
+      startDate: self.getPrevMonth(),
+    };
+    self.trendsAPI.getTopQueries(filter, function(val){
       log.info('From Google Trends: ', val);
       const { item } = val;
-      if (item) {
+      if (item && item.length > 0) {
         self.updateData({ topQueries: item });
       } else if (geo.iso !== 'US') {
         const defaultGeo = self.countryToGeo('US');
