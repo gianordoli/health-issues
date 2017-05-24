@@ -16,34 +16,42 @@ export class Home {
   trendsAPI: TrendsAPI;
 
   constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI) {
-    this.data ={
+    const self = this;
+    self.data ={
       geo: {},
       disease: {},
       topQueries: [],
     }
-    this.trendsAPI = trendsAPI;
-    this.getRandomDisease();
+    self.trendsAPI = trendsAPI;
+    const disease = self.getRandomDisease();
+    const country = self.getUserCountry(function(geo) {
+      self.updateData({ disease, geo });
+      self.getTrendsAPITopQueries();
+    });
     this.createElements(parentContainer);
   }
 
-  getRandomDisease() {
-    const disease = terms.find(t => t.name === 'Pain');
-    this.updateData({ disease });
-    this.getUserCountry();
+  getRandomDisease(ignore?: string) {
+    let topTerms = ['Pain', 'Fever', 'Influenza', 'Infection'];
+    if (ignore) {
+      topTerms = topTerms.filter(t => t !== ignore);
+    }
+    const i = Math.floor(Math.random() * topTerms.length);
+    const disease = terms.find(t => t.name === topTerms[i]);
+    return disease;
   }
 
   countryToGeo(country: string):Geo {
     return countries.find(c => c.iso === country);
   }
 
-  getUserCountry() {
+  getUserCountry(callback) {
     log.info('getUserCountry');
     const self = this;
     $.get("https://ipinfo.io", function(response) {
       const { country } = response;
       const geo = self.countryToGeo(country);
-      self.updateData({ geo });
-      self.getTrendsAPITopQueries();
+      callback(geo);
     }, 'jsonp');
   }
 
@@ -54,20 +62,23 @@ export class Home {
     const self = this;
     self.trendsAPI.getTopQueries({terms: [disease], geo: geo}, function(val){
       log.info('From Google Trends: ', val);
-      // topQueries = topQueries.concat(val);
-      // self.updateData({topQueries});
-      // if (topQueries.length < diseases.length) {
-      //   self.getTrendsAPITopQueries();
-      // }
+      const { item } = val;
+      if (item) {
+        self.updateData({ topQueries: item });
+      } else if (geo.iso !== 'US') {
+        const defaultGeo = self.countryToGeo('US');
+        self.updateData({ geo: defaultGeo });
+        self.getTrendsAPITopQueries();
+      } else {
+        self.updateData({ disease: self.getRandomDisease(disease.name) });
+        self.getTrendsAPITopQueries();
+      }
     });
   }
 
   updateData(obj) {
-    let { data } = this;
-    for (const key in obj) {
-      data[key] = obj[key];
-    }
-    this.data = data;
+    const { data } = this;
+    Object.assign(data, obj);
     log.info(this.data);
     this.updateElements();
   }
@@ -108,6 +119,11 @@ export class Home {
     // const newsLabLogo = document.createElement('p');
     // newsLabLogo.innerHTML = 'Google News Lab';
     // logosContainer.appendChild(newsLabLogo);
+
+    const topQueries = document.createElement('div');
+    topQueries.classList.add('top-queries');
+    elementsContainer.appendChild(topQueries);
+
   }
 
   updateElements() {
