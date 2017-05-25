@@ -62,8 +62,7 @@ export class Home {
     const self = this;
     $.get("https://ipinfo.io", function(response) {
       const { country } = response;
-      // const geo = self.countryToGeo(country);
-      const geo = self.countryToGeo('AF');
+      const geo = self.countryToGeo(country);
       callback(geo);
     }, 'jsonp');
   }

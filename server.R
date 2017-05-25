@@ -10,7 +10,7 @@ shinyServer(function(input, output, session) {
     input$mydata
 
     if (!is.null(input$mydata)) {
-      # print(input$mydata)
+      print(input$mydata)
       
       ul <- unlist(strsplit(input$mydata,","))
       data <- matrix(ul, length(input$mydata), 2, T)
