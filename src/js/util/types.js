@@ -3,7 +3,7 @@
 export type Term = {
   entity: string,
   name: string,
-  alias: string
+  alias: string | null,
 }
 
 export type Geo = {
@@ -15,7 +15,7 @@ export type Filter = {
   terms: Term[],
   geo: Geo,
   startDate?: '',
-  endDate?: ''
+  endDate?: '',
 }
 
 export type TrendsAPIPoint = {

@@ -4294,7 +4294,7 @@ export const countries = [
   {iso:"UA",name:"Ukraine", "article": false},
   {iso:"AE",name:"United Arab Emirates", "article": false},
   {iso:"GB",name:"United Kingdom", "article": false},
-  {iso:"US",name:"United States", "article": false},
+  {iso:"US",name:"United States", "article": true},
   {iso:"UY",name:"Uruguay", "article": false},
   {iso:"UZ",name:"Uzbekistan", "article": false},
   {iso:"VU",name:"Vanuatu", "article": false},

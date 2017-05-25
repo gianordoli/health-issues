@@ -14,12 +14,14 @@ export class Home {
     topQueries: TrendsAPITopQueries[],
   }
   trendsAPI: TrendsAPI;
+  countryContainer: HTMLElement;
+  topQueriesList: HTMLElement;
 
   constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI) {
     const self = this;
     self.data ={
-      geo: {},
-      disease: {},
+      geo: { iso: '', name: ''},
+      disease: { name: '', entity: '', alias: ''},
       topQueries: [],
     }
     self.trendsAPI = trendsAPI;
@@ -69,7 +71,6 @@ export class Home {
   getTrendsAPITopQueries(){
     log.info('getTrendsAPITopQueries');
     const { geo, disease } = this.data;
-
     const self = this;
     const filter = {
       terms: [disease],
@@ -81,11 +82,11 @@ export class Home {
       const { item } = val;
       if (item && item.length > 0) {
         self.updateData({ topQueries: item });
-      } else if (geo.iso !== 'US') {
+      } else if (geo && geo.iso !== 'US') {
         const defaultGeo = self.countryToGeo('US');
         self.updateData({ geo: defaultGeo });
         self.getTrendsAPITopQueries();
-      } else {
+      } else if (disease) {
         self.updateData({ disease: self.getRandomDisease(disease.name) });
         self.getTrendsAPITopQueries();
       }
@@ -106,43 +107,56 @@ export class Home {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const titleContainer = document.createElement('div');
+    elementsContainer.appendChild(titleContainer);
 
-    // const titleContainer = document.createElement('div');
-    // elementsContainer.appendChild(titleContainer);
-    //
-    // const title = document.createElement('h1');
-    // title.innerHTML = 'Project Title';
-    // titleContainer.appendChild(title);
-    //
-    // const projectDescription = document.createElement('p');
-    // projectDescription.id = 'project-description'
-    // projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.'
-    // titleContainer.appendChild(projectDescription);
-    //
-    //
-    // const logosContainer = document.createElement('div');
-    // logosContainer.id = 'logos-container';
-    // elementsContainer.appendChild(logosContainer);
-    //
-    // const fuguLogo = document.createElement('p');
-    // fuguLogo.innerHTML = 'Fugu.Studio';
-    // logosContainer.appendChild(fuguLogo);
-    //
-    // const forP = document.createElement('p');
-    // forP.innerHTML = 'for';
-    // logosContainer.appendChild(forP);
-    //
-    // const newsLabLogo = document.createElement('p');
-    // newsLabLogo.innerHTML = 'Google News Lab';
-    // logosContainer.appendChild(newsLabLogo);
+    const title = document.createElement('h1');
+    title.innerHTML = 'I\'m not feeling well';
+    titleContainer.appendChild(title);
 
-    const topQueries = document.createElement('div');
-    topQueries.classList.add('top-queries');
-    elementsContainer.appendChild(topQueries);
+    const projectDescription = document.createElement('p');
+    projectDescription.id = 'project-description'
+    projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.'
+    titleContainer.appendChild(projectDescription);
 
+
+    const logosContainer = document.createElement('div');
+    logosContainer.id = 'logos-container';
+    elementsContainer.appendChild(logosContainer);
+
+    const gabriel = document.createElement('p');
+    gabriel.innerHTML = 'Gabriel Gianordoli';
+    logosContainer.appendChild(gabriel);
+
+    const forP = document.createElement('p');
+    forP.innerHTML = 'for';
+    logosContainer.appendChild(forP);
+
+    const newsLabLogo = document.createElement('p');
+    newsLabLogo.innerHTML = 'Google News Lab';
+    logosContainer.appendChild(newsLabLogo);
+
+    this.countryContainer = document.createElement('div');
+    this.countryContainer.classList.add('country-container');
+    elementsContainer.appendChild(this.countryContainer);
+
+    this.topQueriesList = document.createElement('div');
+    this.topQueriesList.classList.add('top-queries-list');
+    elementsContainer.appendChild(this.topQueriesList);
   }
 
   updateElements() {
+    const { geo, disease, topQueries } = this.data;
+    const { countryContainer, topQueriesList } = this;
+    if (topQueries.length > 0) {
+      countryContainer.innerHTML =
+        `Searches for ${disease.name.toLowerCase()} in ${geo.article ? 'the' : ''} ${geo.name}:`;
 
+      topQueries.forEach(t => {
+        const p = document.createElement('p');
+        p.innerHTML = t.title;
+        topQueriesList.appendChild(p);
+      })
+    }
   }
 }
