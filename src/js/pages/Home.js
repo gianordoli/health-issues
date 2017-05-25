@@ -2,7 +2,7 @@
 
 import { TrendsAPI } from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPITopQueries } from '../util/types';
-import { terms, countries } from '../util/data.js';
+import { terms, countries } from '../util/data';
 import $ from 'jquery';
 import log from 'loglevel';
 

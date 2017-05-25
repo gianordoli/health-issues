@@ -1,14 +1,37 @@
 // @flow weak
 
 import { Explore } from '../pages/Explore';
+import { arrayIsEqual } from '../util/util';
 import log from 'loglevel';
 
 export class ShinyAPI {
 
+  data: {
+    dataToR: {
+      seasonal: string[],
+      trend: string[],
+    },
+    dataFromR: {
+      seasonal: string,
+      trend: string,
+    }
+  }
+
   keepShinyAlive: () => {};
+  dataProcessingCallback: () => {};
   isInitialized: boolean;
 
   constructor() {
+    this.data = {
+      dataToR: {
+        seasonal: [],
+        trend: [],
+      },
+      dataFromR: {
+        seasonal: '',
+        trend: '',
+      }
+    };
     log.info('ShinyAPI');
   }
 
@@ -47,14 +70,30 @@ export class ShinyAPI {
 
   setCallback(explore: Explore, callback: () => {}) {
     log.info('Shiny setCallback');
+    const self = this;
+    self.dataProcessingCallback = callback;
     // Add listener for stl data
-    Shiny.addCustomMessageHandler('myCallbackHandler', function(dataFromR) {
+    Shiny.addCustomMessageHandler('seasonalCallback', function(dataFromR) {
       log.info('From R: ', dataFromR);
-      callback(explore, dataFromR);
+      self.data.dataFromR.seasonal = dataFromR;
+      self.dataProcessingCallback(explore, dataFromR);
+    });
+    Shiny.addCustomMessageHandler('trendCallback', function(dataFromR) {
+      log.info('From R: ', dataFromR);
+      self.data.dataFromR.trend = dataFromR;
+      log.info(self.data);
+      self.dataProcessingCallback(explore, dataFromR);
     });
   }
 
-  updateData(data) {
-    Shiny.onInputChange('mydata', data);
+  updateData(type: string, data) {
+    let { dataToR, dataFromR } = this.data;
+    if (arrayIsEqual(dataToR[type], data)) {
+      this.dataProcessingCallback(dataFromR[type]);
+    } else {
+      dataToR[type] = data;
+      log.info(this.data);
+      Shiny.onInputChange(type, data);
+    }
   }
 }

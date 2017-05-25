@@ -9,8 +9,8 @@ import { ShinyAPI } from '../api/ShinyAPI';
 import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types'
 
 // Data and Utils
-import { arrayIsEqual } from '../util/util.js';
-import { dummyData, terms, countries } from '../util/data.js';
+import { arrayIsEqual } from '../util/util';
+import { dummyData, terms, countries } from '../util/data';
 
 // Libraries
 import log from 'loglevel';
@@ -32,8 +32,6 @@ export class Explore {
     trend: TrendsAPIGraph[],
     total: TrendsAPIGraph[],
     topQueries: TrendsAPITopQueries[],
-    dataToR: string[],
-    dataFromR: string,
     isMerged: boolean,
     isChanging: boolean,
     isLoading: boolean
@@ -63,6 +61,7 @@ export class Explore {
       seasonal: [],
       trend: [],
       total: [],
+      totalPerLine: [],
       topQueries: [],
       dataToR: [],
       dataFromR: '',
@@ -74,7 +73,25 @@ export class Explore {
     self.trendsAPI = trendsAPI;
     if (shinyAPI) {
       self.shinyAPI = shinyAPI;
-      self.shinyAPI.setCallback(self, self.parseDataFromR);
+      self.shinyAPI.setCallback(self, function(explore, dataFromR) {
+
+        const { diseases } = self.data;
+        const type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+        const data = self.data[type];
+        const index = data.length;
+        const obj = {};
+        obj[type] = data.concat({
+          term: diseases[index].name,
+          points: self.parseDataFromR(dataFromR)
+        });
+        self.updateData(obj);
+        // if (trend.length === total.length) {
+        //   self.updateData({ topQueries: [], isLoading: false });
+        //   self.getTrendsAPITopQueries();
+        // } else {
+        //   self.parseDataToR('trend');
+        // }
+      });
     }
     self.createElements(parentContainer);
 
@@ -147,7 +164,7 @@ export class Explore {
         return { term: diseases[i].name, points: l.points}
       });
       self.updateData({ total: total, seasonal: [], trend: [] });
-      self.parseDataToR();
+      self.parseDataToR('trend');
     });
   }
 
@@ -169,66 +186,117 @@ export class Explore {
     });
   }
 
-  parseDataToR() {
+  parseDataToR(type: string) {
     log.info('parseDataToR');
-    const { dataToR, dataFromR, total, seasonal } = this.data;
+    const { total, seasonal } = this.data;
     const { shinyAPI } = this;
     const index = seasonal.length;
 
     if (shinyAPI) {
-      const newDataToR = total[index].points.map((p, i) => p.date+','+p.value);
-      if (arrayIsEqual(dataToR, newDataToR)) {
-        this.parseDataFromR(this, dataFromR);
-      } else {
-        this.updateData({ dataToR: newDataToR });
-        shinyAPI.updateData(newDataToR);
-      }
+      const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
+      shinyAPI.updateData(type, dataToR);
     } else {
-      this.parseDataFromR(this, dummyData[index]);
+      // this.parseDataFromR(this, dummyData[index]);
     }
   }
 
-  parseDataFromR(explore, dataFromR) {
+  parseDataFromR(dataFromR) {
     log.info('parseDataFromR');
-    const self = explore;
-    const { total, diseases, isLoading } = self.data;
-    let { seasonal, trend } = self.data;
-    const index = seasonal.length;
-
-    const currSeasonalString = dataFromR.substring(
-      dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
-      dataFromR.indexOf('trend:'));
-    const currSeasonal = (currSeasonalString.split(','))
-      .slice(0, 13)
-      .map((n, i) => {
-        return{
-          date: total[0].points[i].date,
-          value: (Math.round(Number(n.trim())*100))/100
-        }
-      });
-    seasonal.push({ term: diseases[index].name, points: currSeasonal });
-
-    const currTrendString = dataFromR.substring(
-      dataFromR.indexOf('trend:') + 'trend:'.length + 1,
-      dataFromR.length);
-    const currTrend = (currTrendString.split(','))
-      .map((n, i) => {
-        return{
-          date: total[0].points[i].date,
-          value: Math.round(Number(n.trim()))
-        }
-      });
-    trend.push({ term: diseases[index].name, points: currTrend });
-
-    self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
-
-    if (seasonal.length === total.length) {
-      self.updateData({ topQueries: [], isLoading: false });
-      self.getTrendsAPITopQueries();
-    } else {
-      self.parseDataToR();
+    const { total, diseases, isLoading } = this.data;
+    let { seasonal, trend } = this.data;
+    const type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+    const currData = this.data[type];
+    const index = currData.length;
+    const newDataString = dataFromR.substring(
+      dataFromR.indexOf(type) + type.length + 1);
+    let newData = (newDataString.split(','));
+    if (type === 'seasonal') {
+      newData.splice(0, 13);
     }
+    return (
+      newData.map((n, i) => {
+        const date = total[0].points[i].date;
+        const value = (Math.round(Number(n.trim())*100))/100;
+        return { date, value };
+      })
+    )
   }
+
+  // parseDataFromR(explore, dataFromR) {
+  //   log.info('parseDataFromR');
+  //   const self = explore;
+  //   const { total, diseases, isLoading } = self.data;
+  //   let { seasonal, trend } = self.data;
+  //   let data;
+  //   if (dataFromR.indexOf('trend') > -1) {
+  //     data = this.parseTrendDataFromR(dataFromR);
+  //   } else if (dataFromR.indexOf('seasonal') > -1) {
+  //     data = this.parseSeasonalDataFromR(dataFromR);
+  //   }
+  //   const index = trend.length;
+  //   const currTrendString = dataFromR.substring(
+  //     dataFromR.indexOf('trend:') + 'trend:'.length);
+  //   log.info(currTrendString);
+  //   const currTrend = (currTrendString.split(','))
+  //     .map((n, i) => {
+  //       const date = total[0].points[i].date;
+  //       const value = Math.round(Number(n.trim()));
+  //       log.info(value);
+  //       return { date, value };
+  //     });
+  //   trend.push({ term: diseases[index].name, points: currTrend });
+  //
+  //   self.updateData({ trend: trend });
+  //
+  //   if (trend.length === total.length) {
+  //     self.updateData({ topQueries: [], isLoading: false });
+  //     self.getTrendsAPITopQueries();
+  //   } else {
+  //     self.parseDataToR('trend');
+  //   }
+  // }
+
+  // parseDataFromR(explore, dataFromR) {
+  //   log.info('parseDataFromR');
+  //   const self = explore;
+  //   const { total, diseases, isLoading } = self.data;
+  //   let { seasonal, trend } = self.data;
+  //   const index = seasonal.length;
+  //
+  //   const currSeasonalString = dataFromR.substring(
+  //     dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
+  //     dataFromR.indexOf('trend:'));
+  //   const currSeasonal = (currSeasonalString.split(','))
+  //     .slice(0, 13)
+  //     .map((n, i) => {
+  //       return{
+  //         date: total[0].points[i].date,
+  //         value: (Math.round(Number(n.trim())*100))/100
+  //       }
+  //     });
+  //   seasonal.push({ term: diseases[index].name, points: currSeasonal });
+  //
+  //   const currTrendString = dataFromR.substring(
+  //     dataFromR.indexOf('trend:') + 'trend:'.length + 1,
+  //     dataFromR.length);
+  //   const currTrend = (currTrendString.split(','))
+  //     .map((n, i) => {
+  //       return{
+  //         date: total[0].points[i].date,
+  //         value: Math.round(Number(n.trim()))
+  //       }
+  //     });
+  //   trend.push({ term: diseases[index].name, points: currTrend });
+  //
+  //   self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
+  //
+  //   if (seasonal.length === total.length) {
+  //     self.updateData({ topQueries: [], isLoading: false });
+  //     self.getTrendsAPITopQueries();
+  //   } else {
+  //     self.parseDataToR();
+  //   }
+  // }
 
   createElements(parentContainer: HTMLElement) {
 
@@ -423,8 +491,9 @@ export class Explore {
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-    if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
-      seasonalChart.updateData(seasonal);
+    // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
+    if(!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
+      // seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
 
       if (topQueries.length > 0) {

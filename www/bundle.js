@@ -12728,7 +12728,7 @@
 
 	var _util = __webpack_require__(29);
 
-	var _data4 = __webpack_require__(15);
+	var _data6 = __webpack_require__(15);
 
 	var _loglevel = __webpack_require__(3);
 
@@ -12757,11 +12757,12 @@
 	    this.data = {
 	      prevDiseases: filter ? filter.terms : [],
 	      diseases: filter ? filter.terms : [],
-	      prevGeo: filter ? filter.geo : _data4.countries[0],
-	      geo: filter ? filter.geo : _data4.countries[0],
+	      prevGeo: filter ? filter.geo : _data6.countries[0],
+	      geo: filter ? filter.geo : _data6.countries[0],
 	      seasonal: [],
 	      trend: [],
 	      total: [],
+	      totalPerLine: [],
 	      topQueries: [],
 	      dataToR: [],
 	      dataFromR: '',
@@ -12773,7 +12774,25 @@
 	    self.trendsAPI = trendsAPI;
 	    if (shinyAPI) {
 	      self.shinyAPI = shinyAPI;
-	      self.shinyAPI.setCallback(self, self.parseDataFromR);
+	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
+	        var diseases = self.data.diseases;
+
+	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	        var data = self.data[type];
+	        var index = data.length;
+	        var obj = {};
+	        obj[type] = data.concat({
+	          term: diseases[index].name,
+	          points: self.parseDataFromR(dataFromR)
+	        });
+	        self.updateData(obj);
+	        // if (trend.length === total.length) {
+	        //   self.updateData({ topQueries: [], isLoading: false });
+	        //   self.getTrendsAPITopQueries();
+	        // } else {
+	        //   self.parseDataToR('trend');
+	        // }
+	      });
 	    }
 	    self.createElements(parentContainer);
 
@@ -12804,14 +12823,14 @@
 	  }, {
 	    key: 'getDiseaseByEntity',
 	    value: function getDiseaseByEntity(entity) {
-	      return _data4.terms.find(function (t) {
+	      return _data6.terms.find(function (t) {
 	        return t.entity === entity;
 	      });
 	    }
 	  }, {
 	    key: 'getCountryByIso',
 	    value: function getCountryByIso(iso) {
-	      return _data4.countries.find(function (c) {
+	      return _data6.countries.find(function (c) {
 	        return c.iso === iso;
 	      });
 	    }
@@ -12874,7 +12893,7 @@
 	          return { term: diseases[i].name, points: l.points };
 	        });
 	        self.updateData({ total: total, seasonal: [], trend: [] });
-	        self.parseDataToR();
+	        self.parseDataToR('trend');
 	      });
 	    }
 	  }, {
@@ -12901,11 +12920,9 @@
 	    }
 	  }, {
 	    key: 'parseDataToR',
-	    value: function parseDataToR() {
+	    value: function parseDataToR(type) {
 	      _loglevel2.default.info('parseDataToR');
 	      var _data3 = this.data,
-	          dataToR = _data3.dataToR,
-	          dataFromR = _data3.dataFromR,
 	          total = _data3.total,
 	          seasonal = _data3.seasonal;
 	      var shinyAPI = this.shinyAPI;
@@ -12913,61 +12930,117 @@
 	      var index = seasonal.length;
 
 	      if (shinyAPI) {
-	        var newDataToR = total[index].points.map(function (p, i) {
+	        var dataToR = total[index].points.map(function (p, i) {
 	          return p.date + ',' + p.value;
 	        });
-	        if ((0, _util.arrayIsEqual)(dataToR, newDataToR)) {
-	          this.parseDataFromR(this, dataFromR);
-	        } else {
-	          this.updateData({ dataToR: newDataToR });
-	          shinyAPI.updateData(newDataToR);
-	        }
+	        shinyAPI.updateData(type, dataToR);
 	      } else {
-	        this.parseDataFromR(this, _data4.dummyData[index]);
+	        // this.parseDataFromR(this, dummyData[index]);
 	      }
 	    }
 	  }, {
 	    key: 'parseDataFromR',
-	    value: function parseDataFromR(explore, dataFromR) {
+	    value: function parseDataFromR(dataFromR) {
 	      _loglevel2.default.info('parseDataFromR');
-	      var self = explore;
-	      var _self$data3 = self.data,
-	          total = _self$data3.total,
-	          diseases = _self$data3.diseases,
-	          isLoading = _self$data3.isLoading;
-	      var _self$data4 = self.data,
-	          seasonal = _self$data4.seasonal,
-	          trend = _self$data4.trend;
+	      var _data4 = this.data,
+	          total = _data4.total,
+	          diseases = _data4.diseases,
+	          isLoading = _data4.isLoading;
+	      var _data5 = this.data,
+	          seasonal = _data5.seasonal,
+	          trend = _data5.trend;
 
-	      var index = seasonal.length;
-
-	      var currSeasonalString = dataFromR.substring(dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1, dataFromR.indexOf('trend:'));
-	      var currSeasonal = currSeasonalString.split(',').slice(0, 13).map(function (n, i) {
-	        return {
-	          date: total[0].points[i].date,
-	          value: Math.round(Number(n.trim()) * 100) / 100
-	        };
-	      });
-	      seasonal.push({ term: diseases[index].name, points: currSeasonal });
-
-	      var currTrendString = dataFromR.substring(dataFromR.indexOf('trend:') + 'trend:'.length + 1, dataFromR.length);
-	      var currTrend = currTrendString.split(',').map(function (n, i) {
-	        return {
-	          date: total[0].points[i].date,
-	          value: Math.round(Number(n.trim()))
-	        };
-	      });
-	      trend.push({ term: diseases[index].name, points: currTrend });
-
-	      self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
-
-	      if (seasonal.length === total.length) {
-	        self.updateData({ topQueries: [], isLoading: false });
-	        self.getTrendsAPITopQueries();
-	      } else {
-	        self.parseDataToR();
+	      var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	      var currData = this.data[type];
+	      var index = currData.length;
+	      var newDataString = dataFromR.substring(dataFromR.indexOf(type) + type.length + 1);
+	      var newData = newDataString.split(',');
+	      if (type === 'seasonal') {
+	        newData.splice(0, 13);
 	      }
+	      return newData.map(function (n, i) {
+	        var date = total[0].points[i].date;
+	        var value = Math.round(Number(n.trim()) * 100) / 100;
+	        return { date: date, value: value };
+	      });
 	    }
+
+	    // parseDataFromR(explore, dataFromR) {
+	    //   log.info('parseDataFromR');
+	    //   const self = explore;
+	    //   const { total, diseases, isLoading } = self.data;
+	    //   let { seasonal, trend } = self.data;
+	    //   let data;
+	    //   if (dataFromR.indexOf('trend') > -1) {
+	    //     data = this.parseTrendDataFromR(dataFromR);
+	    //   } else if (dataFromR.indexOf('seasonal') > -1) {
+	    //     data = this.parseSeasonalDataFromR(dataFromR);
+	    //   }
+	    //   const index = trend.length;
+	    //   const currTrendString = dataFromR.substring(
+	    //     dataFromR.indexOf('trend:') + 'trend:'.length);
+	    //   log.info(currTrendString);
+	    //   const currTrend = (currTrendString.split(','))
+	    //     .map((n, i) => {
+	    //       const date = total[0].points[i].date;
+	    //       const value = Math.round(Number(n.trim()));
+	    //       log.info(value);
+	    //       return { date, value };
+	    //     });
+	    //   trend.push({ term: diseases[index].name, points: currTrend });
+	    //
+	    //   self.updateData({ trend: trend });
+	    //
+	    //   if (trend.length === total.length) {
+	    //     self.updateData({ topQueries: [], isLoading: false });
+	    //     self.getTrendsAPITopQueries();
+	    //   } else {
+	    //     self.parseDataToR('trend');
+	    //   }
+	    // }
+
+	    // parseDataFromR(explore, dataFromR) {
+	    //   log.info('parseDataFromR');
+	    //   const self = explore;
+	    //   const { total, diseases, isLoading } = self.data;
+	    //   let { seasonal, trend } = self.data;
+	    //   const index = seasonal.length;
+	    //
+	    //   const currSeasonalString = dataFromR.substring(
+	    //     dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
+	    //     dataFromR.indexOf('trend:'));
+	    //   const currSeasonal = (currSeasonalString.split(','))
+	    //     .slice(0, 13)
+	    //     .map((n, i) => {
+	    //       return{
+	    //         date: total[0].points[i].date,
+	    //         value: (Math.round(Number(n.trim())*100))/100
+	    //       }
+	    //     });
+	    //   seasonal.push({ term: diseases[index].name, points: currSeasonal });
+	    //
+	    //   const currTrendString = dataFromR.substring(
+	    //     dataFromR.indexOf('trend:') + 'trend:'.length + 1,
+	    //     dataFromR.length);
+	    //   const currTrend = (currTrendString.split(','))
+	    //     .map((n, i) => {
+	    //       return{
+	    //         date: total[0].points[i].date,
+	    //         value: Math.round(Number(n.trim()))
+	    //       }
+	    //     });
+	    //   trend.push({ term: diseases[index].name, points: currTrend });
+	    //
+	    //   self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
+	    //
+	    //   if (seasonal.length === total.length) {
+	    //     self.updateData({ topQueries: [], isLoading: false });
+	    //     self.getTrendsAPITopQueries();
+	    //   } else {
+	    //     self.parseDataToR();
+	    //   }
+	    // }
+
 	  }, {
 	    key: 'createElements',
 	    value: function createElements(parentContainer) {
@@ -13001,7 +13074,7 @@
 	      // Diseases
 	      var diseaseSelect = document.createElement('select');
 	      diseaseSelect.classList.add('disease-select');
-	      _data4.terms.forEach(function (d, i) {
+	      _data6.terms.forEach(function (d, i) {
 	        var option = document.createElement('option');
 	        option.setAttribute('value', d.entity);
 	        option.setAttribute('key', i);
@@ -13030,7 +13103,7 @@
 	      var geoSelect = document.createElement('select');
 	      geoSelect.classList.add('geo-select');
 	      geoSelect.name = 'geo-select';
-	      _data4.countries.forEach(function (c, i) {
+	      _data6.countries.forEach(function (c, i) {
 	        var option = document.createElement('option');
 	        option.setAttribute('value', c.iso);
 	        option.innerHTML = c.name;
@@ -13192,8 +13265,9 @@
 
 	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
-	      if (!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
-	        seasonalChart.updateData(seasonal);
+	      // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
+	      if (!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
+	        // seasonalChart.updateData(seasonal);
 	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
 
 	        if (topQueries.length > 0) {
@@ -30118,6 +30192,8 @@
 
 	var _Explore = __webpack_require__(25);
 
+	var _util = __webpack_require__(29);
+
 	var _loglevel = __webpack_require__(3);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
@@ -30130,6 +30206,16 @@
 	  function ShinyAPI() {
 	    _classCallCheck(this, ShinyAPI);
 
+	    this.data = {
+	      dataToR: {
+	        seasonal: [],
+	        trend: []
+	      },
+	      dataFromR: {
+	        seasonal: '',
+	        trend: ''
+	      }
+	    };
 	    _loglevel2.default.info('ShinyAPI');
 	  }
 
@@ -30171,16 +30257,35 @@
 	    key: 'setCallback',
 	    value: function setCallback(explore, callback) {
 	      _loglevel2.default.info('Shiny setCallback');
+	      var self = this;
+	      self.dataProcessingCallback = callback;
 	      // Add listener for stl data
-	      Shiny.addCustomMessageHandler('myCallbackHandler', function (dataFromR) {
+	      Shiny.addCustomMessageHandler('seasonalCallback', function (dataFromR) {
 	        _loglevel2.default.info('From R: ', dataFromR);
-	        callback(explore, dataFromR);
+	        self.data.dataFromR.seasonal = dataFromR;
+	        self.dataProcessingCallback(explore, dataFromR);
+	      });
+	      Shiny.addCustomMessageHandler('trendCallback', function (dataFromR) {
+	        _loglevel2.default.info('From R: ', dataFromR);
+	        self.data.dataFromR.trend = dataFromR;
+	        _loglevel2.default.info(self.data);
+	        self.dataProcessingCallback(explore, dataFromR);
 	      });
 	    }
 	  }, {
 	    key: 'updateData',
-	    value: function updateData(data) {
-	      Shiny.onInputChange('mydata', data);
+	    value: function updateData(type, data) {
+	      var _data = this.data,
+	          dataToR = _data.dataToR,
+	          dataFromR = _data.dataFromR;
+
+	      if ((0, _util.arrayIsEqual)(dataToR[type], data)) {
+	        this.dataProcessingCallback(dataFromR[type]);
+	      } else {
+	        dataToR[type] = data;
+	        _loglevel2.default.info(this.data);
+	        Shiny.onInputChange(type, data);
+	      }
 	    }
 	  }]);
 
