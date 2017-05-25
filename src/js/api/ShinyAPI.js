@@ -20,6 +20,7 @@ export class ShinyAPI {
   keepShinyAlive: () => {};
   dataProcessingCallback: () => {};
   isInitialized: boolean;
+  explore: Explore;
 
   constructor() {
     this.data = {
@@ -72,6 +73,7 @@ export class ShinyAPI {
     log.info('Shiny setCallback');
     const self = this;
     self.dataProcessingCallback = callback;
+    self.explore = explore;
     // Add listener for stl data
     Shiny.addCustomMessageHandler('seasonalCallback', function(dataFromR) {
       log.info('From R: ', dataFromR);
@@ -87,9 +89,13 @@ export class ShinyAPI {
   }
 
   updateData(type: string, data) {
-    let { dataToR, dataFromR } = this.data;
+    log.info('ShinyAPI updateData');
+    log.info(type);
+    const { dataToR, dataFromR } = this.data;
+    log.info(dataFromR);
     if (arrayIsEqual(dataToR[type], data)) {
-      this.dataProcessingCallback(dataFromR[type]);
+      log.info('!!!IGUAL!!!');
+      this.dataProcessingCallback(this.explore, dataFromR[type]);
     } else {
       dataToR[type] = data;
       log.info(this.data);

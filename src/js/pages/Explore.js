@@ -75,7 +75,7 @@ export class Explore {
       self.shinyAPI = shinyAPI;
       self.shinyAPI.setCallback(self, function(explore, dataFromR) {
 
-        const { diseases } = self.data;
+        const { diseases, total } = self.data;
         const type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
         const data = self.data[type];
         const index = data.length;
@@ -85,12 +85,12 @@ export class Explore {
           points: self.parseDataFromR(dataFromR)
         });
         self.updateData(obj);
-        // if (trend.length === total.length) {
-        //   self.updateData({ topQueries: [], isLoading: false });
-        //   self.getTrendsAPITopQueries();
-        // } else {
-        //   self.parseDataToR('trend');
-        // }
+        if (obj[type].length === total.length) {
+          self.updateData({ topQueries: [], isLoading: false });
+          self.getTrendsAPITopQueries();
+        } else {
+          self.parseDataToR(type);
+        }
       });
     }
     self.createElements(parentContainer);
@@ -190,7 +190,8 @@ export class Explore {
     log.info('parseDataToR');
     const { total, seasonal } = this.data;
     const { shinyAPI } = this;
-    const index = seasonal.length;
+    const data = this.data[type];
+    const index = data.length;
 
     if (shinyAPI) {
       const dataToR = total[index].points.map((p, i) => p.date+','+p.value);

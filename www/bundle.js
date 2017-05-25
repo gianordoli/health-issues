@@ -12775,7 +12775,9 @@
 	    if (shinyAPI) {
 	      self.shinyAPI = shinyAPI;
 	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
-	        var diseases = self.data.diseases;
+	        var _self$data = self.data,
+	            diseases = _self$data.diseases,
+	            total = _self$data.total;
 
 	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
 	        var data = self.data[type];
@@ -12786,12 +12788,12 @@
 	          points: self.parseDataFromR(dataFromR)
 	        });
 	        self.updateData(obj);
-	        // if (trend.length === total.length) {
-	        //   self.updateData({ topQueries: [], isLoading: false });
-	        //   self.getTrendsAPITopQueries();
-	        // } else {
-	        //   self.parseDataToR('trend');
-	        // }
+	        if (obj[type].length === total.length) {
+	          self.updateData({ topQueries: [], isLoading: false });
+	          self.getTrendsAPITopQueries();
+	        } else {
+	          self.parseDataToR(type);
+	        }
 	      });
 	    }
 	    self.createElements(parentContainer);
@@ -12838,9 +12840,9 @@
 	    key: 'cancelFilters',
 	    value: function cancelFilters(event, self) {
 	      _loglevel2.default.info('cancelFilters');
-	      var _self$data = self.data,
-	          prevDiseases = _self$data.prevDiseases,
-	          prevGeo = _self$data.prevGeo;
+	      var _self$data2 = self.data,
+	          prevDiseases = _self$data2.prevDiseases,
+	          prevGeo = _self$data2.prevGeo;
 
 	      self.confirmNav.classList.add('hidden');
 	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
@@ -12849,9 +12851,9 @@
 	    key: 'confirmFilters',
 	    value: function confirmFilters(event, self) {
 	      _loglevel2.default.info('confirmFilters');
-	      var _self$data2 = self.data,
-	          diseases = _self$data2.diseases,
-	          geo = _self$data2.geo;
+	      var _self$data3 = self.data,
+	          diseases = _self$data3.diseases,
+	          geo = _self$data3.geo;
 
 	      self.confirmNav.classList.add('hidden');
 	      self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: false, isLoading: true });
@@ -12927,7 +12929,8 @@
 	          seasonal = _data3.seasonal;
 	      var shinyAPI = this.shinyAPI;
 
-	      var index = seasonal.length;
+	      var data = this.data[type];
+	      var index = data.length;
 
 	      if (shinyAPI) {
 	        var dataToR = total[index].points.map(function (p, i) {
@@ -30259,6 +30262,7 @@
 	      _loglevel2.default.info('Shiny setCallback');
 	      var self = this;
 	      self.dataProcessingCallback = callback;
+	      self.explore = explore;
 	      // Add listener for stl data
 	      Shiny.addCustomMessageHandler('seasonalCallback', function (dataFromR) {
 	        _loglevel2.default.info('From R: ', dataFromR);
@@ -30275,12 +30279,16 @@
 	  }, {
 	    key: 'updateData',
 	    value: function updateData(type, data) {
+	      _loglevel2.default.info('ShinyAPI updateData');
+	      _loglevel2.default.info(type);
 	      var _data = this.data,
 	          dataToR = _data.dataToR,
 	          dataFromR = _data.dataFromR;
 
+	      _loglevel2.default.info(dataFromR);
 	      if ((0, _util.arrayIsEqual)(dataToR[type], data)) {
-	        this.dataProcessingCallback(dataFromR[type]);
+	        _loglevel2.default.info('!!!IGUAL!!!');
+	        this.dataProcessingCallback(this.explore, dataFromR[type]);
 	      } else {
 	        dataToR[type] = data;
 	        _loglevel2.default.info(this.data);
