@@ -31,6 +31,7 @@ export class Explore {
     seasonal: TrendsAPIGraph[],
     trend: TrendsAPIGraph[],
     total: TrendsAPIGraph[],
+    totalPerLine: TrendsAPIGraph[],
     topQueries: TrendsAPITopQueries[],
     isMerged: boolean,
     isChanging: boolean,
@@ -67,7 +68,7 @@ export class Explore {
       dataFromR: '',
       isMerged: false,
       isChanging: false,
-      isLoading: false
+      isLoading: filter ? true : false,
     }
     const self = this;
     self.trendsAPI = trendsAPI;
@@ -80,23 +81,43 @@ export class Explore {
         const data = self.data[type];
         const index = data.length;
         const obj = {};
+
         obj[type] = data.concat({
           term: diseases[index].name,
           points: self.parseDataFromR(dataFromR)
         });
         self.updateData(obj);
-        if (obj[type].length === total.length) {
-          self.updateData({ topQueries: [], isLoading: false });
-          self.getTrendsAPITopQueries();
+
+        // I'm still getting R Data for that one type
+        if (obj[type].length < total.length) {
+          // Trend? Keep parsing the already loaded data
+          if (type === 'trend') {
+            self.parseDataToR(type);
+          // Seasonal? Go get more data from Google Trends
+          } else if (type === 'seasonal') {
+            self.getTrendsAPIGraph('seasonal');
+          }
+
+        // I'm done with this type!
         } else {
-          self.parseDataToR(type);
+          // Trend? Start seasonal then
+          if (type === 'trend') {
+            self.getTrendsAPIGraph('seasonal');
+          // Seasonal? Move on to load top queries
+          } else if (type === 'seasonal') {
+            self.updateData({ topQueries: [], isLoading: false });
+            self.getTrendsAPITopQueries();
+          }
         }
+
       });
     }
+
     self.createElements(parentContainer);
 
     if (filter) {
-      self.getTrendsAPIGraph();
+      self.getTrendsAPIGraph('trend');
+      // self.loadCurated(filter);
     }
   }
 
@@ -134,8 +155,15 @@ export class Explore {
     log.info('confirmFilters');
     const { diseases, geo } = self.data;
     self.confirmNav.classList.add('hidden');
-    self.updateData({ prevDiseases: diseases, prevGeo: geo, isChanging: false, isLoading: true });
-    self.getTrendsAPIGraph();
+    self.updateData({
+      prevDiseases: diseases,
+      prevGeo: geo,
+      isChanging: false,
+      isLoading: true,
+      seasonal: [],
+      trend: [],
+    });
+    self.getTrendsAPIGraph('trend');
   }
 
   toggleChartMerge(event, self) {
@@ -145,26 +173,41 @@ export class Explore {
     this.updateData({ isMerged: isMerged });
   }
 
-  loadCurated(filter: Filter) {
-    const { terms, geo } = filter;
-    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
-    this.confirmNav.classList.add('hidden');
-    this.getTrendsAPIGraph();
-  }
+  // loadCurated(filter: Filter) {
+  //   const { terms, geo } = filter;
+  //   this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
+  //   this.confirmNav.classList.add('hidden');
+  //   this.getTrendsAPIGraph('trend');
+  // }
 
-  getTrendsAPIGraph(){
+  getTrendsAPIGraph(type: string){
     log.info('getTrendsAPIGraph');
-    const { diseases, geo } = this.data;
-    let total = [];
+    const { diseases, geo, totalPerLine } = this.data;
+    const terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
     const self = this;
 
-    self.trendsAPI.getGraph({terms: diseases, geo: geo}, function(val){
-      log.info('From Google Trends: ', val);
-      const total = val.lines.map((l, i) => {
-        return { term: diseases[i].name, points: l.points}
-      });
-      self.updateData({ total: total, seasonal: [], trend: [] });
-      self.parseDataToR('trend');
+    self.trendsAPI.getGraph({ terms, geo }, function(val){
+      log.info('From Google Trends: ', type);
+      log.info(val);
+
+      const obj = {};
+      if (type === 'trend') {
+        obj['total'] = self.mapGraphResponse(val.lines);
+
+      } else if (type === 'seasonal') {
+        obj['totalPerLine'] = totalPerLine.concat(
+          self.mapGraphResponse(val.lines)
+        );
+      }
+      self.updateData(obj);
+      self.parseDataToR(type);
+    });
+  }
+
+  mapGraphResponse(lines) {
+    const { diseases } = this.data;
+    return lines.map((l, i) => {
+      return { term: diseases[i].name, points: l.points}
     });
   }
 
@@ -187,14 +230,15 @@ export class Explore {
   }
 
   parseDataToR(type: string) {
-    log.info('parseDataToR');
-    const { total, seasonal } = this.data;
+    log.info('parseDataToR', type);
+    const { total, totalPerLine } = this.data;
     const { shinyAPI } = this;
-    const data = this.data[type];
-    const index = data.length;
-
+    const index = this.data[type].length;
+    const whichTotal = type === 'trend' ? total : totalPerLine;
+    log.info('whichTotal');
+    log.info(whichTotal);
     if (shinyAPI) {
-      const dataToR = total[index].points.map((p, i) => p.date+','+p.value);
+      const dataToR = whichTotal[index].points.map((p, i) => p.date+','+p.value);
       shinyAPI.updateData(type, dataToR);
     } else {
       // this.parseDataFromR(this, dummyData[index]);
@@ -203,16 +247,14 @@ export class Explore {
 
   parseDataFromR(dataFromR) {
     log.info('parseDataFromR');
-    const { total, diseases, isLoading } = this.data;
-    let { seasonal, trend } = this.data;
+    const { diseases, total, seasonal, trend, isLoading } = this.data;
     const type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
-    const currData = this.data[type];
-    const index = currData.length;
+    const index = this.data[type].length;
     const newDataString = dataFromR.substring(
       dataFromR.indexOf(type) + type.length + 1);
     let newData = (newDataString.split(','));
     if (type === 'seasonal') {
-      newData.splice(0, 13);
+      newData = newData.slice(0, 13);
     }
     return (
       newData.map((n, i) => {
@@ -222,82 +264,6 @@ export class Explore {
       })
     )
   }
-
-  // parseDataFromR(explore, dataFromR) {
-  //   log.info('parseDataFromR');
-  //   const self = explore;
-  //   const { total, diseases, isLoading } = self.data;
-  //   let { seasonal, trend } = self.data;
-  //   let data;
-  //   if (dataFromR.indexOf('trend') > -1) {
-  //     data = this.parseTrendDataFromR(dataFromR);
-  //   } else if (dataFromR.indexOf('seasonal') > -1) {
-  //     data = this.parseSeasonalDataFromR(dataFromR);
-  //   }
-  //   const index = trend.length;
-  //   const currTrendString = dataFromR.substring(
-  //     dataFromR.indexOf('trend:') + 'trend:'.length);
-  //   log.info(currTrendString);
-  //   const currTrend = (currTrendString.split(','))
-  //     .map((n, i) => {
-  //       const date = total[0].points[i].date;
-  //       const value = Math.round(Number(n.trim()));
-  //       log.info(value);
-  //       return { date, value };
-  //     });
-  //   trend.push({ term: diseases[index].name, points: currTrend });
-  //
-  //   self.updateData({ trend: trend });
-  //
-  //   if (trend.length === total.length) {
-  //     self.updateData({ topQueries: [], isLoading: false });
-  //     self.getTrendsAPITopQueries();
-  //   } else {
-  //     self.parseDataToR('trend');
-  //   }
-  // }
-
-  // parseDataFromR(explore, dataFromR) {
-  //   log.info('parseDataFromR');
-  //   const self = explore;
-  //   const { total, diseases, isLoading } = self.data;
-  //   let { seasonal, trend } = self.data;
-  //   const index = seasonal.length;
-  //
-  //   const currSeasonalString = dataFromR.substring(
-  //     dataFromR.indexOf('seasonal:') + 'seasonal:'.length + 1,
-  //     dataFromR.indexOf('trend:'));
-  //   const currSeasonal = (currSeasonalString.split(','))
-  //     .slice(0, 13)
-  //     .map((n, i) => {
-  //       return{
-  //         date: total[0].points[i].date,
-  //         value: (Math.round(Number(n.trim())*100))/100
-  //       }
-  //     });
-  //   seasonal.push({ term: diseases[index].name, points: currSeasonal });
-  //
-  //   const currTrendString = dataFromR.substring(
-  //     dataFromR.indexOf('trend:') + 'trend:'.length + 1,
-  //     dataFromR.length);
-  //   const currTrend = (currTrendString.split(','))
-  //     .map((n, i) => {
-  //       return{
-  //         date: total[0].points[i].date,
-  //         value: Math.round(Number(n.trim()))
-  //       }
-  //     });
-  //   trend.push({ term: diseases[index].name, points: currTrend });
-  //
-  //   self.updateData({ seasonal: seasonal, trend: trend, dataFromR: dataFromR });
-  //
-  //   if (seasonal.length === total.length) {
-  //     self.updateData({ topQueries: [], isLoading: false });
-  //     self.getTrendsAPITopQueries();
-  //   } else {
-  //     self.parseDataToR();
-  //   }
-  // }
 
   createElements(parentContainer: HTMLElement) {
 
@@ -465,13 +431,9 @@ export class Explore {
   }
 
   updateData(obj) {
-    let { data } = this;
-    for (const key in obj) {
-      data[key] = obj[key];
-    }
-    this.data = data;
+    const { data } = this;
+    Object.assign(data, obj);
     log.info(this.data);
-    log.info(this.data.isChanging);
     this.updateElements();
   }
 
@@ -494,7 +456,7 @@ export class Explore {
 
     // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
     if(!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
-      // seasonalChart.updateData(seasonal);
+      seasonalChart.updateData(seasonal);
       isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
 
       if (topQueries.length > 0) {
@@ -524,11 +486,7 @@ export class Explore {
         }
         const parent = topQueriesList.parentElement;
         if (parent) {
-          if (isEmpty) {
-            parent.classList.add('hidden');
-          } else {
-            parent.classList.remove('hidden');
-          }
+          isEmpty ? parent.classList.add('hidden') : parent.classList.remove('hidden');
         }
       }
     }

@@ -92,9 +92,7 @@ export class ShinyAPI {
     log.info('ShinyAPI updateData');
     log.info(type);
     const { dataToR, dataFromR } = this.data;
-    log.info(dataFromR);
     if (arrayIsEqual(dataToR[type], data)) {
-      log.info('!!!IGUAL!!!');
       this.dataProcessingCallback(this.explore, dataFromR[type]);
     } else {
       dataToR[type] = data;
