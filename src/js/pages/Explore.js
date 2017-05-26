@@ -10,7 +10,8 @@ import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util';
-import { dummyData, terms, countries } from '../util/data';
+import { terms, countries } from '../util/data';
+import { dummyData } from '../scripts/data';
 
 // Libraries
 import log from 'loglevel';
@@ -92,7 +93,9 @@ export class Explore {
         if (obj[type].length < total.length) {
           // Trend? Keep parsing the already loaded data
           if (type === 'trend') {
-            self.parseDataToR(type);
+            const dataToR = self.parseDataToR(type);
+            self.shinyAPI.updateData(type, dataToR);
+
           // Seasonal? Go get more data from Google Trends
           } else if (type === 'seasonal') {
             self.getTrendsAPIGraph('seasonal');
@@ -182,9 +185,10 @@ export class Explore {
 
   getTrendsAPIGraph(type: string){
     log.info('getTrendsAPIGraph');
-    const { diseases, geo, totalPerLine } = this.data;
-    const terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
     const self = this;
+    const { diseases, geo, totalPerLine } = self.data;
+    const { shinyAPI } = self;
+    const terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
 
     self.trendsAPI.getGraph({ terms, geo }, function(val){
       log.info('From Google Trends: ', type);
@@ -200,7 +204,19 @@ export class Explore {
         );
       }
       self.updateData(obj);
-      self.parseDataToR(type);
+
+      if (ENV !== 'DEVELOPMENT') {
+        const dataToR = self.parseDataToR(type);
+        shinyAPI.updateData(type, dataToR);
+      } else {
+        const obj = {
+          ...dummyData,
+          topQueries: [],
+          isLoading: false,
+        };
+        self.updateData(obj);
+        self.getTrendsAPITopQueries();
+      }
     });
   }
 
@@ -235,14 +251,7 @@ export class Explore {
     const { shinyAPI } = this;
     const index = this.data[type].length;
     const whichTotal = type === 'trend' ? total : totalPerLine;
-    log.info('whichTotal');
-    log.info(whichTotal);
-    if (shinyAPI) {
-      const dataToR = whichTotal[index].points.map((p, i) => p.date+','+p.value);
-      shinyAPI.updateData(type, dataToR);
-    } else {
-      // this.parseDataFromR(this, dummyData[index]);
-    }
+    return whichTotal[index].points.map((p, i) => p.date+','+p.value);
   }
 
   parseDataFromR(dataFromR) {

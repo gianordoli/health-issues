@@ -2,7 +2,8 @@
 
 import { TrendsAPI } from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPIGraphAverages } from '../util/types';
-import { averages, terms, countries } from '../util/data.js';
+import { terms, countries } from '../util/data.js';
+import { averages } from './data.js';
 import log from 'loglevel';
 
 export default class Ranking {
