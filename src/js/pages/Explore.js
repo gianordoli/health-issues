@@ -274,6 +274,13 @@ export class Explore {
     )
   }
 
+  updateData(obj) {
+    const { data } = this;
+    Object.assign(data, obj);
+    log.info(this.data);
+    this.updateElements();
+  }
+
   createElements(parentContainer: HTMLElement) {
 
     const elementsContainer = document.createElement('div');
@@ -436,13 +443,6 @@ export class Explore {
     topQueriesList.classList.add('top-queries-list');
     topQueriesContainer.appendChild(topQueriesList);
 
-    this.updateElements();
-  }
-
-  updateData(obj) {
-    const { data } = this;
-    Object.assign(data, obj);
-    log.info(this.data);
     this.updateElements();
   }
 

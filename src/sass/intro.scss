@@ -1,22 +1,42 @@
 @import 'App';
 
 #intro.page {
-  display: flex;
-  flex-direction: row;
+  // display: flex;
+  // flex-direction: row;
+  //
+  // .charts-container,
+  // .copy-container {
+  //   width: calc((100% - #{$col-gutter-large})/2);
+  // }
+  //
+  // .charts-container {
+  //   height: 100%;
+  // }
+  //
+  // .copy-container {
+  //   margin-left: $col-gutter-large;
+  // }
 
-  .charts-container,
-  .copy-container {
-    width: calc((100% - #{$col-gutter-large})/2);
+  // #container{
+    position: relative;
+  // }
+  .chart-item {
+    position: absolute;
+    top: 0px;
+    width: calc((100% - #{$col-gutter-large}*5)/2);
+    height: 45vh;
   }
 
-  .charts-container {
-    height: 100%;
+  .sections-container {
+    .section {
+      width: 340px;
+      height: 50vh;
+      border: 1px solid black;
+    }
   }
 
-  .copy-container {
-    margin-left: $col-gutter-large;
+  .chart-item .graph-scroll-fixed{
+    position: fixed;
   }
 
 }
-
-

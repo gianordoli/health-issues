@@ -51,9 +51,9 @@ app.main = (function (){
 
     const home = new Home(elementsContainer, trendsAPI);
     const intro = new Intro(elementsContainer);
-    const curated = new Curated(elementsContainer);
-    const explore = new Explore(elementsContainer, shinyAPI, trendsAPI, filter);
-    const about = new About(elementsContainer);
+    // const curated = new Curated(elementsContainer);
+    // const explore = new Explore(elementsContainer, shinyAPI, trendsAPI, filter);
+    // const about = new About(elementsContainer);
   }
 
   const init = function(){
