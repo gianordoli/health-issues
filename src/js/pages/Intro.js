@@ -37,11 +37,15 @@ export class Intro {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    elementsContainer.appendChild(chartsContainer);
+
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
-    elementsContainer.appendChild(chartItem);
+    chartsContainer.appendChild(chartItem);
     this.chart = new LineChart(chartItem, 'seasonal');
-    this.chart.updateData([dummyData.seasonal[0]]);
+    // this.chart.updateData([dummyData.seasonal[0]]);
     const { chart } = this;
 
     const sectionsContainer = document.createElement('div')
@@ -73,7 +77,7 @@ export class Intro {
 
     // const sections = d3.select('#intro.page > .sections-container > section');
     const containerD3 = d3.selectAll('#intro.page');
-    const graphD3 = containerD3.selectAll('.chart-item');
+    const graphD3 = containerD3.select('.charts-container');
     const sectionsContainerD3 = containerD3.selectAll('.sections-container');
     log.info(sectionsContainerD3);
     const sectionsD3 = sectionsContainerD3.selectAll('.section');
@@ -85,6 +89,7 @@ export class Intro {
     	.sections(sectionsD3)
     	.offset(window.innerHeight/2)
     	.on('active', function(i) {
+        // i = i > 0 ? i - 1 : i;
     		chart.updateData([dummyData.seasonal[i]])
     	})
   }

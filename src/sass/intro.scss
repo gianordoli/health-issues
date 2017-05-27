@@ -20,23 +20,41 @@
   // #container{
     position: relative;
   // }
-  .chart-item {
-    position: absolute;
-    top: 0px;
-    width: calc((100% - #{$col-gutter-large}*5)/2);
-    height: 45vh;
-  }
 
   .sections-container {
+    margin-left: calc((100% - #{$col-gutter-large})/2 + #{$col-gutter-large});
+    width: calc((100% - #{$col-gutter-large})/2);
     .section {
-      width: 340px;
-      height: 50vh;
+      width: 100%;
+      min-height: 50vh;
+      // min-height: 300px;
       border: 1px solid black;
     }
   }
 
-  .chart-item .graph-scroll-fixed{
+  .charts-container {
+    position: absolute;
+    top: 0px;
+    width: calc((100% - #{$col-gutter-large}*5)/2);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .chart-item {
+      width: 100%;
+      height: 45vh;
+    }
+  }
+
+  &.graph-scroll-fixed .charts-container {
     position: fixed;
+  }
+
+  &.graph-scroll-below .charts-container{
+    position: absolute;
+    top: auto;
+    bottom: 0px;
   }
 
 }
