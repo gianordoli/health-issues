@@ -24,22 +24,38 @@
   .sections-container {
     margin-left: calc((100% - #{$col-gutter-large})/2 + #{$col-gutter-large});
     width: calc((100% - #{$col-gutter-large})/2);
+
+    @include for-phone-down {
+      width: 100%;
+      position: relative;
+      margin: 0;
+      padding-top: 50vh;
+      z-index: 100;
+    }
     .section {
       width: 100%;
-      min-height: 50vh;
-      // min-height: 300px;
-      border: 1px solid black;
+      padding-bottom: 50vh;
+      @include for-phone-down {
+        width: 100%;
+        p {
+          padding: $col-gutter-small;
+          border: 1px solid black;
+          background-color: white;
+        }
+      }
     }
   }
 
   .charts-container {
     position: absolute;
-    top: 0px;
+    top: $col-gutter-large;
     width: calc((100% - #{$col-gutter-large}*5)/2);
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+
+    @include for-phone-down {
+      top: $col-gutter-small;
+      width: calc(100% - #{$col-gutter-small}*2);
+    }
 
     .chart-item {
       width: 100%;

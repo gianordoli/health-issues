@@ -89,7 +89,6 @@ export class Intro {
     	.sections(sectionsD3)
     	.offset(window.innerHeight/2)
     	.on('active', function(i) {
-        // i = i > 0 ? i - 1 : i;
     		chart.updateData([dummyData.seasonal[i]])
     	})
   }
