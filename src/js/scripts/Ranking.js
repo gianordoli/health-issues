@@ -31,7 +31,12 @@ export default class Ranking {
     const index = averages.length;
     const term2 = terms[index];
     const self = this;
-    self.trendsAPI.getGraphAverages({terms: [term1, term2], geo: countries[0]}, function(val){
+    self.trendsAPI.getGraphAverages({
+      terms: [term1, term2],
+      geo: countries[0],
+      startDate: '2016-01',
+      endDate: '2016-12',
+    }, function(val){
       console.log('From Google Trends: ', val);
       log.info(`${term1.name} ${val.averages[0].value} x ${val.averages[1].value} ${term2.name}`);
       self.updateData(val.averages);

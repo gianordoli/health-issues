@@ -45,15 +45,17 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    const filter = {
-      terms: [terms[55], terms[359], terms[515]], geo: countries[241]
-    }
+    // const filter = {
+    //   terms: [terms[55], terms[359], terms[515]], geo: countries[241]
+    // }
 
     const home = new Home(elementsContainer, trendsAPI);
-    const intro = new Intro(elementsContainer);
-    const curated = new Curated(elementsContainer);
+    // const intro = new Intro(elementsContainer);
+    // const curated = new Curated(elementsContainer);
     // const explore = new Explore(elementsContainer, shinyAPI, trendsAPI, filter);
     // const about = new About(elementsContainer);
+
+    // const ranking = new Ranking(trendsAPI);
   }
 
   const init = function(){

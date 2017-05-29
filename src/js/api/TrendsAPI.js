@@ -54,26 +54,8 @@ export class TrendsAPI {
       });
   }
 
-  getGraph(filter: Filter, callback) {
-    log.info('getGraph for:', filter);
-    const { geo } = filter;
-    const { terms } = filter;
-    let path = 'https://www.googleapis.com/trends/v1beta/graph?';
-    for (const t of terms) {
-      path += 'terms=' + encodeURIComponent(t.entity) + '&';
-    }
-    if (geo.iso !== 'world') {
-      path += 'restrictions.geo='+geo.iso;
-    }
-    this.executeCall(path, callback);
-  }
-
-  getTopQueries(filter: Filter, callback) {
-    log.info('getTopQueries for:', filter);
-    const { geo } = filter;
-    const { terms } = filter;
-    const term = terms[0];
-    let path = `https://www.googleapis.com/trends/v1beta/topQueries?term=${encodeURIComponent(term.entity)}`;
+  appendRestrictions(filter: Filter, path: string) {
+    const { geo, startDate, endDate } = filter;
     if (geo.iso !== 'world') {
       path += `&restrictions.geo=${geo.iso}`;
     }
@@ -83,20 +65,46 @@ export class TrendsAPI {
     if (filter.endDate) {
       path += `&restrictions.endDate=${filter.endDate}`;
     }
+    return path;
+  }
+
+  getGraph(filter: Filter, callback) {
+    log.info('getGraph for:', filter);
+    const { geo, terms } = filter;
+    let path = 'https://www.googleapis.com/trends/v1beta/graph?';
+    for (const t of terms) {
+      path += 'terms=' + encodeURIComponent(t.entity) + '&';
+    }
+    path = this.appendRestrictions(filter, path);
     this.executeCall(path, callback);
   }
 
   getGraphAverages(filter: Filter, callback) {
     // log.info('getGraphAverages for:', filter);
-    const { geo } = filter;
     const { terms } = filter;
     let path = 'https://www.googleapis.com/trends/v1beta/graphAverages?';
     for (const t of terms) {
       path += 'terms=' + encodeURIComponent(t.entity) + '&';
     }
-    if (geo.iso !== 'world') {
-      path += 'restrictions.geo='+geo.iso;
-    }
+    path = this.appendRestrictions(filter, path);
+    this.executeCall(path, callback);
+  }
+
+  getTopQueries(filter: Filter, callback) {
+    log.info('getTopQueries for:', filter);
+    const { geo, terms } = filter;
+    const term = terms[0];
+    let path = `https://www.googleapis.com/trends/v1beta/topQueries?term=${encodeURIComponent(term.entity)}`;
+    path = this.appendRestrictions(filter, path);
+    this.executeCall(path, callback);
+  }
+
+  getTopTopics(filter: Filter, callback) {
+    log.info('getTopQueries for:', filter);
+    const { geo, terms } = filter;
+    const term = terms[0];
+    let path = `https://www.googleapis.com/trends/v1beta/topTopics?term=${encodeURIComponent(term.entity)}`;
+    path = this.appendRestrictions(filter, path);
     this.executeCall(path, callback);
   }
 }

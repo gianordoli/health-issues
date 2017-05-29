@@ -8,7 +8,7 @@ This repo was built using this [Shiny App on Heroku boilerplate](https://github.
 	* Fechar lista de doenças
 	* Style
 * Intro
-	* Scrollytelling
+	* ~~Scrollytelling~~
 * Stories
 	* Make container and nav, load data into charts
 * Explore
@@ -16,6 +16,8 @@ This repo was built using this [Shiny App on Heroku boilerplate](https://github.
 	* create queue for the calls or
 	* bring back loadCurated and load chart when user approaches scroll
 * Other
+	* Criar esquema pra carregar texto de arquivo externo
+	* Remover keys
 	* Add router get params
 	* fix R
 		* create a decent callback for ShinyCall

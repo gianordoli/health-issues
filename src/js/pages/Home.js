@@ -1,7 +1,7 @@
 // @flow weak
 
 import { TrendsAPI } from '../api/TrendsAPI';
-import type { Term, Geo, Filter, TrendsAPITopQueries } from '../util/types';
+import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import { terms, countries } from '../util/data';
 import $ from 'jquery';
 import log from 'loglevel';
@@ -11,31 +11,30 @@ export class Home {
   data: {
     geo: Geo,
     disease: Term,
-    topQueries: TrendsAPITopQueries[],
+    topTopics: TrendsAPITopTopics[],
   }
   trendsAPI: TrendsAPI;
   countryContainer: HTMLElement;
-  topQueriesList: HTMLElement;
+  topTopicsList: HTMLElement;
 
   constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI) {
     const self = this;
     self.data ={
       geo: { iso: '', name: ''},
       disease: { name: '', entity: '', alias: ''},
-      topQueries: [],
+      topTopics: [],
     }
     self.trendsAPI = trendsAPI;
     const disease = self.getRandomDisease();
     const country = self.getUserCountry(function(geo) {
       self.updateData({ disease, geo });
-      self.getTrendsAPITopQueries();
+      self.getTrendsAPITopTopics();
     });
     this.createElements(parentContainer);
   }
 
   getRandomDisease(ignore?: string) {
-    // Pain: bug; Stress, Fever: not that many results
-    let topTerms = ['Headache', 'Infection', 'Fatigue'];
+    let topTerms = ['Pain', 'Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
     if (ignore) {
       topTerms = topTerms.filter(t => t !== ignore);
     }
@@ -67,8 +66,8 @@ export class Home {
     }, 'jsonp');
   }
 
-  getTrendsAPITopQueries(){
-    log.info('getTrendsAPITopQueries');
+  getTrendsAPITopTopics(){
+    log.info('getTrendsAPITopTopics');
     const { geo, disease } = this.data;
     const self = this;
     const filter = {
@@ -76,18 +75,18 @@ export class Home {
       geo,
       startDate: self.getPrevMonth(),
     };
-    self.trendsAPI.getTopQueries(filter, function(val){
+    self.trendsAPI.getTopTopics(filter, function(val){
       log.info('From Google Trends: ', val);
       const { item } = val;
       if (item && item.length > 0) {
-        self.updateData({ topQueries: item });
+        self.updateData({ topTopics: item });
       } else if (geo && geo.iso !== 'US') {
         const defaultGeo = self.countryToGeo('US');
         self.updateData({ geo: defaultGeo });
-        self.getTrendsAPITopQueries();
+        self.getTrendsAPITopTopics();
       } else if (disease) {
         self.updateData({ disease: self.getRandomDisease(disease.name) });
-        self.getTrendsAPITopQueries();
+        self.getTrendsAPITopTopics();
       }
     });
   }
@@ -139,22 +138,22 @@ export class Home {
     this.countryContainer.classList.add('country-container');
     elementsContainer.appendChild(this.countryContainer);
 
-    this.topQueriesList = document.createElement('div');
-    this.topQueriesList.classList.add('top-queries-list');
-    elementsContainer.appendChild(this.topQueriesList);
+    this.topTopicsList = document.createElement('div');
+    this.topTopicsList.classList.add('top-queries-list');
+    elementsContainer.appendChild(this.topTopicsList);
   }
 
   updateElements() {
-    const { geo, disease, topQueries } = this.data;
-    const { countryContainer, topQueriesList } = this;
-    if (topQueries.length > 0) {
+    const { geo, disease, topTopics } = this.data;
+    const { countryContainer, topTopicsList } = this;
+    if (topTopics.length > 0) {
       countryContainer.innerHTML =
         `Searches for ${disease.name.toLowerCase()} in ${geo.article ? 'the' : ''} ${geo.name}:`;
 
-      topQueries.forEach(t => {
+      topTopics.forEach(t => {
         const p = document.createElement('p');
         p.innerHTML = t.title;
-        topQueriesList.appendChild(p);
+        topTopicsList.appendChild(p);
       })
     }
   }

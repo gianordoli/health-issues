@@ -8,7 +8,7 @@ export type Term = {
 
 export type Geo = {
   iso: string,
-  name: string
+  name: string,
 }
 
 export type Filter = {
@@ -20,28 +20,38 @@ export type Filter = {
 
 export type TrendsAPIPoint = {
   date: string,
-  value: number
+  value: number,
 }
 
 export type TrendsAPIGraph = {
   term: string,
-  points: TrendsAPIPoint[]
+  points: TrendsAPIPoint[],
 }
 
 export type TrendsAPIQuery = {
   title: string,
-  value: number
+  value: number,
 }
 
 export type TrendsAPITopQueries = {
-  item: TrendsAPIQuery[]
+  item: TrendsAPIQuery[],
+}
+
+export type TrendsAPITopic = {
+  title: string,
+  mid: string,
+  value: number,
+}
+
+export type TrendsAPITopTopics = {
+  item: TrendsAPITopic[],
 }
 
 export type TrendsAPIAverage = {
   term: string,
-  value: number
+  value: number,
 }
 
 export type TrendsAPIGraphAverages = {
-  averages: TrendsAPIAverage[]
+  averages: TrendsAPIAverage[],
 }
