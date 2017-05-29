@@ -120,7 +120,6 @@ export class Explore {
 
     if (filter) {
       self.getTrendsAPIGraph('trend');
-      // self.loadCurated(filter);
     }
   }
 
@@ -176,12 +175,12 @@ export class Explore {
     this.updateData({ isMerged: isMerged });
   }
 
-  // loadCurated(filter: Filter) {
-  //   const { terms, geo } = filter;
-  //   this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
-  //   this.confirmNav.classList.add('hidden');
-  //   this.getTrendsAPIGraph('trend');
-  // }
+  loadFilter(filter: Filter) {
+    const { terms, geo } = filter;
+    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
+    this.confirmNav.classList.add('hidden');
+    this.getTrendsAPIGraph('trend');
+  }
 
   getTrendsAPIGraph(type: string){
     log.info('getTrendsAPIGraph');
