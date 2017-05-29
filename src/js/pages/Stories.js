@@ -1,6 +1,7 @@
 // @flow weak
 
-// Libraries
+import { LineChart } from '../visualizations/LineChart';
+import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
 
@@ -17,11 +18,19 @@ export class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const div = document.createElement('div');
-    elementsContainer.appendChild(div);
-    let p = document.createElement('p');
-    p.innerHTML = 'Now go and explore!'
-    div.appendChild(p);
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    elementsContainer.appendChild(chartsContainer);
+
+    let chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    const seasonalChart = new LineChart(chartItem, 'seasonal');
+    d3.json('./data/seasonal-summer.json', function(data) {
+      log.info('Loaded story');
+      log.info(data);
+      seasonalChart.updateData(data);
+    })
 
   }
 }
