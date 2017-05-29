@@ -1,6 +1,7 @@
 // @flow weak
 
 import type { Filter } from '../util/types';
+import { Keys } from '../../keys/Keys';
 import log from 'loglevel';
 
 export class TrendsAPI {
@@ -21,10 +22,10 @@ export class TrendsAPI {
         function start() {
           let apiKey, id;
           if (ENV === 'PRODUCTION') {
-            apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
+            apiKey = Keys['PRODUCTION'];
             id = 'diseases-production';
           } else {
-            apiKey = 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk';
+            apiKey = Keys['DEVELOPMENT'];
             id = 'diseases';
           }
 

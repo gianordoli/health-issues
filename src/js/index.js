@@ -76,19 +76,17 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    // const home = new Home(elementsContainer, trendsAPI);
-    // const intro = new Intro(elementsContainer);
-    // const stories = new Stories(elementsContainer);
+    const home = new Home(elementsContainer, trendsAPI);
+    const intro = new Intro(elementsContainer);
+    const stories = new Stories(elementsContainer);
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
-    // const about = new About(elementsContainer);
+    const about = new About(elementsContainer);
 
     const storiesDiv = document.querySelector('#stories.page');
     if (storiesDiv) {
       storiesOffsetTop = storiesDiv.offsetTop;
     }
-    initializeExplore();
-    // window.addEventListener('scroll', checkScroll);
-    // const ranking = new Ranking(trendsAPI);
+    window.addEventListener('scroll', checkScroll);
   }
 
   const init = function(){

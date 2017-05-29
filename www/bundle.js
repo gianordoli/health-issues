@@ -140,7 +140,7 @@
 
 	    // const home = new Home(elementsContainer, trendsAPI);
 	    // const intro = new Intro(elementsContainer);
-	    // const stories = new Stories(elementsContainer);
+	    var stories = new _Stories.Stories(elementsContainer);
 	    explore = new _Explore.Explore(elementsContainer, shinyAPI, trendsAPI);
 	    // const about = new About(elementsContainer);
 
@@ -148,15 +148,13 @@
 	    if (storiesDiv) {
 	      storiesOffsetTop = storiesDiv.offsetTop;
 	    }
-	    initializeExplore();
-	    // window.addEventListener('scroll', checkScroll);
-	    // const ranking = new Ranking(trendsAPI);
+	    window.addEventListener('scroll', checkScroll);
 	  }
 
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
+	    _loglevel2.default.info('ENV: ' + ("STAGING"));
 	    loadShinyAPI();
 	  };
 
@@ -409,7 +407,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (true) {
+	          if (false) {
 	            apiKey = 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ';
 	            id = 'diseases-production';
 	          } else {
