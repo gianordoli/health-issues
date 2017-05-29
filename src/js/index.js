@@ -53,14 +53,14 @@ app.main = (function (){
 
   function initializeExplore() {
     log.info('initializeExplore');
-    const filter = {
-      terms: [
-        terms.find(t => t.name === 'Sunburn'),
-        terms.find(t => t.name === 'Dehydration'),
-        terms.find(t => t.name === 'Lyme disease'),
-      ], geo: countries[0]
-    }
-    explore.loadFilter(filter);
+    const diseases = [
+      terms.find(t => t.name === 'Sunburn'),
+      terms.find(t => t.name === 'Dehydration'),
+      terms.find(t => t.name === 'Lyme disease'),
+    ];
+    const geo = countries[0];
+    explore.updateData({ diseases, geo });
+    explore.confirmFilters(null, explore);
   }
 
 
@@ -78,15 +78,16 @@ app.main = (function (){
 
     // const home = new Home(elementsContainer, trendsAPI);
     // const intro = new Intro(elementsContainer);
-    const stories = new Stories(elementsContainer);
+    // const stories = new Stories(elementsContainer);
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
-    const about = new About(elementsContainer);
+    // const about = new About(elementsContainer);
 
     const storiesDiv = document.querySelector('#stories.page');
     if (storiesDiv) {
       storiesOffsetTop = storiesDiv.offsetTop;
     }
-    window.addEventListener('scroll', checkScroll);
+    initializeExplore();
+    // window.addEventListener('scroll', checkScroll);
     // const ranking = new Ranking(trendsAPI);
   }
 

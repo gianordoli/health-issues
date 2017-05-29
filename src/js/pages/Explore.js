@@ -160,6 +160,7 @@ export class Explore {
       prevGeo: geo,
       isChanging: false,
       isLoading: true,
+      totalPerLine: [],
       seasonal: [],
       trend: [],
     });
@@ -171,13 +172,6 @@ export class Explore {
     isMerged = isMerged ? false : true;
     this.seasonalChart.hide();
     this.updateData({ isMerged: isMerged });
-  }
-
-  loadFilter(filter: Filter) {
-    const { terms, geo } = filter;
-    this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
-    this.confirmNav.classList.add('hidden');
-    this.getTrendsAPIGraph('trend');
   }
 
   getTrendsAPIGraph(type: string){
@@ -314,7 +308,7 @@ export class Explore {
       const option = document.createElement('option');
       option.setAttribute('value', d.entity);
       option.setAttribute('key', i);
-      option.innerHTML = d.name;
+      option.innerHTML = d.alias ? d.alias : d.name;
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
