@@ -50,13 +50,13 @@
 
 	var _Intro = __webpack_require__(17);
 
-	var _Curated = __webpack_require__(22);
+	var _Stories = __webpack_require__(26);
 
-	var _Explore = __webpack_require__(25);
+	var _Explore = __webpack_require__(29);
 
-	var _About = __webpack_require__(38);
+	var _About = __webpack_require__(39);
 
-	var _ShinyAPI = __webpack_require__(28);
+	var _ShinyAPI = __webpack_require__(30);
 
 	var _TrendsAPI = __webpack_require__(2);
 
@@ -66,9 +66,9 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(39);
+	__webpack_require__(40);
 
-	var _Ranking = __webpack_require__(41);
+	var _Ranking = __webpack_require__(42);
 
 	var _Ranking2 = _interopRequireDefault(_Ranking);
 
@@ -96,6 +96,37 @@
 	    });
 	  }
 
+	  var explore = void 0;
+	  var ticking = false;
+	  var storiesOffsetTop = void 0;
+
+	  function checkScroll(e) {
+	    if (!ticking) {
+	      window.requestAnimationFrame(function () {
+	        ticking = false;
+	        if (window.scrollY > storiesOffsetTop) {
+	          window.removeEventListener('scroll', checkScroll);
+	          initializeExplore();
+	        }
+	      });
+	    }
+	    ticking = true;
+	  }
+
+	  function initializeExplore() {
+	    _loglevel2.default.info('initializeExplore');
+	    var filter = {
+	      terms: [_data.terms.find(function (t) {
+	        return t.name === 'Sunburn';
+	      }), _data.terms.find(function (t) {
+	        return t.name === 'Dehydration';
+	      }), _data.terms.find(function (t) {
+	        return t.name === 'Lyme disease';
+	      })], geo: _data.countries[0]
+	    };
+	    explore.loadFilter(filter);
+	  }
+
 	  function render(shinyAPI, trendsAPI) {
 
 	    _loglevel2.default.info('render');
@@ -107,15 +138,18 @@
 	      body.appendChild(elementsContainer);
 	    }
 
-	    var filter = {
-	      terms: [_data.terms[55], _data.terms[359], _data.terms[515]], geo: _data.countries[241]
-	    };
-
-	    var home = new _Home.Home(elementsContainer, trendsAPI);
-	    var intro = new _Intro.Intro(elementsContainer);
-	    var curated = new _Curated.Curated(elementsContainer);
-	    var explore = new _Explore.Explore(elementsContainer, shinyAPI, trendsAPI, filter);
+	    // const home = new Home(elementsContainer, trendsAPI);
+	    // const intro = new Intro(elementsContainer);
+	    var stories = new _Stories.Stories(elementsContainer);
+	    explore = new _Explore.Explore(elementsContainer, shinyAPI, trendsAPI);
 	    var about = new _About.About(elementsContainer);
+
+	    var storiesDiv = document.querySelector('#stories.page');
+	    if (storiesDiv) {
+	      storiesOffsetTop = storiesDiv.offsetTop;
+	    }
+	    window.addEventListener('scroll', checkScroll);
+	    // const ranking = new Ranking(trendsAPI);
 	  }
 
 	  var init = function init() {
@@ -169,13 +203,13 @@
 	    self.data = {
 	      geo: { iso: '', name: '' },
 	      disease: { name: '', entity: '', alias: '' },
-	      topQueries: []
+	      topTopics: []
 	    };
 	    self.trendsAPI = trendsAPI;
 	    var disease = self.getRandomDisease();
 	    var country = self.getUserCountry(function (geo) {
 	      self.updateData({ disease: disease, geo: geo });
-	      self.getTrendsAPITopQueries();
+	      self.getTrendsAPITopTopics();
 	    });
 	    this.createElements(parentContainer);
 	  }
@@ -183,8 +217,7 @@
 	  _createClass(Home, [{
 	    key: 'getRandomDisease',
 	    value: function getRandomDisease(ignore) {
-	      // Pain: bug; Stress, Fever: not that many results
-	      var topTerms = ['Headache', 'Infection', 'Fatigue'];
+	      var topTerms = ['Pain', 'Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
 	      if (ignore) {
 	        topTerms = topTerms.filter(function (t) {
 	          return t !== ignore;
@@ -226,9 +259,9 @@
 	      }, 'jsonp');
 	    }
 	  }, {
-	    key: 'getTrendsAPITopQueries',
-	    value: function getTrendsAPITopQueries() {
-	      _loglevel2.default.info('getTrendsAPITopQueries');
+	    key: 'getTrendsAPITopTopics',
+	    value: function getTrendsAPITopTopics() {
+	      _loglevel2.default.info('getTrendsAPITopTopics');
 	      var _data = this.data,
 	          geo = _data.geo,
 	          disease = _data.disease;
@@ -239,19 +272,19 @@
 	        geo: geo,
 	        startDate: self.getPrevMonth()
 	      };
-	      self.trendsAPI.getTopQueries(filter, function (val) {
+	      self.trendsAPI.getTopTopics(filter, function (val) {
 	        _loglevel2.default.info('From Google Trends: ', val);
 	        var item = val.item;
 
 	        if (item && item.length > 0) {
-	          self.updateData({ topQueries: item });
+	          self.updateData({ topTopics: item });
 	        } else if (geo && geo.iso !== 'US') {
 	          var defaultGeo = self.countryToGeo('US');
 	          self.updateData({ geo: defaultGeo });
-	          self.getTrendsAPITopQueries();
+	          self.getTrendsAPITopTopics();
 	        } else if (disease) {
 	          self.updateData({ disease: self.getRandomDisease(disease.name) });
-	          self.getTrendsAPITopQueries();
+	          self.getTrendsAPITopTopics();
 	        }
 	      });
 	    }
@@ -305,9 +338,9 @@
 	      this.countryContainer.classList.add('country-container');
 	      elementsContainer.appendChild(this.countryContainer);
 
-	      this.topQueriesList = document.createElement('div');
-	      this.topQueriesList.classList.add('top-queries-list');
-	      elementsContainer.appendChild(this.topQueriesList);
+	      this.topTopicsList = document.createElement('div');
+	      this.topTopicsList.classList.add('top-queries-list');
+	      elementsContainer.appendChild(this.topTopicsList);
 	    }
 	  }, {
 	    key: 'updateElements',
@@ -315,17 +348,17 @@
 	      var _data2 = this.data,
 	          geo = _data2.geo,
 	          disease = _data2.disease,
-	          topQueries = _data2.topQueries;
+	          topTopics = _data2.topTopics;
 	      var countryContainer = this.countryContainer,
-	          topQueriesList = this.topQueriesList;
+	          topTopicsList = this.topTopicsList;
 
-	      if (topQueries.length > 0) {
+	      if (topTopics.length > 0) {
 	        countryContainer.innerHTML = 'Searches for ' + disease.name.toLowerCase() + ' in ' + (geo.article ? 'the' : '') + ' ' + geo.name + ':';
 
-	        topQueries.forEach(function (t) {
+	        topTopics.forEach(function (t) {
 	          var p = document.createElement('p');
 	          p.innerHTML = t.title;
-	          topQueriesList.appendChild(p);
+	          topTopicsList.appendChild(p);
 	        });
 	      }
 	    }
@@ -408,11 +441,29 @@
 	      });
 	    }
 	  }, {
+	    key: 'appendRestrictions',
+	    value: function appendRestrictions(filter, path) {
+	      var geo = filter.geo,
+	          startDate = filter.startDate,
+	          endDate = filter.endDate;
+
+	      if (geo.iso !== 'world') {
+	        path += '&restrictions.geo=' + geo.iso;
+	      }
+	      if (filter.startDate) {
+	        path += '&restrictions.startDate=' + filter.startDate;
+	      }
+	      if (filter.endDate) {
+	        path += '&restrictions.endDate=' + filter.endDate;
+	      }
+	      return path;
+	    }
+	  }, {
 	    key: 'getGraph',
 	    value: function getGraph(filter, callback) {
 	      _loglevel2.default.info('getGraph for:', filter);
-	      var geo = filter.geo;
-	      var terms = filter.terms;
+	      var geo = filter.geo,
+	          terms = filter.terms;
 
 	      var path = 'https://www.googleapis.com/trends/v1beta/graph?';
 	      var _iteratorNormalCompletion = true;
@@ -440,36 +491,13 @@
 	        }
 	      }
 
-	      if (geo.iso !== 'world') {
-	        path += 'restrictions.geo=' + geo.iso;
-	      }
-	      this.executeCall(path, callback);
-	    }
-	  }, {
-	    key: 'getTopQueries',
-	    value: function getTopQueries(filter, callback) {
-	      _loglevel2.default.info('getTopQueries for:', filter);
-	      var geo = filter.geo;
-	      var terms = filter.terms;
-
-	      var term = terms[0];
-	      var path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity);
-	      if (geo.iso !== 'world') {
-	        path += '&restrictions.geo=' + geo.iso;
-	      }
-	      if (filter.startDate) {
-	        path += '&restrictions.startDate=' + filter.startDate;
-	      }
-	      if (filter.endDate) {
-	        path += '&restrictions.endDate=' + filter.endDate;
-	      }
+	      path = this.appendRestrictions(filter, path);
 	      this.executeCall(path, callback);
 	    }
 	  }, {
 	    key: 'getGraphAverages',
 	    value: function getGraphAverages(filter, callback) {
 	      // log.info('getGraphAverages for:', filter);
-	      var geo = filter.geo;
 	      var terms = filter.terms;
 
 	      var path = 'https://www.googleapis.com/trends/v1beta/graphAverages?';
@@ -498,9 +526,31 @@
 	        }
 	      }
 
-	      if (geo.iso !== 'world') {
-	        path += 'restrictions.geo=' + geo.iso;
-	      }
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getTopQueries',
+	    value: function getTopQueries(filter, callback) {
+	      _loglevel2.default.info('getTopQueries for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var term = terms[0];
+	      var path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity);
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getTopTopics',
+	    value: function getTopTopics(filter, callback) {
+	      _loglevel2.default.info('getTopQueries for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var term = terms[0];
+	      var path = 'https://www.googleapis.com/trends/v1beta/topTopics?term=' + encodeURIComponent(term.entity);
+	      path = this.appendRestrictions(filter, path);
 	      this.executeCall(path, callback);
 	    }
 	  }]);
@@ -1831,7 +1881,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var terms = exports.terms = [{ "name": "Aaron's sign", "entity": "/m/059s97", "alias": null }, { "name": "Abarognosis", "entity": "/m/08gh0x", "alias": null }, { "name": "Abasia", "entity": "/m/07x_xw", "alias": null }, { "name": "Abcess", "entity": "/m/0lxt", "alias": null }, { "name": "Abdominal angina", "entity": "/m/0ft1_3", "alias": null }, { "name": "Abdominal distension", "entity": "/m/09d7vk", "alias": null }, { "name": "Abdominal fullness", "entity": "/m/0dl9shd", "alias": null }, { "name": "Abdominal guarding", "entity": "/m/02r0j6j", "alias": null }, { "name": "Abdominal mass", "entity": "/m/0b8v9f", "alias": null }, { "name": "Abdominal migraine", "entity": "/m/0kfyl_5", "alias": null }, { "name": "Abdominal obesity", "entity": "/m/0f8fc", "alias": null }, { "name": "Abdominal pain", "entity": "/m/02tfl8", "alias": null }, { "name": "Abnormal basal metabolic rate", "entity": "/m/08x47t", "alias": null }, { "name": "Abnormal posturing", "entity": "/m/08hpp7", "alias": null }, { "name": "Abscess", "entity": "/m/0lxt", "alias": null }, { "name": "Absent-mindedness", "entity": "/m/026__2h", "alias": null }, { "name": "Acalculia", "entity": "/m/025sjm9", "alias": null }, { "name": "Acanthocyte", "entity": "/m/06nyl4", "alias": null }, { "name": "Acanthosis nigricans", "entity": "/m/036b82", "alias": null }, { "name": "Achilles tendon rupture", "entity": "/m/06tbxm", "alias": null }, { "name": "Acholia", "entity": "/m/0ryshn1", "alias": null }, { "name": "Acid erosion", "entity": "/m/065tzg", "alias": null }, { "name": "Acidosis", "entity": "/m/02gwty", "alias": null }, { "name": "Acne", "entity": "/m/0jwqt", "alias": null }, { "name": "Acneiform eruption", "entity": "/m/04jbylc", "alias": null }, { "name": "Acroosteolysis", "entity": "/m/05ztxfr", "alias": null }, { "name": "Actinic keratosis", "entity": "/m/04r3p5", "alias": null }, { "name": "Acute chest syndrome", "entity": "/m/03m9zsx", "alias": null }, { "name": "Acute kidney injury", "entity": "/m/03545w", "alias": null }, { "name": "Acyanotic heart defect", "entity": "/m/03k275", "alias": null }, { "name": "Adenoma sebaceum", "entity": "/m/06wcg0z", "alias": null }, { "name": "Adenomyosis", "entity": "/m/054xgp", "alias": null }, { "name": "Adermatoglyphia", "entity": "/m/0h3sypv", "alias": null }, { "name": "Adie syndrome", "entity": "/m/08g5r9", "alias": null }, { "name": "Adrenal crisis", "entity": "/m/0wqdl_y", "alias": null }, { "name": "Adson's sign", "entity": "/m/045hv5", "alias": null }, { "name": "Adynamia", "entity": "/m/03clsld", "alias": null }, { "name": "Afterimage", "entity": "/m/02h98q", "alias": null }, { "name": "Ageusia", "entity": "/m/05sfr2", "alias": null }, { "name": "Agnosia", "entity": "/m/016q5d", "alias": null }, { "name": "Agonal respiration", "entity": "/m/07gylr", "alias": null }, { "name": "Agrammatism", "entity": "/m/0crhgf", "alias": null }, { "name": "Agraphesthesia", "entity": "/m/09gdzpf", "alias": null }, { "name": "Agraphia", "entity": "/m/0jwvhgg", "alias": null }, { "name": "Air crescent sign", "entity": "/m/0gkfrn", "alias": null }, { "name": "Air trapping", "entity": "/m/0263nnq", "alias": null }, { "name": "Akathisia", "entity": "/m/01dzyw", "alias": null }, { "name": "Albinism", "entity": "/m/0122t", "alias": null }, { "name": "Albuminuria", "entity": "/m/0g6q2", "alias": null }, { "name": "Alcohol flush reaction", "entity": "/m/05nn1b", "alias": null }, { "name": "Alcoholism", "entity": "/m/012jc", "alias": null }, { "name": "Alice in Wonderland syndrome", "entity": "/m/019szr", "alias": null }, { "name": "Alkalosis", "entity": "/m/02gwvb", "alias": null }, { "name": "Allergic bronchopulmonary aspergillosis", "entity": "/m/0cvcl5", "alias": null }, { "name": "Allergic conjunctivitis", "entity": "/m/04v6d0", "alias": null }, { "name": "Allergy", "entity": "/m/0fd23", "alias": null }, { "name": "Allodynia", "entity": "/m/096m74", "alias": null }, { "name": "Alogia", "entity": "/m/01r718", "alias": null }, { "name": "Alpha 1-antitrypsin deficiency", "entity": "/m/01t4q6", "alias": null }, { "name": "Amaurosis", "entity": "/m/05wt36", "alias": null }, { "name": "Amaurosis fugax", "entity": "/m/036bqx", "alias": null }, { "name": "Amblyopia", "entity": "/m/02s64_", "alias": null }, { "name": "Ameboma", "entity": "/m/05c10rl", "alias": null }, { "name": "Amenorrhoea", "entity": "/m/01j62y", "alias": null }, { "name": "Amnesia", "entity": "/m/01j4hd", "alias": null }, { "name": "Amylophagia", "entity": "/m/07_vwb", "alias": null }, { "name": "Anagen effluvium", "entity": "/m/051vhjt", "alias": null }, { "name": "Anal fissure", "entity": "/m/02gscl", "alias": null }, { "name": "Anaphylaxis", "entity": "/m/0jtyb", "alias": null }, { "name": "Anasarca", "entity": "/m/036br7", "alias": null }, { "name": "Anejaculation", "entity": "/m/03bxghw", "alias": null }, { "name": "Anemia", "entity": "/m/0lcdk", "alias": null }, { "name": "Anencephaly", "entity": "/m/01hr6t", "alias": null }, { "name": "Angina pectoris", "entity": "/m/0hg45", "alias": null }, { "name": "Anginal equivalent", "entity": "/m/0gh8htd", "alias": null }, { "name": "Angioedema", "entity": "/m/03tlvj", "alias": null }, { "name": "Angioid streaks", "entity": "/m/02w1m45", "alias": null }, { "name": "Angor animi", "entity": "/m/0dl9t9q", "alias": null }, { "name": "Angular cheilitis", "entity": "/m/099686", "alias": null }, { "name": "Anhedonia", "entity": "/m/01nvfh", "alias": null }, { "name": "Aniridia", "entity": "/m/03gxt1", "alias": null }, { "name": "Anisocoria", "entity": "/m/08mh71", "alias": null }, { "name": "Annuloaortic ectasia", "entity": "/m/02q6sdc", "alias": null }, { "name": "Anorexia", "entity": "/m/0brgy", "alias": null }, { "name": "Anosmia", "entity": "/m/0m7pl", "alias": null }, { "name": "Anovulatory cycle", "entity": "/m/0504pv", "alias": null }, { "name": "Antepartum haemorrhage", "entity": "/m/056x7r", "alias": null }, { "name": "Anterograde amnesia", "entity": "/m/02m3p2", "alias": null }, { "name": "Anti-social behaviour", "entity": "/m/02l4fy", "alias": null }, { "name": "Anuria", "entity": "/m/04f74cm", "alias": null }, { "name": "Anxiety", "entity": "/m/0k_9", "alias": null }, { "name": "Aortic unfolding", "entity": "/m/0cz8y2h", "alias": null }, { "name": "Apathy", "entity": "/m/01y4zk", "alias": null }, { "name": "Aphakia", "entity": "/m/0831jw", "alias": null }, { "name": "Aphasia", "entity": "/m/0wnw", "alias": null }, { "name": "Aphonia", "entity": "/m/025s02j", "alias": null }, { "name": "Aplasia cutis congenita", "entity": "/m/05b1frk", "alias": null }, { "name": "Apnea", "entity": "/m/01mr85", "alias": null }, { "name": "Apraxia", "entity": "/m/0flz_", "alias": null }, { "name": "Aprosodia", "entity": "/m/02rfs8c", "alias": null }, { "name": "Arachnodactyly", "entity": "/m/041r6g", "alias": null }, { "name": "Arcus senilis", "entity": "/m/06stpj", "alias": null }, { "name": "Argyll Robertson pupil", "entity": "/m/036dkg", "alias": null }, { "name": "Arthritis", "entity": "/m/0t1t", "alias": null }, { "name": "Arthritis mutilans", "entity": "/m/0j_6ngk", "alias": null }, { "name": "Arthrogryposis", "entity": "/m/0nrd_", "alias": null }, { "name": "Arthropathy", "entity": "/m/07nsp9", "alias": null }, { "name": "Asboe-Hansen sign", "entity": "/m/04q2tjp", "alias": null }, { "name": "Ascites", "entity": "/m/01c24r", "alias": null }, { "name": "Asperger syndrome", "entity": "/m/09cds", "alias": null }, { "name": "Asphyxia", "entity": "/m/0p7w5", "alias": null }, { "name": "Astasis", "entity": "/m/05pkly", "alias": null }, { "name": "Asterixis", "entity": "/m/077dxt", "alias": null }, { "name": "Asthma", "entity": "/m/0c78m", "alias": null }, { "name": "Astigmatism", "entity": "/m/0chf1d", "alias": null }, { "name": "Asynergy", "entity": "/m/02z63fn", "alias": null }, { "name": "Ataxia", "entity": "/m/0l95", "alias": null }, { "name": "Athetosis", "entity": "/m/03hrw8", "alias": null }, { "name": "Atony", "entity": "/m/08bp0k", "alias": null }, { "name": "Atrial enlargement", "entity": "/m/07k9v9w", "alias": null }, { "name": "Atrial tachycardia", "entity": "/m/053y02n", "alias": null }, { "name": "Atrophy", "entity": "/m/034y_l", "alias": null }, { "name": "Auditory hallucination", "entity": "/m/03hfxpg", "alias": null }, { "name": "Auditory verbal agnosia", "entity": "/m/090dzh", "alias": null }, { "name": "Aura", "entity": "/m/07ms80", "alias": null }, { "name": "Autoimmune disease", "entity": "/m/04dx3qn", "alias": null }, { "name": "Autoimmune hemolytic anemia", "entity": "/m/0b1p89", "alias": null }, { "name": "Automatic behavior", "entity": "/m/089ks8", "alias": null }, { "name": "AV nicking", "entity": "/m/0405mqw", "alias": null }, { "name": "AV nodal reentrant tachycardia", "entity": "/m/03rsgd", "alias": null }, { "name": "Avoidant personality disorder", "entity": "/m/01_4_n", "alias": null }, { "name": "Avolition", "entity": "/m/01sbgb", "alias": null }, { "name": "Axillary lymphadenopathy", "entity": "/m/0bh6svk", "alias": null }, { "name": "Azotemia", "entity": "/m/0dn4_", "alias": null }, { "name": "Azotorrhea", "entity": "/m/02qdg9h", "alias": null }, { "name": "B symptoms", "entity": "/m/08z394", "alias": null }, { "name": "Back pain", "entity": "/m/0142ky", "alias": null }, { "name": "Bacterial arthritis", "entity": "/m/02nrsk", "alias": null }, { "name": "Bacterial vaginosis", "entity": "/m/01glh", "alias": null }, { "name": "Bad breath", "entity": "/m/025hzf", "alias": null }, { "name": "Balance disorder", "entity": "/m/0180jb", "alias": null }, { "name": "Balanitis circinata", "entity": "/m/02q5q8s", "alias": null }, { "name": "Ballance's sign", "entity": "/m/03h32hp", "alias": null }, { "name": "Ballottement", "entity": "/m/03whwhg", "alias": null }, { "name": "Bancroft's sign", "entity": "/m/0bhbpzh", "alias": null }, { "name": "Barking cough", "entity": "/m/078yyj8", "alias": null }, { "name": "Barrel chest", "entity": "/m/04zxhhc", "alias": null }, { "name": "Beau's lines", "entity": "/m/069j_5", "alias": null }, { "name": "Beck's triad", "entity": "/m/04rjcm", "alias": null }, { "name": "Becker's sign", "entity": "/m/05pcqt7", "alias": null }, { "name": "Beevor's sign", "entity": "/m/0bcyvy", "alias": null }, { "name": "BehÃ§et's disease", "entity": "/m/025t67z", "alias": null }, { "name": "Behavioral addiction", "entity": "/m/0bs79cp", "alias": null }, { "name": "Behavioral symptoms", "entity": "/m/07y4v_n", "alias": null }, { "name": "Bell's palsy", "entity": "/m/0dxdd", "alias": null }, { "name": "Bent finger", "entity": "/m/07468xh", "alias": null }, { "name": "Bigeminy", "entity": "/m/099t0f", "alias": null }, { "name": "Biliary colic", "entity": "/m/026stnc", "alias": null }, { "name": "Biliary dyskinesia", "entity": "/m/04cy_nk", "alias": null }, { "name": "Biliary sludge", "entity": "/m/012ngbtr", "alias": null }, { "name": "Bing's sign", "entity": "/m/05p4bk3", "alias": null }, { "name": "Binge eating", "entity": "/m/01t96l", "alias": null }, { "name": "Biot's respiration", "entity": "/m/05d44n", "alias": null }, { "name": "Birthmark", "entity": "/m/01ljf2", "alias": null }, { "name": "Bitot's spots", "entity": "/m/03z3vp", "alias": null }, { "name": "Black eye", "entity": "/m/065wv1", "alias": null }, { "name": "Black pox", "entity": "/m/05tcsy", "alias": null }, { "name": "Black tarry stool", "entity": "/m/075bd16", "alias": null }, { "name": "Blackout", "entity": "/m/02pnflk", "alias": null }, { "name": "Bladder pain", "entity": "/m/0dl9sch", "alias": null }, { "name": "Bladder spasm", "entity": "/m/02x4tcb", "alias": null }, { "name": "Blank stare", "entity": "/m/06vzj_r", "alias": null }, { "name": "Bleeding", "entity": "/m/012n6x", "alias": null }, { "name": "Bleeding diathesis", "entity": "/m/037mv0", "alias": null }, { "name": "Bleeding from anus", "entity": "/m/0dfmqkt", "alias": null }, { "name": "Bleeding from ear", "entity": "/m/0dg4snt", "alias": null }, { "name": "Bleeding on probing", "entity": "/m/02rtqbt", "alias": null }, { "name": "Blepharospasm", "entity": "/m/08k14_", "alias": null }, { "name": "Blindness", "entity": "/m/064kj9p", "alias": null }, { "name": "Blister", "entity": "/m/01k1jq", "alias": null }, { "name": "Bloating", "entity": "/m/011dzgb6", "alias": null }, { "name": "Blood blister", "entity": "/m/05zy6c", "alias": null }, { "name": "Blood hammer", "entity": "/m/0dlqb4", "alias": null }, { "name": "Blood in spit", "entity": "/m/0dl9tjl", "alias": null }, { "name": "Blood in stool", "entity": "/m/08cmfm", "alias": null }, { "name": "Bloody show", "entity": "/m/05q5s6", "alias": null }, { "name": "Blue nails", "entity": "/m/05b0h7r", "alias": null }, { "name": "Blue nevus", "entity": "/m/02qgnm2", "alias": null }, { "name": "Blue sclerae", "entity": "/m/0hsr1_z", "alias": null }, { "name": "Blueberry muffin baby", "entity": "/m/05mxl64", "alias": null }, { "name": "Blumberg sign", "entity": "/m/04mr6t", "alias": null }, { "name": "Blumer's shelf", "entity": "/m/0j63q7l", "alias": null }, { "name": "Blurred vision", "entity": "/m/03g_gxj", "alias": null }, { "name": "Blushing", "entity": "/m/01jyxg", "alias": null }, { "name": "Boas' sign", "entity": "/m/027clgs", "alias": null }, { "name": "Body odor", "entity": "/m/037ywk", "alias": null }, { "name": "Boil", "entity": "/m/03xp5n", "alias": null }, { "name": "Bone deformities", "entity": "/m/075yfz6", "alias": null }, { "name": "Bone fracture", "entity": "/m/03fz1q", "alias": null }, { "name": "Bone tumor", "entity": "/m/01t125", "alias": null }, { "name": "Border irregularity", "entity": "/m/04nlqr1", "alias": null }, { "name": "Boredom", "entity": "/m/01j6mj", "alias": null }, { "name": "Boston's sign", "entity": "/m/08zy9f", "alias": null }, { "name": "Bouchard's nodes", "entity": "/m/045hxd", "alias": null }, { "name": "Bounding pulse", "entity": "/m/0cfb2d", "alias": null }, { "name": "Bow and arrow sign", "entity": "/m/0fmphf", "alias": null }, { "name": "Bowel infarction", "entity": "/m/02r0rdw", "alias": null }, { "name": "Bowel obstruction", "entity": "/m/01vzqb", "alias": null }, { "name": "Brachycephaly", "entity": "/m/01hrdy", "alias": null }, { "name": "Brachydactyly", "entity": "/m/0mdcl", "alias": null }, { "name": "Bradycardia", "entity": "/m/01r__", "alias": null }, { "name": "Bradypnea", "entity": "/m/08hy81", "alias": null }, { "name": "Brain damage", "entity": "/m/01sbk1", "alias": null }, { "name": "Brain death", "entity": "/m/019m0c", "alias": null }, { "name": "Braxton Hicks contractions", "entity": "/m/03_81f", "alias": null }, { "name": "Breakthrough bleeding", "entity": "/m/04fjyf", "alias": null }, { "name": "Breast enlargement", "entity": "/m/05pdgz2", "alias": null }, { "name": "Breast hematoma", "entity": "/m/012bldgw", "alias": null }, { "name": "Breast hypertrophy", "entity": "/m/025t7qd", "alias": null }, { "name": "Breast lump", "entity": "/m/080fvq7", "alias": null }, { "name": "Breast pain", "entity": "/m/06pp7p", "alias": null }, { "name": "Breastfeeding difficulties", "entity": "/m/02z1qhl", "alias": null }, { "name": "Broadbent sign", "entity": "/m/05p78x6", "alias": null }, { "name": "Bronchiectasis", "entity": "/m/01w_2w", "alias": null }, { "name": "Bronchitis", "entity": "/m/047gmsk", "alias": null }, { "name": "Bronchoconstriction", "entity": "/m/073m9q", "alias": null }, { "name": "Bronchophony", "entity": "/m/027bt0g", "alias": null }, { "name": "Bronchorrhea", "entity": "/m/027_4wl", "alias": null }, { "name": "Bronchospasm", "entity": "/m/02_5n7", "alias": null }, { "name": "Brown induration", "entity": "/m/07k9wg7", "alias": null }, { "name": "Brown-SÃ©quard syndrome", "entity": "/m/03vwc5", "alias": null }, { "name": "BrudziÅ„ski's sign", "entity": "/m/05p86vp", "alias": null }, { "name": "Bruise", "entity": "/m/02zpsl", "alias": null }, { "name": "Bruit", "entity": "/m/07qwnz", "alias": null }, { "name": "Bruns nystagmus", "entity": "/m/0g9_2pv", "alias": null }, { "name": "Brushfield spots", "entity": "/m/039412", "alias": null }, { "name": "Bruxism", "entity": "/m/0149nm", "alias": null }, { "name": "Bubo", "entity": "/m/02777pt", "alias": null }, { "name": "Bulbar palsy", "entity": "/m/02qb7yy", "alias": null }, { "name": "Bulging flanks", "entity": "/m/09l_s7", "alias": null }, { "name": "Bullying", "entity": "/m/027vd9", "alias": null }, { "name": "Bunion", "entity": "/m/01l2ky", "alias": null }, { "name": "Burning mouth syndrome", "entity": "/m/03_3c6", "alias": null }, { "name": "Bursitis", "entity": "/m/034z18", "alias": null }, { "name": "Burton line", "entity": "/m/05pcm9t", "alias": null }, { "name": "Cachexia", "entity": "/m/01wxhm", "alias": null }, { "name": "CafÃ© au lait spot", "entity": "/m/04xkg4", "alias": null }, { "name": "Calcaneal spur", "entity": "/m/025t1sl", "alias": null }, { "name": "Calcinosis", "entity": "/m/042yl7", "alias": null }, { "name": "Calcinosis cutis", "entity": "/m/042m3q", "alias": null }, { "name": "Callus", "entity": "/m/01l2l9", "alias": null }, { "name": "Camptodactyly", "entity": "/m/02qxxsk", "alias": null }, { "name": "Cancer-related fatigue", "entity": "/m/0dllzqv", "alias": null }, { "name": "Candidiasis", "entity": "/m/020gv", "alias": null }, { "name": "Canker sore", "entity": "/m/05frfm", "alias": null }, { "name": "Cannon A waves", "entity": "/m/05mrndk", "alias": null }, { "name": "Caput medusae", "entity": "/m/049wbg", "alias": null }, { "name": "Cardiac arrest", "entity": "/m/0gg4h", "alias": null }, { "name": "Cardiac arrhythmia", "entity": "/m/01pf6", "alias": null }, { "name": "Cardiac asthma", "entity": "/m/08fnwn", "alias": null }, { "name": "Cardiomegaly", "entity": "/m/08_51g", "alias": null }, { "name": "Carnett's sign", "entity": "/m/04g1lmg", "alias": null }, { "name": "Carotenosis", "entity": "/m/0cdrvd", "alias": null }, { "name": "Carpal tunnel syndrome", "entity": "/m/0fl_v", "alias": null }, { "name": "Carvallo's sign", "entity": "/m/05p44wb", "alias": null }, { "name": "Casal collar", "entity": "/m/05p45xp", "alias": null }, { "name": "Castell's sign", "entity": "/m/0c9w3f", "alias": null }, { "name": "Cataplexy", "entity": "/m/07f_8c", "alias": null }, { "name": "Cataract", "entity": "/m/0m7h6", "alias": null }, { "name": "Catatonia", "entity": "/m/01lxx", "alias": null }, { "name": "Cauda equina syndrome", "entity": "/m/04yb5z", "alias": null }, { "name": "Central cord syndrome", "entity": "/m/02qbn93", "alias": null }, { "name": "Central facial palsy", "entity": "/m/0276115", "alias": null }, { "name": "Central pontine myelinolysis", "entity": "/m/0268v", "alias": null }, { "name": "Cerebellar ataxia", "entity": "/m/02vkcrn", "alias": null }, { "name": "Cerebellar stroke syndrome", "entity": "/m/09gq6ht", "alias": null }, { "name": "Cerebral edema", "entity": "/m/0219bz", "alias": null }, { "name": "Cerebral polyopia", "entity": "/m/011q1xpz", "alias": null }, { "name": "Cerebritis", "entity": "/m/03d4x24", "alias": null }, { "name": "Cerebrospinal fluid leak", "entity": "/m/05f344r", "alias": null }, { "name": "Cervical cancer", "entity": "/m/0d_bk", "alias": null }, { "name": "Cervical lymphadenopathy", "entity": "/m/0bh9rhf", "alias": null }, { "name": "Cervical motion tenderness", "entity": "/m/02vlfrb", "alias": null }, { "name": "Cervicitis", "entity": "/m/020v3l", "alias": null }, { "name": "Chadwick's sign", "entity": "/m/08h6km", "alias": null }, { "name": "Chagoma", "entity": "/m/0jkys2b", "alias": null }, { "name": "Chalazion", "entity": "/m/03gf8g", "alias": null }, { "name": "Chalkstick fracture", "entity": "/m/02q2xk1", "alias": null }, { "name": "Chancre", "entity": "/m/01ny_v", "alias": null }, { "name": "Change in bowel habits", "entity": "/m/04mvdfs", "alias": null }, { "name": "Charcotâ€“Leyden crystals", "entity": "/m/08ydrl", "alias": null }, { "name": "Cheilitis", "entity": "/m/0gj51x", "alias": null }, { "name": "Chemosis", "entity": "/m/04jr5f", "alias": null }, { "name": "Chemotherapy-induced acral erythema", "entity": "/m/02qkht2", "alias": null }, { "name": "Cherry-red spot", "entity": "/m/065yks4", "alias": null }, { "name": "Chest pain", "entity": "/m/02np4v", "alias": null }, { "name": "Chest Tightness", "entity": "/m/06gx48m", "alias": null }, { "name": "Cheyneâ€“Stokes respiration", "entity": "/m/036k30", "alias": null }, { "name": "Chills", "entity": "/m/02mdc7", "alias": null }, { "name": "Choking", "entity": "/m/0168pw", "alias": null }, { "name": "Cholestasis", "entity": "/m/07t2pp", "alias": null }, { "name": "Choluria", "entity": "/m/0bwjd87", "alias": null }, { "name": "Chordee", "entity": "/m/021xcm", "alias": null }, { "name": "Chorea", "entity": "/m/03d70n", "alias": null }, { "name": "Choreoathetosis", "entity": "/m/04bltj", "alias": null }, { "name": "Chorioretinitis", "entity": "/m/01dl8m", "alias": null }, { "name": "Choroidal neovascularization", "entity": "/m/03d0r78", "alias": null }, { "name": "Chromhidrosis", "entity": "/m/09vnrh", "alias": null }, { "name": "Chronic constipation", "entity": "/m/0dfmqm9", "alias": null }, { "name": "Chronic cough", "entity": "/m/06h43j3", "alias": null }, { "name": "Chronic diarrhea of infancy", "entity": "/m/0bh8c4z", "alias": null }, { "name": "Chronic pain", "entity": "/m/012clh", "alias": null }, { "name": "Chronic progressive external ophthalmoplegia", "entity": "/m/02z2637", "alias": null }, { "name": "Chronic prostatitis/chronic pelvic pain syndrome", "entity": "/m/043jxv5", "alias": null }, { "name": "Chronic wound", "entity": "/m/08ssqs", "alias": null }, { "name": "Chvostek sign", "entity": "/m/0407j6", "alias": null }, { "name": "Chyluria", "entity": "/m/02ql75c", "alias": null }, { "name": "Circumstantial speech", "entity": "/m/0gh89fc", "alias": null }, { "name": "Cirrhosis", "entity": "/m/097ns", "alias": null }, { "name": "Clanging", "entity": "/m/0cg61", "alias": null }, { "name": "Claudication", "entity": "/m/05c1gt", "alias": null }, { "name": "Cleft lip and cleft palate", "entity": "/m/07y4w6s", "alias": null }, { "name": "Clinodactyly", "entity": "/m/02w3jkd", "alias": null }, { "name": "Clitoromegaly", "entity": "/m/04jpnx", "alias": null }, { "name": "Clonus", "entity": "/m/02zdnj", "alias": null }, { "name": "Clostridium difficile infection", "entity": "/m/02cxr0", "alias": null }, { "name": "Clouding of consciousness", "entity": "/m/02656gy", "alias": null }, { "name": "Cloudy urine", "entity": "/m/075v3bx", "alias": null }, { "name": "COâ‚‚ retention", "entity": "/m/04mpx0", "alias": null }, { "name": "Coagulative necrosis", "entity": "/m/03qc8xf", "alias": null }, { "name": "Coagulopathy", "entity": "/m/065b00", "alias": null }, { "name": "Coccydynia", "entity": "/m/031c9y", "alias": null }, { "name": "Coffee ground vomiting", "entity": "/m/02n2zp", "alias": null }, { "name": "Cognitive deficit", "entity": "/m/02py0vt", "alias": null }, { "name": "Cold sensitivity", "entity": "/m/03c607t", "alias": null }, { "name": "Cold sweat", "entity": "/m/0dfmqlr", "alias": null }, { "name": "Colitis", "entity": "/m/043hy3", "alias": null }, { "name": "Collapse", "entity": "/m/026gdg4", "alias": null }, { "name": "Collateral circulation", "entity": "/m/03nmgjv", "alias": null }, { "name": "Collective narcissism", "entity": "/m/0glrsmb", "alias": null }, { "name": "Collier's sign", "entity": "/m/0kg1nvy", "alias": null }, { "name": "Color blindness", "entity": "/m/022xh", "alias": null }, { "name": "Coma", "entity": "/m/01qw1", "alias": null }, { "name": "Comedo", "entity": "/m/02ry9q", "alias": null }, { "name": "Common cold", "entity": "/m/0n073", "alias": null }, { "name": "Communication deviance", "entity": "/m/011smvs0", "alias": null }, { "name": "Compartment syndrome", "entity": "/m/01j0hs", "alias": null }, { "name": "Compensatory hyperhidrosis", "entity": "/m/0cpdgx", "alias": null }, { "name": "Compulsive behavior", "entity": "/m/0281lfw", "alias": null }, { "name": "Compulsive hoarding", "entity": "/m/0240_y", "alias": null }, { "name": "Concealed conduction", "entity": "/m/02v_hky", "alias": null }, { "name": "Conductive hearing loss", "entity": "/m/04fmtx", "alias": null }, { "name": "Condylomata lata", "entity": "/m/0czbwwx", "alias": null }, { "name": "Confabulation", "entity": "/m/0371d4", "alias": null }, { "name": "Confusion", "entity": "/m/06kqbx", "alias": null }, { "name": "Congenital clasped thumb", "entity": "/m/0h976q1", "alias": null }, { "name": "Congenital heart defect", "entity": "/m/03k22s", "alias": null }, { "name": "Congenital lip pit", "entity": "/m/0b6hxcj", "alias": null }, { "name": "Conjunctival suffusion", "entity": "/m/0dljk3n", "alias": null }, { "name": "Conjunctivitis", "entity": "/m/0c36_", "alias": null }, { "name": "Constipation", "entity": "/m/016kf9", "alias": null }, { "name": "Constructional apraxia", "entity": "/m/0gj9_k1", "alias": null }, { "name": "Contracture", "entity": "/m/04f49cb", "alias": null }, { "name": "Convulsion", "entity": "/m/04lcpr5", "alias": null }, { "name": "Cooper's sign", "entity": "/m/04gpkvs", "alias": null }, { "name": "Coprolalia", "entity": "/m/02gp9x", "alias": null }, { "name": "Copropraxia", "entity": "/m/0bcsx9", "alias": null }, { "name": "Corectopia", "entity": "/m/0260nq7", "alias": null }, { "name": "Cornea verticillata", "entity": "/m/0zdt17d", "alias": null }, { "name": "Corneal abrasion", "entity": "/m/07ldcz", "alias": null }, { "name": "Cornell's sign", "entity": "/m/05szbzm", "alias": null }, { "name": "Corona phlebectatica", "entity": "/m/0rfdr0v", "alias": null }, { "name": "Cortical blindness", "entity": "/m/089r8q", "alias": null }, { "name": "Coryza", "entity": "/m/0c532h", "alias": null }, { "name": "Costovertebral angle tenderness", "entity": "/m/09d1md", "alias": null }, { "name": "Cotton wool spots", "entity": "/m/02qd609", "alias": null }, { "name": "Cough", "entity": "/m/01b_21", "alias": null }, { "name": "Coxa valga", "entity": "/m/02qvqc7", "alias": null }, { "name": "Coxa vara", "entity": "/m/02lmr4", "alias": null }, { "name": "Cracked Skin", "entity": "/m/06_hvl2", "alias": null }, { "name": "Crackles", "entity": "/m/023rn8", "alias": null }, { "name": "Cramp", "entity": "/m/024_yy", "alias": null }, { "name": "Cranial nerve disease", "entity": "/m/04f7377", "alias": null }, { "name": "Cranioschisis", "entity": "/m/0b6l7_3", "alias": null }, { "name": "Craving", "entity": "/m/064qvry", "alias": null }, { "name": "Cremasteric reflex", "entity": "/m/02ssz2", "alias": null }, { "name": "Crenated tongue", "entity": "/m/0x28640", "alias": null }, { "name": "Crepitus", "entity": "/m/05bws4", "alias": null }, { "name": "Crescent sign", "entity": "/m/028bw97", "alias": null }, { "name": "Crowding", "entity": "/m/0j29g86", "alias": null }, { "name": "Crowe sign", "entity": "/m/090wkz", "alias": null }, { "name": "Crying", "entity": "/m/0463cq4", "alias": null }, { "name": "Cryptomenorrhea", "entity": "/m/04zjj3", "alias": null }, { "name": "Cryptorchidism", "entity": "/m/025nm6", "alias": null }, { "name": "Crystalluria", "entity": "/m/08k_24", "alias": null }, { "name": "Cubitus valgus", "entity": "/m/09gr4q", "alias": null }, { "name": "Cullen's sign", "entity": "/m/04rs9k", "alias": null }, { "name": "Cushing reflex", "entity": "/m/04bj54", "alias": null }, { "name": "Cushing's syndrome", "entity": "/m/0mzm2", "alias": null }, { "name": "Cutaneous candidiasis", "entity": "/m/011nkgqd", "alias": null }, { "name": "Cutaneous condition", "entity": "/m/08cqsh", "alias": null }, { "name": "Cutis laxa", "entity": "/m/0c_0xv", "alias": null }, { "name": "Cutis marmorata", "entity": "/m/0h3xwcs", "alias": null }, { "name": "Cyanosis", "entity": "/m/021fq9", "alias": null }, { "name": "Cycloplegia", "entity": "/m/028c4n", "alias": null }, { "name": "Cyst", "entity": "/m/019rnl", "alias": null }, { "name": "DÃ©viation conjuguÃ©e", "entity": "/m/0bs68yq", "alias": null }, { "name": "Dacryoadenitis", "entity": "/m/046j0s", "alias": null }, { "name": "Dactylitis", "entity": "/m/03_3lh", "alias": null }, { "name": "Dahl's sign", "entity": "/m/05q969m", "alias": null }, { "name": "Dalrymple's sign", "entity": "/m/0fltf4", "alias": null }, { "name": "Dance's sign", "entity": "/m/09z36s", "alias": null }, { "name": "Dandruff", "entity": "/m/022y19", "alias": null }, { "name": "Darier's sign", "entity": "/m/08yzsq", "alias": null }, { "name": "Dark urine", "entity": "/m/05blz8d", "alias": null }, { "name": "De Musset's sign", "entity": "/m/09gl4kp", "alias": null }, { "name": "Death rattle", "entity": "/m/0660m0", "alias": null }, { "name": "Decoy cells", "entity": "/m/03c3c74", "alias": null }, { "name": "Decreased breast size", "entity": "/m/06_mn93", "alias": null }, { "name": "Decreased Libido", "entity": "/m/0dl9s30", "alias": null }, { "name": "Decussation", "entity": "/m/0266tn8", "alias": null }, { "name": "Deep sulcus sign", "entity": "/m/0f2l74", "alias": null }, { "name": "Deep vein thrombosis", "entity": "/m/02r3jk", "alias": null }, { "name": "Deepening of voice", "entity": "/m/06_mncd", "alias": null }, { "name": "Defensive vomiting", "entity": "/m/08phwv", "alias": null }, { "name": "Deformity", "entity": "/m/0383j_", "alias": null }, { "name": "Dehydration", "entity": "/m/014961", "alias": null }, { "name": "Delayed milestone", "entity": "/m/08x7wr", "alias": null }, { "name": "Delayed onset muscle soreness", "entity": "/m/03dcyh", "alias": null }, { "name": "Delayed puberty", "entity": "/m/02_nxt", "alias": null }, { "name": "Delirium", "entity": "/m/014qfd", "alias": null }, { "name": "Delirium tremens", "entity": "/m/0fpnjr", "alias": null }, { "name": "Delusion", "entity": "/m/0xnpq", "alias": null }, { "name": "Delusional disorder", "entity": "/m/01l7xz", "alias": null }, { "name": "Delusional misidentification syndrome", "entity": "/m/021246", "alias": null }, { "name": "Delusions of reference", "entity": "/m/019fy6", "alias": null }, { "name": "Dementia", "entity": "/m/09klv", "alias": null }, { "name": "Dense artery sign", "entity": "/m/05pc1dr", "alias": null }, { "name": "Dental emergency", "entity": "/m/0bg74m", "alias": null }, { "name": "Dental plaque", "entity": "/m/073t8x", "alias": null }, { "name": "Dentin hypersensitivity", "entity": "/m/0d7gj3", "alias": null }, { "name": "Dependent personality disorder", "entity": "/m/01sydv", "alias": null }, { "name": "Depersonalization", "entity": "/m/01zn1_", "alias": null }, { "name": "Depigmentation", "entity": "/m/027cv8v", "alias": null }, { "name": "Depression", "entity": "/m/03f_cb", "alias": null }, { "name": "Derealization", "entity": "/m/02wv6r8", "alias": null }, { "name": "Dermatitis", "entity": "/m/06x09g", "alias": null }, { "name": "Dermatographic urticaria", "entity": "/m/06djbj", "alias": null }, { "name": "Desmoplasia", "entity": "/m/09gn45k", "alias": null }, { "name": "Desquamation", "entity": "/m/05pbx5", "alias": null }, { "name": "Destot's sign", "entity": "/m/05q4mnc", "alias": null }, { "name": "Developmental disability", "entity": "/m/06xd3t", "alias": null }, { "name": "Diabetes insipidus", "entity": "/m/0c5s4", "alias": null }, { "name": "Diabetes mellitus", "entity": "/m/0c58k", "alias": null }, { "name": "Diabetic dermopathy", "entity": "/m/064r6nt", "alias": null }, { "name": "Diaphoresis", "entity": "/m/01q1s3", "alias": null }, { "name": "Diaphragmatic Paradox", "entity": "/m/04y94ty", "alias": null }, { "name": "Diarrhea", "entity": "/m/0f3kl", "alias": null }, { "name": "Diastolic heart failure", "entity": "/m/02pv6ym", "alias": null }, { "name": "Diastolic heart murmur", "entity": "/m/05b2cbl", "alias": null }, { "name": "Diastrophic dysplasia", "entity": "/m/055lbw", "alias": null }, { "name": "Diathesis", "entity": "/m/0sghsdb", "alias": null }, { "name": "Dieting", "entity": "/m/02b_m", "alias": null }, { "name": "Difficulty falling asleep", "entity": "/m/0dl9sx_", "alias": null }, { "name": "Difficulty focusing", "entity": "/m/0dl9sw9", "alias": null }, { "name": "Difficulty speaking", "entity": "/m/0dl9tkg", "alias": null }, { "name": "Dimple sign", "entity": "/m/0j7mdyv", "alias": null }, { "name": "Diplopia", "entity": "/m/03x17h", "alias": null }, { "name": "Disappointment", "entity": "/m/01lsjf", "alias": null }, { "name": "Discoloration of the legs", "entity": "/m/075v2rl", "alias": null }, { "name": "Disequilibrium", "entity": "/m/076vs5y", "alias": null }, { "name": "Disinhibition", "entity": "/m/06mfqk", "alias": null }, { "name": "Disorganized behavior", "entity": "/m/0dl9tl2", "alias": null }, { "name": "Disorientation", "entity": "/m/0dl9scp", "alias": null }, { "name": "Disseminated intravascular coagulation", "entity": "/m/01jjrv", "alias": null }, { "name": "Dissociation", "entity": "/m/02l_0n", "alias": null }, { "name": "Dissociative disorder", "entity": "/m/07bc25", "alias": null }, { "name": "Distal intestinal obstruction syndrome", "entity": "/m/0d4g_5", "alias": null }, { "name": "Distal muscular dystrophy", "entity": "/m/0fm4gj", "alias": null }, { "name": "Distorted vision", "entity": "/m/09rx552", "alias": null }, { "name": "Distress", "entity": "/m/03cyjcw", "alias": null }, { "name": "Diurnal enuresis", "entity": "/m/0gnl_f", "alias": null }, { "name": "Dizziness", "entity": "/m/033mg5", "alias": null }, { "name": "Doi's sign", "entity": "/m/05q6cvf", "alias": null }, { "name": "Drooling", "entity": "/m/019bfk", "alias": null }, { "name": "Drop attack", "entity": "/m/0crl43", "alias": null }, { "name": "Drug-induced hyperthermia", "entity": "/m/026y632", "alias": null }, { "name": "Drug-induced purpura", "entity": "/m/05q854j", "alias": null }, { "name": "Dry cough", "entity": "/m/027fpnw", "alias": null }, { "name": "Dry eye", "entity": "/m/05c7tsn", "alias": null }, { "name": "Dry eye syndrome", "entity": "/m/03ckn0", "alias": null }, { "name": "Dry hair", "entity": "/m/0dl9svf", "alias": null }, { "name": "Dry throat", "entity": "/m/0dl9sgp", "alias": null }, { "name": "Dryness", "entity": "/m/0g9_00t", "alias": null }, { "name": "Dunphy sign", "entity": "/m/05mt1m8", "alias": null }, { "name": "Dupuytren's contracture", "entity": "/m/036l18", "alias": null }, { "name": "Duroziez's sign", "entity": "/m/076t2pw", "alias": null }, { "name": "Dwarfism", "entity": "/m/010vmq", "alias": null }, { "name": "Dysarthria", "entity": "/m/03ygz2", "alias": null }, { "name": "Dysautonomia", "entity": "/m/02510j", "alias": null }, { "name": "Dysdiadochokinesia", "entity": "/m/07yl6y", "alias": null }, { "name": "Dysentery", "entity": "/m/0h3bn", "alias": null }, { "name": "Dysesthesia", "entity": "/m/0264gx3", "alias": null }, { "name": "Dysfunctional uterine bleeding", "entity": "/m/04cslz", "alias": null }, { "name": "Dysgeusia", "entity": "/m/01d3gn", "alias": null }, { "name": "Dyskinesia", "entity": "/m/03_xjz", "alias": null }, { "name": "Dysmenorrhea", "entity": "/m/0255t_", "alias": null }, { "name": "Dysosmia", "entity": "/m/04czcv_", "alias": null }, { "name": "Dyspareunia", "entity": "/m/01qqq7", "alias": null }, { "name": "Dysphagia", "entity": "/m/01bztl", "alias": null }, { "name": "Dysphonia", "entity": "/m/07_7w6", "alias": null }, { "name": "Dysphoria", "entity": "/m/055f85", "alias": null }, { "name": "Dysplastic nail", "entity": "/m/0bh6_0r", "alias": null }, { "name": "Dystonia", "entity": "/m/02_x8m", "alias": null }, { "name": "Dysuria", "entity": "/m/03wblc", "alias": null }, { "name": "Ear pain", "entity": "/m/05vywy", "alias": null }, { "name": "Easy bruising", "entity": "/m/0dl9szn", "alias": null }, { "name": "Ecchymosis", "entity": "/m/05b6rk9", "alias": null }, { "name": "Echolalia", "entity": "/m/03y0cn", "alias": null }, { "name": "Echopraxia", "entity": "/m/09b6_7", "alias": null }, { "name": "Eclabium", "entity": "/m/04_03f6", "alias": null }, { "name": "Edema", "entity": "/m/0j80c", "alias": null }, { "name": "Electromagnetic hypersensitivity", "entity": "/m/0bqhl7", "alias": null }, { "name": "Elevated alkaline phosphatase", "entity": "/m/063ykc9", "alias": null }, { "name": "Elfin facies", "entity": "/m/04crjg4", "alias": null }, { "name": "Emaciation", "entity": "/m/070kyz", "alias": null }, { "name": "Embryocardia", "entity": "/m/0rytkmx", "alias": null }, { "name": "Emotional detachment", "entity": "/m/092b1g", "alias": null }, { "name": "Emotional distress", "entity": "/m/06x7t9c", "alias": null }, { "name": "Emotional dysregulation", "entity": "/m/0b3n_k", "alias": null }, { "name": "Emotional security", "entity": "/m/01hz11", "alias": null }, { "name": "Enanthem", "entity": "/m/04y8g5q", "alias": null }, { "name": "Encephalitis", "entity": "/m/09c_t", "alias": null }, { "name": "Encephalopathy", "entity": "/m/022tc0", "alias": null }, { "name": "Encopresis", "entity": "/m/0298jv", "alias": null }, { "name": "Endometrial hyperplasia", "entity": "/m/02rc7qj", "alias": null }, { "name": "Enlarged uterus", "entity": "/m/075k1p8", "alias": null }, { "name": "Enophthalmia", "entity": "/m/08tgvr", "alias": null }, { "name": "Enophthalmos", "entity": "/m/0cwyf3", "alias": null }, { "name": "Enterocolitis", "entity": "/m/07y4wgq", "alias": null }, { "name": "Enthesitis", "entity": "/m/0gs1mr", "alias": null }, { "name": "Enthesopathy", "entity": "/m/08bvg8", "alias": null }, { "name": "Enuresis", "entity": "/m/03gq2nq", "alias": null }, { "name": "Eosinophilia", "entity": "/m/01jmy5", "alias": null }, { "name": "Epicanthic fold", "entity": "/m/014x2z", "alias": null }, { "name": "Epidermoid cyst", "entity": "/m/04mw9m", "alias": null }, { "name": "Epigastric discomfort", "entity": "/m/0dl9tjd", "alias": null }, { "name": "Epigastric pain", "entity": "/m/0dl9sc2", "alias": null }, { "name": "Epilepsy", "entity": "/m/02vrr", "alias": null }, { "name": "Epileptic seizure", "entity": "/m/06rhk", "alias": null }, { "name": "Epiphora", "entity": "/m/02r3mv3", "alias": null }, { "name": "Erectile dysfunction", "entity": "/m/03tkm", "alias": null }, { "name": "Eructation", "entity": "/m/03q5_w", "alias": null }, { "name": "Erythema", "entity": "/m/02mcv2", "alias": null }, { "name": "Erythema ab igne", "entity": "/m/08wqbz", "alias": null }, { "name": "Erythema chronicum migrans", "entity": "/m/0bzv6k", "alias": null }, { "name": "Erythema gyratum repens", "entity": "/m/054gfnh", "alias": null }, { "name": "Erythema marginatum", "entity": "/m/04nb5w", "alias": null }, { "name": "Erythema multiforme", "entity": "/m/03s352", "alias": null }, { "name": "Erythema nodosum", "entity": "/m/08fm2f", "alias": null }, { "name": "Erythema toxicum neonatorum", "entity": "/m/09f0sx", "alias": null }, { "name": "Erythrocyanosis crurum", "entity": "/m/05s_3gg", "alias": null }, { "name": "Erythroleukoplakia", "entity": "/m/04r4mtm", "alias": null }, { "name": "Erythromelalgia", "entity": "/m/03hcpy", "alias": null }, { "name": "Erythroplakia", "entity": "/m/04trfb", "alias": null }, { "name": "Eschar", "entity": "/m/03_m2p", "alias": null }, { "name": "Esophageal dysphagia", "entity": "/m/047gmhy", "alias": null }, { "name": "Esophageal varices", "entity": "/m/0340vp", "alias": null }, { "name": "Esophagitis", "entity": "/m/01b_b2", "alias": null }, { "name": "Esotropia", "entity": "/m/0184pc", "alias": null }, { "name": "Eunuchism", "entity": "/m/07y4yqp", "alias": null }, { "name": "Euphoria", "entity": "/m/02rj8by", "alias": null }, { "name": "Evanescent", "entity": "/m/05mxfh7", "alias": null }, { "name": "Ewart's sign", "entity": "/m/08zgjt", "alias": null }, { "name": "Exanthem", "entity": "/m/07bblt", "alias": null }, { "name": "Excessive crying", "entity": "/m/0dfmqjh", "alias": null }, { "name": "Excessive daytime sleepiness", "entity": "/m/02y_82q", "alias": null }, { "name": "Excruciating headache", "entity": "/m/0d83xlw", "alias": null }, { "name": "Exercise intolerance", "entity": "/m/05k5sc", "alias": null }, { "name": "Exercise-induced nausea", "entity": "/m/011b6z0v", "alias": null }, { "name": "Exertional dyspnea", "entity": "/m/0dl9sbc", "alias": null }, { "name": "Exophthalmos", "entity": "/m/05mjhy", "alias": null }, { "name": "Exotropia", "entity": "/m/099x_8", "alias": null }, { "name": "Extrapyramidal symptoms", "entity": "/m/09gkmws", "alias": null }, { "name": "Exudate", "entity": "/m/02yj5k", "alias": null }, { "name": "Eye discomfort", "entity": "/m/0dl9qcf", "alias": null }, { "name": "Eye inflammation", "entity": "/m/06zxb3j", "alias": null }, { "name": "Eye irritation", "entity": "/m/0dl9sgx", "alias": null }, { "name": "Eye pain", "entity": "/m/05fs77x", "alias": null }, { "name": "Eye sore", "entity": "/m/0dl9t6m", "alias": null }, { "name": "Eye strain", "entity": "/m/07v7rh", "alias": null }, { "name": "Fabella sign", "entity": "/m/02893yq", "alias": null }, { "name": "Facial grimace", "entity": "/m/06w28x3", "alias": null }, { "name": "Facial nerve paralysis", "entity": "/m/04mpk9", "alias": null }, { "name": "Facial paralysis", "entity": "/m/07y4wlx", "alias": null }, { "name": "Facial paresis", "entity": "/m/09z409", "alias": null }, { "name": "Facial rash", "entity": "/m/0dl9smd", "alias": null }, { "name": "Facial redness", "entity": "/m/07t7mr3", "alias": null }, { "name": "Facial swelling", "entity": "/m/06_jyjk", "alias": null }, { "name": "Faget sign", "entity": "/m/02qm5h6", "alias": null }, { "name": "Failure to thrive", "entity": "/m/05xf16", "alias": null }, { "name": "Falling", "entity": "/m/04f32c6", "alias": null }, { "name": "Familial thoracic aortic aneurysm", "entity": "/m/03wzc0", "alias": null }, { "name": "Far-sightedness", "entity": "/m/0248jp", "alias": null }, { "name": "Fasciculation", "entity": "/m/062phb", "alias": null }, { "name": "Fat pad sign", "entity": "/m/0285p8k", "alias": null }, { "name": "Fatigue", "entity": "/m/01j6t0", "alias": null }, { "name": "Fatigue syndrome", "entity": "/m/0dfmqjz", "alias": null }, { "name": "Fatty liver", "entity": "/m/03s7fs", "alias": null }, { "name": "Fear", "entity": "/m/02xrl", "alias": null }, { "name": "Fear of Commitment", "entity": "/m/026r7rc", "alias": null }, { "name": "Fear of falling", "entity": "/m/0278ng9", "alias": null }, { "name": "Fear of the dark", "entity": "/m/03gq6y_", "alias": null }, { "name": "Febrile neutrophilic dermatosis", "entity": "/m/09jw9n", "alias": null }, { "name": "Febrile seizure", "entity": "/m/013q86", "alias": null }, { "name": "Fecal incontinence", "entity": "/m/018h28", "alias": null }, { "name": "Fecal urgency", "entity": "/m/0dl9qcx", "alias": null }, { "name": "Feeding difficulties", "entity": "/m/05v24jd", "alias": null }, { "name": "Feeling cold", "entity": "/m/0dl9sg9", "alias": null }, { "name": "Feeling of fullness in the ear", "entity": "/m/075v3x9", "alias": null }, { "name": "Feeling tense", "entity": "/m/0dl9sg2", "alias": null }, { "name": "Feeling tired", "entity": "/m/0dl9tf6", "alias": null }, { "name": "Female infertility", "entity": "/m/03bx9gs", "alias": null }, { "name": "Fetal distress", "entity": "/m/02sj16", "alias": null }, { "name": "Fetor", "entity": "/m/051ztp2", "alias": null }, { "name": "Fetor hepaticus", "entity": "/m/068940", "alias": null }, { "name": "Fever", "entity": "/m/0cjf0", "alias": null }, { "name": "Fibrillation", "entity": "/m/0118lbwm", "alias": null }, { "name": "Fibromyalgia", "entity": "/m/01v3ks", "alias": null }, { "name": "Fibrosis", "entity": "/m/03nq4p", "alias": null }, { "name": "Fidgeting", "entity": "/m/04y6tl1", "alias": null }, { "name": "Finger numbness", "entity": "/m/0dl9t7l", "alias": null }, { "name": "Flaccid paralysis", "entity": "/m/02qkp38", "alias": null }, { "name": "Flashback", "entity": "/m/06jb7p", "alias": null }, { "name": "Flatulence", "entity": "/m/06vg9d", "alias": null }, { "name": "Flatulence", "entity": "/m/02_pz", "alias": null }, { "name": "Fleischer ring", "entity": "/m/08vvjv", "alias": null }, { "name": "Floater", "entity": "/m/018j1l", "alias": null }, { "name": "Flushing", "entity": "/m/028n_3", "alias": null }, { "name": "Focal neurologic signs", "entity": "/m/0286bt0", "alias": null }, { "name": "Folate deficiency", "entity": "/m/0dt6ml", "alias": null }, { "name": "Folie Ã  deux", "entity": "/m/03281", "alias": null }, { "name": "Food addiction", "entity": "/m/04sws8", "alias": null }, { "name": "Food craving", "entity": "/m/0b76y0", "alias": null }, { "name": "Foot drop", "entity": "/m/0bcwy3", "alias": null }, { "name": "Foot numbness", "entity": "/m/0dl9sn8", "alias": null }, { "name": "Forchheimer spots", "entity": "/m/05q52l8", "alias": null }, { "name": "Foreign body sensation", "entity": "/m/04kfh3v", "alias": null }, { "name": "Forgetfulness", "entity": "/m/05bl1h2", "alias": null }, { "name": "Formication", "entity": "/m/02p4g5n", "alias": null }, { "name": "Fothergill's sign", "entity": "/m/0bdpwk", "alias": null }, { "name": "Foul smelling urine", "entity": "/m/064f42c", "alias": null }, { "name": "Fourth heart sound", "entity": "/m/04crvkn", "alias": null }, { "name": "Fox's sign", "entity": "/m/05q7xv8", "alias": null }, { "name": "Fragmentation of memory", "entity": "/m/0j642f1", "alias": null }, { "name": "Frank's sign", "entity": "/m/04jkg8w", "alias": null }, { "name": "Freckle", "entity": "/m/0fyd3", "alias": null }, { "name": "Frequent respiratory infections", "entity": "/m/06h44t6", "alias": null }, { "name": "Frequent urination", "entity": "/m/0c3_wg5", "alias": null }, { "name": "Friedreich's sign", "entity": "/m/027m5l6", "alias": null }, { "name": "Froment's sign", "entity": "/m/05l1p0", "alias": null }, { "name": "Frontal release sign", "entity": "/m/03c2y05", "alias": null }, { "name": "Frostbite", "entity": "/m/0213yl", "alias": null }, { "name": "Fuchs' dystrophy", "entity": "/m/05pb2q", "alias": null }, { "name": "Fugue state", "entity": "/m/02ybr", "alias": null }, { "name": "Functio laesa", "entity": "/m/04f1nj8", "alias": null }, { "name": "Furcation defect", "entity": "/m/06zlvw6", "alias": null }, { "name": "Gait abnormality", "entity": "/m/06h94m", "alias": null }, { "name": "Galactorrhea", "entity": "/m/03xmsb", "alias": null }, { "name": "Gallop rhythm", "entity": "/m/0f87zq", "alias": null }, { "name": "Gallstone", "entity": "/m/01q6mh", "alias": null }, { "name": "Gangrene", "entity": "/m/01jj75", "alias": null }, { "name": "Garland's triad", "entity": "/m/02pwkv7", "alias": null }, { "name": "Garlic breath", "entity": "/m/0h_b7zb", "alias": null }, { "name": "Gastric distension", "entity": "/m/01ppr8", "alias": null }, { "name": "Gastric varices", "entity": "/m/0401r0", "alias": null }, { "name": "Gastritis", "entity": "/m/03y91v", "alias": null }, { "name": "Gastroesophageal reflux disease", "entity": "/m/01b_5g", "alias": null }, { "name": "Gastrointestinal bleeding", "entity": "/m/03njtl", "alias": null }, { "name": "Gastrointestinal Disorder", "entity": "/m/02kd1ry", "alias": null }, { "name": "Gastrointestinal ulcers", "entity": "/m/04zh6_3", "alias": null }, { "name": "Gastroparesis", "entity": "/m/02w1n2", "alias": null }, { "name": "Gelastic seizure", "entity": "/m/0268flm", "alias": null }, { "name": "Generalised tonic-clonic seizure", "entity": "/m/02r6d3v", "alias": null }, { "name": "Generalized anxiety disorder", "entity": "/m/02zr3h", "alias": null }, { "name": "Generalized erythema", "entity": "/m/05my3h5", "alias": null }, { "name": "Genital sores", "entity": "/m/077598r", "alias": null }, { "name": "Genital wart", "entity": "/m/019thv", "alias": null }, { "name": "Genu varum", "entity": "/m/03pk5z", "alias": null }, { "name": "Gestational hypertension", "entity": "/m/03p2br", "alias": null }, { "name": "Giant-cell arteritis", "entity": "/m/07s7n", "alias": null }, { "name": "Gigantism", "entity": "/m/01jmvq", "alias": null }, { "name": "Gingival enlargement", "entity": "/m/02vl6qv", "alias": null }, { "name": "Gingival recession", "entity": "/m/0dr8s9", "alias": null }, { "name": "Gingivitis", "entity": "/m/01d20w", "alias": null }, { "name": "Glabellar reflex", "entity": "/m/0b7n41", "alias": null }, { "name": "Glabrousness", "entity": "/m/05__9r", "alias": null }, { "name": "Gliosis", "entity": "/m/0chqj1", "alias": null }, { "name": "Globus pharyngis", "entity": "/m/0czdw5", "alias": null }, { "name": "Glomerulonephritis", "entity": "/m/04gfv_", "alias": null }, { "name": "Glossitis", "entity": "/m/07ckc_", "alias": null }, { "name": "Glossoptosis", "entity": "/m/0fkvcg", "alias": null }, { "name": "Glucose-6-phosphate dehydrogenase deficiency", "entity": "/m/021tw2", "alias": null }, { "name": "Glycosuria", "entity": "/m/05pcqg", "alias": null }, { "name": "Goitre", "entity": "/m/036zm", "alias": null }, { "name": "Golden S sign", "entity": "/m/05p6gjd", "alias": null }, { "name": "Goldstein's toe sign", "entity": "/m/0f12tc", "alias": null }, { "name": "Gonadal dysgenesis", "entity": "/m/02p9mm9", "alias": null }, { "name": "Gonda's sign", "entity": "/m/05t0p53", "alias": null }, { "name": "Goodell's sign", "entity": "/m/08kn5j", "alias": null }, { "name": "Goose bumps", "entity": "/m/03ck2w", "alias": null }, { "name": "Gordon's sign", "entity": "/m/05sz3_h", "alias": null }, { "name": "Gorlin sign", "entity": "/m/02qlx7x", "alias": null }, { "name": "Gout", "entity": "/m/0ffxt", "alias": null }, { "name": "Gowers' sign", "entity": "/m/046b2p", "alias": null }, { "name": "Graham Steell murmur", "entity": "/m/03cn9fh", "alias": null }, { "name": "Grandiosity", "entity": "/m/041cwm", "alias": null }, { "name": "Granuloma", "entity": "/m/029fv3", "alias": null }, { "name": "Granuloma annulare", "entity": "/m/0cvpr9", "alias": null }, { "name": "Graves' ophthalmopathy", "entity": "/m/0fl3qm", "alias": null }, { "name": "Greasy hair", "entity": "/m/0nbv1vz", "alias": null }, { "name": "Green stool", "entity": "/m/075g6sb", "alias": null }, { "name": "Grey Turner's sign", "entity": "/m/0515k0", "alias": null }, { "name": "Griffith's sign", "entity": "/m/05q5pbx", "alias": null }, { "name": "Groin swelling", "entity": "/m/0dl9t17", "alias": null }, { "name": "Ground-glass opacity", "entity": "/m/0j26_bj", "alias": null }, { "name": "Growth hormone deficiency", "entity": "/m/02xh6k", "alias": null }, { "name": "Guilt", "entity": "/m/036s6", "alias": null }, { "name": "Gum sore", "entity": "/m/0dl9thm", "alias": null }, { "name": "Guttate psoriasis", "entity": "/m/05c3rty", "alias": null }, { "name": "Gynecologic hemorrhage", "entity": "/m/01q1wv", "alias": null }, { "name": "Gynecomastia", "entity": "/m/07cszr", "alias": null }, { "name": "Haemolacria", "entity": "/m/02675h9", "alias": null }, { "name": "Hair loss", "entity": "/m/03bwzh1", "alias": null }, { "name": "Half and half nails", "entity": "/m/05b0f3b", "alias": null }, { "name": "Hallucination", "entity": "/m/0d3gy", "alias": null }, { "name": "Halo sign", "entity": "/m/026f2g_", "alias": null }, { "name": "Halos around lights", "entity": "/m/06_mrn4", "alias": null }, { "name": "Hamman's sign", "entity": "/m/0cdg94", "alias": null }, { "name": "Hammer toe", "entity": "/m/03vwp3", "alias": null }, { "name": "Hampton hump", "entity": "/m/025yfnl", "alias": null }, { "name": "Hand numbness", "entity": "/m/0dl9snq", "alias": null }, { "name": "Hand swelling", "entity": "/m/0dl9t5l", "alias": null }, { "name": "Hand tremor", "entity": "/m/0dl9sp5", "alias": null }, { "name": "Happy demeanour", "entity": "/m/05v7ktz", "alias": null }, { "name": "Harrison's groove", "entity": "/m/02q2vg0", "alias": null }, { "name": "Head swelling", "entity": "/m/0dl9t9_", "alias": null }, { "name": "Headache", "entity": "/m/0j5fv", "alias": null }, { "name": "Hearing loss", "entity": "/m/014wq_", "alias": null }, { "name": "Hearing problem", "entity": "/m/04tnmgr", "alias": null }, { "name": "Heart block", "entity": "/m/031q2c", "alias": null }, { "name": "Heart click", "entity": "/m/05mysbq", "alias": null }, { "name": "Heart failure", "entity": "/m/01l2m3", "alias": null }, { "name": "Heart murmur", "entity": "/m/01jg1z", "alias": null }, { "name": "Heartburn", "entity": "/m/01bfsv", "alias": null }, { "name": "Heat intolerance", "entity": "/m/0rpj80_", "alias": null }, { "name": "Heautoscopy", "entity": "/m/026qjtk", "alias": null }, { "name": "Heavy legs", "entity": "/m/051ynwt", "alias": null }, { "name": "Heberden's node", "entity": "/m/054s8y", "alias": null }, { "name": "Hegar's sign", "entity": "/m/084stp", "alias": null }, { "name": "Heinz body", "entity": "/m/0c58b0", "alias": null }, { "name": "Hemangioma", "entity": "/m/03jcdy", "alias": null }, { "name": "Hematemesis", "entity": "/m/02n2t1", "alias": null }, { "name": "Hematidrosis", "entity": "/m/01p1by", "alias": null }, { "name": "Hematochezia", "entity": "/m/02n2gk", "alias": null }, { "name": "Hematoma", "entity": "/m/032ssz", "alias": null }, { "name": "Hematospermia", "entity": "/m/0bblkc", "alias": null }, { "name": "Hematuria", "entity": "/m/02sc7d", "alias": null }, { "name": "Hemihypertrophy", "entity": "/m/03h1038", "alias": null }, { "name": "Hemiparesis", "entity": "/m/03j3s", "alias": null }, { "name": "Hemiparesthesia", "entity": "/m/0r3w6pn", "alias": null }, { "name": "Hemiplegia", "entity": "/m/04n8p1", "alias": null }, { "name": "Hemispatial neglect", "entity": "/m/03ttjj", "alias": null }, { "name": "Hemolysis", "entity": "/m/0j8q4", "alias": null }, { "name": "Hemolytic anemia", "entity": "/m/02skgx", "alias": null }, { "name": "Hemoperitoneum", "entity": "/m/0g9qbf", "alias": null }, { "name": "Hemoptysis", "entity": "/m/01g920", "alias": null }, { "name": "Hemosiderinuria", "entity": "/m/02w7_tf", "alias": null }, { "name": "Hemothorax", "entity": "/m/06rt3n", "alias": null }, { "name": "Hemotympanum", "entity": "/m/04gvbrl", "alias": null }, { "name": "Hepatic encephalopathy", "entity": "/m/046cxb", "alias": null }, { "name": "Hepatomegaly", "entity": "/m/055_gj", "alias": null }, { "name": "Hepatopulmonary syndrome", "entity": "/m/0273jfd", "alias": null }, { "name": "Hepatorenal syndrome", "entity": "/m/06vqzq", "alias": null }, { "name": "Hepatosplenomegaly", "entity": "/m/03zr21", "alias": null }, { "name": "Hepatotoxicity", "entity": "/m/02clhl", "alias": null }, { "name": "Hereditary multiple exostoses", "entity": "/m/03y9lb", "alias": null }, { "name": "Heterochromia", "entity": "/m/02w_rc", "alias": null }, { "name": "Hibernating myocardium", "entity": "/m/031ryh", "alias": null }, { "name": "Hiccup", "entity": "/m/02p3nc", "alias": null }, { "name": "Hickey", "entity": "/m/02497k", "alias": null }, { "name": "High fever", "entity": "/m/0dl9tl9", "alias": null }, { "name": "High-arched palate", "entity": "/m/0135xpqd", "alias": null }, { "name": "High-grade fever", "entity": "/m/06_9btt", "alias": null }, { "name": "HigoumÃ©nakis' sign", "entity": "/m/03hkgqq", "alias": null }, { "name": "Hirano body", "entity": "/m/074fyv", "alias": null }, { "name": "Hirsutism", "entity": "/m/0ps0b", "alias": null }, { "name": "HIV disease-related drug reaction", "entity": "/m/05f44rg", "alias": null }, { "name": "Hives", "entity": "/m/03nky3", "alias": null }, { "name": "Hoffmann's sign", "entity": "/m/08fkxt", "alias": null }, { "name": "Hollenhorst plaque", "entity": "/m/0c2pby", "alias": null }, { "name": "Homans sign", "entity": "/m/08ytrd", "alias": null }, { "name": "Homicidal ideation", "entity": "/m/04125r2", "alias": null }, { "name": "Hoover's sign", "entity": "/m/04q33th", "alias": null }, { "name": "Hoover's sign", "entity": "/m/04q27cv", "alias": null }, { "name": "Horner's syndrome", "entity": "/m/04v0fj", "alias": null }, { "name": "Horseshoe kidney", "entity": "/m/06gfc6", "alias": null }, { "name": "Hostility", "entity": "/m/02p74_2", "alias": null }, { "name": "Hot flash", "entity": "/m/033488", "alias": null }, { "name": "Howshipâ€“Romberg sign", "entity": "/m/04n3pf3", "alias": null }, { "name": "Hunger", "entity": "/m/0135xt", "alias": null }, { "name": "Hutchinson's pupil", "entity": "/m/05q4106", "alias": null }, { "name": "Hutchinson's sign", "entity": "/m/05q9wp1", "alias": null }, { "name": "Hutchinson's teeth", "entity": "/m/036mdg", "alias": null }, { "name": "Hydrocele", "entity": "/m/04vy02", "alias": null }, { "name": "Hydrocephalus", "entity": "/m/01cw5r", "alias": null }, { "name": "Hyperactivity", "entity": "/m/04txf7", "alias": null }, { "name": "Hyperacusis", "entity": "/m/04xpzs", "alias": null }, { "name": "Hyperaemia", "entity": "/m/08859_", "alias": null }, { "name": "Hyperalgesia", "entity": "/m/03z_m7", "alias": null }, { "name": "Hyperammonemia", "entity": "/m/02p0x7", "alias": null }, { "name": "Hyperandrogenism", "entity": "/m/04n7g6q", "alias": null }, { "name": "Hypercalcaemia", "entity": "/m/02k540", "alias": null }, { "name": "Hypercalciuria", "entity": "/m/03bxj79", "alias": null }, { "name": "Hypercapnia", "entity": "/m/02hlph", "alias": null }, { "name": "Hypercholesterolemia", "entity": "/m/02k7pj", "alias": null }, { "name": "Hyperekplexia", "entity": "/m/0c4304", "alias": null }, { "name": "Hyperemesis gravidarum", "entity": "/m/06t7dc", "alias": null }, { "name": "Hypereosinophilia", "entity": "/m/0gty88", "alias": null }, { "name": "Hyperesthesia", "entity": "/m/0btccj", "alias": null }, { "name": "Hyperestrogenism", "entity": "/m/0j_5n3_", "alias": null }, { "name": "Hyperglycemia", "entity": "/m/0kfqw", "alias": null }, { "name": "Hypergraphia", "entity": "/m/02hgsj", "alias": null }, { "name": "Hyperhidrosis", "entity": "/m/03jbly", "alias": null }, { "name": "Hyperkalemia", "entity": "/m/037h0g", "alias": null }, { "name": "Hyperkeratosis", "entity": "/m/05qymp", "alias": null }, { "name": "Hyperkinesia", "entity": "/m/027p8_f", "alias": null }, { "name": "Hyperlipidemia", "entity": "/m/05f45h", "alias": null }, { "name": "Hypermobility", "entity": "/m/0b9f_5", "alias": null }, { "name": "Hypernatremia", "entity": "/m/03xr5j", "alias": null }, { "name": "Hyperosmia", "entity": "/m/02x39__", "alias": null }, { "name": "Hyperoxia", "entity": "/m/06wcg52", "alias": null }, { "name": "Hyperpathia", "entity": "/m/02731s6", "alias": null }, { "name": "Hyperphosphatemia", "entity": "/m/042g01", "alias": null }, { "name": "Hyperpigmentation", "entity": "/m/046z7d", "alias": null }, { "name": "Hyperreflexia", "entity": "/m/04bl90", "alias": null }, { "name": "Hypersalivation", "entity": "/m/0fpjgc1", "alias": null }, { "name": "Hypersexuality", "entity": "/m/01g5ln", "alias": null }, { "name": "Hypersomnia", "entity": "/m/03cfcn", "alias": null }, { "name": "Hypertelorism", "entity": "/m/08wwvw", "alias": null }, { "name": "Hypertension", "entity": "/m/0k95h", "alias": null }, { "name": "Hyperthermia", "entity": "/m/0k10t", "alias": null }, { "name": "Hyperthyroidism", "entity": "/m/03hz0", "alias": null }, { "name": "Hypertonia", "entity": "/m/092xnv", "alias": null }, { "name": "Hypertrichosis", "entity": "/m/04lj5j", "alias": null }, { "name": "Hypertriglyceridemia", "entity": "/m/02_sbz", "alias": null }, { "name": "Hypertrophic osteoarthropathy", "entity": "/m/04czf0w", "alias": null }, { "name": "Hypertrophy", "entity": "/m/02vrdn", "alias": null }, { "name": "Hyperuricemia", "entity": "/m/02hl8g", "alias": null }, { "name": "Hyperventilation", "entity": "/m/021m_f", "alias": null }, { "name": "Hypervigilance", "entity": "/m/085x_0", "alias": null }, { "name": "Hyphema", "entity": "/m/08dkq0", "alias": null }, { "name": "Hypnic jerk", "entity": "/m/01_wn1", "alias": null }, { "name": "Hypoactive sexual desire disorder", "entity": "/m/0255l5", "alias": null }, { "name": "Hypoalbuminemia", "entity": "/m/09bl05", "alias": null }, { "name": "Hypobulia", "entity": "/m/0h1gt3g", "alias": null }, { "name": "Hypocalcaemia", "entity": "/m/02k53m", "alias": null }, { "name": "Hypocalciuria", "entity": "/m/0463t6w", "alias": null }, { "name": "Hypodactylia", "entity": "/m/0df47x", "alias": null }, { "name": "Hypoesthesia", "entity": "/m/027q6ds", "alias": null }, { "name": "Hypogeusia", "entity": "/m/02qgl1w", "alias": null }, { "name": "Hypoglycemia", "entity": "/m/03gwt", "alias": null }, { "name": "Hypogonadism", "entity": "/m/038k4x", "alias": null }, { "name": "Hypogonadotropic hypogonadism", "entity": "/m/0j_33wy", "alias": null }, { "name": "Hypohidrosis", "entity": "/m/04yfs7", "alias": null }, { "name": "Hypokalemia", "entity": "/m/03vmt0", "alias": null }, { "name": "Hypokinesia", "entity": "/m/06_8j3", "alias": null }, { "name": "Hypomania", "entity": "/m/0bk6q", "alias": null }, { "name": "Hypomelanic macules", "entity": "/m/0ht87t7", "alias": null }, { "name": "Hypomenorrhea", "entity": "/m/0412nq4", "alias": null }, { "name": "Hypomimia", "entity": "/m/0262l9q", "alias": null }, { "name": "Hypoparathyroidism", "entity": "/m/0340yl", "alias": null }, { "name": "Hypophonia", "entity": "/m/0bbv3wx", "alias": null }, { "name": "Hypopigmentation", "entity": "/m/048hpn", "alias": null }, { "name": "Hyporeflexia", "entity": "/m/0dr4b5", "alias": null }, { "name": "Hyposmia", "entity": "/m/0fjwcj", "alias": null }, { "name": "Hypotension", "entity": "/m/02hvph", "alias": null }, { "name": "Hypothermia", "entity": "/m/012rps", "alias": null }, { "name": "Hypothyroidism", "entity": "/m/0hg11", "alias": null }, { "name": "Hypotonia", "entity": "/m/03wbww", "alias": null }, { "name": "Hypouricemia", "entity": "/m/09_m33", "alias": null }, { "name": "Hypoventilation", "entity": "/m/02fwvl", "alias": null }, { "name": "Hypovolemia", "entity": "/m/02hwb2", "alias": null }, { "name": "Hypoxemia", "entity": "/m/025sd3c", "alias": null }, { "name": "Hypoxia", "entity": "/m/03gns", "alias": null }, { "name": "Hypsarrhythmia", "entity": "/m/0cdwzx", "alias": null }, { "name": "Ichthyosis", "entity": "/m/02wgfv", "alias": null }, { "name": "Ileus", "entity": "/m/0443mq", "alias": null }, { "name": "Illusory palinopsia", "entity": "/m/011q023m", "alias": null }, { "name": "Imbalance", "entity": "/m/0dl9tjv", "alias": null }, { "name": "Immobility", "entity": "/m/0dl9s9q", "alias": null }, { "name": "Immunodeficiency", "entity": "/m/02yg4w", "alias": null }, { "name": "Immunosuppression", "entity": "/m/016mlj", "alias": null }, { "name": "Impetigo", "entity": "/m/0mzty", "alias": null }, { "name": "Implantation bleeding", "entity": "/m/013027b9", "alias": null }, { "name": "Impulsivity", "entity": "/m/03d5xbx", "alias": null }, { "name": "Inattention", "entity": "/m/0dl9szx", "alias": null }, { "name": "Incoherent speech", "entity": "/m/0dl9t8x", "alias": null }, { "name": "Incontinence", "entity": "/m/04zvx6w", "alias": null }, { "name": "Incoordination", "entity": "/m/0dl9t2h", "alias": null }, { "name": "Increased vaginal discharge", "entity": "/m/04tnn60", "alias": null }, { "name": "Indigestion", "entity": "/m/04kl78", "alias": null }, { "name": "Infarction", "entity": "/m/02vnfx", "alias": null }, { "name": "Infection", "entity": "/m/098s1", "alias": null }, { "name": "Inferiority complex", "entity": "/m/03c9vn", "alias": null }, { "name": "Infertility", "entity": "/m/018g78", "alias": null }, { "name": "Inflammation", "entity": "/m/0j7_w", "alias": null }, { "name": "Inflammatory bowel disease", "entity": "/m/02x0yg", "alias": null }, { "name": "Influenza-like illness", "entity": "/m/05_5py4", "alias": null }, { "name": "Ingrown hair", "entity": "/m/0cmmcy", "alias": null }, { "name": "Inguinal lymphadenopathy", "entity": "/m/0dl9spk", "alias": null }, { "name": "Insomnia", "entity": "/m/0ddwt", "alias": null }, { "name": "Intellectual disability", "entity": "/m/09fz4", "alias": null }, { "name": "Intention tremor", "entity": "/m/0ccqn_", "alias": null }, { "name": "Intermittent claudication", "entity": "/m/04qydt", "alias": null }, { "name": "Internal bleeding", "entity": "/m/02xb32", "alias": null }, { "name": "Internuclear ophthalmoplegia", "entity": "/m/08hkdc", "alias": null }, { "name": "Interrupted aortic arch", "entity": "/m/0gkds8", "alias": null }, { "name": "Intertrigo", "entity": "/m/05l4gz", "alias": null }, { "name": "Intestinal cramps", "entity": "/m/0dl9th4", "alias": null }, { "name": "Intestinal pseudo-obstruction", "entity": "/m/0bj09q", "alias": null }, { "name": "Intestinal varices", "entity": "/m/0401rc", "alias": null }, { "name": "Intracerebral hemorrhage", "entity": "/m/08g5q7", "alias": null }, { "name": "Intracranial aneurysm", "entity": "/m/01g45j", "alias": null }, { "name": "Intranodal palisaded myofibroblastoma", "entity": "/m/0h7msvs", "alias": null }, { "name": "Intrauterine growth restriction", "entity": "/m/05pdffb", "alias": null }, { "name": "Inverse psoriasis", "entity": "/m/05mrtv4", "alias": null }, { "name": "Inverted nipple", "entity": "/m/071nxk", "alias": null }, { "name": "Iritis", "entity": "/m/04jy9m", "alias": null }, { "name": "Iron deficiency", "entity": "/m/014x04", "alias": null }, { "name": "Iron overload", "entity": "/m/02n_ct", "alias": null }, { "name": "Irregular breathing", "entity": "/m/0dl9s_l", "alias": null }, { "name": "Irregular menstruation", "entity": "/m/05bm66n", "alias": null }, { "name": "Irritability", "entity": "/m/083h_x", "alias": null }, { "name": "Irritable male syndrome", "entity": "/m/05t28b", "alias": null }, { "name": "Irritant diaper dermatitis", "entity": "/m/025r6w", "alias": null }, { "name": "Ischemia", "entity": "/m/02gr6s", "alias": null }, { "name": "Isosthenuria", "entity": "/m/026f2q6", "alias": null }, { "name": "Itch", "entity": "/m/04kllm9", "alias": null }, { "name": "Itchy eyes", "entity": "/m/0654nrv", "alias": null }, { "name": "Itchy scalp", "entity": "/m/0775b_h", "alias": null }, { "name": "Jaundice", "entity": "/m/0hgxh", "alias": null }, { "name": "Jaw claudication", "entity": "/m/012n8p91", "alias": null }, { "name": "Joffroy's sign", "entity": "/m/05q9ykd", "alias": null }, { "name": "Joint effusion", "entity": "/m/0b74b60", "alias": null }, { "name": "Joint locking", "entity": "/m/05p2zl8", "alias": null }, { "name": "Joint pain", "entity": "/m/021hck", "alias": null }, { "name": "Joint stiffness", "entity": "/m/088b11", "alias": null }, { "name": "Joint swelling", "entity": "/m/0dl9s7p", "alias": null }, { "name": "Jugular venous pressure", "entity": "/m/03f3w1", "alias": null }, { "name": "Kanavel's cardinal signs", "entity": "/m/05q61pp", "alias": null }, { "name": "Kaposi's sarcoma", "entity": "/m/0bqpg", "alias": null }, { "name": "Kayserâ€“Fleischer ring", "entity": "/m/036mhw", "alias": null }, { "name": "Kehr's sign", "entity": "/m/046y3g", "alias": null }, { "name": "Kelly's sign", "entity": "/m/05q7d_4", "alias": null }, { "name": "Keratitis", "entity": "/m/02dfr6", "alias": null }, { "name": "Keratocyst", "entity": "/m/09rvk1t", "alias": null }, { "name": "Kerley lines", "entity": "/m/0ck_v6", "alias": null }, { "name": "Kerr's sign", "entity": "/m/0j7l6mj", "alias": null }, { "name": "Ketoacidosis", "entity": "/m/02mwg6", "alias": null }, { "name": "Ketonuria", "entity": "/m/095xr2", "alias": null }, { "name": "Khodadoust line", "entity": "/m/0b6n52c", "alias": null }, { "name": "Kidney Damage", "entity": "/m/02kb_v7", "alias": null }, { "name": "Kidney failure", "entity": "/m/01psyx", "alias": null }, { "name": "Kidney pain", "entity": "/m/0dl9t4p", "alias": null }, { "name": "Kidney stone", "entity": "/m/09hbx", "alias": null }, { "name": "Kinking hair", "entity": "/m/05b1qcr", "alias": null }, { "name": "Knee effusion", "entity": "/m/03bxmbn", "alias": null }, { "name": "Knee pain", "entity": "/m/09v868h", "alias": null }, { "name": "Kocher's sign", "entity": "/m/0bbvr3p", "alias": null }, { "name": "Koebner phenomenon", "entity": "/m/0gffcz", "alias": null }, { "name": "Koeppe's nodules", "entity": "/m/05q5xyj", "alias": null }, { "name": "Koilonychia", "entity": "/m/0gj4qx", "alias": null }, { "name": "Koplik's spots", "entity": "/m/038d_j", "alias": null }, { "name": "Kussmaul breathing", "entity": "/m/036mkm", "alias": null }, { "name": "Kussmaul's sign", "entity": "/m/03f1lf", "alias": null }, { "name": "Kyphosis", "entity": "/m/02jrl1", "alias": null }, { "name": "LÃ©pine's sign", "entity": "/m/0gtxsrh", "alias": null }, { "name": "Labor pain", "entity": "/m/07y4z32", "alias": null }, { "name": "Labored breathing", "entity": "/m/09k6f04", "alias": null }, { "name": "Lack of concentration", "entity": "/m/06wfn90", "alias": null }, { "name": "Lacrimation", "entity": "/m/0dl9sy8", "alias": null }, { "name": "Lactose intolerance", "entity": "/m/0fp3b", "alias": null }, { "name": "Ladin's sign", "entity": "/m/05q3xhg", "alias": null }, { "name": "Lancisi's sign", "entity": "/m/05q49dz", "alias": null }, { "name": "Lanugo", "entity": "/m/04g22n", "alias": null }, { "name": "Large feet", "entity": "/m/06vz7h7", "alias": null }, { "name": "Laryngeal cleft", "entity": "/m/0bbvqnv", "alias": null }, { "name": "Laryngitis", "entity": "/m/02l37c", "alias": null }, { "name": "Laryngopharyngeal reflux", "entity": "/m/047bx2y", "alias": null }, { "name": "Laryngospasm", "entity": "/m/08zhxx", "alias": null }, { "name": "Lazarus sign", "entity": "/m/063_d30", "alias": null }, { "name": "Leaning to one side", "entity": "/m/0703vzb", "alias": null }, { "name": "Learning disability", "entity": "/m/02qwpq0", "alias": null }, { "name": "Left Bundle Branch Block", "entity": "/m/09k76g", "alias": null }, { "name": "Left ventricular hypertrophy", "entity": "/m/04dxph", "alias": null }, { "name": "Leg cramps", "entity": "/m/0dl9s41", "alias": null }, { "name": "Leserâ€“TrÃ©lat sign", "entity": "/m/08zm6q", "alias": null }, { "name": "Lesion", "entity": "/m/01w0hx", "alias": null }, { "name": "Lethargy", "entity": "/m/012815pn", "alias": null }, { "name": "Leucocoria", "entity": "/m/0bswkr", "alias": null }, { "name": "Leukemia", "entity": "/m/04psf", "alias": null }, { "name": "Leukemia cutis", "entity": "/m/0642tmh", "alias": null }, { "name": "Leukocytosis", "entity": "/m/03btw1", "alias": null }, { "name": "Leukopenia", "entity": "/m/03zrfj", "alias": null }, { "name": "Leukoplakia", "entity": "/m/03l365", "alias": null }, { "name": "Leukorrhea", "entity": "/m/06kjt9", "alias": null }, { "name": "Levine's sign", "entity": "/m/064v9c", "alias": null }, { "name": "Lhermitte's sign", "entity": "/m/064n9x", "alias": null }, { "name": "Lightheadedness", "entity": "/m/079p0q", "alias": null }, { "name": "Limbus sign", "entity": "/m/0hzqvxv", "alias": null }, { "name": "Limited symptom attack", "entity": "/m/02v_qsl", "alias": null }, { "name": "Limp", "entity": "/m/04plrq", "alias": null }, { "name": "Lines of Zahn", "entity": "/m/0286w6_", "alias": null }, { "name": "Lip numbness", "entity": "/m/0dl9tgq", "alias": null }, { "name": "Lipodermatosclerosis", "entity": "/m/04jh911", "alias": null }, { "name": "Lipodystrophy", "entity": "/m/01l2st", "alias": null }, { "name": "Lisch nodule", "entity": "/m/03yztw", "alias": null }, { "name": "Lisker's sign", "entity": "/m/0958cm", "alias": null }, { "name": "Litten's sign", "entity": "/m/05s_27m", "alias": null }, { "name": "Livedo racemosa", "entity": "/m/0cz8jtj", "alias": null }, { "name": "Livedo reticularis", "entity": "/m/08wrk9", "alias": null }, { "name": "Livedoid vasculitis", "entity": "/m/06ztvxs", "alias": null }, { "name": "Liver failure", "entity": "/m/02psvcf", "alias": null }, { "name": "Liver pain", "entity": "/m/0dl9t2y", "alias": null }, { "name": "Lloyd's sign", "entity": "/m/04lf42r", "alias": null }, { "name": "Locked-in syndrome", "entity": "/m/014mtn", "alias": null }, { "name": "Logorrhea", "entity": "/m/09v4pxz", "alias": null }, { "name": "Loneliness", "entity": "/m/05c7vv", "alias": null }, { "name": "Lordosis", "entity": "/m/03_039", "alias": null }, { "name": "Loss of height", "entity": "/m/06vymcn", "alias": null }, { "name": "Loss of interest", "entity": "/m/06wfz5f", "alias": null }, { "name": "Loud breathing", "entity": "/m/04rkydh", "alias": null }, { "name": "Low back pain", "entity": "/m/020hwm", "alias": null }, { "name": "Low birth weight", "entity": "/m/0dl9s49", "alias": null }, { "name": "Low-set ears", "entity": "/m/04ct6c6", "alias": null }, { "name": "Lowenberg's sign", "entity": "/m/0bh8863", "alias": null }, { "name": "Lower motor neuron lesion", "entity": "/m/02q_qps", "alias": null }, { "name": "Lower respiratory tract infection", "entity": "/m/03txkl", "alias": null }, { "name": "Lucid interval", "entity": "/m/08sx5r", "alias": null }, { "name": "Lumbar hyperlordosis", "entity": "/m/057nwjj", "alias": null }, { "name": "Lump in the palm", "entity": "/m/07475k7", "alias": null }, { "name": "Lump on the eyelid", "entity": "/m/072b9px", "alias": null }, { "name": "Lupus headache", "entity": "/m/05f4z9f", "alias": null }, { "name": "Lymphedema", "entity": "/m/04r36", "alias": null }, { "name": "Lymphocytopenia", "entity": "/m/08z6j9", "alias": null }, { "name": "Lymphocytosis", "entity": "/m/01jn3l", "alias": null }, { "name": "Lymphoid hyperplasia", "entity": "/m/03cs5n6", "alias": null }, { "name": "MÃ_ller's sign", "entity": "/m/0fltlr", "alias": null }, { "name": "MÃ¶bius sign", "entity": "/m/05s_wdw", "alias": null }, { "name": "Macewen's sign", "entity": "/m/049z6g", "alias": null }, { "name": "Macrocephaly", "entity": "/m/07b8s3", "alias": null }, { "name": "Macroglossia", "entity": "/m/069j2k", "alias": null }, { "name": "Maculopapular rash", "entity": "/m/05lrqf", "alias": null }, { "name": "Magnan's sign", "entity": "/m/05s_78v", "alias": null }, { "name": "Magnetic gait", "entity": "/m/04csj2b", "alias": null }, { "name": "Major depressive disorder", "entity": "/m/02bft", "alias": null }, { "name": "Major depressive episode", "entity": "/m/0bf0tv", "alias": null }, { "name": "Malabsorption", "entity": "/m/03f07j", "alias": null }, { "name": "Malaise", "entity": "/m/0418s3", "alias": null }, { "name": "Malar flush", "entity": "/m/0tkcw_z", "alias": null }, { "name": "Malar rash", "entity": "/m/04t_81", "alias": null }, { "name": "Male infertility", "entity": "/m/03bx917", "alias": null }, { "name": "Malnutrition", "entity": "/m/01m4w4", "alias": null }, { "name": "Malocclusion", "entity": "/m/06r0ps", "alias": null }, { "name": "Mania", "entity": "/m/05417", "alias": null }, { "name": "Manic episode", "entity": "/m/01srx9", "alias": null }, { "name": "Markle sign", "entity": "/m/05s_kz_", "alias": null }, { "name": "Mass on penis", "entity": "/m/075yg4y", "alias": null }, { "name": "Matchbox sign", "entity": "/m/04f68fy", "alias": null }, { "name": "Mechanism of action", "entity": "/m/0d2x17", "alias": null }, { "name": "Mediastinal fibrosis", "entity": "/m/0f9f42", "alias": null }, { "name": "Medulloblastoma", "entity": "/m/0bbl62", "alias": null }, { "name": "Megacolon", "entity": "/m/07qctz", "alias": null }, { "name": "Megaloblast", "entity": "/m/04f2b7p", "alias": null }, { "name": "Melancholia", "entity": "/m/057vp", "alias": null }, { "name": "Melanocytic nevus", "entity": "/m/0dc28", "alias": null }, { "name": "Melasma", "entity": "/m/04z9bf", "alias": null }, { "name": "Melena", "entity": "/m/02n2tg", "alias": null }, { "name": "Memory impairment", "entity": "/m/03z97xk", "alias": null }, { "name": "Meningism", "entity": "/m/04v_ml", "alias": null }, { "name": "Meningitis", "entity": "/m/09d11", "alias": null }, { "name": "Menorrhagia", "entity": "/m/031c33", "alias": null }, { "name": "Menstrual disorder", "entity": "/m/0b5pfn", "alias": null }, { "name": "Mental disorder", "entity": "/m/04x4r", "alias": null }, { "name": "Mental space", "entity": "/m/0swnk68", "alias": null }, { "name": "Metabolic acidosis", "entity": "/m/04tksh", "alias": null }, { "name": "Metabolic alkalosis", "entity": "/m/025sktj", "alias": null }, { "name": "Metamorphopsia", "entity": "/m/0j3cg_n", "alias": null }, { "name": "Metaplasia", "entity": "/m/059h7h", "alias": null }, { "name": "Metastatic liver disease", "entity": "/m/047cg9y", "alias": null }, { "name": "Methemoglobinemia", "entity": "/m/01npzs", "alias": null }, { "name": "Metrorrhagia", "entity": "/m/08_6kp", "alias": null }, { "name": "Microalbuminuria", "entity": "/m/07y7r4", "alias": null }, { "name": "Microcalcification", "entity": "/m/095qsg", "alias": null }, { "name": "Microcephaly", "entity": "/m/01hrbm", "alias": null }, { "name": "Micrognathism", "entity": "/m/0gjf_1", "alias": null }, { "name": "Micrographia", "entity": "/m/0ch8r9", "alias": null }, { "name": "Micromastia", "entity": "/m/09pv41", "alias": null }, { "name": "Microorchidism", "entity": "/m/06_vzzv", "alias": null }, { "name": "Micropolygyria", "entity": "/m/03c3y1s", "alias": null }, { "name": "Micropsia", "entity": "/m/04fznr6", "alias": null }, { "name": "Midcycle spotting", "entity": "/m/0dl9t3s", "alias": null }, { "name": "Middle back pain", "entity": "/m/09rlb3", "alias": null }, { "name": "Migraine", "entity": "/m/05904", "alias": null }, { "name": "Mild cough", "entity": "/m/0dl9qdv", "alias": null }, { "name": "Mild depression", "entity": "/m/0dl9t8d", "alias": null }, { "name": "Mild fever", "entity": "/m/0dl9qd_", "alias": null }, { "name": "Milium", "entity": "/m/0527by", "alias": null }, { "name": "Miosis", "entity": "/m/03smvc", "alias": null }, { "name": "Mitral valve prolapse", "entity": "/m/02np4g", "alias": null }, { "name": "Mixed affective state", "entity": "/m/05mzxw", "alias": null }, { "name": "Monoclonal gammopathy", "entity": "/m/05fc8yb", "alias": null }, { "name": "Monomelic amyotrophy", "entity": "/m/06399d", "alias": null }, { "name": "Monoparesis - leg", "entity": "/m/0dl9s__", "alias": null }, { "name": "Monoplegia", "entity": "/m/08bnqd", "alias": null }, { "name": "Monothematic delusion", "entity": "/m/08vx8s", "alias": null }, { "name": "Mood disorder", "entity": "/m/0drn8", "alias": null }, { "name": "Mood swing", "entity": "/m/022y3k", "alias": null }, { "name": "Moodiness", "entity": "/m/0dl9stt", "alias": null }, { "name": "Moon face", "entity": "/m/02prmbk", "alias": null }, { "name": "Morning sickness", "entity": "/m/01j9hg", "alias": null }, { "name": "Morphea", "entity": "/m/09lkp9", "alias": null }, { "name": "Morsicatio buccarum", "entity": "/m/0bwgtst", "alias": null }, { "name": "Motion sickness", "entity": "/m/0gxcc", "alias": null }, { "name": "Motor restlessness", "entity": "/m/07873tt", "alias": null }, { "name": "Motor Skills Disorders", "entity": "/m/05m9tg", "alias": null }, { "name": "Mottled skin", "entity": "/m/0dl9srn", "alias": null }, { "name": "Mouth breathing", "entity": "/m/08gzn6", "alias": null }, { "name": "Mouth lesion", "entity": "/m/0dl9s61", "alias": null }, { "name": "Mouth sore", "entity": "/m/0dl9syy", "alias": null }, { "name": "Movement disorders", "entity": "/m/03whtc", "alias": null }, { "name": "Mucopurulent discharge", "entity": "/m/0c0g_p", "alias": null }, { "name": "Mucosal lentigines", "entity": "/m/064klw1", "alias": null }, { "name": "Muehrcke's nails", "entity": "/m/02z08b_", "alias": null }, { "name": "Mulberry molar", "entity": "/m/0crg69x", "alias": null }, { "name": "Mulder's sign", "entity": "/m/02ql7wc", "alias": null }, { "name": "Multiple organ dysfunction syndrome", "entity": "/m/03hnn3", "alias": null }, { "name": "Mumoli's sign", "entity": "/m/027jv1q", "alias": null }, { "name": "Munro's microabscess", "entity": "/m/05m_jf3", "alias": null }, { "name": "Munson's sign", "entity": "/m/0415_dy", "alias": null }, { "name": "Murphy's sign", "entity": "/m/071ttc", "alias": null }, { "name": "Muscle atrophy", "entity": "/m/0dds0h", "alias": null }, { "name": "Muscle contraction", "entity": "/m/046xb9", "alias": null }, { "name": "Muscle pain", "entity": "/m/013677", "alias": null }, { "name": "Muscle rigidity", "entity": "/m/0dl9r5h", "alias": null }, { "name": "Muscle weakness", "entity": "/m/0927l7", "alias": null }, { "name": "Muscular stiffness", "entity": "/m/0dl9s8r", "alias": null }, { "name": "Musculoskeletal pain", "entity": "/m/04klj9n", "alias": null }, { "name": "Musical hallucinations", "entity": "/m/0p8zvc5", "alias": null }, { "name": "Muteness", "entity": "/m/0287zzh", "alias": null }, { "name": "Mydriasis", "entity": "/m/01dhgh", "alias": null }, { "name": "Myelodysplastic syndrome", "entity": "/m/019gky", "alias": null }, { "name": "Myelopathy", "entity": "/m/04_1ntx", "alias": null }, { "name": "Myerson's sign", "entity": "/m/04vvbx", "alias": null }, { "name": "Myocardial infarction", "entity": "/m/0gk4g", "alias": null }, { "name": "Myocardial scarring", "entity": "/m/06w7x1v", "alias": null }, { "name": "Myoclonus", "entity": "/m/02_mfs", "alias": null }, { "name": "Myoglobinuria", "entity": "/m/08bbk2", "alias": null }, { "name": "Myopathic gait", "entity": "/m/04cw8c5", "alias": null }, { "name": "Myopathy", "entity": "/m/058k0k", "alias": null }, { "name": "Myxedema", "entity": "/m/02wp6c", "alias": null }, { "name": "Nagayama's spots", "entity": "/m/0c41jph", "alias": null }, { "name": "Nail clubbing", "entity": "/m/02qbnn", "alias": null }, { "name": "Nail pitting", "entity": "/m/010pyz4s", "alias": null }, { "name": "Narcissism", "entity": "/m/0dvxcy", "alias": null }, { "name": "Narrow stools", "entity": "/m/04mvdf9", "alias": null }, { "name": "Nasal breathing", "entity": "/m/09prs9", "alias": null }, { "name": "Nasal congestion", "entity": "/m/05s5v6", "alias": null }, { "name": "Nasal polyp", "entity": "/m/034hsj", "alias": null }, { "name": "Nasal septum deviation", "entity": "/m/05cz29", "alias": null }, { "name": "Nausea", "entity": "/m/0gxb2", "alias": null }, { "name": "Near-sightedness", "entity": "/m/0m2w3", "alias": null }, { "name": "Neck mass", "entity": "/m/0crhp0y", "alias": null }, { "name": "Neck pain", "entity": "/m/02r3cvb", "alias": null }, { "name": "Neck rash", "entity": "/m/0dl9tg2", "alias": null }, { "name": "Neck spasm", "entity": "/m/043s7zg", "alias": null }, { "name": "Neck stiffness", "entity": "/m/0bmgh43", "alias": null }, { "name": "Neck swelling", "entity": "/m/0dl9t66", "alias": null }, { "name": "Necrobiosis", "entity": "/m/03m3q96", "alias": null }, { "name": "Necrolytic acral erythema", "entity": "/m/0c3x745", "alias": null }, { "name": "Necrosis", "entity": "/m/09yql", "alias": null }, { "name": "Neonatal jaundice", "entity": "/m/074hph", "alias": null }, { "name": "Neovascularization", "entity": "/m/0bk1jp", "alias": null }, { "name": "Nephritic syndrome", "entity": "/m/06yg6t", "alias": null }, { "name": "Nephrocalcinosis", "entity": "/m/02py_03", "alias": null }, { "name": "Nephromegaly", "entity": "/m/043ryvl", "alias": null }, { "name": "Nephrotic syndrome", "entity": "/m/01n597", "alias": null }, { "name": "Nerve injury", "entity": "/m/02pm604", "alias": null }, { "name": "Neuralgia", "entity": "/m/05kzxm", "alias": null }, { "name": "Neurofibroma", "entity": "/m/08gljx", "alias": null }, { "name": "Neurogenic claudication", "entity": "/m/02x2gtl", "alias": null }, { "name": "Neuroinflammation", "entity": "/m/0zbvc0s", "alias": null }, { "name": "Neuropathic Pain", "entity": "/m/09gnhp2", "alias": null }, { "name": "Neutrophilia", "entity": "/m/01jjvn", "alias": null }, { "name": "Nevus spilus", "entity": "/m/05m_5tq", "alias": null }, { "name": "Nicoladoni sign", "entity": "/m/04mxtkc", "alias": null }, { "name": "Nicotine withdrawal", "entity": "/m/027ymbg", "alias": null }, { "name": "Night sweats", "entity": "/m/04klgqw", "alias": null }, { "name": "Night terror", "entity": "/m/0272zb", "alias": null }, { "name": "Nightmare", "entity": "/m/0cjgc", "alias": null }, { "name": "Nikolsky's sign", "entity": "/m/096_r8", "alias": null }, { "name": "Nipple discharge", "entity": "/m/04696g", "alias": null }, { "name": "Nipple tenderness", "entity": "/m/04mv7sh", "alias": null }, { "name": "Nocturia", "entity": "/m/0868jh", "alias": null }, { "name": "Nocturnal Cough", "entity": "/m/06gx48f", "alias": null }, { "name": "Nocturnal enuresis", "entity": "/m/01wy8y", "alias": null }, { "name": "Nodule", "entity": "/m/0905_p", "alias": null }, { "name": "Nonossifying fibroma", "entity": "/m/05p2wz1", "alias": null }, { "name": "Nosebleed", "entity": "/m/02zbth", "alias": null }, { "name": "Nosophobia", "entity": "/m/027__kf", "alias": null }, { "name": "Nuclear sclerosis", "entity": "/m/0bbmp2", "alias": null }, { "name": "Nucleated red blood cell", "entity": "/m/012w48z4", "alias": null }, { "name": "Numbness in leg", "entity": "/m/0dl9tg8", "alias": null }, { "name": "Numbness of face", "entity": "/m/0dl9sm4", "alias": null }, { "name": "Nyctalopia", "entity": "/m/04970l", "alias": null }, { "name": "Nystagmus", "entity": "/m/01skrq", "alias": null }, { "name": "Obesity", "entity": "/m/0fltx", "alias": null }, { "name": "Obstructed defecation", "entity": "/m/0m0ph75", "alias": null }, { "name": "Obtundation", "entity": "/m/0b0kl9", "alias": null }, { "name": "Obturator sign", "entity": "/m/0d0_xj", "alias": null }, { "name": "Ocular rosacea", "entity": "/m/03rd74", "alias": null }, { "name": "Oculocutaneous albinism", "entity": "/m/047glfs", "alias": null }, { "name": "odd sensations", "entity": "/m/011l_39k", "alias": null }, { "name": "Odynophagia", "entity": "/m/0997hp", "alias": null }, { "name": "Odynorgasmia", "entity": "/m/03cx4hf", "alias": null }, { "name": "Oily skin", "entity": "/m/0dl9sfn", "alias": null }, { "name": "Oligodactyly", "entity": "/m/0b743ls", "alias": null }, { "name": "Oligomenorrhea", "entity": "/m/04yyq8", "alias": null }, { "name": "Oligospermia", "entity": "/m/06z9sn", "alias": null }, { "name": "Oliguria", "entity": "/m/04b1kq", "alias": null }, { "name": "Oliver's sign", "entity": "/m/0c2p34", "alias": null }, { "name": "One hip higher than the other", "entity": "/m/0703vvz", "alias": null }, { "name": "Oneiroid syndrome", "entity": "/m/027g3ht", "alias": null }, { "name": "Onychocryptosis", "entity": "/m/0476hh", "alias": null }, { "name": "Onychorrhexis", "entity": "/m/090ryn", "alias": null }, { "name": "Onychoschizia", "entity": "/m/05b2v23", "alias": null }, { "name": "Ophthalmoparesis", "entity": "/m/08grsz", "alias": null }, { "name": "Opisthotonus", "entity": "/m/04bm26", "alias": null }, { "name": "Oppenheim's sign", "entity": "/m/04qb4w9", "alias": null }, { "name": "Opportunistic infection", "entity": "/m/064f44", "alias": null }, { "name": "Optic nerve hypoplasia", "entity": "/m/03qvff", "alias": null }, { "name": "Optic neuritis", "entity": "/m/05pzb", "alias": null }, { "name": "Optic papillitis", "entity": "/m/065zh_3", "alias": null }, { "name": "Oral bleeding", "entity": "/m/04r4mtz", "alias": null }, { "name": "Oral infection", "entity": "/m/05blzpg", "alias": null }, { "name": "Oral Manifestations", "entity": "/m/07y4xdl", "alias": null }, { "name": "Organ dysfunction", "entity": "/m/04y5q8x", "alias": null }, { "name": "Organomegaly", "entity": "/m/06b4_8", "alias": null }, { "name": "Orofacial pain", "entity": "/m/0wf_p0n", "alias": null }, { "name": "Oropharyngeal dysphagia", "entity": "/m/047gmhk", "alias": null }, { "name": "Orthopnea", "entity": "/m/02lmp9", "alias": null }, { "name": "Orthostatic hypertension", "entity": "/m/0hn9q6v", "alias": null }, { "name": "Orthostatic hypotension", "entity": "/m/0pv4d", "alias": null }, { "name": "Oscillopsia", "entity": "/m/06c4t0", "alias": null }, { "name": "Osler's node", "entity": "/m/04ndcq", "alias": null }, { "name": "Ossification", "entity": "/m/050qm0", "alias": null }, { "name": "Osteitis fibrosa cystica", "entity": "/m/08wf7p", "alias": null }, { "name": "Osteomalacia", "entity": "/m/02npcz", "alias": null }, { "name": "Osteopenia", "entity": "/m/04zh7_m", "alias": null }, { "name": "Osteophyte", "entity": "/m/03kb14", "alias": null }, { "name": "Osteoporosis", "entity": "/m/05mdx", "alias": null }, { "name": "Osteoporosis circumscripta", "entity": "/m/0gk_k_6", "alias": null }, { "name": "Otitis", "entity": "/m/0743mf", "alias": null }, { "name": "Otitis externa", "entity": "/m/04w68t", "alias": null }, { "name": "Otorrhea", "entity": "/m/04kd970", "alias": null }, { "name": "Ovarian apoplexy", "entity": "/m/0dllr8l", "alias": null }, { "name": "Overweight", "entity": "/m/01t6qr", "alias": null }, { "name": "Ovulation induction", "entity": "/m/0bbvjx1", "alias": null }, { "name": "Paget's disease of the breast", "entity": "/m/0360ph", "alias": null }, { "name": "Pain", "entity": "/m/062t2", "alias": null }, { "name": "Pain asymbolia", "entity": "/m/05dp09", "alias": null }, { "name": "Pain behind the eyes", "entity": "/m/0gk93mt", "alias": null }, { "name": "Pain in limb", "entity": "/m/07vwp80", "alias": null }, { "name": "Pale feces", "entity": "/m/06gb5_z", "alias": null }, { "name": "Palilalia", "entity": "/m/06qqyb", "alias": null }, { "name": "Palinopsia", "entity": "/m/06rxny", "alias": null }, { "name": "Palla's sign", "entity": "/m/05sygqd", "alias": null }, { "name": "Pallor", "entity": "/m/03skrx", "alias": null }, { "name": "Palmar erythema", "entity": "/m/071rm6", "alias": null }, { "name": "Palpable purpura", "entity": "/m/0dl9s6w", "alias": null }, { "name": "Palpitations", "entity": "/m/029ggh", "alias": null }, { "name": "Pancolitis", "entity": "/m/03c8wh1", "alias": null }, { "name": "Pancreatitis", "entity": "/m/0h1wz", "alias": null }, { "name": "Pancytopenia", "entity": "/m/063jn6", "alias": null }, { "name": "Panic", "entity": "/m/01t09s", "alias": null }, { "name": "Panic attack", "entity": "/m/0g88b", "alias": null }, { "name": "Papilledema", "entity": "/m/01c9lj", "alias": null }, { "name": "Papillomatosis", "entity": "/m/04q1s_9", "alias": null }, { "name": "Papule", "entity": "/m/04xgtj", "alias": null }, { "name": "Parakeratosis", "entity": "/m/04q8vlf", "alias": null }, { "name": "Paralysis", "entity": "/m/05sj8", "alias": null }, { "name": "Paranoia", "entity": "/m/063zb", "alias": null }, { "name": "Paraphasia", "entity": "/m/02qdsw7", "alias": null }, { "name": "Paraplegia", "entity": "/m/0251gx", "alias": null }, { "name": "Paresis", "entity": "/m/01ny_g", "alias": null }, { "name": "Paresthesia", "entity": "/m/023m3v", "alias": null }, { "name": "Parkinsonian gait", "entity": "/m/0bwj7fw", "alias": null }, { "name": "Parkinsonism", "entity": "/m/0dcs4", "alias": null }, { "name": "Parosmia", "entity": "/m/065swx", "alias": null }, { "name": "Paroxysmal nocturnal dyspnea", "entity": "/m/0gttzbm", "alias": null }, { "name": "Parrot's sign", "entity": "/m/0711g3", "alias": null }, { "name": "Pastia's lines", "entity": "/m/05t0qts", "alias": null }, { "name": "Pathological jealousy", "entity": "/m/01l954", "alias": null }, { "name": "Pathological lying", "entity": "/m/089sp6", "alias": null }, { "name": "Pauci-immune", "entity": "/m/05b4v5v", "alias": null }, { "name": "Peanut allergy", "entity": "/m/085pjw", "alias": null }, { "name": "Peau d'orange", "entity": "/m/09szn7", "alias": null }, { "name": "Pectus carinatum", "entity": "/m/05l8yp", "alias": null }, { "name": "Pectus excavatum", "entity": "/m/03750f", "alias": null }, { "name": "Pelvic inflammatory disease", "entity": "/m/064fq", "alias": null }, { "name": "Pelvic lipomatosis", "entity": "/m/0kr76", "alias": null }, { "name": "Pelvic organ prolapse", "entity": "/m/07kyr1", "alias": null }, { "name": "Pemberton's sign", "entity": "/m/038dtb", "alias": null }, { "name": "Penile discharge", "entity": "/m/059nnns", "alias": null }, { "name": "Penis shortening", "entity": "/m/075yg5b", "alias": null }, { "name": "Peribronchial cuffing", "entity": "/m/03hk_lf", "alias": null }, { "name": "Pericardial effusion", "entity": "/m/08z994", "alias": null }, { "name": "Pericardial friction rub", "entity": "/m/0879yd", "alias": null }, { "name": "Pericarditis", "entity": "/m/032snl", "alias": null }, { "name": "Perichondritis", "entity": "/m/0c012dy", "alias": null }, { "name": "Periorbital dark circles", "entity": "/m/04cbz5", "alias": null }, { "name": "Periorbital puffiness", "entity": "/m/027pqtp", "alias": null }, { "name": "Peripheral edema", "entity": "/m/06v6kk", "alias": null }, { "name": "Peripheral neuropathy", "entity": "/m/02w1fx", "alias": null }, { "name": "Peritonsillar abscess", "entity": "/m/04b586", "alias": null }, { "name": "Persecutory delusion", "entity": "/m/09g6vr0", "alias": null }, { "name": "Perseveration", "entity": "/m/0dkpdn", "alias": null }, { "name": "Persistent edema of rosacea", "entity": "/m/0521vqs", "alias": null }, { "name": "Persistent headache", "entity": "/m/0dl9tb6", "alias": null }, { "name": "Persistent hunger", "entity": "/m/075g6s4", "alias": null }, { "name": "Persistent truncus arteriosus", "entity": "/m/07dlyv", "alias": null }, { "name": "Persistent urge to urinate", "entity": "/m/075v3bq", "alias": null }, { "name": "Persistent vegetative state", "entity": "/m/01rvjp", "alias": null }, { "name": "Personality change", "entity": "/m/0dl9rz6", "alias": null }, { "name": "Perspiration", "entity": "/m/0k9qw", "alias": null }, { "name": "Petechia", "entity": "/m/04c2n0", "alias": null }, { "name": "Phantom pain", "entity": "/m/065_qd", "alias": null }, { "name": "Phantom vibration syndrome", "entity": "/m/0gcq2w", "alias": null }, { "name": "Phantosmia", "entity": "/m/0d7sj2", "alias": null }, { "name": "Pharyngitis", "entity": "/m/01gkcc", "alias": null }, { "name": "Phlebitis", "entity": "/m/03rwrr", "alias": null }, { "name": "Phlegm", "entity": "/m/01s3l8", "alias": null }, { "name": "Phocomelia", "entity": "/m/0jzx0", "alias": null }, { "name": "Phonological deficit", "entity": "/m/02rr053", "alias": null }, { "name": "Phonophobia", "entity": "/m/08r62l", "alias": null }, { "name": "Phosphene", "entity": "/m/038s2d", "alias": null }, { "name": "Photodermatitis", "entity": "/m/03c2dk", "alias": null }, { "name": "Photophobia", "entity": "/m/02lv8g", "alias": null }, { "name": "Photopsia", "entity": "/m/09p809", "alias": null }, { "name": "Photosensitivity in humans", "entity": "/m/07k9gz9", "alias": null }, { "name": "Phototoxicity", "entity": "/m/067w_4", "alias": null }, { "name": "Phrenitis", "entity": "/m/047cfz7", "alias": null }, { "name": "Phyllodes tumor", "entity": "/m/07mvcp", "alias": null }, { "name": "Physical dependence", "entity": "/m/059w29", "alias": null }, { "name": "Pica", "entity": "/m/01b8zz", "alias": null }, { "name": "Pili torti", "entity": "/m/0462xkz", "alias": null }, { "name": "Pinch mark", "entity": "/m/0bhbwcq", "alias": null }, { "name": "Piskacek's sign", "entity": "/m/03gr_p9", "alias": null }, { "name": "Placental abruption", "entity": "/m/0508hk", "alias": null }, { "name": "Plaque", "entity": "/m/04q1ncc", "alias": null }, { "name": "Platypnea", "entity": "/m/03d6pnm", "alias": null }, { "name": "Pleocytosis", "entity": "/m/02q7v1x", "alias": null }, { "name": "Pleural friction rub", "entity": "/m/04lgt34", "alias": null }, { "name": "Plummer's nail", "entity": "/m/05s_9d1", "alias": null }, { "name": "Pneumatosis intestinalis", "entity": "/m/0f47kd", "alias": null }, { "name": "Pneumaturia", "entity": "/m/02qwdjd", "alias": null }, { "name": "Pneumonia", "entity": "/m/0dq9p", "alias": null }, { "name": "Pneumonia alba", "entity": "/m/0gjbz4s", "alias": null }, { "name": "Pneumothorax", "entity": "/m/01q1sz", "alias": null }, { "name": "Polyarthritis", "entity": "/m/06hxx0", "alias": null }, { "name": "Polycythemia", "entity": "/m/02k88f", "alias": null }, { "name": "Polydipsia", "entity": "/m/02v6kp", "alias": null }, { "name": "Polyneuropathy", "entity": "/m/03cx49", "alias": null }, { "name": "Polyphagia", "entity": "/m/03gncj", "alias": null }, { "name": "Polyuria", "entity": "/m/01m3h8", "alias": null }, { "name": "Poor appetite", "entity": "/m/0dl9sbn", "alias": null }, { "name": "Poor balance", "entity": "/m/0dl9sfw", "alias": null }, { "name": "Poor coordination", "entity": "/m/076r60r", "alias": null }, { "name": "Poor feeding", "entity": "/m/0dl9t5t", "alias": null }, { "name": "Poor wound healing", "entity": "/m/06c4xv3", "alias": null }, { "name": "Portal hypertension", "entity": "/m/034h9r", "alias": null }, { "name": "Post herniorraphy pain syndrome", "entity": "/m/0ggb_w", "alias": null }, { "name": "Post-concussion syndrome", "entity": "/m/09qljf", "alias": null }, { "name": "Post-dural-puncture headache", "entity": "/m/03hlfpv", "alias": null }, { "name": "Post-nasal drip", "entity": "/m/0615kf", "alias": null }, { "name": "Post-Operative Pain", "entity": "/m/04yjg7n", "alias": null }, { "name": "Post-traumatic seizure", "entity": "/m/03qcvl0", "alias": null }, { "name": "Post-void dribbling", "entity": "/m/0bl95z", "alias": null }, { "name": "Postictal state", "entity": "/m/0ctw0q", "alias": null }, { "name": "Postinflammatory hyperpigmentation", "entity": "/m/05c4p7_", "alias": null }, { "name": "Postoperative nausea and vomiting", "entity": "/m/035vzc", "alias": null }, { "name": "Postorgasmic illness syndrome", "entity": "/m/05p5_7y", "alias": null }, { "name": "Postural instability", "entity": "/m/04dng0v", "alias": null }, { "name": "Postural orthostatic tachycardia syndrome", "entity": "/m/04l6qx", "alias": null }, { "name": "Pratt's sign", "entity": "/m/043s66f", "alias": null }, { "name": "Pre-eclampsia", "entity": "/m/025lwc", "alias": null }, { "name": "Precocious puberty", "entity": "/m/02_nx2", "alias": null }, { "name": "Prehn's sign", "entity": "/m/0c81h2", "alias": null }, { "name": "Prehypertension", "entity": "/m/03cz_hv", "alias": null }, { "name": "Premature atrial contraction", "entity": "/m/04kgzqg", "alias": null }, { "name": "Premature ejaculation", "entity": "/m/01qqp1", "alias": null }, { "name": "Premature hair whitening", "entity": "/m/06_5xc6", "alias": null }, { "name": "Premature ventricular contraction", "entity": "/m/01hjkt", "alias": null }, { "name": "Premenstrual syndrome", "entity": "/m/01fxrj", "alias": null }, { "name": "Pressure of speech", "entity": "/m/08k8yw", "alias": null }, { "name": "Presystolic murmur", "entity": "/m/0n48mtn", "alias": null }, { "name": "Pretibial myxedema", "entity": "/m/0bdky5", "alias": null }, { "name": "Priapism", "entity": "/m/0ldwy", "alias": null }, { "name": "Primarily obsessional obsessive compulsive disorder", "entity": "/m/04n4w2k", "alias": null }, { "name": "Proctitis", "entity": "/m/06rf7m", "alias": null }, { "name": "Prodrome", "entity": "/m/01k7nc", "alias": null }, { "name": "Productive cough", "entity": "/m/03gtw0t", "alias": null }, { "name": "Prognathism", "entity": "/m/06g3nz", "alias": null }, { "name": "Prolapse", "entity": "/m/01jcd6", "alias": null }, { "name": "Propulsive gait", "entity": "/m/04cvmpm", "alias": null }, { "name": "Prostate pain", "entity": "/m/0dl9sqm", "alias": null }, { "name": "Proteinuria", "entity": "/m/012zf3", "alias": null }, { "name": "Protruding Tongue", "entity": "/m/05t2w3m", "alias": null }, { "name": "Prurigo", "entity": "/m/0gk2pb", "alias": null }, { "name": "Pruritic papular eruption of HIV disease", "entity": "/m/0bhc5r2", "alias": null }, { "name": "Pruritus ani", "entity": "/m/02pq2mj", "alias": null }, { "name": "Pruritus of genital organs", "entity": "/m/07vwn8h", "alias": null }, { "name": "Pruritus vulvae", "entity": "/m/05mvdqy", "alias": null }, { "name": "Pseudarthrosis", "entity": "/m/05_3zr", "alias": null }, { "name": "Pseudoachondroplasia", "entity": "/m/026ljcg", "alias": null }, { "name": "Pseudobulbar affect", "entity": "/m/04lg5mq", "alias": null }, { "name": "Pseudodiarrhea", "entity": "/m/0bjszh", "alias": null }, { "name": "Pseudohallucination", "entity": "/m/04q2n9f", "alias": null }, { "name": "Pseudohypertension", "entity": "/m/0691c5", "alias": null }, { "name": "Pseudomembrane", "entity": "/m/06vxvm8", "alias": null }, { "name": "Pseudomyopia", "entity": "/m/026689f", "alias": null }, { "name": "Pseudopolyps", "entity": "/m/0hzpvq0", "alias": null }, { "name": "Psoas sign", "entity": "/m/0751ss", "alias": null }, { "name": "Psoriatic erythroderma", "entity": "/m/05c4nbg", "alias": null }, { "name": "Psychogenic amnesia", "entity": "/m/09hgk_", "alias": null }, { "name": "Psychogenic pain", "entity": "/m/04ygjf4", "alias": null }, { "name": "Psychomotor agitation", "entity": "/m/05p8sj", "alias": null }, { "name": "Psychomotor retardation", "entity": "/m/03ytmb", "alias": null }, { "name": "Psychoorganic syndrome", "entity": "/m/098crk", "alias": null }, { "name": "Psychosis", "entity": "/m/063yv", "alias": null }, { "name": "Psychotic break", "entity": "/m/03l9p5", "alias": null }, { "name": "Ptosis", "entity": "/m/0gdsn5", "alias": null }, { "name": "Puddle sign", "entity": "/m/03c15k9", "alias": null }, { "name": "Pulmonary consolidation", "entity": "/m/0b7jt4", "alias": null }, { "name": "Pulmonary edema", "entity": "/m/0260ph", "alias": null }, { "name": "Pulmonary hemorrhage", "entity": "/m/06t860", "alias": null }, { "name": "Pulmonary hypertension", "entity": "/m/031wv7", "alias": null }, { "name": "Pulmonary infiltrate", "entity": "/m/0yn_knd", "alias": null }, { "name": "Pulmonary insufficiency", "entity": "/m/03cg1lz", "alias": null }, { "name": "Pulmonary shunt", "entity": "/m/027x98v", "alias": null }, { "name": "Pulsus alternans", "entity": "/m/02rxk72", "alias": null }, { "name": "Pulsus bigeminus", "entity": "/m/0267wp8", "alias": null }, { "name": "Pulsus paradoxus", "entity": "/m/087c0d", "alias": null }, { "name": "Purple urine bag syndrome", "entity": "/m/06w5dlj", "alias": null }, { "name": "Purpura", "entity": "/m/04c2m8", "alias": null }, { "name": "Pus", "entity": "/m/01s2ly", "alias": null }, { "name": "Pustule", "entity": "/m/01fxyp", "alias": null }, { "name": "Pustulosis", "entity": "/m/0f7x8r", "alias": null }, { "name": "Pyelonephritis", "entity": "/m/04_rt_", "alias": null }, { "name": "Pyoderma gangrenosum", "entity": "/m/08s9h0", "alias": null }, { "name": "Pyostomatitis vegetans", "entity": "/m/06w1x7x", "alias": null }, { "name": "Pyuria", "entity": "/m/08bp74", "alias": null }, { "name": "Raccoon eyes", "entity": "/m/08810p", "alias": null }, { "name": "Racing thoughts", "entity": "/m/03nps17", "alias": null }, { "name": "Radiculopathy", "entity": "/m/02pfkpc", "alias": null }, { "name": "Rash on the palms and soles", "entity": "/m/0dl9qg2", "alias": null }, { "name": "Raynaud syndrome", "entity": "/m/02v2jk", "alias": null }, { "name": "Rectal discharge", "entity": "/m/0dl9s9j", "alias": null }, { "name": "Rectal pain", "entity": "/m/0b74tbc", "alias": null }, { "name": "Rectal prolapse", "entity": "/m/03080q", "alias": null }, { "name": "Rectal tenesmus", "entity": "/m/04yfk_", "alias": null }, { "name": "Recurrent infection", "entity": "/m/0dl9spc", "alias": null }, { "name": "Red eye", "entity": "/m/04pxm5", "alias": null }, { "name": "Red nose", "entity": "/m/0dl9tc8", "alias": null }, { "name": "Red rash", "entity": "/m/0dl9tmf", "alias": null }, { "name": "Red spots", "entity": "/m/0dl9tm6", "alias": null }, { "name": "Reduced affect display", "entity": "/m/08z6vk", "alias": null }, { "name": "Regurgitation", "entity": "/m/0fv217", "alias": null }, { "name": "Regurgitation", "entity": "/m/0fv203", "alias": null }, { "name": "Regurgitation with acid", "entity": "/m/0dl9td4", "alias": null }, { "name": "Religious delusion", "entity": "/m/0h_9sk9", "alias": null }, { "name": "Remitting seronegative symmetrical synovitis with pitting edema", "entity": "/m/05f6gm1", "alias": null }, { "name": "Renal colic", "entity": "/m/06phzx", "alias": null }, { "name": "Renal cyst", "entity": "/m/0b77v22", "alias": null }, { "name": "Respiratory acidosis", "entity": "/m/04tkvk", "alias": null }, { "name": "Respiratory arrest", "entity": "/m/037c4l", "alias": null }, { "name": "Respiratory distress", "entity": "/m/0jwzzd9", "alias": null }, { "name": "Respiratory failure", "entity": "/m/019dmc", "alias": null }, { "name": "Respiratory tract infection", "entity": "/m/0117wzhd", "alias": null }, { "name": "Restless legs syndrome", "entity": "/m/01jyld", "alias": null }, { "name": "Restricted behavior", "entity": "/m/05nmqpm", "alias": null }, { "name": "Retching", "entity": "/m/02rjt8c", "alias": null }, { "name": "Reticulocytosis", "entity": "/m/05d54_", "alias": null }, { "name": "Retinal degeneration", "entity": "/m/05zn7mq", "alias": null }, { "name": "Retrograde amnesia", "entity": "/m/040z8c", "alias": null }, { "name": "Retroperitoneal fibrosis", "entity": "/m/09z7xt", "alias": null }, { "name": "Reynolds' pentad", "entity": "/m/0ggv_7", "alias": null }, { "name": "Rheum", "entity": "/m/02p1kqs", "alias": null }, { "name": "Rheumatoid nodule", "entity": "/m/03m6bb0", "alias": null }, { "name": "Rheumatoid nodulosis", "entity": "/m/0b767p_", "alias": null }, { "name": "Rhinitis", "entity": "/m/02mdz9", "alias": null }, { "name": "Rhinophyma", "entity": "/m/0dyhxj", "alias": null }, { "name": "Rhinorrhea", "entity": "/m/06p_bp", "alias": null }, { "name": "Rhonchi", "entity": "/m/09jv3z", "alias": null }, { "name": "Riedel's thyroiditis", "entity": "/m/02rjq7r", "alias": null }, { "name": "Right atrial enlargement", "entity": "/m/07kj55d", "alias": null }, { "name": "Right ventricular hypertrophy", "entity": "/m/025tjvy", "alias": null }, { "name": "Right-sided aortic arch", "entity": "/m/0knm7d1", "alias": null }, { "name": "Rigler's sign", "entity": "/m/09b5_f", "alias": null }, { "name": "Risus sardonicus", "entity": "/m/09s7_h", "alias": null }, { "name": "Romana's sign", "entity": "/m/02q4nr8", "alias": null }, { "name": "Rose spots", "entity": "/m/0bj2by", "alias": null }, { "name": "Rosenstein's sign", "entity": "/m/0crclyl", "alias": null }, { "name": "Rossolimo's sign", "entity": "/m/05s_tyf", "alias": null }, { "name": "Roth's spot", "entity": "/m/038dpt", "alias": null }, { "name": "Rough skin", "entity": "/m/07t7mz6", "alias": null }, { "name": "Rovsing's sign", "entity": "/m/04dbtp", "alias": null }, { "name": "Rumination", "entity": "/m/04grp19", "alias": null }, { "name": "Rumination syndrome", "entity": "/m/09spqk", "alias": null }, { "name": "Rumpelâ€“Leede sign", "entity": "/m/05q6gh9", "alias": null }, { "name": "Running amok", "entity": "/m/014sp", "alias": null }, { "name": "Russell's sign", "entity": "/m/082wyl", "alias": null }, { "name": "Sacroiliac joint dysfunction", "entity": "/m/0gtybk6", "alias": null }, { "name": "Sadness", "entity": "/m/02y_3dj", "alias": null }, { "name": "Sail sign of the chest", "entity": "/m/0h1hr7b", "alias": null }, { "name": "Salt craving", "entity": "/m/0dl9sqv", "alias": null }, { "name": "Salus's sign", "entity": "/m/05sxjn6", "alias": null }, { "name": "Scaly skin", "entity": "/m/06_2b8m", "alias": null }, { "name": "Scaphocephaly", "entity": "/m/01hrg2", "alias": null }, { "name": "Scar", "entity": "/m/0kbct", "alias": null }, { "name": "Scarring hair loss", "entity": "/m/05222s7", "alias": null }, { "name": "Schaeffer's sign", "entity": "/m/05s_28n", "alias": null }, { "name": "Schizophasia", "entity": "/m/05qtd5", "alias": null }, { "name": "Sciatica", "entity": "/m/01_wxr", "alias": null }, { "name": "Scissor gait", "entity": "/m/04czg7h", "alias": null }, { "name": "Scleritis", "entity": "/m/08gppk", "alias": null }, { "name": "Sclerodactyly", "entity": "/m/05z058", "alias": null }, { "name": "Scleroderma", "entity": "/m/05m_zv2", "alias": null }, { "name": "Scoliosis", "entity": "/m/0yvgr", "alias": null }, { "name": "Scotoma", "entity": "/m/03gzmf", "alias": null }, { "name": "Screaming", "entity": "/m/03qc9zr", "alias": null }, { "name": "Seborrheic dermatitis", "entity": "/m/02cvvl", "alias": null }, { "name": "Second-degree atrioventricular block", "entity": "/m/031s_5", "alias": null }, { "name": "Secondary lymphedema", "entity": "/m/05q9_31", "alias": null }, { "name": "Sedation", "entity": "/m/019bf4", "alias": null }, { "name": "Seeing problems", "entity": "/m/0h80_xb", "alias": null }, { "name": "Seeing spots", "entity": "/m/0dl9qgk", "alias": null }, { "name": "Seidel sign", "entity": "/m/047m0zn", "alias": null }, { "name": "Self-destructive behaviour", "entity": "/m/026qvtc", "alias": null }, { "name": "Self-harm", "entity": "/m/013cc9", "alias": null }, { "name": "Sensorineural hearing loss", "entity": "/m/04fmz1", "alias": null }, { "name": "Sensory ataxia", "entity": "/m/07_bsl", "alias": null }, { "name": "Sensory phenomena", "entity": "/m/0h0qbm", "alias": null }, { "name": "Sentinel loop", "entity": "/m/04q3mxq", "alias": null }, { "name": "Septic shock", "entity": "/m/029mr9", "alias": null }, { "name": "Serotonin syndrome", "entity": "/m/079hg", "alias": null }, { "name": "Sexual anhedonia", "entity": "/m/0gfg_0y", "alias": null }, { "name": "Sexual dysfunction", "entity": "/m/0255qr", "alias": null }, { "name": "Sexual headache", "entity": "/m/07c5n9", "alias": null }, { "name": "Sexual obsessions", "entity": "/m/027tv8t", "alias": null }, { "name": "Shakiness", "entity": "/m/0dl9sxs", "alias": null }, { "name": "Shaking of hands", "entity": "/m/0dl9tfw", "alias": null }, { "name": "Shallow breathing", "entity": "/m/08wqjw", "alias": null }, { "name": "Shame", "entity": "/m/0164bb", "alias": null }, { "name": "Shawl scrotum", "entity": "/m/025_mtj", "alias": null }, { "name": "Sherren's triangle", "entity": "/m/0hr6yls", "alias": null }, { "name": "Shivering", "entity": "/m/04fv7w", "alias": null }, { "name": "Shock", "entity": "/m/012n6d", "alias": null }, { "name": "Short bowel syndrome", "entity": "/m/04mr0d", "alias": null }, { "name": "Short neck", "entity": "/m/07746vw", "alias": null }, { "name": "Short stature", "entity": "/m/06y96j", "alias": null }, { "name": "Shortness of breath", "entity": "/m/01cdt5", "alias": null }, { "name": "Shyness", "entity": "/m/01dl7h", "alias": null }, { "name": "Siegrist streaks", "entity": "/m/02x0gvb", "alias": null }, { "name": "Sign of Hertoghe", "entity": "/m/05t0j4w", "alias": null }, { "name": "Silhouette sign", "entity": "/m/0bbz9bz", "alias": null }, { "name": "Simultanagnosia", "entity": "/m/09g711n", "alias": null }, { "name": "Single transverse palmar crease", "entity": "/m/04fl9l", "alias": null }, { "name": "Sinus bradycardia", "entity": "/m/06rsk8", "alias": null }, { "name": "Sinus tachycardia", "entity": "/m/06rsny", "alias": null }, { "name": "Sinus tract", "entity": "/m/03h0kh2", "alias": null }, { "name": "Sinusitis", "entity": "/m/072hv", "alias": null }, { "name": "Sister Mary Joseph nodule", "entity": "/m/08wnv9", "alias": null }, { "name": "Sitting disability", "entity": "/m/0dvg7b", "alias": null }, { "name": "Skin and skin structure infection", "entity": "/m/09gp35z", "alias": null }, { "name": "Skin bumps", "entity": "/m/0dl9tdk", "alias": null }, { "name": "Skin burning sensation", "entity": "/m/04kd9f3", "alias": null }, { "name": "Skin fissure", "entity": "/m/0gmcs4z", "alias": null }, { "name": "Skin infection", "entity": "/m/05m_2vv", "alias": null }, { "name": "Skin lesion", "entity": "/m/04dfkg", "alias": null }, { "name": "Skin manifestations of sarcoidosis", "entity": "/m/05zr0l8", "alias": null }, { "name": "Skin pop scar", "entity": "/m/09v60_p", "alias": null }, { "name": "Skin rash", "entity": "/m/0v4rnx", "alias": null }, { "name": "Skin tag", "entity": "/m/0fktd", "alias": null }, { "name": "Skip lesion", "entity": "/m/0c3y21x", "alias": null }, { "name": "Skull bossing", "entity": "/m/0j260bd", "alias": null }, { "name": "Sleep apnea", "entity": "/m/071d3", "alias": null }, { "name": "Sleep deprivation", "entity": "/m/017tfz", "alias": null }, { "name": "Sleep disorder", "entity": "/m/0cnmb", "alias": null }, { "name": "Sleep paralysis", "entity": "/m/01jb2q", "alias": null }, { "name": "Sleeping difficulty", "entity": "/m/0dl9sgh", "alias": null }, { "name": "Slipped capital femoral epiphysis", "entity": "/m/07bztx", "alias": null }, { "name": "SLUDGE syndrome", "entity": "/m/025yc7f", "alias": null }, { "name": "Slurred speech", "entity": "/m/03z97xw", "alias": null }, { "name": "Sneeze", "entity": "/m/01hsr_", "alias": null }, { "name": "Snoring", "entity": "/m/01d3sd", "alias": null }, { "name": "Social isolation", "entity": "/m/0c_k31", "alias": null }, { "name": "Soft erections", "entity": "/m/075yg5j", "alias": null }, { "name": "Somatoparaphrenia", "entity": "/m/02qd2dt", "alias": null }, { "name": "Somnolence", "entity": "/m/0311pr", "alias": null }, { "name": "Sonographic Murphy sign", "entity": "/m/0gx2ttd", "alias": null }, { "name": "Soot tattoo", "entity": "/m/09v87qm", "alias": null }, { "name": "Sore on tongue", "entity": "/m/0dl9thc", "alias": null }, { "name": "Sore throat", "entity": "/m/0b76bty", "alias": null }, { "name": "Spalding's sign", "entity": "/m/0bh88t5", "alias": null }, { "name": "Spasm", "entity": "/m/04zjnsf", "alias": null }, { "name": "Spasm of accommodation", "entity": "/m/02q477l", "alias": null }, { "name": "Spasmodic dysphonia", "entity": "/m/07d0js", "alias": null }, { "name": "Spastic gait", "entity": "/m/04cv6sj", "alias": null }, { "name": "Spastic hemiplegia", "entity": "/m/0j3gp5p", "alias": null }, { "name": "Spasticity", "entity": "/m/0p9n0", "alias": null }, { "name": "Speech delay", "entity": "/m/0726rf", "alias": null }, { "name": "Speech disorder", "entity": "/m/0133cx", "alias": null }, { "name": "Speech loss", "entity": "/m/0dl9t3k", "alias": null }, { "name": "Spider angioma", "entity": "/m/090j35", "alias": null }, { "name": "Spiking temperature", "entity": "/m/0dl9s_b", "alias": null }, { "name": "Spinal tumor", "entity": "/m/03znrn", "alias": null }, { "name": "Spitz nevus", "entity": "/m/05mxp8t", "alias": null }, { "name": "Splenomegaly", "entity": "/m/03zqp2", "alias": null }, { "name": "Splinter hemorrhage", "entity": "/m/047qslv", "alias": null }, { "name": "Splitting", "entity": "/m/02q48gs", "alias": null }, { "name": "Sputum", "entity": "/m/01jmfg", "alias": null }, { "name": "Squeamishness", "entity": "/m/076zwwj", "alias": null }, { "name": "ST depression", "entity": "/m/05p5h7r", "alias": null }, { "name": "Stage fright", "entity": "/m/02v58l", "alias": null }, { "name": "Starvation", "entity": "/m/01flyj", "alias": null }, { "name": "Stasis dermatitis", "entity": "/m/04q_81", "alias": null }, { "name": "Status epilepticus", "entity": "/m/06382k", "alias": null }, { "name": "Steatorrhea", "entity": "/m/03_7qy", "alias": null }, { "name": "Steeple sign", "entity": "/m/02777d4", "alias": null }, { "name": "Stellwag's sign", "entity": "/m/02z14sp", "alias": null }, { "name": "Stemmer's sign", "entity": "/m/0fq0v0v", "alias": null }, { "name": "Stenosis", "entity": "/m/032llx", "alias": null }, { "name": "Stereotypy", "entity": "/m/0dg_lc", "alias": null }, { "name": "Stertor", "entity": "/m/0d4b5s", "alias": null }, { "name": "Stiff Finger", "entity": "/m/07468xq", "alias": null }, { "name": "Stiffness", "entity": "/m/02dzkc", "alias": null }, { "name": "Stilted speech", "entity": "/m/0h_d29d", "alias": null }, { "name": "Stimming", "entity": "/m/0ch68q", "alias": null }, { "name": "Stimson line", "entity": "/m/0jt1lyb", "alias": null }, { "name": "Stinging sensation", "entity": "/m/05nb6gp", "alias": null }, { "name": "Stomach rumble", "entity": "/m/01g90h", "alias": null }, { "name": "Stomatitis", "entity": "/m/06jf34", "alias": null }, { "name": "Stork leg", "entity": "/m/05v23cw", "alias": null }, { "name": "StrÃ_mpell's sign", "entity": "/m/05t03d3", "alias": null }, { "name": "Strabismus", "entity": "/m/02s645", "alias": null }, { "name": "Strangury", "entity": "/m/078v5g", "alias": null }, { "name": "Stransky's sign", "entity": "/m/05s_76s", "alias": null }, { "name": "Strawberry tongue", "entity": "/m/027sbw1", "alias": null }, { "name": "Stress", "entity": "/m/012lyw", "alias": null }, { "name": "Stretch marks", "entity": "/m/056g4k", "alias": null }, { "name": "Stridor", "entity": "/m/05rtnw", "alias": null }, { "name": "String sign", "entity": "/m/02r50n7", "alias": null }, { "name": "Stroke", "entity": "/m/02y0js", "alias": null }, { "name": "Stunted growth", "entity": "/m/09g54b", "alias": null }, { "name": "Stupor", "entity": "/m/08gxks", "alias": null }, { "name": "Stuttering", "entity": "/m/070yw", "alias": null }, { "name": "Subclinical seizure", "entity": "/m/02r_80w", "alias": null }, { "name": "Subcutaneous emphysema", "entity": "/m/0464mv7", "alias": null }, { "name": "Subjective tinnitus", "entity": "/m/09rqdw4", "alias": null }, { "name": "Substance abuse", "entity": "/m/0p_cr", "alias": null }, { "name": "Substance dependence", "entity": "/m/0466pc0", "alias": null }, { "name": "Sudden cardiac death", "entity": "/m/0d_mn0", "alias": null }, { "name": "Sudden visual loss", "entity": "/m/09rq8z1", "alias": null }, { "name": "Suicidal ideation", "entity": "/m/09zn19", "alias": null }, { "name": "Sulcus sign", "entity": "/m/0892ty", "alias": null }, { "name": "Sundowning", "entity": "/m/04jmkz7", "alias": null }, { "name": "Superior vena cava syndrome", "entity": "/m/04tr95", "alias": null }, { "name": "Supraventricular tachycardia", "entity": "/m/03k_qd", "alias": null }, { "name": "Swelling", "entity": "/m/09bdp3", "alias": null }, { "name": "Swelling behind the ear", "entity": "/m/075z7_q", "alias": null }, { "name": "Swelling of finger", "entity": "/m/0dl9sn1", "alias": null }, { "name": "Swelling of scrotum", "entity": "/m/0dl9swy", "alias": null }, { "name": "Swelling of skin", "entity": "/m/0dl9swq", "alias": null }, { "name": "Swollen feet", "entity": "/m/0dl9t52", "alias": null }, { "name": "Swollen legs", "entity": "/m/0dl9t72", "alias": null }, { "name": "Swollen lymph nodes", "entity": "/m/03yzl6", "alias": null }, { "name": "Swollen testicle", "entity": "/m/059nnnk", "alias": null }, { "name": "Swollen tonsils", "entity": "/m/06tr55s", "alias": null }, { "name": "Sydenham's chorea", "entity": "/m/04jr23", "alias": null }, { "name": "Syncope", "entity": "/m/04jpj9y", "alias": null }, { "name": "Syndrome of inappropriate antidiuretic hormone secretion", "entity": "/m/03zzcc", "alias": null }, { "name": "Syndrome of subjective doubles", "entity": "/m/05rxzz", "alias": null }, { "name": "Synechia", "entity": "/m/037xdl", "alias": null }, { "name": "Synovitis", "entity": "/m/07yqh1", "alias": null }, { "name": "Systemic inflammation", "entity": "/m/03h0d95", "alias": null }, { "name": "Systolic heart murmur", "entity": "/m/05b5h0l", "alias": null }, { "name": "Tachycardia", "entity": "/m/0156z4", "alias": null }, { "name": "Tachylalia", "entity": "/m/03m9zmr", "alias": null }, { "name": "Tachypnea", "entity": "/m/03w94wq", "alias": null }, { "name": "Tactile hallucination", "entity": "/m/0zc0wnd", "alias": null }, { "name": "Tanning dependence", "entity": "/m/03crfch", "alias": null }, { "name": "Tardive dyskinesia", "entity": "/m/01vl0h", "alias": null }, { "name": "Target cell", "entity": "/m/05rhhy", "alias": null }, { "name": "Telangiectasia", "entity": "/m/0500_3", "alias": null }, { "name": "Tenderness", "entity": "/m/03m4j90", "alias": null }, { "name": "Tendinitis", "entity": "/m/01kcp2", "alias": null }, { "name": "Tenesmus", "entity": "/m/05t0_0l", "alias": null }, { "name": "Tenosynovitis", "entity": "/m/01nzjv", "alias": null }, { "name": "Teratospermia", "entity": "/m/0523q1y", "alias": null }, { "name": "Terry's nails", "entity": "/m/02py3_7", "alias": null }, { "name": "Tertiary hyperparathyroidism", "entity": "/m/0bfvmv", "alias": null }, { "name": "Tet spells", "entity": "/m/074x0fv", "alias": null }, { "name": "Tetanic contraction", "entity": "/m/026m6v", "alias": null }, { "name": "Tetany", "entity": "/m/02pnp2q", "alias": null }, { "name": "Tetralogy of Fallot", "entity": "/m/01k4yc", "alias": null }, { "name": "Tetraplegia", "entity": "/m/01bpld", "alias": null }, { "name": "Thick skin", "entity": "/m/06vwpmt", "alias": null }, { "name": "Thin skin", "entity": "/m/0dl9szd", "alias": null }, { "name": "Third-degree atrioventricular block", "entity": "/m/02zcgm", "alias": null }, { "name": "Thirst", "entity": "/m/02jx54", "alias": null }, { "name": "Thought blocking", "entity": "/m/0cmcngp", "alias": null }, { "name": "Thought disorder", "entity": "/m/01p1zm", "alias": null }, { "name": "Thought insertion", "entity": "/m/09lpg2", "alias": null }, { "name": "Thousand-yard stare", "entity": "/m/05dzzb", "alias": null }, { "name": "Throat clearing", "entity": "/m/0dl9sf8", "alias": null }, { "name": "Throat irritation", "entity": "/m/0b6kt_8", "alias": null }, { "name": "Throbbing headache", "entity": "/m/02kby4d", "alias": null }, { "name": "Thrombocytopenia", "entity": "/m/02kgmg", "alias": null }, { "name": "Thrombocytosis", "entity": "/m/03btxg", "alias": null }, { "name": "Thrombosis", "entity": "/m/018_pw", "alias": null }, { "name": "Thumbprint sign", "entity": "/m/02777qv", "alias": null }, { "name": "Thyroid disease", "entity": "/m/05n00c6", "alias": null }, { "name": "Thyroid nodule", "entity": "/m/05l6q9", "alias": null }, { "name": "Tic", "entity": "/m/02gpbb", "alias": null }, { "name": "Tinel's sign", "entity": "/m/04bn2w", "alias": null }, { "name": "Tingling feet", "entity": "/m/0dl9tlk", "alias": null }, { "name": "Tingling fingers", "entity": "/m/0dl9tff", "alias": null }, { "name": "Tingling lips", "entity": "/m/0dl9tgy", "alias": null }, { "name": "Tingling of hands", "entity": "/m/0dl9tlr", "alias": null }, { "name": "Tingling of toes", "entity": "/m/0dl9tlz", "alias": null }, { "name": "Tinnitus", "entity": "/m/0pv6y", "alias": null }, { "name": "Toe numbness", "entity": "/m/0dl9t7w", "alias": null }, { "name": "Toe walking", "entity": "/m/02rm_y4", "alias": null }, { "name": "Tongue numbness", "entity": "/m/0dl9t26", "alias": null }, { "name": "Tongue swelling", "entity": "/m/0dl9sjq", "alias": null }, { "name": "Tonsillitis", "entity": "/m/03ng0t", "alias": null }, { "name": "Tooth decay", "entity": "/m/025j63", "alias": null }, { "name": "Tooth loss", "entity": "/m/02q28kg", "alias": null }, { "name": "Tooth mobility", "entity": "/m/010f9grj", "alias": null }, { "name": "Toothache", "entity": "/m/045c85", "alias": null }, { "name": "Tophus", "entity": "/m/04bm_r", "alias": null }, { "name": "Topographical disorientation", "entity": "/m/0fq316n", "alias": null }, { "name": "Torticollis", "entity": "/m/01q136", "alias": null }, { "name": "Tram track", "entity": "/m/03hk_dl", "alias": null }, { "name": "Transudate", "entity": "/m/02wv9sp", "alias": null }, { "name": "Tree-in-bud sign", "entity": "/m/03cr019", "alias": null }, { "name": "Trembling", "entity": "/m/0dl9sdm", "alias": null }, { "name": "Tremor", "entity": "/m/09d28", "alias": null }, { "name": "Trendelenburg gait", "entity": "/m/09sdrd", "alias": null }, { "name": "Trendelenburg's sign", "entity": "/m/07h5sd", "alias": null }, { "name": "Trepopnea", "entity": "/m/025x27t", "alias": null }, { "name": "Trichiasis", "entity": "/m/04m9wt", "alias": null }, { "name": "Trichomegaly", "entity": "/m/09k5ncy", "alias": null }, { "name": "Trichoptilosis", "entity": "/m/0269y8n", "alias": null }, { "name": "Trichotillomania", "entity": "/m/0h_8y", "alias": null }, { "name": "Trigeminal autonomic cephalalgia", "entity": "/m/011vmjv8", "alias": null }, { "name": "Tripe palms", "entity": "/m/09k5vq8", "alias": null }, { "name": "Trismus", "entity": "/m/01fgvy", "alias": null }, { "name": "Troisier's sign", "entity": "/m/037xnt", "alias": null }, { "name": "Trousseau sign of latent tetany", "entity": "/m/02pnnwh", "alias": null }, { "name": "Trousseau sign of malignancy", "entity": "/m/02pnnwv", "alias": null }, { "name": "Tuberculoma", "entity": "/m/01181t6w", "alias": null }, { "name": "Tullio phenomenon", "entity": "/m/02rlx5d", "alias": null }, { "name": "Tunnel vision", "entity": "/m/01z0b9", "alias": null }, { "name": "Type 2 diabetes", "entity": "/m/0146bp", "alias": null }, { "name": "Unable to balance", "entity": "/m/0dl9stl", "alias": null }, { "name": "Unconsciousness", "entity": "/m/04kfhc9", "alias": null }, { "name": "Underweight", "entity": "/m/0844zv", "alias": null }, { "name": "Uneven waist", "entity": "/m/0703vrt", "alias": null }, { "name": "Unintentional Weight Loss", "entity": "/m/06wfm2h", "alias": null }, { "name": "Unresponsiveness", "entity": "/m/0dl9st5", "alias": null }, { "name": "Unsteadiness", "entity": "/m/01y2h01", "alias": null }, { "name": "Unsteady gait", "entity": "/m/0dl9s9y", "alias": null }, { "name": "Upper gastrointestinal bleeding", "entity": "/m/02n2jh", "alias": null }, { "name": "Upper motor neuron lesion", "entity": "/m/052f98", "alias": null }, { "name": "Upper respiratory tract infection", "entity": "/m/02wmyj", "alias": null }, { "name": "Uremia", "entity": "/m/02f8hm", "alias": null }, { "name": "Uremic fetor", "entity": "/m/0g9wnz_", "alias": null }, { "name": "Urethritis", "entity": "/m/07wvs", "alias": null }, { "name": "Urge incontinence", "entity": "/m/0bmbd36", "alias": null }, { "name": "Urge to move", "entity": "/m/07873v5", "alias": null }, { "name": "Urinary dribbling", "entity": "/m/0dl9s5v", "alias": null }, { "name": "Urinary hesitancy", "entity": "/m/04qyzpf", "alias": null }, { "name": "Urinary incontinence", "entity": "/m/018h13", "alias": null }, { "name": "Urinary retention", "entity": "/m/045y32", "alias": null }, { "name": "Urinary tract infection", "entity": "/m/07x16", "alias": null }, { "name": "Urinary urgency", "entity": "/m/0fvh3d", "alias": null }, { "name": "Urine odor", "entity": "/m/0dl9thx", "alias": null }, { "name": "Uterine contraction", "entity": "/m/02shy2", "alias": null }, { "name": "Uveitis", "entity": "/m/040_ch", "alias": null }, { "name": "Uveoparotitis", "entity": "/m/0h6m4f", "alias": null }, { "name": "Vaginal bleeding", "entity": "/m/055k6m", "alias": null }, { "name": "Vaginal bulge", "entity": "/m/0dl9qhh", "alias": null }, { "name": "Vaginal discharge", "entity": "/m/07k9rmb", "alias": null }, { "name": "Vaginal dryness", "entity": "/m/0dl9stc", "alias": null }, { "name": "Vaginal flatulence", "entity": "/m/017ts5", "alias": null }, { "name": "Vaginal itching", "entity": "/m/0dl9s54", "alias": null }, { "name": "Vaginal odor", "entity": "/m/05bjlj4", "alias": null }, { "name": "Vaginal tenderness", "entity": "/m/05bl1y2", "alias": null }, { "name": "Vaginitis", "entity": "/m/01vcpr", "alias": null }, { "name": "Varicose veins", "entity": "/m/081dp", "alias": null }, { "name": "Vascular Leak", "entity": "/m/06vzydh", "alias": null }, { "name": "Vascular malformation", "entity": "/m/079tpsw", "alias": null }, { "name": "Vascular occlusion", "entity": "/m/0b6h30_", "alias": null }, { "name": "Vasculitis", "entity": "/m/0317gc", "alias": null }, { "name": "Vaso-occlusive crisis", "entity": "/m/03nxk25", "alias": null }, { "name": "Vasoconstriction", "entity": "/m/02wv6ss", "alias": null }, { "name": "Vasodilation", "entity": "/m/0fkcf", "alias": null }, { "name": "Vasovagal syncope", "entity": "/m/039y0d", "alias": null }, { "name": "Vegetation", "entity": "/m/04gp557", "alias": null }, { "name": "Vegetative symptoms", "entity": "/m/076zcl", "alias": null }, { "name": "Vegetative-vascular dystonia", "entity": "/m/0wbjrwb", "alias": null }, { "name": "Velopharyngeal inadequacy", "entity": "/m/0fqvw9", "alias": null }, { "name": "Venous stasis", "entity": "/m/04jj6yp", "alias": null }, { "name": "Ventricular outflow tract obstruction", "entity": "/m/0gjdgxg", "alias": null }, { "name": "Ventricular septal defect", "entity": "/m/03k28n", "alias": null }, { "name": "Ventricular tachycardia", "entity": "/m/025v410", "alias": null }, { "name": "Verbosity", "entity": "/m/045rjv", "alias": null }, { "name": "Vertigo", "entity": "/m/07rwf2", "alias": null }, { "name": "Vesical tenesmus", "entity": "/m/08gxj7", "alias": null }, { "name": "Viral pneumonia", "entity": "/m/07fn78", "alias": null }, { "name": "Virilization", "entity": "/m/032zt5", "alias": null }, { "name": "Virtual reality sickness", "entity": "/m/011c6z46", "alias": null }, { "name": "Vision disorder", "entity": "/m/04jmzm5", "alias": null }, { "name": "Vision loss", "entity": "/m/04t973", "alias": null }, { "name": "Visual acuity", "entity": "/m/02_g1v", "alias": null }, { "name": "Visual agnosia", "entity": "/m/08gvtg", "alias": null }, { "name": "Visual snow", "entity": "/m/0379jz", "alias": null }, { "name": "Vitamin B12 deficiency", "entity": "/m/02x2xmj", "alias": null }, { "name": "Vitamin deficiency", "entity": "/m/0q42v", "alias": null }, { "name": "Voice change", "entity": "/m/0hzmhkt", "alias": null }, { "name": "Vomiting", "entity": "/m/012qjw", "alias": null }, { "name": "Von Braun-Fernwald's sign", "entity": "/m/05t0hc2", "alias": null }, { "name": "Von Graefe's sign", "entity": "/m/09tktp", "alias": null }, { "name": "Vulvar vestibulitis", "entity": "/m/0h7q7v0", "alias": null }, { "name": "Vulvitis", "entity": "/m/06qjbg", "alias": null }, { "name": "Vulvodynia", "entity": "/m/08099", "alias": null }, { "name": "Wandering", "entity": "/m/04jmb5n", "alias": null }, { "name": "Wanderlust", "entity": "/m/038ytw", "alias": null }, { "name": "Warm skin", "entity": "/m/06_hyyd", "alias": null }, { "name": "Wart", "entity": "/m/086hz", "alias": null }, { "name": "Wasting", "entity": "/m/01dpzh", "alias": null }, { "name": "Water retention", "entity": "/m/05s_d8r", "alias": null }, { "name": "Waterâ€“electrolyte imbalance", "entity": "/m/03nkmb", "alias": null }, { "name": "Watery diarrhea", "entity": "/m/06vys2w", "alias": null }, { "name": "Watery stool", "entity": "/m/0dl9sc9", "alias": null }, { "name": "Watson's water hammer pulse", "entity": "/m/038dp3", "alias": null }, { "name": "Waxy flexibility", "entity": "/m/02q672l", "alias": null }, { "name": "Waxy skin", "entity": "/m/064p33j", "alias": null }, { "name": "Weak pulse", "entity": "/m/06b0xmk", "alias": null }, { "name": "Weak urinary stream", "entity": "/m/0dl9t0v", "alias": null }, { "name": "Weakness", "entity": "/m/0119nqlg", "alias": null }, { "name": "Weakness of limb", "entity": "/m/0dl9t83", "alias": null }, { "name": "Weakness of the arms and legs", "entity": "/m/0h80_xq", "alias": null }, { "name": "Weather pains", "entity": "/m/07k3xc6", "alias": null }, { "name": "Webbed neck", "entity": "/m/01cn60", "alias": null }, { "name": "Weight gain", "entity": "/m/03bx2xc", "alias": null }, { "name": "Weight loss", "entity": "/m/023s6n", "alias": null }, { "name": "Westermark sign", "entity": "/m/025yl42", "alias": null }, { "name": "Westphal's sign", "entity": "/m/02qd587", "alias": null }, { "name": "Wheals", "entity": "/m/079y7m", "alias": null }, { "name": "Wheeze", "entity": "/m/07mzm6", "alias": null }, { "name": "White stool", "entity": "/m/0dl9qht", "alias": null }, { "name": "White tongue", "entity": "/m/0dl9shv", "alias": null }, { "name": "Widened mediastinum", "entity": "/m/0917_9", "alias": null }, { "name": "Widow's peak", "entity": "/m/03d23v", "alias": null }, { "name": "Winterbottom's sign", "entity": "/m/095yj5", "alias": null }, { "name": "Witzelsucht", "entity": "/m/06f89r", "alias": null }, { "name": "Word salad", "entity": "/m/02nj2r", "alias": null }, { "name": "Work aversion", "entity": "/m/02w795_", "alias": null }, { "name": "Wound", "entity": "/m/01xrk2", "alias": null }, { "name": "Wrinkle", "entity": "/m/02_x63", "alias": null }, { "name": "Xanthoma", "entity": "/m/02gl_t", "alias": null }, { "name": "Xanthoma striatum palmare", "entity": "/m/07k6xsb", "alias": null }, { "name": "Xanthopsia", "entity": "/m/0268n_w", "alias": null }, { "name": "Xanthosis", "entity": "/m/02rxmf6", "alias": null }, { "name": "Xeroderma", "entity": "/m/08xv95", "alias": null }, { "name": "Xerophthalmia", "entity": "/m/0517c6", "alias": null }, { "name": "Xerostomia", "entity": "/m/04d7y3", "alias": null }, { "name": "Yawn", "entity": "/m/01j423", "alias": null }, { "name": "Yellow eyes", "entity": "/m/0dl9tcq", "alias": null }, { "name": "Zenker's degeneration", "entity": "/m/03p_fd", "alias": null }, { "name": "Pressure ulcer", "entity": "/m/03ncwn", "alias": null }, { "name": "Hemorrhoids", "entity": "/m/017f7c", "alias": null }, { "name": "Alzheimer's disease", "entity": "/m/0dcsx", "alias": null }, { "name": "Acute bronchitis", "entity": "/m/01s2xh", "alias": null }, { "name": "Alopecia areata", "entity": "/m/016q32", "alias": null }, { "name": "Androgen replacement therapy", "entity": "/m/026bcwh", "alias": null }, { "name": "Anorexia nervosa", "entity": "/m/098lw", "alias": null }, { "name": "Antisocial personality disorder", "entity": "/m/01c88f", "alias": null }, { "name": "Attention deficit hyperactivity disorder", "entity": "/m/0h99n", "alias": null }, { "name": "Autism", "entity": "/m/0gwj", "alias": null }, { "name": "Bipolar disorder", "entity": "/m/01g2q", "alias": null }, { "name": "Bladder cancer", "entity": "/m/01bcp7", "alias": null }, { "name": "Bone tumor", "entity": "/m/01t125", "alias": null }, { "name": "Borderline personality disorder", "entity": "/m/0134rc", "alias": null }, { "name": "Breast cancer", "entity": "/m/0j8hd", "alias": null }, { "name": "Burn", "entity": "/m/01hwqk", "alias": null }, { "name": "Cancer", "entity": "/m/0qcr0", "alias": null }, { "name": "Celiac disease", "entity": "/m/0h1pq", "alias": null }, { "name": "Chronic Obstructive Pulmonary Disease", "entity": "/m/0gzv0", "alias": null }, { "name": "Crohn's disease", "entity": "/m/0h1n9", "alias": null }, { "name": "Disabilities", "entity": "/m/0fl5x", "alias": null }, { "name": "Concussion", "entity": "/m/023ndx", "alias": null }, { "name": "Sunburn", "entity": "/m/015slp", "alias": null }, { "name": "Dengue fever", "entity": "/m/09wsg", "alias": null }, { "name": "Dengue virus", "entity": "/m/0g58pft", "alias": null }, { "name": "Atopic dermatitis", "entity": "/m/06xb9t", "alias": null }, { "name": "Powassan virus", "entity": "/m/027813m", "alias": null }, { "name": "Lyme disease", "entity": "/m/01kcry", "alias": null }, { "name": "Lyme disease spirochete", "entity": "/m/06pxkw", "alias": null }, { "name": "Acute Bronchitis", "entity": "/m/01s2xh", "alias": null }, { "name": "Influenza", "entity": "/m/0cycc", "alias": null }, { "name": "Zika virus", "entity": "/m/080m_5j", "alias": null }, { "name": "Chikungunya virus infection", "entity": "/m/01__7l", "alias": "Chikungunya" }, { "name": "Vitiligo", "entity": "/m/0hg1d", "alias": null }, { "name": "Chickenpox", "entity": "/m/01r6j", "alias": null }, { "name": "Herpes simplex", "entity": "/m/0gxbfm", "alias": null }, { "name": "Shingles", "entity": "/m/029577", "alias": null }, { "name": "Myocardial infarction", "entity": "/m/0gk4g", "alias": "Heart attack" }, { "name": "Labyrinthitis", "entity": "/m/03m31g", "alias": null }, { "name": "Chagas disease", "entity": "/m/0208m", "alias": null }, { "name": "systemic lupus erythematosus", "entity": "/m/04nz3", "alias": null }, { "name": "Lupus nephritis", "entity": "/m/05fq5c", "alias": null }, { "name": "Gonorrhea", "entity": "/m/0mh4s", "alias": null }, { "name": "syphilis", "entity": "no trend?", "alias": null }, { "name": "HIV/AIDS", "entity": "/m/0d19y2", "alias": null }, { "name": "Genital herpes", "entity": "/m/05m_zpz", "alias": null }, { "name": "Melanoma", "entity": "/m/035b2g", "alias": "Skin cancer" }, { "name": "Smallpox", "entity": "/m/06vr2", "alias": "Variola" }, { "name": "Yellow Fever", "entity": "/m/087z2", "alias": null }, { "name": "Osteoarthritis", "entity": "/m/02jf6f", "alias": null }, { "name": "Rheumatoid arthritis", "entity": "/m/06g7c", "alias": null }, { "name": "cholera", "entity": "/m/024c2", "alias": null }, { "name": "Food poisoning", "entity": "/m/02m76d", "alias": null }, { "name": "Hair loss", "entity": "/m/03bwzh1", "alias": null }, { "name": "cough ", "entity": "/m/01b_21", "alias": null }, { "name": "Cysticercosis", "entity": "/m/0394df", "alias": null }, { "name": "Diabetes mellitus", "entity": "/m/0c58k", "alias": "Diabetes" }, { "name": "Down's syndrome", "entity": "/m/029s1", "alias": null }, { "name": "EBOV", "entity": "/m/0117wrtj", "alias": "Ebola" }, { "name": "Rubella", "entity": "/m/0175qw", "alias": null }, { "name": "Measles", "entity": "/m/0g2gb", "alias": null }, { "name": "Cervical cancer", "entity": "/m/0d_bk", "alias": null }, { "name": "Ovarian cyst", "entity": "/m/01xyfj", "alias": null }, { "name": "Ovarian cancer", "entity": "/m/025hl8", "alias": null }, { "name": "Endometriosis", "entity": "/m/0d_9n", "alias": null }, { "name": "Endometriosis of ovary", "entity": "/m/05q45f7", "alias": null }, { "name": "Endometrial cancer", "entity": "/m/0259rv", "alias": null }, { "name": "Leprosy", "entity": "/m/0c5f7", "alias": null }, { "name": "Haemophilia", "entity": "/m/03myr", "alias": null }, { "name": "Hepatitis", "entity": "/m/09jg8", "alias": null }, { "name": "High Blood Pressure", "entity": "/m/0k95h", "alias": "Hypertension" }, { "name": "Histoplasmosis", "entity": "/m/022tb8", "alias": null }, { "name": "Infectious mononucleosis", "entity": "/m/0qjk8", "alias": null }, { "name": "Leptospirosis", "entity": "/m/02_j9l", "alias": null }, { "name": "Kawasaki disease", "entity": "/m/040k6g", "alias": null }, { "name": "Leishmaniasis", "entity": "/m/01c5s1", "alias": null }, { "name": "Keratitis", "entity": "/m/02dfr6", "alias": "Corneal inflammation" }, { "name": "Encephalitis", "entity": "/m/09c_t", "alias": null }, { "name": "Encephalopathy", "entity": "/m/022tc0", "alias": null }, { "name": "Tetanus", "entity": "/m/0cfb2", "alias": null }, { "name": "Rabies", "entity": "/m/0fsd1", "alias": null }, { "name": "Tuberculosis", "entity": "/m/07jwr", "alias": null }, { "name": "Lung cancer", "entity": "/m/04p3w", "alias": null }, { "name": "Malaria", "entity": "/m/0542n", "alias": null }, { "name": "Microcephaly", "entity": "/m/01hrbm", "alias": null }, { "name": "Sepsis", "entity": "/m/014w_8", "alias": null }, { "name": "Multiple sclerosis", "entity": "/m/0dcqh", "alias": null }, { "name": "Amyotrophic lateral sclerosis", "entity": "/m/017s1k", "alias": null }, { "name": "Necrotizing fasciitis", "entity": "/m/01q6nb", "alias": null }, { "name": "Poliomyelitis", "entity": "/m/068p_", "alias": null }, { "name": "Pertussis", "entity": "/m/016ygs", "alias": "Whooping cough" }, { "name": "Conjunctivitis", "entity": "/m/0c36_", "alias": "Pink eye" }, { "name": "Prostate cancer", "entity": "/m/0m32h", "alias": null }, { "name": "Psoriasis", "entity": "/m/0pv62", "alias": null }, { "name": "Pulmonary embolism", "entity": "/m/01ddth", "alias": null }, { "name": "Chronic Obstructive Pulmonary Disease", "entity": "/m/0gzv0", "alias": null }, { "name": "Pulmonary Hypertension", "entity": "/m/031wv7", "alias": null }, { "name": "Q fever", "entity": "/m/0fm4r", "alias": null }, { "name": "Scarlet Fever", "entity": "/m/0mzt3", "alias": null }, { "name": "Scabies", "entity": "/m/074kq", "alias": null }, { "name": "Schistosomiasis", "entity": "/m/01b4_7", "alias": null }, { "name": "Genital wart", "entity": "/m/019thv", "alias": null }, { "name": "Trichomoniasis", "entity": "/m/0m72x", "alias": null }, { "name": "Shigellosis", "entity": "/m/0mzxc", "alias": null }, { "name": "Testicular cancer", "entity": "/m/01rt5h", "alias": null }, { "name": "Ringworm", "entity": "/m/023yjf", "alias": null }, { "name": "Lyme disease", "entity": "/m/01kcry", "alias": null }, { "name": "Tourette syndrome", "entity": "/m/0fm5n", "alias": null }, { "name": "Typhus", "entity": "/m/057xn02", "alias": null }, { "name": "Typhoid fever", "entity": "/m/07s4l", "alias": null }, { "name": "Brucellosis", "entity": "/m/0270q1", "alias": null }, { "name": "Ulcerative colitis", "entity": "/m/0h1r3", "alias": null }, { "name": "Alkhurma virus", "entity": "/m/0cghy1", "alias": null }, { "name": "Hantavirus pulmonary syndrome", "entity": "/m/0w5y6wj", "alias": null }, { "name": "Leukemia", "entity": "/m/04psf", "alias": null }, { "name": "Acute myeloid leukemia", "entity": "/m/0bx3n7", "alias": null }, { "name": "Cardiovascular disease", "entity": "/m/02k6hp", "alias": null }];
+	var terms = exports.terms = [{ "name": "Abdominal distension", "entity": "/m/09d7vk", "alias": null }, { "name": "Abdominal obesity", "entity": "/m/0f8fc", "alias": null }, { "name": "Abdominal pain", "entity": "/m/02tfl8", "alias": null }, { "name": "Abnormal posturing", "entity": "/m/08hpp7", "alias": null }, { "name": "Abscess", "entity": "/m/0lxt", "alias": null }, { "name": "Absent-mindedness", "entity": "/m/026__2h", "alias": null }, { "name": "Acanthosis nigricans", "entity": "/m/036b82", "alias": null }, { "name": "Achilles tendon rupture", "entity": "/m/06tbxm", "alias": null }, { "name": "Acid erosion", "entity": "/m/065tzg", "alias": null }, { "name": "Acidosis", "entity": "/m/02gwty", "alias": null }, { "name": "Acne", "entity": "/m/0jwqt", "alias": null }, { "name": "Actinic keratosis", "entity": "/m/04r3p5", "alias": null }, { "name": "Acute Bronchitis", "entity": "/m/01s2xh", "alias": null }, { "name": "Acute kidney injury", "entity": "/m/03545w", "alias": null }, { "name": "Acute myeloid leukemia", "entity": "/m/0bx3n7", "alias": null }, { "name": "Adenomyosis", "entity": "/m/054xgp", "alias": null }, { "name": "Afterimage", "entity": "/m/02h98q", "alias": null }, { "name": "Ageusia", "entity": "/m/05sfr2", "alias": null }, { "name": "Agnosia", "entity": "/m/016q5d", "alias": null }, { "name": "Agonal respiration", "entity": "/m/07gylr", "alias": null }, { "name": "Akathisia", "entity": "/m/01dzyw", "alias": null }, { "name": "Albinism", "entity": "/m/0122t", "alias": null }, { "name": "Alcohol flush reaction", "entity": "/m/05nn1b", "alias": null }, { "name": "Alcoholism", "entity": "/m/012jc", "alias": null }, { "name": "Alice in Wonderland syndrome", "entity": "/m/019szr", "alias": null }, { "name": "Alkalosis", "entity": "/m/02gwvb", "alias": null }, { "name": "Allergic bronchopulmonary aspergillosis", "entity": "/m/0cvcl5", "alias": null }, { "name": "Allergic conjunctivitis", "entity": "/m/04v6d0", "alias": null }, { "name": "Allergy", "entity": "/m/0fd23", "alias": null }, { "name": "Allodynia", "entity": "/m/096m74", "alias": null }, { "name": "Alogia", "entity": "/m/01r718", "alias": null }, { "name": "Alopecia areata", "entity": "/m/016q32", "alias": null }, { "name": "Alpha 1-antitrypsin deficiency", "entity": "/m/01t4q6", "alias": null }, { "name": "Alzheimer's disease", "entity": "/m/0dcsx", "alias": null }, { "name": "Amaurosis", "entity": "/m/05wt36", "alias": null }, { "name": "Amaurosis fugax", "entity": "/m/036bqx", "alias": null }, { "name": "Amblyopia", "entity": "/m/02s64_", "alias": null }, { "name": "Amenorrhoea", "entity": "/m/01j62y", "alias": null }, { "name": "Amnesia", "entity": "/m/01j4hd", "alias": null }, { "name": "Amyotrophic lateral sclerosis", "entity": "/m/017s1k", "alias": null }, { "name": "Anal fissure", "entity": "/m/02gscl", "alias": null }, { "name": "Anaphylaxis", "entity": "/m/0jtyb", "alias": null }, { "name": "Anasarca", "entity": "/m/036br7", "alias": null }, { "name": "Androgen replacement therapy", "entity": "/m/026bcwh", "alias": null }, { "name": "Anemia", "entity": "/m/0lcdk", "alias": null }, { "name": "Anencephaly", "entity": "/m/01hr6t", "alias": null }, { "name": "Angina pectoris", "entity": "/m/0hg45", "alias": null }, { "name": "Angioedema", "entity": "/m/03tlvj", "alias": null }, { "name": "Angular cheilitis", "entity": "/m/099686", "alias": null }, { "name": "Anhedonia", "entity": "/m/01nvfh", "alias": null }, { "name": "Aniridia", "entity": "/m/03gxt1", "alias": null }, { "name": "Anisocoria", "entity": "/m/08mh71", "alias": null }, { "name": "Anorexia nervosa", "entity": "/m/098lw", "alias": "Anorexia" }, { "name": "Anosmia", "entity": "/m/0m7pl", "alias": null }, { "name": "Antepartum haemorrhage", "entity": "/m/056x7r", "alias": null }, { "name": "Anterograde amnesia", "entity": "/m/02m3p2", "alias": null }, { "name": "Anti-social behaviour", "entity": "/m/02l4fy", "alias": null }, { "name": "Antisocial personality disorder", "entity": "/m/01c88f", "alias": null }, { "name": "Anuria", "entity": "/m/04f74cm", "alias": null }, { "name": "Anxiety", "entity": "/m/0k_9", "alias": null }, { "name": "Apathy", "entity": "/m/01y4zk", "alias": null }, { "name": "Aphakia", "entity": "/m/0831jw", "alias": null }, { "name": "Aphasia", "entity": "/m/0wnw", "alias": null }, { "name": "Aphonia", "entity": "/m/025s02j", "alias": null }, { "name": "Apnea", "entity": "/m/01mr85", "alias": null }, { "name": "Apraxia", "entity": "/m/0flz_", "alias": null }, { "name": "Arcus senilis", "entity": "/m/06stpj", "alias": null }, { "name": "Arthritis", "entity": "/m/0t1t", "alias": null }, { "name": "Arthrogryposis", "entity": "/m/0nrd_", "alias": null }, { "name": "Arthropathy", "entity": "/m/07nsp9", "alias": null }, { "name": "Ascites", "entity": "/m/01c24r", "alias": null }, { "name": "Asperger syndrome", "entity": "/m/09cds", "alias": null }, { "name": "Asphyxia", "entity": "/m/0p7w5", "alias": null }, { "name": "Asterixis", "entity": "/m/077dxt", "alias": null }, { "name": "Asthma", "entity": "/m/0c78m", "alias": null }, { "name": "Astigmatism", "entity": "/m/0chf1d", "alias": null }, { "name": "Ataxia", "entity": "/m/0l95", "alias": null }, { "name": "Athetosis", "entity": "/m/03hrw8", "alias": null }, { "name": "Atony", "entity": "/m/08bp0k", "alias": null }, { "name": "Atopic dermatitis", "entity": "/m/06xb9t", "alias": null }, { "name": "Atrophy", "entity": "/m/034y_l", "alias": null }, { "name": "Attention deficit hyperactivity disorder", "entity": "/m/0h99n", "alias": null }, { "name": "Auditory hallucination", "entity": "/m/03hfxpg", "alias": null }, { "name": "Aura", "entity": "/m/07ms80", "alias": null }, { "name": "Autism", "entity": "/m/0gwj", "alias": null }, { "name": "Autoimmune disease", "entity": "/m/04dx3qn", "alias": null }, { "name": "Autoimmune hemolytic anemia", "entity": "/m/0b1p89", "alias": null }, { "name": "AV nodal reentrant tachycardia", "entity": "/m/03rsgd", "alias": null }, { "name": "Avoidant personality disorder", "entity": "/m/01_4_n", "alias": null }, { "name": "Avolition", "entity": "/m/01sbgb", "alias": null }, { "name": "Azotemia", "entity": "/m/0dn4_", "alias": null }, { "name": "Back pain", "entity": "/m/0142ky", "alias": null }, { "name": "Bacterial arthritis", "entity": "/m/02nrsk", "alias": null }, { "name": "Bacterial vaginosis", "entity": "/m/01glh", "alias": null }, { "name": "Bad breath", "entity": "/m/025hzf", "alias": null }, { "name": "Balance disorder", "entity": "/m/0180jb", "alias": null }, { "name": "Behçet's disease", "entity": "/m/025t67z", "alias": null }, { "name": "Bell's palsy", "entity": "/m/0dxdd", "alias": null }, { "name": "Bigeminy", "entity": "/m/099t0f", "alias": null }, { "name": "Biliary colic", "entity": "/m/026stnc", "alias": null }, { "name": "Biliary dyskinesia", "entity": "/m/04cy_nk", "alias": null }, { "name": "Binge eating", "entity": "/m/01t96l", "alias": null }, { "name": "Bipolar disorder", "entity": "/m/01g2q", "alias": null }, { "name": "Birthmark", "entity": "/m/01ljf2", "alias": null }, { "name": "Black eye", "entity": "/m/065wv1", "alias": null }, { "name": "Blackout", "entity": "/m/02pnflk", "alias": null }, { "name": "Bladder cancer", "entity": "/m/01bcp7", "alias": null }, { "name": "Bleeding", "entity": "/m/012n6x", "alias": null }, { "name": "Bleeding diathesis", "entity": "/m/037mv0", "alias": null }, { "name": "Bleeding on probing", "entity": "/m/02rtqbt", "alias": null }, { "name": "Blepharospasm", "entity": "/m/08k14_", "alias": null }, { "name": "Blindness", "entity": "/m/064kj9p", "alias": null }, { "name": "Blister", "entity": "/m/01k1jq", "alias": null }, { "name": "Bloating", "entity": "/m/011dzgb6", "alias": null }, { "name": "Blood blister", "entity": "/m/05zy6c", "alias": null }, { "name": "Blood in stool", "entity": "/m/08cmfm", "alias": null }, { "name": "Bloody show", "entity": "/m/05q5s6", "alias": null }, { "name": "Blurred vision", "entity": "/m/03g_gxj", "alias": null }, { "name": "Blushing", "entity": "/m/01jyxg", "alias": null }, { "name": "Body odor", "entity": "/m/037ywk", "alias": null }, { "name": "Boil", "entity": "/m/03xp5n", "alias": null }, { "name": "Bone fracture", "entity": "/m/03fz1q", "alias": null }, { "name": "Bone tumor", "entity": "/m/01t125", "alias": null }, { "name": "Bone tumor", "entity": "/m/01t125", "alias": null }, { "name": "Borderline personality disorder", "entity": "/m/0134rc", "alias": null }, { "name": "Bowel infarction", "entity": "/m/02r0rdw", "alias": null }, { "name": "Bowel obstruction", "entity": "/m/01vzqb", "alias": null }, { "name": "Brachycephaly", "entity": "/m/01hrdy", "alias": null }, { "name": "Bradycardia", "entity": "/m/01r__", "alias": null }, { "name": "Brain damage", "entity": "/m/01sbk1", "alias": null }, { "name": "Brain death", "entity": "/m/019m0c", "alias": null }, { "name": "Braxton Hicks contractions", "entity": "/m/03_81f", "alias": null }, { "name": "Breakthrough bleeding", "entity": "/m/04fjyf", "alias": null }, { "name": "Breast cancer", "entity": "/m/0j8hd", "alias": null }, { "name": "Breast hypertrophy", "entity": "/m/025t7qd", "alias": null }, { "name": "Breast lump", "entity": "/m/080fvq7", "alias": null }, { "name": "Breast pain", "entity": "/m/06pp7p", "alias": null }, { "name": "Bronchiectasis", "entity": "/m/01w_2w", "alias": null }, { "name": "Bronchitis", "entity": "/m/047gmsk", "alias": null }, { "name": "Bronchospasm", "entity": "/m/02_5n7", "alias": null }, { "name": "Brown-Séquard's ", "entity": "/m/03vwc5", "alias": null }, { "name": "Brucellosis", "entity": "/m/0270q1", "alias": null }, { "name": "Bruise", "entity": "/m/02zpsl", "alias": null }, { "name": "Bruit", "entity": "/m/07qwnz", "alias": null }, { "name": "Bruxism", "entity": "/m/0149nm", "alias": null }, { "name": "Bubo", "entity": "/m/02777pt", "alias": null }, { "name": "Bulbar palsy", "entity": "/m/02qb7yy", "alias": null }, { "name": "Bullying", "entity": "/m/027vd9", "alias": null }, { "name": "Bunion", "entity": "/m/01l2ky", "alias": null }, { "name": "Burn", "entity": "/m/01hwqk", "alias": null }, { "name": "Burning mouth syndrome", "entity": "/m/03_3c6", "alias": null }, { "name": "Bursitis", "entity": "/m/034z18", "alias": null }, { "name": "Cachexia", "entity": "/m/01wxhm", "alias": null }, { "name": "Calcaneal spur", "entity": "/m/025t1sl", "alias": null }, { "name": "Callus", "entity": "/m/01l2l9", "alias": null }, { "name": "Cancer", "entity": "/m/0qcr0", "alias": null }, { "name": "Candidiasis", "entity": "/m/020gv", "alias": null }, { "name": "Canker sore", "entity": "/m/05frfm", "alias": null }, { "name": "Cardiac arrest", "entity": "/m/0gg4h", "alias": null }, { "name": "Cardiac arrhythmia", "entity": "/m/01pf6", "alias": null }, { "name": "Cardiomegaly", "entity": "/m/08_51g", "alias": null }, { "name": "Cardiovascular disease", "entity": "/m/02k6hp", "alias": null }, { "name": "Carpal tunnel syndrome", "entity": "/m/0fl_v", "alias": null }, { "name": "Cataplexy", "entity": "/m/07f_8c", "alias": null }, { "name": "Cataract", "entity": "/m/0m7h6", "alias": null }, { "name": "Catatonia", "entity": "/m/01lxx", "alias": null }, { "name": "Cauda equina syndrome", "entity": "/m/04yb5z", "alias": null }, { "name": "Celiac disease", "entity": "/m/0h1pq", "alias": null }, { "name": "Cerebellar ataxia", "entity": "/m/02vkcrn", "alias": null }, { "name": "Cerebral edema", "entity": "/m/0219bz", "alias": null }, { "name": "Cervical cancer", "entity": "/m/0d_bk", "alias": null }, { "name": "Cervicitis", "entity": "/m/020v3l", "alias": null }, { "name": "Chagas disease", "entity": "/m/0208m", "alias": null }, { "name": "Chalazion", "entity": "/m/03gf8g", "alias": null }, { "name": "Chancre", "entity": "/m/01ny_v", "alias": null }, { "name": "Cheilitis", "entity": "/m/0gj51x", "alias": null }, { "name": "Chemosis", "entity": "/m/04jr5f", "alias": null }, { "name": "Chest pain", "entity": "/m/02np4v", "alias": null }, { "name": "Cheyne-Stokes respiration", "entity": "/m/036k30", "alias": null }, { "name": "Chickenpox", "entity": "/m/01r6j", "alias": null }, { "name": "Chikungunya virus infection", "entity": "/m/01__7l", "alias": "Chikungunya" }, { "name": "Chills", "entity": "/m/02mdc7", "alias": null }, { "name": "Choking", "entity": "/m/0168pw", "alias": null }, { "name": "Cholera", "entity": "/m/024c2", "alias": null }, { "name": "Cholestasis", "entity": "/m/07t2pp", "alias": null }, { "name": "Chorea", "entity": "/m/03d70n", "alias": null }, { "name": "Chronic Obstructive Pulmonary Disease", "entity": "/m/0gzv0", "alias": null }, { "name": "Chronic pain", "entity": "/m/012clh", "alias": null }, { "name": "Chronic prostatitis/chronic pelvic pain syndrome", "entity": "/m/043jxv5", "alias": null }, { "name": "Cirrhosis", "entity": "/m/097ns", "alias": null }, { "name": "Claudication", "entity": "/m/05c1gt", "alias": null }, { "name": "Cleft lip and cleft palate", "entity": "/m/07y4w6s", "alias": null }, { "name": "Clitoromegaly", "entity": "/m/04jpnx", "alias": null }, { "name": "Clonus", "entity": "/m/02zdnj", "alias": null }, { "name": "Clostridium difficile infection", "entity": "/m/02cxr0", "alias": null }, { "name": "Coagulopathy", "entity": "/m/065b00", "alias": null }, { "name": "Coccydynia", "entity": "/m/031c9y", "alias": null }, { "name": "Coffee ground vomiting", "entity": "/m/02n2zp", "alias": null }, { "name": "Cognitive deficit", "entity": "/m/02py0vt", "alias": null }, { "name": "Colitis", "entity": "/m/043hy3", "alias": null }, { "name": "Collapse", "entity": "/m/026gdg4", "alias": null }, { "name": "Color blindness", "entity": "/m/022xh", "alias": null }, { "name": "Coma", "entity": "/m/01qw1", "alias": null }, { "name": "Comedo", "entity": "/m/02ry9q", "alias": null }, { "name": "Common cold", "entity": "/m/0n073", "alias": null }, { "name": "Compartment syndrome", "entity": "/m/01j0hs", "alias": null }, { "name": "Compulsive behavior", "entity": "/m/0281lfw", "alias": null }, { "name": "Compulsive hoarding", "entity": "/m/0240_y", "alias": null }, { "name": "Concussion", "entity": "/m/023ndx", "alias": null }, { "name": "Conductive hearing loss", "entity": "/m/04fmtx", "alias": null }, { "name": "Confabulation", "entity": "/m/0371d4", "alias": null }, { "name": "Congenital heart defect", "entity": "/m/03k22s", "alias": null }, { "name": "Conjunctivitis", "entity": "/m/0c36_", "alias": "Pink eye" }, { "name": "Constipation", "entity": "/m/016kf9", "alias": null }, { "name": "Contracture", "entity": "/m/04f49cb", "alias": null }, { "name": "Convulsion", "entity": "/m/04lcpr5", "alias": null }, { "name": "Coprolalia", "entity": "/m/02gp9x", "alias": null }, { "name": "Corneal abrasion", "entity": "/m/07ldcz", "alias": null }, { "name": "Coryza", "entity": "/m/0c532h", "alias": "Stuffy nose" }, { "name": "Cough", "entity": "/m/01b_21", "alias": null }, { "name": "Crackles", "entity": "/m/023rn8", "alias": null }, { "name": "Cramp", "entity": "/m/024_yy", "alias": null }, { "name": "Crepitus", "entity": "/m/05bws4", "alias": null }, { "name": "Crohn's disease", "entity": "/m/0h1n9", "alias": null }, { "name": "Cryptorchidism", "entity": "/m/025nm6", "alias": null }, { "name": "Cushing's syndrome", "entity": "/m/0mzm2", "alias": null }, { "name": "Cutaneous condition", "entity": "/m/08cqsh", "alias": null }, { "name": "Cyanosis", "entity": "/m/021fq9", "alias": null }, { "name": "Cyst", "entity": "/m/019rnl", "alias": null }, { "name": "Cysticercosis", "entity": "/m/0394df", "alias": null }, { "name": "Dandruff", "entity": "/m/022y19", "alias": null }, { "name": "Death rattle", "entity": "/m/0660m0", "alias": null }, { "name": "Deep vein thrombosis", "entity": "/m/02r3jk", "alias": null }, { "name": "Deformity", "entity": "/m/0383j_", "alias": null }, { "name": "Dehydration", "entity": "/m/014961", "alias": null }, { "name": "Delayed onset muscle soreness", "entity": "/m/03dcyh", "alias": null }, { "name": "Delirium", "entity": "/m/014qfd", "alias": null }, { "name": "Delirium tremens", "entity": "/m/0fpnjr", "alias": null }, { "name": "Delusional disorder", "entity": "/m/01l7xz", "alias": null }, { "name": "Delusional disorder", "entity": "/m/01l7xz", "alias": null }, { "name": "Dementia", "entity": "/m/09klv", "alias": null }, { "name": "Dengue fever", "entity": "/m/09wsg", "alias": null }, { "name": "Dengue virus", "entity": "/m/0g58pft", "alias": null }, { "name": "Dental plaque", "entity": "/m/073t8x", "alias": null }, { "name": "Dentin hypersensitivity", "entity": "/m/0d7gj3", "alias": null }, { "name": "Dependent personality disorder", "entity": "/m/01sydv", "alias": null }, { "name": "Depersonalization", "entity": "/m/01zn1_", "alias": null }, { "name": "Depigmentation", "entity": "/m/027cv8v", "alias": null }, { "name": "Depression", "entity": "/m/03f_cb", "alias": null }, { "name": "Derealization", "entity": "/m/02wv6r8", "alias": null }, { "name": "Dermatitis", "entity": "/m/06x09g", "alias": null }, { "name": "Dermatographic urticaria", "entity": "/m/06djbj", "alias": null }, { "name": "Desquamation", "entity": "/m/05pbx5", "alias": null }, { "name": "Developmental disability", "entity": "/m/06xd3t", "alias": null }, { "name": "Diabetes insipidus", "entity": "/m/0c5s4", "alias": null }, { "name": "Diabetes mellitus", "entity": "/m/0c58k", "alias": "Diabetes" }, { "name": "Diaphoresis", "entity": "/m/01q1s3", "alias": null }, { "name": "Diarrhea", "entity": "/m/0f3kl", "alias": null }, { "name": "Diastolic heart failure", "entity": "/m/02pv6ym", "alias": null }, { "name": "Diathesis", "entity": "/m/0sghsdb", "alias": null }, { "name": "Diplopia", "entity": "/m/03x17h", "alias": null }, { "name": "Disseminated intravascular coagulation", "entity": "/m/01jjrv", "alias": null }, { "name": "Dissociation", "entity": "/m/02l_0n", "alias": null }, { "name": "Dissociative disorder", "entity": "/m/07bc25", "alias": null }, { "name": "Dizziness", "entity": "/m/033mg5", "alias": null }, { "name": "Down's syndrome", "entity": "/m/029s1", "alias": null }, { "name": "Drooling", "entity": "/m/019bfk", "alias": null }, { "name": "Dry eye syndrome", "entity": "/m/03ckn0", "alias": null }, { "name": "Dryness", "entity": "/m/0g9_00t", "alias": null }, { "name": "Dupuytren's contracture", "entity": "/m/036l18", "alias": null }, { "name": "Dwarfism", "entity": "/m/010vmq", "alias": null }, { "name": "Dysarthria", "entity": "/m/03ygz2", "alias": null }, { "name": "Dysautonomia", "entity": "/m/02510j", "alias": null }, { "name": "Dysentery", "entity": "/m/0h3bn", "alias": null }, { "name": "Dysesthesia", "entity": "/m/0264gx3", "alias": null }, { "name": "Dysfunctional uterine bleeding", "entity": "/m/04cslz", "alias": null }, { "name": "Dysgeusia", "entity": "/m/01d3gn", "alias": null }, { "name": "Dyskinesia", "entity": "/m/03_xjz", "alias": null }, { "name": "Dysmenorrhea", "entity": "/m/0255t_", "alias": null }, { "name": "Dyspareunia", "entity": "/m/01qqq7", "alias": null }, { "name": "Dysphagia", "entity": "/m/01bztl", "alias": null }, { "name": "Dysphonia", "entity": "/m/07_7w6", "alias": null }, { "name": "Dysphoria", "entity": "/m/055f85", "alias": null }, { "name": "Dystonia", "entity": "/m/02_x8m", "alias": null }, { "name": "Dysuria", "entity": "/m/03wblc", "alias": null }, { "name": "Ear pain", "entity": "/m/05vywy", "alias": null }, { "name": "EBOV", "entity": "/m/0117wrtj", "alias": "Ebola" }, { "name": "Ecchymosis", "entity": "/m/05b6rk9", "alias": null }, { "name": "Echolalia", "entity": "/m/03y0cn", "alias": null }, { "name": "Edema", "entity": "/m/0j80c", "alias": null }, { "name": "Electrolyte imbalance", "entity": "/m/03nkmb", "alias": null }, { "name": "Elevated alkaline phosphatase", "entity": "/m/063ykc9", "alias": null }, { "name": "Emaciation", "entity": "/m/070kyz", "alias": null }, { "name": "Emotional detachment", "entity": "/m/092b1g", "alias": null }, { "name": "Emotional dysregulation", "entity": "/m/0b3n_k", "alias": null }, { "name": "Encephalitis", "entity": "/m/09c_t", "alias": null }, { "name": "Encephalitis", "entity": "/m/09c_t", "alias": null }, { "name": "Encephalopathy", "entity": "/m/022tc0", "alias": null }, { "name": "Encephalopathy", "entity": "/m/022tc0", "alias": null }, { "name": "Encopresis", "entity": "/m/0298jv", "alias": null }, { "name": "Endometrial cancer", "entity": "/m/0259rv", "alias": null }, { "name": "Endometrial hyperplasia", "entity": "/m/02rc7qj", "alias": null }, { "name": "Endometriosis", "entity": "/m/0d_9n", "alias": null }, { "name": "Endometriosis of ovary", "entity": "/m/05q45f7", "alias": null }, { "name": "Enlarged uterus", "entity": "/m/075k1p8", "alias": null }, { "name": "Enterocolitis", "entity": "/m/07y4wgq", "alias": null }, { "name": "Enthesitis", "entity": "/m/0gs1mr", "alias": null }, { "name": "Enthesopathy", "entity": "/m/08bvg8", "alias": null }, { "name": "Enuresis", "entity": "/m/03gq2nq", "alias": null }, { "name": "Eosinophilia", "entity": "/m/01jmy5", "alias": null }, { "name": "Epicanthic fold", "entity": "/m/014x2z", "alias": null }, { "name": "Epidermoid cyst", "entity": "/m/04mw9m", "alias": null }, { "name": "Epilepsy", "entity": "/m/02vrr", "alias": null }, { "name": "Epileptic seizure", "entity": "/m/06rhk", "alias": null }, { "name": "Epiphora", "entity": "/m/02r3mv3", "alias": null }, { "name": "Erectile dysfunction", "entity": "/m/03tkm", "alias": null }, { "name": "Eructation", "entity": "/m/03q5_w", "alias": null }, { "name": "Erythema", "entity": "/m/02mcv2", "alias": null }, { "name": "Erythema chronicum migrans", "entity": "/m/0bzv6k", "alias": null }, { "name": "Erythema multiforme", "entity": "/m/03s352", "alias": null }, { "name": "Erythema nodosum", "entity": "/m/08fm2f", "alias": null }, { "name": "Eschar", "entity": "/m/03_m2p", "alias": null }, { "name": "Esophageal varices", "entity": "/m/0340vp", "alias": null }, { "name": "Esophagitis", "entity": "/m/01b_b2", "alias": null }, { "name": "Esotropia", "entity": "/m/0184pc", "alias": null }, { "name": "Euphoria", "entity": "/m/02rj8by", "alias": null }, { "name": "Exanthem", "entity": "/m/07bblt", "alias": null }, { "name": "Excessive daytime sleepiness", "entity": "/m/02y_82q", "alias": null }, { "name": "Exophthalmos", "entity": "/m/05mjhy", "alias": null }, { "name": "Exotropia", "entity": "/m/099x_8", "alias": null }, { "name": "Extrapyramidal symptoms", "entity": "/m/09gkmws", "alias": null }, { "name": "Exudate", "entity": "/m/02yj5k", "alias": null }, { "name": "Eye pain", "entity": "/m/05fs77x", "alias": null }, { "name": "Eye strain", "entity": "/m/07v7rh", "alias": null }, { "name": "Facial nerve paralysis", "entity": "/m/04mpk9", "alias": null }, { "name": "Far-sightedness", "entity": "/m/0248jp", "alias": null }, { "name": "Fasciculation", "entity": "/m/062phb", "alias": null }, { "name": "Fatigue", "entity": "/m/01j6t0", "alias": null }, { "name": "Fatty liver", "entity": "/m/03s7fs", "alias": null }, { "name": "Febrile neutrophilic dermatosis", "entity": "/m/09jw9n", "alias": null }, { "name": "Febrile seizure", "entity": "/m/013q86", "alias": null }, { "name": "Fecal incontinence", "entity": "/m/018h28", "alias": null }, { "name": "Female infertility", "entity": "/m/03bx9gs", "alias": null }, { "name": "Fetal distress", "entity": "/m/02sj16", "alias": null }, { "name": "Fever", "entity": "/m/0cjf0", "alias": null }, { "name": "Fibrillation", "entity": "/m/0118lbwm", "alias": null }, { "name": "Fibromyalgia", "entity": "/m/01v3ks", "alias": null }, { "name": "Fibrosis", "entity": "/m/03nq4p", "alias": null }, { "name": "Fidgeting", "entity": "/m/04y6tl1", "alias": null }, { "name": "Flaccid paralysis", "entity": "/m/02qkp38", "alias": null }, { "name": "Flatulence", "entity": "/m/06vg9d", "alias": null }, { "name": "Floater", "entity": "/m/018j1l", "alias": null }, { "name": "Flushing", "entity": "/m/028n_3", "alias": null }, { "name": "Folate deficiency", "entity": "/m/0dt6ml", "alias": null }, { "name": "Folie à deux", "entity": "/m/03281", "alias": null }, { "name": "Food addiction", "entity": "/m/04sws8", "alias": null }, { "name": "Food poisoning", "entity": "/m/02m76d", "alias": null }, { "name": "Foot drop", "entity": "/m/0bcwy3", "alias": null }, { "name": "Formication", "entity": "/m/02p4g5n", "alias": null }, { "name": "Freckle", "entity": "/m/0fyd3", "alias": null }, { "name": "Frequent urination", "entity": "/m/0c3_wg5", "alias": null }, { "name": "Frostbite", "entity": "/m/0213yl", "alias": null }, { "name": "Fuchs' dystrophy", "entity": "/m/05pb2q", "alias": null }, { "name": "Fugue state", "entity": "/m/02ybr", "alias": null }, { "name": "Gait abnormality", "entity": "/m/06h94m", "alias": null }, { "name": "Galactorrhea", "entity": "/m/03xmsb", "alias": null }, { "name": "Gallstone", "entity": "/m/01q6mh", "alias": null }, { "name": "Gangrene", "entity": "/m/01jj75", "alias": null }, { "name": "Gastritis", "entity": "/m/03y91v", "alias": null }, { "name": "Gastroesophageal reflux disease", "entity": "/m/01b_5g", "alias": "Acid reflux" }, { "name": "Gastrointestinal bleeding", "entity": "/m/03njtl", "alias": null }, { "name": "Gastroparesis", "entity": "/m/02w1n2", "alias": null }, { "name": "Generalised tonic-clonic seizure", "entity": "/m/02r6d3v", "alias": null }, { "name": "Generalized anxiety disorder", "entity": "/m/02zr3h", "alias": null }, { "name": "Genital herpes", "entity": "/m/05m_zpz", "alias": null }, { "name": "Genital wart", "entity": "/m/019thv", "alias": null }, { "name": "Genu varum", "entity": "/m/03pk5z", "alias": null }, { "name": "Gestational hypertension", "entity": "/m/03p2br", "alias": null }, { "name": "Giant-cell arteritis", "entity": "/m/07s7n", "alias": null }, { "name": "Gigantism", "entity": "/m/01jmvq", "alias": null }, { "name": "Gingival recession", "entity": "/m/0dr8s9", "alias": null }, { "name": "Gingivitis", "entity": "/m/01d20w", "alias": null }, { "name": "Glabrousness", "entity": "/m/05__9r", "alias": null }, { "name": "Gliosis", "entity": "/m/0chqj1", "alias": null }, { "name": "Globus pharyngis", "entity": "/m/0czdw5", "alias": null }, { "name": "Glomerulonephritis", "entity": "/m/04gfv_", "alias": null }, { "name": "Glossitis", "entity": "/m/07ckc_", "alias": null }, { "name": "Glucose-6-phosphate dehydrogenase deficiency", "entity": "/m/021tw2", "alias": null }, { "name": "Glycosuria", "entity": "/m/05pcqg", "alias": null }, { "name": "Goitre", "entity": "/m/036zm", "alias": null }, { "name": "Gonorrhea", "entity": "/m/0mh4s", "alias": null }, { "name": "Goose bumps", "entity": "/m/03ck2w", "alias": null }, { "name": "Gout", "entity": "/m/0ffxt", "alias": null }, { "name": "Grandiosity", "entity": "/m/041cwm", "alias": null }, { "name": "Granuloma", "entity": "/m/029fv3", "alias": null }, { "name": "Granuloma annulare", "entity": "/m/0cvpr9", "alias": null }, { "name": "Graves' ophthalmopathy", "entity": "/m/0fl3qm", "alias": null }, { "name": "Greasy hair", "entity": "/m/0nbv1vz", "alias": null }, { "name": "Ground-glass opacity", "entity": "/m/0j26_bj", "alias": null }, { "name": "Growth hormone deficiency", "entity": "/m/02xh6k", "alias": null }, { "name": "Guttate psoriasis", "entity": "/m/05c3rty", "alias": null }, { "name": "Gynecomastia", "entity": "/m/07cszr", "alias": null }, { "name": "Haemophilia", "entity": "/m/03myr", "alias": null }, { "name": "Hair loss", "entity": "/m/03bwzh1", "alias": null }, { "name": "Hallucination", "entity": "/m/0d3gy", "alias": null }, { "name": "Hammer toe", "entity": "/m/03vwp3", "alias": null }, { "name": "Headache", "entity": "/m/0j5fv", "alias": null }, { "name": "Hearing loss", "entity": "/m/014wq_", "alias": null }, { "name": "Heart block", "entity": "/m/031q2c", "alias": null }, { "name": "Heart failure", "entity": "/m/01l2m3", "alias": null }, { "name": "Heart murmur", "entity": "/m/01jg1z", "alias": null }, { "name": "Heartburn", "entity": "/m/01bfsv", "alias": null }, { "name": "Heat intolerance", "entity": "/m/0rpj80_", "alias": null }, { "name": "Heavy legs", "entity": "/m/051ynwt", "alias": null }, { "name": "Heberden's node", "entity": "/m/054s8y", "alias": null }, { "name": "Hemangioma", "entity": "/m/03jcdy", "alias": null }, { "name": "Hematemesis", "entity": "/m/02n2t1", "alias": null }, { "name": "Hematochezia", "entity": "/m/02n2gk", "alias": null }, { "name": "Hematoma", "entity": "/m/032ssz", "alias": null }, { "name": "Hematospermia", "entity": "/m/0bblkc", "alias": null }, { "name": "Hematuria", "entity": "/m/02sc7d", "alias": null }, { "name": "Hemiparesis", "entity": "/m/03j3s", "alias": null }, { "name": "Hemiplegia", "entity": "/m/04n8p1", "alias": null }, { "name": "Hemispatial neglect", "entity": "/m/03ttjj", "alias": null }, { "name": "Hemolysis", "entity": "/m/0j8q4", "alias": null }, { "name": "Hemolytic anemia", "entity": "/m/02skgx", "alias": null }, { "name": "Hemoptysis", "entity": "/m/01g920", "alias": null }, { "name": "Hemorrhoids", "entity": "/m/017f7c", "alias": null }, { "name": "Hemothorax", "entity": "/m/06rt3n", "alias": null }, { "name": "Hepatic encephalopathy", "entity": "/m/046cxb", "alias": null }, { "name": "Hepatitis", "entity": "/m/09jg8", "alias": null }, { "name": "Hepatomegaly", "entity": "/m/055_gj", "alias": null }, { "name": "Hepatorenal syndrome", "entity": "/m/06vqzq", "alias": null }, { "name": "Hepatosplenomegaly", "entity": "/m/03zr21", "alias": null }, { "name": "Hepatotoxicity", "entity": "/m/02clhl", "alias": null }, { "name": "Herpes simplex", "entity": "/m/0gxbfm", "alias": null }, { "name": "Heterochromia", "entity": "/m/02w_rc", "alias": null }, { "name": "Hiccup", "entity": "/m/02p3nc", "alias": null }, { "name": "Hickey", "entity": "/m/02497k", "alias": null }, { "name": "High Blood Pressure", "entity": "/m/0k95h", "alias": null }, { "name": "Hirsutism", "entity": "/m/0ps0b", "alias": null }, { "name": "Histoplasmosis", "entity": "/m/022tb8", "alias": null }, { "name": "HIV/AIDS", "entity": "/m/0d19y2", "alias": null }, { "name": "Hives", "entity": "/m/03nky3", "alias": null }, { "name": "Homans sign", "entity": "/m/08ytrd", "alias": null }, { "name": "Horner's syndrome", "entity": "/m/04v0fj", "alias": null }, { "name": "Hostility", "entity": "/m/02p74_2", "alias": null }, { "name": "Hot flash", "entity": "/m/033488", "alias": null }, { "name": "Hydrocele", "entity": "/m/04vy02", "alias": null }, { "name": "Hydrocephalus", "entity": "/m/01cw5r", "alias": null }, { "name": "Hyperactivity", "entity": "/m/04txf7", "alias": null }, { "name": "Hyperacusis", "entity": "/m/04xpzs", "alias": null }, { "name": "Hyperaemia", "entity": "/m/08859_", "alias": null }, { "name": "Hyperalgesia", "entity": "/m/03z_m7", "alias": null }, { "name": "Hypercalcaemia", "entity": "/m/02k540", "alias": null }, { "name": "Hypercapnia", "entity": "/m/02hlph", "alias": null }, { "name": "Hypercholesterolemia", "entity": "/m/02k7pj", "alias": null }, { "name": "Hyperemesis gravidarum", "entity": "/m/06t7dc", "alias": null }, { "name": "Hyperesthesia", "entity": "/m/0btccj", "alias": null }, { "name": "Hyperglycemia", "entity": "/m/0kfqw", "alias": null }, { "name": "Hyperhidrosis", "entity": "/m/03jbly", "alias": null }, { "name": "Hyperkalemia", "entity": "/m/037h0g", "alias": null }, { "name": "Hyperkeratosis", "entity": "/m/05qymp", "alias": null }, { "name": "Hyperlipidemia", "entity": "/m/05f45h", "alias": null }, { "name": "Hypermobility", "entity": "/m/0b9f_5", "alias": null }, { "name": "Hypernatremia", "entity": "/m/03xr5j", "alias": null }, { "name": "Hyperpigmentation", "entity": "/m/046z7d", "alias": null }, { "name": "Hyperreflexia", "entity": "/m/04bl90", "alias": null }, { "name": "Hypersalivation", "entity": "/m/0fpjgc1", "alias": null }, { "name": "Hypersexuality", "entity": "/m/01g5ln", "alias": null }, { "name": "Hypersomnia", "entity": "/m/03cfcn", "alias": null }, { "name": "Hypertelorism", "entity": "/m/08wwvw", "alias": null }, { "name": "Hypertension", "entity": "/m/0k95h", "alias": null }, { "name": "Hyperthermia", "entity": "/m/0k10t", "alias": null }, { "name": "Hyperthyroidism", "entity": "/m/03hz0", "alias": null }, { "name": "Hypertonia", "entity": "/m/092xnv", "alias": null }, { "name": "Hypertrichosis", "entity": "/m/04lj5j", "alias": null }, { "name": "Hypertriglyceridemia", "entity": "/m/02_sbz", "alias": null }, { "name": "Hypertrophy", "entity": "/m/02vrdn", "alias": null }, { "name": "Hyperuricemia", "entity": "/m/02hl8g", "alias": null }, { "name": "Hyperventilation", "entity": "/m/021m_f", "alias": null }, { "name": "Hyphema", "entity": "/m/08dkq0", "alias": null }, { "name": "Hypoactive sexual desire disorder", "entity": "/m/0255l5", "alias": null }, { "name": "Hypoalbuminemia", "entity": "/m/09bl05", "alias": null }, { "name": "Hypocalcaemia", "entity": "/m/02k53m", "alias": null }, { "name": "Hypoesthesia", "entity": "/m/027q6ds", "alias": null }, { "name": "Hypoglycemia", "entity": "/m/03gwt", "alias": null }, { "name": "Hypogonadism", "entity": "/m/038k4x", "alias": null }, { "name": "Hypohidrosis", "entity": "/m/04yfs7", "alias": null }, { "name": "Hypokalemia", "entity": "/m/03vmt0", "alias": null }, { "name": "Hypokinesia", "entity": "/m/06_8j3", "alias": null }, { "name": "Hypomania", "entity": "/m/0bk6q", "alias": null }, { "name": "Hypomenorrhea", "entity": "/m/0412nq4", "alias": null }, { "name": "Hypoparathyroidism", "entity": "/m/0340yl", "alias": null }, { "name": "Hypopigmentation", "entity": "/m/048hpn", "alias": null }, { "name": "Hypotension", "entity": "/m/02hvph", "alias": null }, { "name": "Hypothermia", "entity": "/m/012rps", "alias": null }, { "name": "Hypothyroidism", "entity": "/m/0hg11", "alias": null }, { "name": "Hypotonia", "entity": "/m/03wbww", "alias": null }, { "name": "Hypoventilation", "entity": "/m/02fwvl", "alias": null }, { "name": "Hypovolemia", "entity": "/m/02hwb2", "alias": null }, { "name": "Hypoxemia", "entity": "/m/025sd3c", "alias": null }, { "name": "Hypoxia", "entity": "/m/03gns", "alias": null }, { "name": "Ichthyosis", "entity": "/m/02wgfv", "alias": null }, { "name": "Ileus", "entity": "/m/0443mq", "alias": null }, { "name": "Immunodeficiency", "entity": "/m/02yg4w", "alias": null }, { "name": "Immunosuppression", "entity": "/m/016mlj", "alias": null }, { "name": "Impetigo", "entity": "/m/0mzty", "alias": null }, { "name": "Implantation bleeding", "entity": "/m/013027b9", "alias": null }, { "name": "Indigestion", "entity": "/m/04kl78", "alias": null }, { "name": "Infarction", "entity": "/m/02vnfx", "alias": null }, { "name": "Infection", "entity": "/m/098s1", "alias": null }, { "name": "Infectious mononucleosis", "entity": "/m/0qjk8", "alias": "Mononucleosis" }, { "name": "Inferiority complex", "entity": "/m/03c9vn", "alias": null }, { "name": "Infertility", "entity": "/m/018g78", "alias": null }, { "name": "Inflammation", "entity": "/m/0j7_w", "alias": null }, { "name": "Inflammatory bowel disease", "entity": "/m/02x0yg", "alias": null }, { "name": "Influenza", "entity": "/m/0cycc", "alias": null }, { "name": "Ingrown hair", "entity": "/m/0cmmcy", "alias": null }, { "name": "Insomnia", "entity": "/m/0ddwt", "alias": null }, { "name": "Intellectual disability", "entity": "/m/09fz4", "alias": null }, { "name": "Intermittent claudication", "entity": "/m/04qydt", "alias": null }, { "name": "Internal bleeding", "entity": "/m/02xb32", "alias": null }, { "name": "Intertrigo", "entity": "/m/05l4gz", "alias": null }, { "name": "Intracerebral hemorrhage", "entity": "/m/08g5q7", "alias": null }, { "name": "Intracranial aneurysm", "entity": "/m/01g45j", "alias": null }, { "name": "Intrauterine growth restriction", "entity": "/m/05pdffb", "alias": null }, { "name": "Inverted nipple", "entity": "/m/071nxk", "alias": null }, { "name": "Iron deficiency", "entity": "/m/014x04", "alias": null }, { "name": "Iron overload", "entity": "/m/02n_ct", "alias": null }, { "name": "Irregular menstruation", "entity": "/m/05bm66n", "alias": null }, { "name": "Irritability", "entity": "/m/083h_x", "alias": null }, { "name": "Irritant diaper dermatitis", "entity": "/m/025r6w", "alias": null }, { "name": "Ischemia", "entity": "/m/02gr6s", "alias": null }, { "name": "Itch", "entity": "/m/04kllm9", "alias": null }, { "name": "Jaundice", "entity": "/m/0hgxh", "alias": null }, { "name": "Joint effusion", "entity": "/m/0b74b60", "alias": null }, { "name": "Joint pain", "entity": "/m/021hck", "alias": null }, { "name": "Joint stiffness", "entity": "/m/088b11", "alias": null }, { "name": "Jugular venous pressure", "entity": "/m/03f3w1", "alias": null }, { "name": "Kaposi's sarcoma", "entity": "/m/0bqpg", "alias": null }, { "name": "Kawasaki disease", "entity": "/m/040k6g", "alias": null }, { "name": "Keratitis", "entity": "/m/02dfr6", "alias": null }, { "name": "Keratitis", "entity": "/m/02dfr6", "alias": null }, { "name": "Ketoacidosis", "entity": "/m/02mwg6", "alias": null }, { "name": "Ketonuria", "entity": "/m/095xr2", "alias": null }, { "name": "Kidney failure", "entity": "/m/01psyx", "alias": null }, { "name": "Kidney stone", "entity": "/m/09hbx", "alias": null }, { "name": "Knee effusion", "entity": "/m/03bxmbn", "alias": null }, { "name": "Knee pain", "entity": "/m/09v868h", "alias": null }, { "name": "Koilonychia", "entity": "/m/0gj4qx", "alias": null }, { "name": "Kussmaul breathing", "entity": "/m/036mkm", "alias": null }, { "name": "Kyphosis", "entity": "/m/02jrl1", "alias": null }, { "name": "Labored breathing", "entity": "/m/09k6f04", "alias": null }, { "name": "Labyrinthitis", "entity": "/m/03m31g", "alias": null }, { "name": "Lactose intolerance", "entity": "/m/0fp3b", "alias": null }, { "name": "Lanugo", "entity": "/m/04g22n", "alias": null }, { "name": "Laryngitis", "entity": "/m/02l37c", "alias": null }, { "name": "Laryngopharyngeal reflux", "entity": "/m/047bx2y", "alias": null }, { "name": "Laryngospasm", "entity": "/m/08zhxx", "alias": null }, { "name": "Learning disability", "entity": "/m/02qwpq0", "alias": null }, { "name": "Left Bundle Branch Block", "entity": "/m/09k76g", "alias": null }, { "name": "Left ventricular hypertrophy", "entity": "/m/04dxph", "alias": null }, { "name": "Leishmaniasis", "entity": "/m/01c5s1", "alias": null }, { "name": "Leprosy", "entity": "/m/0c5f7", "alias": null }, { "name": "Leptospirosis", "entity": "/m/02_j9l", "alias": null }, { "name": "Lethargy", "entity": "/m/012815pn", "alias": null }, { "name": "Leukemia", "entity": "/m/04psf", "alias": null }, { "name": "Leukocytosis", "entity": "/m/03btw1", "alias": null }, { "name": "Leukopenia", "entity": "/m/03zrfj", "alias": null }, { "name": "Leukoplakia", "entity": "/m/03l365", "alias": null }, { "name": "Leukorrhea", "entity": "/m/06kjt9", "alias": null }, { "name": "Lhermitte's sign", "entity": "/m/064n9x", "alias": null }, { "name": "Lightheadedness", "entity": "/m/079p0q", "alias": null }, { "name": "Limp", "entity": "/m/04plrq", "alias": null }, { "name": "Lipodystrophy", "entity": "/m/01l2st", "alias": null }, { "name": "Livedo reticularis", "entity": "/m/08wrk9", "alias": null }, { "name": "Liver failure", "entity": "/m/02psvcf", "alias": null }, { "name": "Locked-in syndrome", "entity": "/m/014mtn", "alias": null }, { "name": "Logorrhea", "entity": "/m/09v4pxz", "alias": null }, { "name": "Lordosis", "entity": "/m/03_039", "alias": null }, { "name": "Low back pain", "entity": "/m/020hwm", "alias": null }, { "name": "Low birth weight", "entity": "/m/0dl9s49", "alias": null }, { "name": "Lower respiratory tract infection", "entity": "/m/03txkl", "alias": null }, { "name": "Lung cancer", "entity": "/m/04p3w", "alias": null }, { "name": "Lupus nephritis", "entity": "/m/05fq5c", "alias": null }, { "name": "Lyme disease", "entity": "/m/01kcry", "alias": null }, { "name": "Lymphedema", "entity": "/m/04r36", "alias": null }, { "name": "Lymphocytopenia", "entity": "/m/08z6j9", "alias": null }, { "name": "Lymphocytosis", "entity": "/m/01jn3l", "alias": null }, { "name": "Macrocephaly", "entity": "/m/07b8s3", "alias": null }, { "name": "Maculopapular rash", "entity": "/m/05lrqf", "alias": null }, { "name": "Major depressive disorder", "entity": "/m/02bft", "alias": null }, { "name": "Malabsorption", "entity": "/m/03f07j", "alias": null }, { "name": "Malaise", "entity": "/m/0418s3", "alias": null }, { "name": "Malar rash", "entity": "/m/04t_81", "alias": null }, { "name": "Malaria", "entity": "/m/0542n", "alias": null }, { "name": "Male infertility", "entity": "/m/03bx917", "alias": null }, { "name": "Malnutrition", "entity": "/m/01m4w4", "alias": null }, { "name": "Malocclusion", "entity": "/m/06r0ps", "alias": null }, { "name": "Mania", "entity": "/m/05417", "alias": null }, { "name": "Measles", "entity": "/m/0g2gb", "alias": null }, { "name": "Mechanism of action", "entity": "/m/0d2x17", "alias": null }, { "name": "Medulloblastoma", "entity": "/m/0bbl62", "alias": null }, { "name": "Megacolon", "entity": "/m/07qctz", "alias": null }, { "name": "Melancholia", "entity": "/m/057vp", "alias": null }, { "name": "Melanocytic nevus", "entity": "/m/0dc28", "alias": null }, { "name": "Melanoma", "entity": "/m/035b2g", "alias": null }, { "name": "Melasma", "entity": "/m/04z9bf", "alias": null }, { "name": "Melena", "entity": "/m/02n2tg", "alias": null }, { "name": "Meningism", "entity": "/m/04v_ml", "alias": null }, { "name": "Meningitis", "entity": "/m/09d11", "alias": null }, { "name": "Menorrhagia", "entity": "/m/031c33", "alias": null }, { "name": "Menstrual disorder", "entity": "/m/0b5pfn", "alias": null }, { "name": "Mental disorder", "entity": "/m/04x4r", "alias": null }, { "name": "Metabolic acidosis", "entity": "/m/04tksh", "alias": null }, { "name": "Metabolic alkalosis", "entity": "/m/025sktj", "alias": null }, { "name": "Metaplasia", "entity": "/m/059h7h", "alias": null }, { "name": "Metastatic liver disease", "entity": "/m/047cg9y", "alias": null }, { "name": "Methemoglobinemia", "entity": "/m/01npzs", "alias": null }, { "name": "Metrorrhagia", "entity": "/m/08_6kp", "alias": null }, { "name": "Microalbuminuria", "entity": "/m/07y7r4", "alias": null }, { "name": "Microcalcification", "entity": "/m/095qsg", "alias": null }, { "name": "Microcephaly", "entity": "/m/01hrbm", "alias": null }, { "name": "Micromastia", "entity": "/m/09pv41", "alias": null }, { "name": "Middle back pain", "entity": "/m/09rlb3", "alias": null }, { "name": "Migraine", "entity": "/m/05904", "alias": null }, { "name": "Milium", "entity": "/m/0527by", "alias": null }, { "name": "Miosis", "entity": "/m/03smvc", "alias": null }, { "name": "Mitral valve prolapse", "entity": "/m/02np4g", "alias": null }, { "name": "Mood disorder", "entity": "/m/0drn8", "alias": null }, { "name": "Mood swing", "entity": "/m/022y3k", "alias": null }, { "name": "Moon face", "entity": "/m/02prmbk", "alias": null }, { "name": "Morning sickness", "entity": "/m/01j9hg", "alias": null }, { "name": "Morphea", "entity": "/m/09lkp9", "alias": null }, { "name": "Motion sickness", "entity": "/m/0gxcc", "alias": null }, { "name": "Mouth breathing", "entity": "/m/08gzn6", "alias": null }, { "name": "Movement disorders", "entity": "/m/03whtc", "alias": null }, { "name": "Multiple organ dysfunction syndrome", "entity": "/m/03hnn3", "alias": null }, { "name": "Multiple sclerosis", "entity": "/m/0dcqh", "alias": null }, { "name": "Murphy's sign", "entity": "/m/071ttc", "alias": null }, { "name": "Muscle atrophy", "entity": "/m/0dds0h", "alias": null }, { "name": "Muscle contraction", "entity": "/m/046xb9", "alias": null }, { "name": "Muscle pain", "entity": "/m/013677", "alias": null }, { "name": "Muscle weakness", "entity": "/m/0927l7", "alias": null }, { "name": "Muteness", "entity": "/m/0287zzh", "alias": null }, { "name": "Mydriasis", "entity": "/m/01dhgh", "alias": null }, { "name": "Myelodysplastic syndrome", "entity": "/m/019gky", "alias": null }, { "name": "Myelopathy", "entity": "/m/04_1ntx", "alias": null }, { "name": "Myocardial infarction", "entity": "/m/0gk4g", "alias": "Heart attack" }, { "name": "Myoclonus", "entity": "/m/02_mfs", "alias": null }, { "name": "Myopathy", "entity": "/m/058k0k", "alias": null }, { "name": "Myxedema", "entity": "/m/02wp6c", "alias": null }, { "name": "Nail clubbing", "entity": "/m/02qbnn", "alias": null }, { "name": "Narcissistic personality disorder", "entity": "/m/019jq7", "alias": null }, { "name": "Nasal congestion", "entity": "/m/05s5v6", "alias": null }, { "name": "Nasal polyp", "entity": "/m/034hsj", "alias": null }, { "name": "Nasal septum deviation", "entity": "/m/05cz29", "alias": null }, { "name": "Nausea", "entity": "/m/0gxb2", "alias": null }, { "name": "Near-sightedness", "entity": "/m/0m2w3", "alias": null }, { "name": "Neck mass", "entity": "/m/0crhp0y", "alias": null }, { "name": "Neck pain", "entity": "/m/02r3cvb", "alias": null }, { "name": "Neck spasm", "entity": "/m/043s7zg", "alias": null }, { "name": "Neck stiffness", "entity": "/m/0bmgh43", "alias": null }, { "name": "Necrosis", "entity": "/m/09yql", "alias": null }, { "name": "Necrotizing fasciitis", "entity": "/m/01q6nb", "alias": null }, { "name": "Neonatal jaundice", "entity": "/m/074hph", "alias": null }, { "name": "Nephritic syndrome", "entity": "/m/06yg6t", "alias": null }, { "name": "Nephrotic syndrome", "entity": "/m/01n597", "alias": null }, { "name": "Nerve injury", "entity": "/m/02pm604", "alias": null }, { "name": "Neuralgia", "entity": "/m/05kzxm", "alias": null }, { "name": "Neurofibroma", "entity": "/m/08gljx", "alias": null }, { "name": "Neuropathic Pain", "entity": "/m/09gnhp2", "alias": null }, { "name": "Neutrophilia", "entity": "/m/01jjvn", "alias": null }, { "name": "Night sweats", "entity": "/m/04klgqw", "alias": null }, { "name": "Night terror", "entity": "/m/0272zb", "alias": null }, { "name": "Nightmare", "entity": "/m/0cjgc", "alias": null }, { "name": "Nipple discharge", "entity": "/m/04696g", "alias": null }, { "name": "Nocturia", "entity": "/m/0868jh", "alias": null }, { "name": "Nocturnal enuresis", "entity": "/m/01wy8y", "alias": null }, { "name": "Nodule", "entity": "/m/0905_p", "alias": null }, { "name": "Nosebleed", "entity": "/m/02zbth", "alias": null }, { "name": "Nyctalopia", "entity": "/m/04970l", "alias": null }, { "name": "Nystagmus", "entity": "/m/01skrq", "alias": null }, { "name": "Obesity", "entity": "/m/0fltx", "alias": null }, { "name": "Obtundation", "entity": "/m/0b0kl9", "alias": null }, { "name": "Odynophagia", "entity": "/m/0997hp", "alias": null }, { "name": "Oligomenorrhea", "entity": "/m/04yyq8", "alias": null }, { "name": "Oligospermia", "entity": "/m/06z9sn", "alias": null }, { "name": "Oliguria", "entity": "/m/04b1kq", "alias": null }, { "name": "Onychocryptosis", "entity": "/m/0476hh", "alias": null }, { "name": "Onychorrhexis", "entity": "/m/090ryn", "alias": null }, { "name": "Opisthotonus", "entity": "/m/04bm26", "alias": null }, { "name": "Optic neuritis", "entity": "/m/05pzb", "alias": null }, { "name": "Orthopnea", "entity": "/m/02lmp9", "alias": null }, { "name": "Orthostatic hypotension", "entity": "/m/0pv4d", "alias": null }, { "name": "Ossification", "entity": "/m/050qm0", "alias": null }, { "name": "Osteoarthritis", "entity": "/m/02jf6f", "alias": null }, { "name": "Osteomalacia", "entity": "/m/02npcz", "alias": null }, { "name": "Osteopenia", "entity": "/m/04zh7_m", "alias": null }, { "name": "Osteophyte", "entity": "/m/03kb14", "alias": null }, { "name": "Osteoporosis", "entity": "/m/05mdx", "alias": null }, { "name": "Otitis", "entity": "/m/0743mf", "alias": null }, { "name": "Otitis externa", "entity": "/m/04w68t", "alias": null }, { "name": "Ovarian cancer", "entity": "/m/025hl8", "alias": null }, { "name": "Ovarian cyst", "entity": "/m/01xyfj", "alias": null }, { "name": "Overweight", "entity": "/m/01t6qr", "alias": null }, { "name": "Pain", "entity": "/m/062t2", "alias": null }, { "name": "Pallor", "entity": "/m/03skrx", "alias": null }, { "name": "Palpitations", "entity": "/m/029ggh", "alias": null }, { "name": "Pancreatitis", "entity": "/m/0h1wz", "alias": null }, { "name": "Pancytopenia", "entity": "/m/063jn6", "alias": null }, { "name": "Panic", "entity": "/m/01t09s", "alias": null }, { "name": "Panic attack", "entity": "/m/0g88b", "alias": null }, { "name": "Papilledema", "entity": "/m/01c9lj", "alias": null }, { "name": "Papule", "entity": "/m/04xgtj", "alias": null }, { "name": "Paralysis", "entity": "/m/05sj8", "alias": null }, { "name": "Paranoia", "entity": "/m/063zb", "alias": null }, { "name": "Paraplegia", "entity": "/m/0251gx", "alias": null }, { "name": "Paresis", "entity": "/m/01ny_g", "alias": null }, { "name": "Paresthesia", "entity": "/m/023m3v", "alias": null }, { "name": "Parkinsonism", "entity": "/m/0dcs4", "alias": null }, { "name": "Paroxysmal nocturnal dyspnea", "entity": "/m/0gttzbm", "alias": null }, { "name": "Pathological lying", "entity": "/m/089sp6", "alias": null }, { "name": "Peanut allergy", "entity": "/m/085pjw", "alias": null }, { "name": "Pectus carinatum", "entity": "/m/05l8yp", "alias": null }, { "name": "Pectus excavatum", "entity": "/m/03750f", "alias": null }, { "name": "Pelvic inflammatory disease", "entity": "/m/064fq", "alias": null }, { "name": "Pelvic organ prolapse", "entity": "/m/07kyr1", "alias": null }, { "name": "Pericardial effusion", "entity": "/m/08z994", "alias": null }, { "name": "Pericarditis", "entity": "/m/032snl", "alias": null }, { "name": "Periorbital dark circles", "entity": "/m/04cbz5", "alias": null }, { "name": "Periorbital puffiness", "entity": "/m/027pqtp", "alias": null }, { "name": "Peripheral edema", "entity": "/m/06v6kk", "alias": null }, { "name": "Peripheral neuropathy", "entity": "/m/02w1fx", "alias": null }, { "name": "Peritonsillar abscess", "entity": "/m/04b586", "alias": null }, { "name": "Persecutory delusion", "entity": "/m/09g6vr0", "alias": null }, { "name": "Persistent truncus arteriosus", "entity": "/m/07dlyv", "alias": null }, { "name": "Persistent vegetative state", "entity": "/m/01rvjp", "alias": null }, { "name": "Perspiration", "entity": "/m/0k9qw", "alias": null }, { "name": "Pertussis", "entity": "/m/016ygs", "alias": "Whooping cough" }, { "name": "Petechia", "entity": "/m/04c2n0", "alias": null }, { "name": "Pharyngitis", "entity": "/m/01gkcc", "alias": null }, { "name": "Phlebitis", "entity": "/m/03rwrr", "alias": null }, { "name": "Phlegm", "entity": "/m/01s3l8", "alias": null }, { "name": "Phobia", "entity": "/m/05tf3", "alias": null }, { "name": "Phocomelia", "entity": "/m/0jzx0", "alias": null }, { "name": "Phosphene", "entity": "/m/038s2d", "alias": null }, { "name": "Photodermatitis", "entity": "/m/03c2dk", "alias": null }, { "name": "Photophobia", "entity": "/m/02lv8g", "alias": null }, { "name": "Photopsia", "entity": "/m/09p809", "alias": null }, { "name": "Phyllodes tumor", "entity": "/m/07mvcp", "alias": null }, { "name": "Pica", "entity": "/m/01b8zz", "alias": null }, { "name": "Placental abruption", "entity": "/m/0508hk", "alias": null }, { "name": "Pneumonia", "entity": "/m/0dq9p", "alias": null }, { "name": "Pneumothorax", "entity": "/m/01q1sz", "alias": null }, { "name": "Poliomyelitis", "entity": "/m/068p_", "alias": null }, { "name": "Polyarthritis", "entity": "/m/06hxx0", "alias": null }, { "name": "Polycythemia", "entity": "/m/02k88f", "alias": null }, { "name": "Polydipsia", "entity": "/m/02v6kp", "alias": null }, { "name": "Polyneuropathy", "entity": "/m/03cx49", "alias": null }, { "name": "Polyphagia", "entity": "/m/03gncj", "alias": null }, { "name": "Polyuria", "entity": "/m/01m3h8", "alias": null }, { "name": "Portal hypertension", "entity": "/m/034h9r", "alias": null }, { "name": "Post herniorraphy pain syndrome", "entity": "/m/0ggb_w", "alias": null }, { "name": "Post-concussion syndrome", "entity": "/m/09qljf", "alias": null }, { "name": "Post-nasal drip", "entity": "/m/0615kf", "alias": null }, { "name": "Postictal state", "entity": "/m/0ctw0q", "alias": null }, { "name": "Postorgasmic illness syndrome", "entity": "/m/05p5_7y", "alias": null }, { "name": "Postural orthostatic tachycardia syndrome", "entity": "/m/04l6qx", "alias": null }, { "name": "Pre-eclampsia", "entity": "/m/025lwc", "alias": null }, { "name": "Precocious puberty", "entity": "/m/02_nx2", "alias": null }, { "name": "Prehypertension", "entity": "/m/03cz_hv", "alias": null }, { "name": "Premature atrial contraction", "entity": "/m/04kgzqg", "alias": null }, { "name": "Premature ejaculation", "entity": "/m/01qqp1", "alias": null }, { "name": "Premature ventricular contraction", "entity": "/m/01hjkt", "alias": null }, { "name": "Premenstrual syndrome", "entity": "/m/01fxrj", "alias": null }, { "name": "Pressure ulcer", "entity": "/m/03ncwn", "alias": null }, { "name": "Priapism", "entity": "/m/0ldwy", "alias": null }, { "name": "Proctitis", "entity": "/m/06rf7m", "alias": null }, { "name": "Prodrome", "entity": "/m/01k7nc", "alias": null }, { "name": "Prognathism", "entity": "/m/06g3nz", "alias": null }, { "name": "Prolapse", "entity": "/m/01jcd6", "alias": null }, { "name": "Prostate cancer", "entity": "/m/0m32h", "alias": null }, { "name": "Proteinuria", "entity": "/m/012zf3", "alias": null }, { "name": "Prurigo", "entity": "/m/0gk2pb", "alias": null }, { "name": "Pruritus ani", "entity": "/m/02pq2mj", "alias": null }, { "name": "Pseudarthrosis", "entity": "/m/05_3zr", "alias": null }, { "name": "Pseudobulbar affect", "entity": "/m/04lg5mq", "alias": null }, { "name": "Psoriasis", "entity": "/m/0pv62", "alias": null }, { "name": "Psychomotor agitation", "entity": "/m/05p8sj", "alias": null }, { "name": "Psychosis", "entity": "/m/063yv", "alias": null }, { "name": "Psychotic break", "entity": "/m/03l9p5", "alias": null }, { "name": "Ptosis", "entity": "/m/0gdsn5", "alias": null }, { "name": "Pulmonary edema", "entity": "/m/0260ph", "alias": null }, { "name": "Pulmonary embolism", "entity": "/m/01ddth", "alias": null }, { "name": "Pulmonary hypertension", "entity": "/m/031wv7", "alias": null }, { "name": "Pulmonary Hypertension", "entity": "/m/031wv7", "alias": null }, { "name": "Pulsus paradoxus", "entity": "/m/087c0d", "alias": null }, { "name": "Purpura", "entity": "/m/04c2m8", "alias": null }, { "name": "Pus", "entity": "/m/01s2ly", "alias": null }, { "name": "Pustule", "entity": "/m/01fxyp", "alias": null }, { "name": "Pyelonephritis", "entity": "/m/04_rt_", "alias": null }, { "name": "Pyoderma gangrenosum", "entity": "/m/08s9h0", "alias": null }, { "name": "Pyuria", "entity": "/m/08bp74", "alias": null }, { "name": "Q fever", "entity": "/m/0fm4r", "alias": null }, { "name": "Rabies", "entity": "/m/0fsd1", "alias": null }, { "name": "Radiculopathy", "entity": "/m/02pfkpc", "alias": null }, { "name": "Raynaud syndrome", "entity": "/m/02v2jk", "alias": null }, { "name": "Rectal discharge", "entity": "/m/0dl9s9j", "alias": null }, { "name": "Rectal pain", "entity": "/m/0b74tbc", "alias": null }, { "name": "Rectal prolapse", "entity": "/m/03080q", "alias": null }, { "name": "Rectal tenesmus", "entity": "/m/04yfk_", "alias": null }, { "name": "Red eye", "entity": "/m/04pxm5", "alias": null }, { "name": "Reduced affect display", "entity": "/m/08z6vk", "alias": null }, { "name": "Regurgitation", "entity": "/m/0fv217", "alias": null }, { "name": "Renal colic", "entity": "/m/06phzx", "alias": null }, { "name": "Renal cyst", "entity": "/m/0b77v22", "alias": null }, { "name": "Respiratory acidosis", "entity": "/m/04tkvk", "alias": null }, { "name": "Respiratory arrest", "entity": "/m/037c4l", "alias": null }, { "name": "Respiratory distress", "entity": "/m/0jwzzd9", "alias": null }, { "name": "Respiratory failure", "entity": "/m/019dmc", "alias": null }, { "name": "Respiratory tract infection", "entity": "/m/0117wzhd", "alias": null }, { "name": "Restless legs syndrome", "entity": "/m/01jyld", "alias": null }, { "name": "Retching", "entity": "/m/02rjt8c", "alias": null }, { "name": "Retrograde amnesia", "entity": "/m/040z8c", "alias": null }, { "name": "Rheum", "entity": "/m/02p1kqs", "alias": null }, { "name": "Rheumatoid arthritis", "entity": "/m/06g7c", "alias": null }, { "name": "Rhinitis", "entity": "/m/02mdz9", "alias": null }, { "name": "Rhinophyma", "entity": "/m/0dyhxj", "alias": null }, { "name": "Rhinorrhea", "entity": "/m/06p_bp", "alias": null }, { "name": "Rhonchi", "entity": "/m/09jv3z", "alias": null }, { "name": "Ringworm", "entity": "/m/023yjf", "alias": null }, { "name": "Rubella", "entity": "/m/0175qw", "alias": null }, { "name": "Rumination", "entity": "/m/04grp19", "alias": null }, { "name": "Running amok", "entity": "/m/014sp", "alias": null }, { "name": "Scabies", "entity": "/m/074kq", "alias": null }, { "name": "Scarlet Fever", "entity": "/m/0mzt3", "alias": null }, { "name": "Schistosomiasis", "entity": "/m/01b4_7", "alias": null }, { "name": "Sciatica", "entity": "/m/01_wxr", "alias": null }, { "name": "Scleritis", "entity": "/m/08gppk", "alias": null }, { "name": "Scleroderma", "entity": "/m/05m_zv2", "alias": null }, { "name": "Scoliosis", "entity": "/m/0yvgr", "alias": null }, { "name": "Scotoma", "entity": "/m/03gzmf", "alias": null }, { "name": "Seborrheic dermatitis", "entity": "/m/02cvvl", "alias": null }, { "name": "Second-degree atrioventricular block", "entity": "/m/031s_5", "alias": null }, { "name": "Self-destructive behaviour", "entity": "/m/026qvtc", "alias": null }, { "name": "Self-harm", "entity": "/m/013cc9", "alias": null }, { "name": "Sensorineural hearing loss", "entity": "/m/04fmz1", "alias": null }, { "name": "Sepsis", "entity": "/m/014w_8", "alias": null }, { "name": "Septic shock", "entity": "/m/029mr9", "alias": null }, { "name": "Serotonin syndrome", "entity": "/m/079hg", "alias": null }, { "name": "Sexual addiction", "entity": "/m/05xsp8", "alias": null }, { "name": "Sexual dysfunction", "entity": "/m/0255qr", "alias": null }, { "name": "Shallow breathing", "entity": "/m/08wqjw", "alias": null }, { "name": "Shigellosis", "entity": "/m/0mzxc", "alias": null }, { "name": "Shingles", "entity": "/m/029577", "alias": null }, { "name": "Shivering", "entity": "/m/04fv7w", "alias": null }, { "name": "Shock", "entity": "/m/012n6d", "alias": null }, { "name": "Short bowel syndrome", "entity": "/m/04mr0d", "alias": null }, { "name": "Short stature", "entity": "/m/06y96j", "alias": null }, { "name": "Shortness of breath", "entity": "/m/01cdt5", "alias": null }, { "name": "Shyness", "entity": "/m/01dl7h", "alias": null }, { "name": "Single transverse palmar crease", "entity": "/m/04fl9l", "alias": null }, { "name": "Sinus bradycardia", "entity": "/m/06rsk8", "alias": null }, { "name": "Sinus tachycardia", "entity": "/m/06rsny", "alias": null }, { "name": "Sinusitis", "entity": "/m/072hv", "alias": null }, { "name": "Skin fissure", "entity": "/m/0gmcs4z", "alias": null }, { "name": "Skin infection", "entity": "/m/05m_2vv", "alias": null }, { "name": "Skin rash", "entity": "/m/0v4rnx", "alias": null }, { "name": "Skin tag", "entity": "/m/0fktd", "alias": null }, { "name": "Sleep apnea", "entity": "/m/071d3", "alias": null }, { "name": "Sleep deprivation", "entity": "/m/017tfz", "alias": null }, { "name": "Sleep disorder", "entity": "/m/0cnmb", "alias": null }, { "name": "Sleep paralysis", "entity": "/m/01jb2q", "alias": null }, { "name": "Slipped capital femoral epiphysis", "entity": "/m/07bztx", "alias": null }, { "name": "Smallpox", "entity": "/m/06vr2", "alias": null }, { "name": "Sneeze", "entity": "/m/01hsr_", "alias": null }, { "name": "Snoring", "entity": "/m/01d3sd", "alias": null }, { "name": "Somnolence", "entity": "/m/0311pr", "alias": null }, { "name": "Sore throat", "entity": "/m/0b76bty", "alias": null }, { "name": "Spasm", "entity": "/m/04zjnsf", "alias": null }, { "name": "Spasmodic dysphonia", "entity": "/m/07d0js", "alias": null }, { "name": "Spasticity", "entity": "/m/0p9n0", "alias": null }, { "name": "Speech delay", "entity": "/m/0726rf", "alias": null }, { "name": "Speech disorder", "entity": "/m/0133cx", "alias": null }, { "name": "Spider angioma", "entity": "/m/090j35", "alias": null }, { "name": "Spinal tumor", "entity": "/m/03znrn", "alias": null }, { "name": "Splenomegaly", "entity": "/m/03zqp2", "alias": null }, { "name": "Splitting", "entity": "/m/02q48gs", "alias": null }, { "name": "Sputum", "entity": "/m/01jmfg", "alias": null }, { "name": "Stage fright", "entity": "/m/02v58l", "alias": null }, { "name": "Starvation", "entity": "/m/01flyj", "alias": null }, { "name": "Stasis dermatitis", "entity": "/m/04q_81", "alias": null }, { "name": "Status epilepticus", "entity": "/m/06382k", "alias": null }, { "name": "Steatorrhea", "entity": "/m/03_7qy", "alias": null }, { "name": "Stenosis", "entity": "/m/032llx", "alias": null }, { "name": "Stereotypy", "entity": "/m/0dg_lc", "alias": null }, { "name": "Stertor", "entity": "/m/0d4b5s", "alias": null }, { "name": "Stiffness", "entity": "/m/02dzkc", "alias": null }, { "name": "Stomach rumble", "entity": "/m/01g90h", "alias": null }, { "name": "Stomatitis", "entity": "/m/06jf34", "alias": null }, { "name": "Strabismus", "entity": "/m/02s645", "alias": null }, { "name": "Stress", "entity": "/m/012lyw", "alias": null }, { "name": "Stretch marks", "entity": "/m/056g4k", "alias": null }, { "name": "Stridor", "entity": "/m/05rtnw", "alias": null }, { "name": "Stroke", "entity": "/m/02y0js", "alias": null }, { "name": "Stunted growth", "entity": "/m/09g54b", "alias": null }, { "name": "Stupor", "entity": "/m/08gxks", "alias": null }, { "name": "Stuttering", "entity": "/m/070yw", "alias": null }, { "name": "Subcutaneous emphysema", "entity": "/m/0464mv7", "alias": null }, { "name": "Substance abuse", "entity": "/m/0p_cr", "alias": null }, { "name": "Substance dependence", "entity": "/m/0466pc0", "alias": null }, { "name": "Sudden cardiac death", "entity": "/m/0d_mn0", "alias": null }, { "name": "Sunburn", "entity": "/m/015slp", "alias": null }, { "name": "Sundowning", "entity": "/m/04jmkz7", "alias": null }, { "name": "Superior vena cava syndrome", "entity": "/m/04tr95", "alias": null }, { "name": "Supraventricular tachycardia", "entity": "/m/03k_qd", "alias": null }, { "name": "Swelling", "entity": "/m/09bdp3", "alias": null }, { "name": "Swollen feet", "entity": "/m/0dl9t52", "alias": null }, { "name": "Swollen lymph nodes", "entity": "/m/03yzl6", "alias": null }, { "name": "Sydenham's chorea", "entity": "/m/04jr23", "alias": null }, { "name": "Syncope", "entity": "/m/04jpj9y", "alias": null }, { "name": "Syndrome of inappropriate antidiuretic hormone secretion", "entity": "/m/03zzcc", "alias": null }, { "name": "Synechia", "entity": "/m/037xdl", "alias": null }, { "name": "Synovitis", "entity": "/m/07yqh1", "alias": null }, { "name": "systemic lupus erythematosus", "entity": "/m/04nz3", "alias": "Lupus" }, { "name": "Systolic heart murmur", "entity": "/m/05b5h0l", "alias": null }, { "name": "Tachycardia", "entity": "/m/0156z4", "alias": null }, { "name": "Tachypnea", "entity": "/m/03w94wq", "alias": null }, { "name": "Tanning dependence", "entity": "/m/03crfch", "alias": null }, { "name": "Tardive dyskinesia", "entity": "/m/01vl0h", "alias": null }, { "name": "Telangiectasia", "entity": "/m/0500_3", "alias": null }, { "name": "Tenderness", "entity": "/m/03m4j90", "alias": null }, { "name": "Tendinitis", "entity": "/m/01kcp2", "alias": null }, { "name": "Tenosynovitis", "entity": "/m/01nzjv", "alias": null }, { "name": "Teratospermia", "entity": "/m/0523q1y", "alias": null }, { "name": "Testicular cancer", "entity": "/m/01rt5h", "alias": null }, { "name": "Tetanic contraction", "entity": "/m/026m6v", "alias": null }, { "name": "Tetanus", "entity": "/m/0cfb2", "alias": null }, { "name": "Tetany", "entity": "/m/02pnp2q", "alias": null }, { "name": "Tetralogy of Fallot", "entity": "/m/01k4yc", "alias": null }, { "name": "Tetraplegia", "entity": "/m/01bpld", "alias": null }, { "name": "Thirst", "entity": "/m/02jx54", "alias": null }, { "name": "Thought disorder", "entity": "/m/01p1zm", "alias": null }, { "name": "Throat irritation", "entity": "/m/0b6kt_8", "alias": null }, { "name": "Thrombocytopenia", "entity": "/m/02kgmg", "alias": null }, { "name": "Thrombocytosis", "entity": "/m/03btxg", "alias": null }, { "name": "Thrombosis", "entity": "/m/018_pw", "alias": null }, { "name": "Thyroid disease", "entity": "/m/05n00c6", "alias": null }, { "name": "Thyroid nodule", "entity": "/m/05l6q9", "alias": null }, { "name": "Tic", "entity": "/m/02gpbb", "alias": null }, { "name": "Tinel's sign", "entity": "/m/04bn2w", "alias": null }, { "name": "Tinnitus", "entity": "/m/0pv6y", "alias": null }, { "name": "Tonsillitis", "entity": "/m/03ng0t", "alias": null }, { "name": "Tooth decay", "entity": "/m/025j63", "alias": null }, { "name": "Tooth loss", "entity": "/m/02q28kg", "alias": null }, { "name": "Toothache", "entity": "/m/045c85", "alias": null }, { "name": "Tophus", "entity": "/m/04bm_r", "alias": null }, { "name": "Torticollis", "entity": "/m/01q136", "alias": null }, { "name": "Tourette syndrome", "entity": "/m/0fm5n", "alias": null }, { "name": "Transudate", "entity": "/m/02wv9sp", "alias": null }, { "name": "Tremor", "entity": "/m/09d28", "alias": null }, { "name": "Trichomoniasis", "entity": "/m/0m72x", "alias": null }, { "name": "Trichoptilosis", "entity": "/m/0269y8n", "alias": null }, { "name": "Trichotillomania", "entity": "/m/0h_8y", "alias": null }, { "name": "Trismus", "entity": "/m/01fgvy", "alias": null }, { "name": "Tuberculosis", "entity": "/m/07jwr", "alias": null }, { "name": "Tunnel vision", "entity": "/m/01z0b9", "alias": null }, { "name": "Type 2 diabetes", "entity": "/m/0146bp", "alias": null }, { "name": "Typhoid fever", "entity": "/m/07s4l", "alias": null }, { "name": "Typhus", "entity": "/m/057xn02", "alias": null }, { "name": "Ulcerative colitis", "entity": "/m/0h1r3", "alias": null }, { "name": "Unconsciousness", "entity": "/m/04kfhc9", "alias": null }, { "name": "Underweight", "entity": "/m/0844zv", "alias": null }, { "name": "Upper gastrointestinal bleeding", "entity": "/m/02n2jh", "alias": null }, { "name": "Upper respiratory tract infection", "entity": "/m/02wmyj", "alias": null }, { "name": "Uremia", "entity": "/m/02f8hm", "alias": null }, { "name": "Urethritis", "entity": "/m/07wvs", "alias": null }, { "name": "Urinary incontinence", "entity": "/m/018h13", "alias": null }, { "name": "Urinary retention", "entity": "/m/045y32", "alias": null }, { "name": "Urinary tract infection", "entity": "/m/07x16", "alias": null }, { "name": "Urinary urgency", "entity": "/m/0fvh3d", "alias": null }, { "name": "Uterine contraction", "entity": "/m/02shy2", "alias": null }, { "name": "Uveitis", "entity": "/m/040_ch", "alias": null }, { "name": "Vaginal bleeding", "entity": "/m/055k6m", "alias": null }, { "name": "Vaginal discharge", "entity": "/m/07k9rmb", "alias": null }, { "name": "Vaginal flatulence", "entity": "/m/017ts5", "alias": null }, { "name": "Vaginitis", "entity": "/m/01vcpr", "alias": null }, { "name": "Varicose veins", "entity": "/m/081dp", "alias": null }, { "name": "Vascular occlusion", "entity": "/m/0b6h30_", "alias": null }, { "name": "Vasculitis", "entity": "/m/0317gc", "alias": null }, { "name": "Vasoconstriction", "entity": "/m/02wv6ss", "alias": null }, { "name": "Vasodilation", "entity": "/m/0fkcf", "alias": null }, { "name": "Vasovagal syncope", "entity": "/m/039y0d", "alias": null }, { "name": "Vegetation", "entity": "/m/04gp557", "alias": null }, { "name": "Vegetative-vascular dystonia", "entity": "/m/0wbjrwb", "alias": null }, { "name": "Venous stasis", "entity": "/m/04jj6yp", "alias": null }, { "name": "Ventricular septal defect", "entity": "/m/03k28n", "alias": null }, { "name": "Ventricular tachycardia", "entity": "/m/025v410", "alias": null }, { "name": "Vertigo", "entity": "/m/07rwf2", "alias": null }, { "name": "Viral pneumonia", "entity": "/m/07fn78", "alias": null }, { "name": "Virilization", "entity": "/m/032zt5", "alias": null }, { "name": "Vision disorder", "entity": "/m/04jmzm5", "alias": null }, { "name": "Visual acuity", "entity": "/m/02_g1v", "alias": null }, { "name": "Visual snow", "entity": "/m/0379jz", "alias": null }, { "name": "Vitamin B12 deficiency", "entity": "/m/02x2xmj", "alias": null }, { "name": "Vitamin deficiency", "entity": "/m/0q42v", "alias": null }, { "name": "Vitiligo", "entity": "/m/0hg1d", "alias": null }, { "name": "Voice change", "entity": "/m/0hzmhkt", "alias": null }, { "name": "Vomiting", "entity": "/m/012qjw", "alias": null }, { "name": "Vulvar vestibulitis", "entity": "/m/0h7q7v0", "alias": null }, { "name": "Vulvitis", "entity": "/m/06qjbg", "alias": null }, { "name": "Vulvodynia", "entity": "/m/08099", "alias": null }, { "name": "Wanderlust", "entity": "/m/038ytw", "alias": null }, { "name": "Wart", "entity": "/m/086hz", "alias": null }, { "name": "Water retention", "entity": "/m/05s_d8r", "alias": null }, { "name": "Weakness", "entity": "/m/0119nqlg", "alias": null }, { "name": "Wheeze", "entity": "/m/07mzm6", "alias": null }, { "name": "Widow's peak", "entity": "/m/03d23v", "alias": null }, { "name": "Wound", "entity": "/m/01xrk2", "alias": null }, { "name": "Wrinkle", "entity": "/m/02_x63", "alias": null }, { "name": "Xanthoma", "entity": "/m/02gl_t", "alias": null }, { "name": "Xeroderma", "entity": "/m/08xv95", "alias": null }, { "name": "Xerophthalmia", "entity": "/m/0517c6", "alias": null }, { "name": "Xerostomia", "entity": "/m/04d7y3", "alias": null }, { "name": "Yellow Fever", "entity": "/m/087z2", "alias": null }, { "name": "Zika virus", "entity": "/m/080m_5j", "alias": null }];
 
 	var countries = exports.countries = [{ iso: "world", name: "World", "article": true }, { iso: "AF", name: "Afghanistan", "article": false }, { iso: "AX", name: "Åland", "article": false }, { iso: "AL", name: "Albania", "article": false }, { iso: "DZ", name: "Algeria", "article": false }, { iso: "AS", name: "American Samoa", "article": true }, { iso: "AD", name: "Andorra", "article": false }, { iso: "AO", name: "Angola", "article": false }, { iso: "AI", name: "Anguilla", "article": false }, { iso: "AQ", name: "Antarctica", "article": false }, { iso: "AG", name: "Antigua and Barbuda", "article": false }, { iso: "AR", name: "Argentina", "article": false }, { iso: "AM", name: "Armenia", "article": false }, { iso: "AW", name: "Aruba", "article": false }, { iso: "AU", name: "Australia", "article": false }, { iso: "AT", name: "Austria", "article": false }, { iso: "AZ", name: "Azerbaijan", "article": false }, { iso: "BS", name: "Bahamas", "article": true }, { iso: "BH", name: "Bahrain", "article": false }, { iso: "BD", name: "Bangladesh", "article": false }, { iso: "BB", name: "Barbados", "article": false }, { iso: "BY", name: "Belarus", "article": false }, { iso: "BE", name: "Belgium", "article": false }, { iso: "BZ", name: "Belize", "article": false }, { iso: "BJ", name: "Benin", "article": false }, { iso: "BM", name: "Bermuda", "article": false }, { iso: "BT", name: "Bhutan", "article": false }, { iso: "BO", name: "Bolivia", "article": false }, { iso: "BQ", name: "Bonaire", "article": false }, { iso: "BA", name: "Bosnia and Herzegovina", "article": false }, { iso: "BW", name: "Botswana", "article": false }, { iso: "BV", name: "Bouvet Island", "article": false }, { iso: "BR", name: "Brazil", "article": false }, { iso: "IO", name: "British Indian Ocean Territory", "article": true }, { iso: "VG", name: "British Virgin Islands", "article": true }, { iso: "BN", name: "Brunei", "article": false }, { iso: "BG", name: "Bulgaria", "article": false }, { iso: "BF", name: "Burkina Faso", "article": false }, { iso: "BI", name: "Burundi", "article": false }, { iso: "KH", name: "Cambodia", "article": false }, { iso: "CM", name: "Cameroon", "article": false }, { iso: "CA", name: "Canada", "article": false }, { iso: "CV", name: "Cape Verde", "article": false }, { iso: "KY", name: "Cayman Islands", "article": false }, { iso: "CF", name: "Central African Republic", "article": false }, { iso: "TD", name: "Chad", "article": false }, { iso: "CL", name: "Chile", "article": false }, { iso: "CN", name: "China", "article": false }, { iso: "CX", name: "Christmas Island", "article": false }, { iso: "CC", name: "Cocos [Keeling] Islands", "article": false }, { iso: "CO", name: "Colombia", "article": false }, { iso: "KM", name: "Comoros", "article": false }, { iso: "CK", name: "Cook Islands", "article": false }, { iso: "CR", name: "Costa Rica", "article": false }, { iso: "HR", name: "Croatia", "article": false }, { iso: "CU", name: "Cuba", "article": false }, { iso: "CW", name: "Curacao", "article": false }, { iso: "CY", name: "Cyprus", "article": false }, { iso: "CZ", name: "Czechia", "article": false }, { iso: "CD", name: "Democratic Republic of the Congo", "article": false }, { iso: "DK", name: "Denmark", "article": false }, { iso: "DJ", name: "Djibouti", "article": false }, { iso: "DM", name: "Dominica", "article": false }, { iso: "DO", name: "Dominican Republic", "article": false }, { iso: "TL", name: "East Timor", "article": false }, { iso: "EC", name: "Ecuador", "article": false }, { iso: "EG", name: "Egypt", "article": false }, { iso: "SV", name: "El Salvador", "article": false }, { iso: "GQ", name: "Equatorial Guinea", "article": false }, { iso: "ER", name: "Eritrea", "article": false }, { iso: "EE", name: "Estonia", "article": false }, { iso: "ET", name: "Ethiopia", "article": false }, { iso: "FK", name: "Falkland Islands", "article": false }, { iso: "FO", name: "Faroe Islands", "article": false }, { iso: "FJ", name: "Fiji", "article": false }, { iso: "FI", name: "Finland", "article": false }, { iso: "FR", name: "France", "article": false }, { iso: "GF", name: "French Guiana", "article": false }, { iso: "PF", name: "French Polynesia", "article": false }, { iso: "TF", name: "French Southern Territories", "article": false }, { iso: "GA", name: "Gabon", "article": false }, { iso: "GM", name: "Gambia", "article": false }, { iso: "GE", name: "Georgia", "article": false }, { iso: "DE", name: "Germany", "article": false }, { iso: "GH", name: "Ghana", "article": false }, { iso: "GI", name: "Gibraltar", "article": false }, { iso: "GR", name: "Greece", "article": false }, { iso: "GL", name: "Greenland", "article": false }, { iso: "GD", name: "Grenada", "article": false }, { iso: "GP", name: "Guadeloupe", "article": false }, { iso: "GU", name: "Guam", "article": false }, { iso: "GT", name: "Guatemala", "article": false }, { iso: "GG", name: "Guernsey", "article": false }, { iso: "GN", name: "Guinea", "article": false }, { iso: "GW", name: "Guinea-Bissau", "article": false }, { iso: "GY", name: "Guyana", "article": false }, { iso: "HT", name: "Haiti", "article": false }, { iso: "HM", name: "Heard Island and McDonald Islands", "article": false }, { iso: "HN", name: "Honduras", "article": false }, { iso: "HK", name: "Hong Kong", "article": false }, { iso: "HU", name: "Hungary", "article": false }, { iso: "IS", name: "Iceland", "article": false }, { iso: "IN", name: "India", "article": false }, { iso: "ID", name: "Indonesia", "article": false }, { iso: "IR", name: "Iran", "article": false }, { iso: "IQ", name: "Iraq", "article": false }, { iso: "IE", name: "Ireland", "article": false }, { iso: "IM", name: "Isle of Man", "article": false }, { iso: "IL", name: "Israel", "article": false }, { iso: "IT", name: "Italy", "article": false }, { iso: "CI", name: "Ivory Coast", "article": false }, { iso: "JM", name: "Jamaica", "article": false }, { iso: "JP", name: "Japan", "article": false }, { iso: "JE", name: "Jersey", "article": false }, { iso: "JO", name: "Jordan", "article": false }, { iso: "KZ", name: "Kazakhstan", "article": false }, { iso: "KE", name: "Kenya", "article": false }, { iso: "KI", name: "Kiribati", "article": false }, { iso: "XK", name: "Kosovo", "article": false }, { iso: "KW", name: "Kuwait", "article": false }, { iso: "KG", name: "Kyrgyzstan", "article": false }, { iso: "LA", name: "Laos", "article": false }, { iso: "LV", name: "Latvia", "article": false }, { iso: "LB", name: "Lebanon", "article": false }, { iso: "LS", name: "Lesotho", "article": false }, { iso: "LR", name: "Liberia", "article": false }, { iso: "LY", name: "Libya", "article": false }, { iso: "LI", name: "Liechtenstein", "article": false }, { iso: "LT", name: "Lithuania", "article": false }, { iso: "LU", name: "Luxembourg", "article": false }, { iso: "MO", name: "Macao", "article": false }, { iso: "MK", name: "Macedonia", "article": false }, { iso: "MG", name: "Madagascar", "article": false }, { iso: "MW", name: "Malawi", "article": false }, { iso: "MY", name: "Malaysia", "article": false }, { iso: "MV", name: "Maldives", "article": false }, { iso: "ML", name: "Mali", "article": false }, { iso: "MT", name: "Malta", "article": false }, { iso: "MH", name: "Marshall Islands", "article": false }, { iso: "MQ", name: "Martinique", "article": false }, { iso: "MR", name: "Mauritania", "article": false }, { iso: "MU", name: "Mauritius", "article": false }, { iso: "YT", name: "Mayotte", "article": false }, { iso: "MX", name: "Mexico", "article": false }, { iso: "FM", name: "Micronesia", "article": false }, { iso: "MD", name: "Moldova", "article": false }, { iso: "MC", name: "Monaco", "article": false }, { iso: "MN", name: "Mongolia", "article": false }, { iso: "ME", name: "Montenegro", "article": false }, { iso: "MS", name: "Montserrat", "article": false }, { iso: "MA", name: "Morocco", "article": false }, { iso: "MZ", name: "Mozambique", "article": false }, { iso: "MM", name: "Myanmar [Burma]", "article": false }, { iso: "NA", name: "Namibia", "article": false }, { iso: "NR", name: "Nauru", "article": false }, { iso: "NP", name: "Nepal", "article": false }, { iso: "NL", name: "Netherlands", "article": false }, { iso: "AN", name: "Netherlands Antilles", "article": false }, { iso: "NC", name: "New Caledonia", "article": false }, { iso: "NZ", name: "New Zealand", "article": false }, { iso: "NI", name: "Nicaragua", "article": false }, { iso: "NE", name: "Niger", "article": false }, { iso: "NG", name: "Nigeria", "article": false }, { iso: "NU", name: "Niue", "article": false }, { iso: "NF", name: "Norfolk Island", "article": false }, { iso: "KP", name: "North Korea", "article": false }, { iso: "MP", name: "Northern Mariana Islands", "article": false }, { iso: "NO", name: "Norway", "article": false }, { iso: "OM", name: "Oman", "article": false }, { iso: "PK", name: "Pakistan", "article": false }, { iso: "PW", name: "Palau", "article": false }, { iso: "PS", name: "Palestine", "article": false }, { iso: "PA", name: "Panama", "article": false }, { iso: "PG", name: "Papua New Guinea", "article": false }, { iso: "PY", name: "Paraguay", "article": false }, { iso: "PE", name: "Peru", "article": false }, { iso: "PH", name: "Philippines", "article": false }, { iso: "PN", name: "Pitcairn Islands", "article": false }, { iso: "PL", name: "Poland", "article": false }, { iso: "PT", name: "Portugal", "article": false }, { iso: "PR", name: "Puerto Rico", "article": false }, { iso: "QA", name: "Qatar", "article": false }, { iso: "CG", name: "Republic of the Congo", "article": false }, { iso: "RE", name: "Réunion", "article": false }, { iso: "RO", name: "Romania", "article": false }, { iso: "RU", name: "Russia", "article": false }, { iso: "RW", name: "Rwanda", "article": false }, { iso: "BL", name: "Saint Barthélemy", "article": false }, { iso: "SH", name: "Saint Helena", "article": false }, { iso: "KN", name: "Saint Kitts and Nevis", "article": false }, { iso: "LC", name: "Saint Lucia", "article": false }, { iso: "MF", name: "Saint Martin", "article": false }, { iso: "PM", name: "Saint Pierre and Miquelon", "article": false }, { iso: "VC", name: "Saint Vincent and the Grenadines", "article": false }, { iso: "WS", name: "Samoa", "article": false }, { iso: "SM", name: "San Marino", "article": false }, { iso: "ST", name: "São Tomé and Príncipe", "article": false }, { iso: "SA", name: "Saudi Arabia", "article": false }, { iso: "SN", name: "Senegal", "article": false }, { iso: "RS", name: "Serbia", "article": false }, { iso: "CS", name: "Serbia and Montenegro", "article": false }, { iso: "SC", name: "Seychelles", "article": false }, { iso: "SL", name: "Sierra Leone", "article": false }, { iso: "SG", name: "Singapore", "article": false }, { iso: "SX", name: "Sint Maarten", "article": false }, { iso: "SK", name: "Slovakia", "article": false }, { iso: "SI", name: "Slovenia", "article": false }, { iso: "SB", name: "Solomon Islands", "article": false }, { iso: "SO", name: "Somalia", "article": false }, { iso: "ZA", name: "South Africa", "article": false }, { iso: "GS", name: "South Georgia and the South Sandwich Islands", "article": false }, { iso: "KR", name: "South Korea", "article": false }, { iso: "SS", name: "South Sudan", "article": false }, { iso: "ES", name: "Spain", "article": false }, { iso: "LK", name: "Sri Lanka", "article": false }, { iso: "SD", name: "Sudan", "article": false }, { iso: "SR", name: "Suriname", "article": false }, { iso: "SJ", name: "Svalbard and Jan Mayen", "article": false }, { iso: "SZ", name: "Swaziland", "article": false }, { iso: "SE", name: "Sweden", "article": false }, { iso: "CH", name: "Switzerland", "article": false }, { iso: "SY", name: "Syria", "article": false }, { iso: "TW", name: "Taiwan", "article": false }, { iso: "TJ", name: "Tajikistan", "article": false }, { iso: "TZ", name: "Tanzania", "article": false }, { iso: "TH", name: "Thailand", "article": false }, { iso: "TG", name: "Togo", "article": false }, { iso: "TK", name: "Tokelau", "article": false }, { iso: "TO", name: "Tonga", "article": false }, { iso: "TT", name: "Trinidad and Tobago", "article": false }, { iso: "TN", name: "Tunisia", "article": false }, { iso: "TR", name: "Turkey", "article": false }, { iso: "TM", name: "Turkmenistan", "article": false }, { iso: "TC", name: "Turks and Caicos Islands", "article": false }, { iso: "TV", name: "Tuvalu", "article": false }, { iso: "UM", name: "U.S. Minor Outlying Islands", "article": false }, { iso: "VI", name: "U.S. Virgin Islands", "article": false }, { iso: "UG", name: "Uganda", "article": false }, { iso: "UA", name: "Ukraine", "article": false }, { iso: "AE", name: "United Arab Emirates", "article": false }, { iso: "GB", name: "United Kingdom", "article": false }, { iso: "US", name: "United States", "article": true }, { iso: "UY", name: "Uruguay", "article": false }, { iso: "UZ", name: "Uzbekistan", "article": false }, { iso: "VU", name: "Vanuatu", "article": false }, { iso: "VA", name: "Vatican City", "article": false }, { iso: "VE", name: "Venezuela", "article": false }, { iso: "VN", name: "Vietnam", "article": false }, { iso: "WF", name: "Wallis and Futuna", "article": false }, { iso: "EH", name: "Western Sahara", "article": false }, { iso: "YE", name: "Yemen", "article": false }, { iso: "ZM", name: "Zambia", "article": false }, { iso: "ZW", name: "Zimbabwe", "article": false }];
 
@@ -12107,19 +12157,28 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	// Libraries
+	// import * as graphScroll from 'graph-scroll';
 
 
-	// Styles
+	var _LineChart = __webpack_require__(18);
 
+	var _d = __webpack_require__(19);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	var _graphScroll = __webpack_require__(20);
 
 	var _loglevel = __webpack_require__(3);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(18);
+	__webpack_require__(21);
+
+	var _data = __webpack_require__(25);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -12134,8 +12193,8 @@
 	    key: 'createStoryBlock',
 	    value: function createStoryBlock(id, content) {
 	      var div = document.createElement('div');
-	      div.id = 'story-' + id;
-	      div.classList.add('story-block');
+	      // div.id = 'story-' + id;
+	      div.classList.add('section');
 
 	      var _iteratorNormalCompletion = true;
 	      var _didIteratorError = false;
@@ -12179,23 +12238,49 @@
 	      chartsContainer.classList.add('charts-container');
 	      elementsContainer.appendChild(chartsContainer);
 
-	      var copyContainer = document.createElement('div');
-	      copyContainer.classList.add('copy-container');
-	      elementsContainer.appendChild(copyContainer);
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.chart = new _LineChart.LineChart(chartItem, 'seasonal');
+	      // this.chart.updateData([dummyData.seasonal[0]]);
+	      var chart = this.chart;
 
-	      copyContainer.appendChild(this.createStoryBlock(1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
 
-	      copyContainer.appendChild(this.createStoryBlock(2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
+	      var sectionsContainer = document.createElement('div');
+	      sectionsContainer.classList.add('sections-container');
+	      elementsContainer.appendChild(sectionsContainer);
 
-	      copyContainer.appendChild(this.createStoryBlock(3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
+	      sectionsContainer.appendChild(this.createStoryBlock(1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
 
-	      copyContainer.appendChild(this.createStoryBlock(4, ['Those yearly cycles can be combined to reveal what would be a “normal” pattern. That allows us to take a closer look into how seasonal factors — in this case, the weather — affect the interest for a given health issue.']));
+	      sectionsContainer.appendChild(this.createStoryBlock(2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
 
-	      copyContainer.appendChild(this.createStoryBlock(5, ['Because they’re influenced by the weather, those cycles will look almost like mirrored images from one hemisphere to another, since their seasons are the flipped.']));
+	      sectionsContainer.appendChild(this.createStoryBlock(3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
 
-	      copyContainer.appendChild(this.createStoryBlock(6, ['But factors other than the weather can affect the cycles too. Notice how the searches for stomach bug coincide with the end-of-year holidays seasons in both the US and Brazil.', 'In Brazil, 2 minor spikes also happen around  Easter and the Sep 7th, the country’s Indepence Day.']));
+	      // sections.appendChild(this.createStoryBlock(
+	      //   4, ['Those yearly cycles can be combined to reveal what would be a “normal” pattern. That allows us to take a closer look into how seasonal factors — in this case, the weather — affect the interest for a given health issue.']));
+	      //
+	      // sections.appendChild(this.createStoryBlock(
+	      //   5, ['Because they’re influenced by the weather, those cycles will look almost like mirrored images from one hemisphere to another, since their seasons are the flipped.']));
+	      //
+	      // sections.appendChild(this.createStoryBlock(
+	      //   6, ['But factors other than the weather can affect the cycles too. Notice how the searches for stomach bug coincide with the end-of-year holidays seasons in both the US and Brazil.',
+	      //     'In Brazil, 2 minor spikes also happen around  Easter and the Sep 7th, the country’s Indepence Day.']));
+	      //
+	      // sections.appendChild(this.createStoryBlock(
+	      //   7, ['But the overall trend is important too. It allows us to see how outbreaks developed — or at least how people reacted to them. The zyka virus didn’t really spread in the US, but it became a major concern because in the early 2016 anyway.',
+	      //   'A concern bigger than it was in Brazil, where most of the cases developed.']));
 
-	      copyContainer.appendChild(this.createStoryBlock(7, ['But the overall trend is important too. It allows us to see how outbreaks developed — or at least how people reacted to them. The zyka virus didn’t really spread in the US, but it became a major concern because in the early 2016 anyway.', 'A concern bigger than it was in Brazil, where most of the cases developed.']));
+	      // const sections = d3.select('#intro.page > .sections-container > section');
+	      var containerD3 = d3.selectAll('#intro.page');
+	      var graphD3 = containerD3.select('.charts-container');
+	      var sectionsContainerD3 = containerD3.selectAll('.sections-container');
+	      _loglevel2.default.info(sectionsContainerD3);
+	      var sectionsD3 = sectionsContainerD3.selectAll('.section');
+	      _loglevel2.default.info(sectionsD3);
+
+	      (0, _graphScroll.graphScroll)().graph(graphD3).container(containerD3).sections(sectionsD3).offset(window.innerHeight / 2).on('active', function (i) {
+	        chart.updateData([_data.dummyData.seasonal[i]]);
+	      });
 	    }
 	  }]);
 
@@ -12204,1091 +12289,6 @@
 
 /***/ }),
 /* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(19);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(21)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss", function() {
-				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(20)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page {\n  display: flex;\n  flex-direction: row; }\n  #intro.page .charts-container,\n  #intro.page .copy-container {\n    width: calc((100% - 20px)/2); }\n  #intro.page .charts-container {\n    height: 100%; }\n  #intro.page .copy-container {\n    margin-left: 20px; }\n", ""]);
-
-	// exports
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Curated = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	// Libraries
-
-
-	var _loglevel = __webpack_require__(3);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	__webpack_require__(23);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Curated = exports.Curated = function () {
-	  function Curated(parentContainer) {
-	    _classCallCheck(this, Curated);
-
-	    this.createElements(parentContainer);
-	  }
-
-	  _createClass(Curated, [{
-	    key: 'createCuratedGroup',
-	    value: function createCuratedGroup(title, content) {
-	      var curatedGroup = document.createElement('div');
-	      curatedGroup.classList.add('curated-group');
-
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = content[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var curatedItem = document.createElement('button');
-	          curatedItem.classList.add('curated-item');
-	          curatedItem.innerHTML = c;
-	          curatedGroup.appendChild(curatedItem);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      return curatedGroup;
-	    }
-	  }, {
-	    key: 'createElements',
-	    value: function createElements(parentContainer) {
-
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'curated';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
-
-	      var div = document.createElement('div');
-	      elementsContainer.appendChild(div);
-	      var p = document.createElement('p');
-	      p.innerHTML = 'Now go and explore!';
-	      div.appendChild(p);
-	      p = document.createElement('p');
-	      p.innerHTML = 'Start with one of the curated stories below! Or scroll to pick a topic!';
-	      div.appendChild(p);
-
-	      elementsContainer.appendChild(this.createCuratedGroup('Seasonal', ['Winter', 'Summer', 'Holidays']));
-
-	      elementsContainer.appendChild(this.createCuratedGroup('Outbreaks', ['Swine Flu', 'Measles', 'Ebola', 'Zyka']));
-
-	      elementsContainer.appendChild(this.createCuratedGroup('Trending', ['Celiac Disease', 'Lupus', 'Milk Intolerance']));
-	    }
-	  }]);
-
-	  return Curated;
-	}();
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(24);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(21)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./curated.scss", function() {
-				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./curated.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(20)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#curated-nav {\n  background-color: #4422B3; }\n", ""]);
-
-	// exports
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Explore = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	// Components
-
-
-	// Data and Utils
-
-
-	// Types
-
-
-	// Libraries
-
-
-	//Styles
-
-
-	var _LineChart = __webpack_require__(26);
-
-	var _TrendsAPI = __webpack_require__(2);
-
-	var _ShinyAPI = __webpack_require__(28);
-
-	var _util = __webpack_require__(29);
-
-	var _data4 = __webpack_require__(15);
-
-	var _data5 = __webpack_require__(30);
-
-	var _loglevel = __webpack_require__(3);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	var _selectize = __webpack_require__(31);
-
-	var _selectize2 = _interopRequireDefault(_selectize);
-
-	var _jquery = __webpack_require__(16);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	__webpack_require__(34);
-
-	__webpack_require__(36);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Explore = exports.Explore = function () {
-	  function Explore(parentContainer, shinyAPI, trendsAPI, filter) {
-	    _classCallCheck(this, Explore);
-
-	    this.data = {
-	      prevDiseases: filter ? filter.terms : [],
-	      diseases: filter ? filter.terms : [],
-	      prevGeo: filter ? filter.geo : _data4.countries[0],
-	      geo: filter ? filter.geo : _data4.countries[0],
-	      seasonal: [],
-	      trend: [],
-	      total: [],
-	      totalPerLine: [],
-	      topQueries: [],
-	      dataToR: [],
-	      dataFromR: '',
-	      isMerged: false,
-	      isChanging: false,
-	      isLoading: filter ? true : false
-	    };
-	    var self = this;
-	    self.trendsAPI = trendsAPI;
-	    if (shinyAPI) {
-	      self.shinyAPI = shinyAPI;
-	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
-	        var _self$data = self.data,
-	            diseases = _self$data.diseases,
-	            total = _self$data.total;
-
-	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
-	        var data = self.data[type];
-	        var index = data.length;
-	        var obj = {};
-
-	        obj[type] = data.concat({
-	          term: diseases[index].name,
-	          points: self.parseDataFromR(dataFromR)
-	        });
-	        self.updateData(obj);
-
-	        // I'm still getting R Data for that one type
-	        if (obj[type].length < total.length) {
-	          // Trend? Keep parsing the already loaded data
-	          if (type === 'trend') {
-	            var dataToR = self.parseDataToR(type);
-	            self.shinyAPI.updateData(type, dataToR);
-
-	            // Seasonal? Go get more data from Google Trends
-	          } else if (type === 'seasonal') {
-	            self.getTrendsAPIGraph('seasonal');
-	          }
-
-	          // I'm done with this type!
-	        } else {
-	          // Trend? Start seasonal then
-	          if (type === 'trend') {
-	            self.getTrendsAPIGraph('seasonal');
-	            // Seasonal? Move on to load top queries
-	          } else if (type === 'seasonal') {
-	            self.updateData({ topQueries: [], isLoading: false });
-	            self.getTrendsAPITopQueries();
-	          }
-	        }
-	      });
-	    }
-
-	    self.createElements(parentContainer);
-
-	    if (filter) {
-	      self.getTrendsAPIGraph('trend');
-	      // self.loadCurated(filter);
-	    }
-	  }
-
-	  _createClass(Explore, [{
-	    key: 'handleSelectDiseaseChange',
-	    value: function handleSelectDiseaseChange(value, self) {
-	      _loglevel2.default.info('handleSelectDiseaseChange');
-	      var diseases = value.map(function (v) {
-	        return self.getDiseaseByEntity(v);
-	      });
-	      this.updateData({ diseases: diseases, isChanging: true });
-	      self.confirmNav.classList.remove('hidden');
-	    }
-	  }, {
-	    key: 'handleSelectGeoChange',
-	    value: function handleSelectGeoChange(value, self) {
-	      _loglevel2.default.info('handleSelectGeoChange');
-	      _loglevel2.default.info(value);
-	      var name = this.getCountryByIso(value).name;
-	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
-	      self.confirmNav.classList.remove('hidden');
-	    }
-	  }, {
-	    key: 'getDiseaseByEntity',
-	    value: function getDiseaseByEntity(entity) {
-	      return _data4.terms.find(function (t) {
-	        return t.entity === entity;
-	      });
-	    }
-	  }, {
-	    key: 'getCountryByIso',
-	    value: function getCountryByIso(iso) {
-	      return _data4.countries.find(function (c) {
-	        return c.iso === iso;
-	      });
-	    }
-	  }, {
-	    key: 'cancelFilters',
-	    value: function cancelFilters(event, self) {
-	      _loglevel2.default.info('cancelFilters');
-	      var _self$data2 = self.data,
-	          prevDiseases = _self$data2.prevDiseases,
-	          prevGeo = _self$data2.prevGeo;
-
-	      self.confirmNav.classList.add('hidden');
-	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
-	    }
-	  }, {
-	    key: 'confirmFilters',
-	    value: function confirmFilters(event, self) {
-	      _loglevel2.default.info('confirmFilters');
-	      var _self$data3 = self.data,
-	          diseases = _self$data3.diseases,
-	          geo = _self$data3.geo;
-
-	      self.confirmNav.classList.add('hidden');
-	      self.updateData({
-	        prevDiseases: diseases,
-	        prevGeo: geo,
-	        isChanging: false,
-	        isLoading: true,
-	        seasonal: [],
-	        trend: []
-	      });
-	      self.getTrendsAPIGraph('trend');
-	    }
-	  }, {
-	    key: 'toggleChartMerge',
-	    value: function toggleChartMerge(event, self) {
-	      var isMerged = self.data.isMerged;
-
-	      isMerged = isMerged ? false : true;
-	      this.seasonalChart.hide();
-	      this.updateData({ isMerged: isMerged });
-	    }
-
-	    // loadCurated(filter: Filter) {
-	    //   const { terms, geo } = filter;
-	    //   this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
-	    //   this.confirmNav.classList.add('hidden');
-	    //   this.getTrendsAPIGraph('trend');
-	    // }
-
-	  }, {
-	    key: 'getTrendsAPIGraph',
-	    value: function getTrendsAPIGraph(type) {
-	      _loglevel2.default.info('getTrendsAPIGraph');
-	      var self = this;
-	      var _self$data4 = self.data,
-	          diseases = _self$data4.diseases,
-	          geo = _self$data4.geo,
-	          totalPerLine = _self$data4.totalPerLine;
-	      var shinyAPI = self.shinyAPI;
-
-	      var terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
-
-	      self.trendsAPI.getGraph({ terms: terms, geo: geo }, function (val) {
-	        _loglevel2.default.info('From Google Trends: ', type);
-	        _loglevel2.default.info(val);
-
-	        var obj = {};
-	        if (type === 'trend') {
-	          obj['total'] = self.mapGraphResponse(val.lines);
-	        } else if (type === 'seasonal') {
-	          obj['totalPerLine'] = totalPerLine.concat(self.mapGraphResponse(val.lines));
-	        }
-	        self.updateData(obj);
-	        var dataToR = self.parseDataToR(type);
-	        if (true) {
-	          shinyAPI.updateData(type, dataToR);
-	        } else {
-	          self.updateData(JSON.parse(_data5.dummyData));
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'mapGraphResponse',
-	    value: function mapGraphResponse(lines) {
-	      var diseases = this.data.diseases;
-
-	      return lines.map(function (l, i) {
-	        return { term: diseases[i].name, points: l.points };
-	      });
-	    }
-	  }, {
-	    key: 'getTrendsAPITopQueries',
-	    value: function getTrendsAPITopQueries() {
-	      _loglevel2.default.info('getTrendsAPITopQueries');
-	      var _data = this.data,
-	          diseases = _data.diseases,
-	          geo = _data.geo;
-	      var topQueries = this.data.topQueries;
-
-	      var index = topQueries.length;
-	      var disease = diseases[index];
-	      var self = this;
-
-	      self.trendsAPI.getTopQueries({ terms: [disease], geo: geo }, function (val) {
-	        _loglevel2.default.info('From Google Trends: ', val);
-	        topQueries = topQueries.concat(val);
-	        self.updateData({ topQueries: topQueries });
-	        if (topQueries.length < diseases.length) {
-	          self.getTrendsAPITopQueries();
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'parseDataToR',
-	    value: function parseDataToR(type) {
-	      _loglevel2.default.info('parseDataToR', type);
-	      var _data2 = this.data,
-	          total = _data2.total,
-	          totalPerLine = _data2.totalPerLine;
-	      var shinyAPI = this.shinyAPI;
-
-	      var index = this.data[type].length;
-	      var whichTotal = type === 'trend' ? total : totalPerLine;
-	      return whichTotal[index].points.map(function (p, i) {
-	        return p.date + ',' + p.value;
-	      });
-	    }
-	  }, {
-	    key: 'parseDataFromR',
-	    value: function parseDataFromR(dataFromR) {
-	      _loglevel2.default.info('parseDataFromR');
-	      var _data3 = this.data,
-	          diseases = _data3.diseases,
-	          total = _data3.total,
-	          seasonal = _data3.seasonal,
-	          trend = _data3.trend,
-	          isLoading = _data3.isLoading;
-
-	      var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
-	      var index = this.data[type].length;
-	      var newDataString = dataFromR.substring(dataFromR.indexOf(type) + type.length + 1);
-	      var newData = newDataString.split(',');
-	      if (type === 'seasonal') {
-	        newData = newData.slice(0, 13);
-	      }
-	      return newData.map(function (n, i) {
-	        var date = total[0].points[i].date;
-	        var value = Math.round(Number(n.trim()) * 100) / 100;
-	        return { date: date, value: value };
-	      });
-	    }
-	  }, {
-	    key: 'createElements',
-	    value: function createElements(parentContainer) {
-	      var _this = this;
-
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'explore';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
-
-	      // Loader
-	      this.loaderContainer = document.createElement('div');
-	      var loaderContainer = this.loaderContainer;
-
-	      loaderContainer.classList.add('loader-container');
-	      loaderContainer.style.top = elementsContainer.offsetTop + 'px';
-	      var loader = document.createElement('span');
-	      loader.classList.add('loader');
-	      loaderContainer.appendChild(loader);
-	      elementsContainer.appendChild(loaderContainer);
-
-	      // filtersMenu
-	      var filtersMenu = document.createElement('div');
-	      filtersMenu.classList.add('filters-menu');
-	      elementsContainer.appendChild(filtersMenu);
-
-	      var text1 = document.createElement('span');
-	      text1.innerHTML = 'Search interest from 2004 to today for ';
-	      filtersMenu.appendChild(text1);
-
-	      // Diseases
-	      var diseaseSelect = document.createElement('select');
-	      diseaseSelect.classList.add('disease-select');
-	      _data4.terms.forEach(function (d, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', d.entity);
-	        option.setAttribute('key', i);
-	        option.innerHTML = d.name;
-	        diseaseSelect.appendChild(option);
-	      });
-	      var bindHandleChange = function bindHandleChange(value) {
-	        return _this.handleSelectDiseaseChange(value, _this);
-	      };
-	      filtersMenu.appendChild(diseaseSelect);
-	      var diseaseSelectize = (0, _jquery2.default)(diseaseSelect).selectize({
-	        maxItems: 3,
-	        onChange: bindHandleChange,
-	        placeholder: 'Select'
-	      });
-	      this.diseaseSelect = diseaseSelectize[0].selectize;
-
-	      this.sentenceItem = document.createElement('span');
-	      var sentenceItem = this.sentenceItem;
-
-	      sentenceItem.classList.add('sentence-item');
-	      sentenceItem.innerHTML = ' in the ';
-	      filtersMenu.appendChild(sentenceItem);
-
-	      // Geo
-	      var geoSelect = document.createElement('select');
-	      geoSelect.classList.add('geo-select');
-	      geoSelect.name = 'geo-select';
-	      _data4.countries.forEach(function (c, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', c.iso);
-	        option.innerHTML = c.name;
-	        geoSelect.appendChild(option);
-	      });
-	      bindHandleChange = function bindHandleChange(value) {
-	        return _this.handleSelectGeoChange(value, _this);
-	      };
-	      filtersMenu.appendChild(geoSelect);
-	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
-	        maxItems: 1,
-	        onChange: bindHandleChange
-	      });
-	      this.geoSelect = geoSelectize[0].selectize;
-
-	      // Cancel / Done
-	      this.confirmNav = document.createElement('div');
-	      var confirmNav = this.confirmNav;
-
-	      confirmNav.classList.add('confirm-nav');
-	      confirmNav.classList.add('hidden');
-
-	      var cancelButton = document.createElement('button');
-	      cancelButton.innerHTML = 'Cancel';
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.cancelFilters(evt, _this);
-	      };
-	      cancelButton.addEventListener('click', bindHandleChange);
-	      confirmNav.appendChild(cancelButton);
-
-	      var doneButton = document.createElement('button');
-	      doneButton.innerHTML = 'Done';
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.confirmFilters(evt, _this);
-	      };
-	      doneButton.addEventListener('click', bindHandleChange);
-	      confirmNav.appendChild(doneButton);
-
-	      filtersMenu.appendChild(confirmNav);
-
-	      // Charts section
-	      var chartsContainer = document.createElement('div');
-	      chartsContainer.classList.add('charts-container');
-	      elementsContainer.appendChild(chartsContainer);
-
-	      // Seasonal Chart
-	      var chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.seasonalChart = new _LineChart.LineChart(chartItem, 'seasonal');
-
-	      var toggleBar = document.createElement('div');
-	      toggleBar.classList.add('toggle-bar');
-	      elementsContainer.appendChild(toggleBar);
-
-	      var buttonContainer = document.createElement('div');
-	      buttonContainer.classList.add('button-container');
-	      toggleBar.appendChild(buttonContainer);
-
-	      this.mergeButton = document.createElement('a');
-	      var mergeButton = this.mergeButton;
-
-	      mergeButton.classList.add('icon');
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.toggleChartMerge(evt, _this);
-	      };
-	      mergeButton.addEventListener('click', bindHandleChange);
-	      buttonContainer.appendChild(mergeButton);
-
-	      var titlesContainer = document.createElement('div');
-	      titlesContainer.classList.add('titles-container');
-	      toggleBar.appendChild(titlesContainer);
-
-	      var title = document.createElement('p');
-	      title.classList.add('title');
-	      title.innerHTML = 'Seasonal';
-	      titlesContainer.appendChild(title);
-
-	      title = document.createElement('p');
-	      title.classList.add('title');
-	      title.innerHTML = 'Trend';
-	      titlesContainer.appendChild(title);
-
-	      // Trend chart
-	      chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.trendChart = new _LineChart.LineChart(chartItem, 'trend');
-
-	      var bottomContainer = document.createElement('div');
-	      bottomContainer.classList.add('bottom-container');
-	      elementsContainer.appendChild(bottomContainer);
-
-	      // Top Queries
-	      var topQueriesContainer = document.createElement('div');
-	      topQueriesContainer.classList.add('top-queries-container');
-	      bottomContainer.appendChild(topQueriesContainer);
-
-	      var topQueriesTitle = document.createElement('h4');
-	      topQueriesTitle.innerHTML = 'Top Related Queries';
-	      topQueriesContainer.appendChild(topQueriesTitle);
-
-	      this.topQueriesList = document.createElement('div');
-	      var topQueriesList = this.topQueriesList;
-
-	      topQueriesList.classList.add('top-queries-list');
-	      topQueriesContainer.appendChild(topQueriesList);
-
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'updateData',
-	    value: function updateData(obj) {
-	      var data = this.data;
-
-	      Object.assign(data, obj);
-	      _loglevel2.default.info(this.data);
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'updateElements',
-	    value: function updateElements() {
-	      _loglevel2.default.info('updateElements');
-	      var data = this.data,
-	          loaderContainer = this.loaderContainer,
-	          diseaseSelect = this.diseaseSelect,
-	          geoSelect = this.geoSelect,
-	          sentenceItem = this.sentenceItem,
-	          mergeButton = this.mergeButton,
-	          seasonalChart = this.seasonalChart,
-	          trendChart = this.trendChart,
-	          topQueriesList = this.topQueriesList;
-	      var diseases = data.diseases,
-	          geo = data.geo,
-	          seasonal = data.seasonal,
-	          trend = data.trend,
-	          total = data.total,
-	          topQueries = data.topQueries,
-	          isMerged = data.isMerged,
-	          isChanging = data.isChanging,
-	          isLoading = data.isLoading;
-
-
-	      if (isLoading) {
-	        loaderContainer.classList.remove('hidden');
-	      } else {
-	        loaderContainer.classList.add('hidden');
-	      }
-
-	      diseaseSelect.setValue(diseases.map(function (d) {
-	        return d.entity;
-	      }), true);
-	      sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
-	      geoSelect.setValue(geo.iso, true);
-
-	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
-
-	      // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
-	      if (!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
-	        seasonalChart.updateData(seasonal);
-	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-
-	        if (topQueries.length > 0) {
-
-	          var isEmpty = true;
-	          topQueriesList.innerHTML = '';
-	          for (var i = 0; i < topQueries.length; i++) {
-	            if (topQueries[i].item) {
-	              isEmpty = false;
-	              var listContainer = document.createElement('div');
-	              listContainer.classList.add('list-container');
-	              topQueriesList.appendChild(listContainer);
-
-	              var term = document.createElement('p');
-	              term.innerHTML = diseases[i].name;
-	              listContainer.appendChild(term);
-
-	              var list = document.createElement('ul');
-	              listContainer.appendChild(list);
-
-	              var _iteratorNormalCompletion = true;
-	              var _didIteratorError = false;
-	              var _iteratorError = undefined;
-
-	              try {
-	                for (var _iterator = topQueries[i].item[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                  var q = _step.value;
-
-	                  var listItem = document.createElement('li');
-	                  listItem.innerHTML = q.title;
-	                  list.appendChild(listItem);
-	                }
-	              } catch (err) {
-	                _didIteratorError = true;
-	                _iteratorError = err;
-	              } finally {
-	                try {
-	                  if (!_iteratorNormalCompletion && _iterator.return) {
-	                    _iterator.return();
-	                  }
-	                } finally {
-	                  if (_didIteratorError) {
-	                    throw _iteratorError;
-	                  }
-	                }
-	              }
-	            }
-	          }
-	          var parent = topQueriesList.parentElement;
-	          if (parent) {
-	            isEmpty ? parent.classList.add('hidden') : parent.classList.remove('hidden');
-	          }
-	        }
-	      }
-	    }
-	  }]);
-
-	  return Explore;
-	}();
-
-/***/ }),
-/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13300,7 +12300,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _d = __webpack_require__(27);
+	var _d = __webpack_require__(19);
 
 	var d3 = _interopRequireWildcard(_d);
 
@@ -13454,7 +12454,7 @@
 	}();
 
 /***/ }),
-/* 27 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org Version 4.8.0. Copyright 2017 Mike Bostock.
@@ -30133,7 +29133,1271 @@
 
 
 /***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+		 true ? factory(exports, __webpack_require__(19)) :
+		typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
+		(factory((global.d3 = global.d3 || {}),global.d3));
+	}(this, (function (exports,d3) { 'use strict';
+
+	function graphScroll(){
+	  var windowHeight,
+	      dispatch$$1 = d3.dispatch("scroll", "active"),
+	      sections = d3.select('null'),
+	      i = NaN,
+	      sectionPos = [],
+	      n,
+	      graph = d3.select('null'),
+	      isFixed = null,
+	      isBelow = null,
+	      container = d3.select('body'),
+	      containerStart = 0,
+	      belowStart,
+	      eventId = Math.random(),
+	      offset = 200;
+
+	  function reposition(){
+	    var i1 = 0;
+	    sectionPos.forEach(function(d, i){
+	      if (d < pageYOffset - containerStart + offset) i1 = i;
+	    });
+	    i1 = Math.min(n - 1, i1);
+
+	    var isBelow1 = pageYOffset > belowStart;
+	    if (isBelow != isBelow1){
+	      isBelow = isBelow1;
+	      container.classed('graph-scroll-below', isBelow);
+	    }
+	    var isFixed1 = !isBelow && pageYOffset > containerStart;
+	    if (isFixed != isFixed1){
+	      isFixed = isFixed1;
+	      container.classed('graph-scroll-fixed', isFixed);
+	    }
+
+	    if (isBelow) i1 = n - 1;
+
+	    if (i != i1){
+	      sections.classed('graph-scroll-active', function(d, i){ return i === i1 });
+
+	      dispatch$$1.call('active', null, i1);
+
+	      i = i1;
+	    }
+	  }
+
+	  function resize(){
+	    sectionPos = [];
+	    var startPos;
+	    sections.each(function(d, i){
+	      if (!i) startPos = this.getBoundingClientRect().top;
+	      sectionPos.push(this.getBoundingClientRect().top -  startPos); });
+
+	    var containerBB = container.node().getBoundingClientRect();
+	    var graphHeight = graph.node() ? graph.node().getBoundingClientRect().height : 0;
+
+	    containerStart = containerBB.top + pageYOffset;
+	    belowStart = containerBB.bottom - graphHeight + pageYOffset;
+	  }
+
+	  function keydown() {
+	    if (!isFixed) return
+	    var delta;
+	    switch (d3.event.keyCode) {
+	      case 39: // right arrow
+	      if (d3.event.metaKey) return
+	      case 40: // down arrow
+	      case 34: // page down
+	      delta = d3.event.metaKey ? Infinity : 1 ;break
+	      case 37: // left arrow
+	      if (d3.event.metaKey) return
+	      case 38: // up arrow
+	      case 33: // page up
+	      delta = d3.event.metaKey ? -Infinity : -1 ;break
+	      case 32: // space
+	      delta = d3.event.shiftKey ? -1 : 1
+	      ;break
+	      default: return
+	    }
+
+	    var i1 = Math.max(0, Math.min(i + delta, n - 1));
+	    if (i1 == i) return // let browser handle scrolling past last section
+	    d3.select(document.documentElement)
+	        .interrupt()
+	      .transition()
+	        .duration(500)
+	        .tween("scroll", function() {
+	          var i = d3.interpolateNumber(pageYOffset, sectionPos[i1] + containerStart);
+	          return function(t) { scrollTo(0, i(t)); }
+	        });
+
+	    d3.event.preventDefault();
+	  }
+
+
+	  var rv ={};
+
+	  rv.container = function(_x){
+	    if (!_x) return container
+
+	    container = _x;
+	    return rv
+	  };
+
+	  rv.graph = function(_x){
+	    if (!_x) return graph
+
+	    graph = _x;
+	    return rv
+	  };
+
+	  rv.eventId = function(_x){
+	    if (!_x) return eventId
+
+	    eventId = _x;
+	    return rv
+	  };
+
+	  rv.sections = function (_x){
+	    if (!_x) return sections
+
+	    sections = _x;
+	    n = sections.size();
+
+	    d3.select(window)
+	        .on('scroll.gscroll'  + eventId, reposition)
+	        .on('resize.gscroll'  + eventId, resize)
+	        .on('keydown.gscroll' + eventId, keydown);
+	    
+	    resize();
+	    d3.timer(reposition);
+	    if (window['gscrollTimer' + eventId]) window['gscrollTimer' + eventId].stop();
+	    window['gscrollTimer' + eventId] = d3.timer(reposition);
+
+	    return rv
+	  };
+
+	  rv.on = function() {
+	    var value = dispatch$$1.on.apply(dispatch$$1, arguments);
+	    return value === dispatch$$1 ? rv : value;
+	  };
+	  
+	  rv.offset = function(_x) {
+	    if(!_x) return offset
+	    
+	    offset = _x;
+	    return rv
+	  };
+
+	  return rv
+	}
+
+	exports.graphScroll = graphScroll;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(22);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(24)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(23)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page {\n  position: relative; }\n  #intro.page .sections-container {\n    margin-left: calc((100% - 20px)/2 + 20px);\n    width: calc((100% - 20px)/2); }\n    @media (max-width: 600px) {\n      #intro.page .sections-container {\n        width: 100%;\n        position: relative;\n        margin: 0;\n        padding-top: 50vh;\n        z-index: 100; } }\n    #intro.page .sections-container .section {\n      width: 100%;\n      padding-bottom: 50vh;\n      opacity: 0.3; }\n      #intro.page .sections-container .section.graph-scroll-active {\n        opacity: 1; }\n      @media (max-width: 600px) {\n        #intro.page .sections-container .section {\n          width: 100%; }\n          #intro.page .sections-container .section p {\n            padding: 12px;\n            border: 1px solid black;\n            background-color: white; } }\n  #intro.page .charts-container {\n    position: absolute;\n    top: 20px;\n    width: calc((100% - 20px*5)/2);\n    height: 100vh; }\n    @media (max-width: 600px) {\n      #intro.page .charts-container {\n        top: 12px;\n        width: calc(100% - 12px*2); } }\n    #intro.page .charts-container .chart-item {\n      width: 100%;\n      height: 45vh; }\n  #intro.page.graph-scroll-fixed .charts-container {\n    position: fixed; }\n  #intro.page.graph-scroll-below .charts-container {\n    position: absolute;\n    top: auto;\n    bottom: 0px; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var dummyData = exports.dummyData = {
+	  "seasonal": [{
+	    "term": "Allergy",
+	    "points": [{ "date": "2003-12-31", "value": -8.05 }, { "date": "2004-01-31", "value": -7.35 }, { "date": "2004-02-29", "value": 3.41 }, { "date": "2004-03-31", "value": 19.37 }, { "date": "2004-04-30", "value": 13.08 }, { "date": "2004-05-31", "value": 4.29 }, { "date": "2004-06-30", "value": -0.81 }, { "date": "2004-07-31", "value": 0.75 }, { "date": "2004-08-31", "value": 2.63 }, { "date": "2004-09-30", "value": -4.71 }, { "date": "2004-10-31", "value": -9.79 }, { "date": "2004-11-30", "value": -12.84 }, { "date": "2004-12-31", "value": -8.05 }]
+	  }, {
+	    "term": "Conjunctivitis",
+	    "points": [{ "date": "2003-12-31", "value": 3.62 }, { "date": "2004-01-31", "value": 10.02 }, { "date": "2004-02-29", "value": 9.22 }, { "date": "2004-03-31", "value": 7.7 }, { "date": "2004-04-30", "value": 7.91 }, { "date": "2004-05-31", "value": -0.17 }, { "date": "2004-06-30", "value": -5.06 }, { "date": "2004-07-31", "value": -10.9 }, { "date": "2004-08-31", "value": -11.45 }, { "date": "2004-09-30", "value": -8.22 }, { "date": "2004-10-31", "value": -3.36 }, { "date": "2004-11-30", "value": 0.7 }, { "date": "2004-12-31", "value": 3.62 }]
+	  }, {
+	    "term": "Ear pain",
+	    "points": [{ "date": "2003-12-31", "value": 6.18 }, { "date": "2004-01-31", "value": 8.52 }, { "date": "2004-02-29", "value": 5.86 }, { "date": "2004-03-31", "value": -0.27 }, { "date": "2004-04-30", "value": -2.83 }, { "date": "2004-05-31", "value": -0.62 }, { "date": "2004-06-30", "value": 1.17 }, { "date": "2004-07-31", "value": -4.4 }, { "date": "2004-08-31", "value": -6.57 }, { "date": "2004-09-30", "value": -6.74 }, { "date": "2004-10-31", "value": -2.81 }, { "date": "2004-11-30", "value": 2.52 }, { "date": "2004-12-31", "value": 6.18 }]
+	  }],
+	  "trend": [{
+	    "term": "Allergy",
+	    "points": [{ "date": "2003-12-31", "value": 46.43 }, { "date": "2004-01-31", "value": 46.59 }, { "date": "2004-02-29", "value": 46.76 }, { "date": "2004-03-31", "value": 46.91 }, { "date": "2004-04-30", "value": 47.07 }, { "date": "2004-05-31", "value": 47.22 }, { "date": "2004-06-30", "value": 47.37 }, { "date": "2004-07-31", "value": 47.51 }, { "date": "2004-08-31", "value": 47.65 }, { "date": "2004-09-30", "value": 47.66 }, { "date": "2004-10-31", "value": 47.66 }, { "date": "2004-11-30", "value": 47.64 }, { "date": "2004-12-31", "value": 47.62 }, { "date": "2005-01-31", "value": 47.63 }, { "date": "2005-02-28", "value": 47.63 }, { "date": "2005-03-31", "value": 47.67 }, { "date": "2005-04-30", "value": 47.7 }, { "date": "2005-05-31", "value": 47.83 }, { "date": "2005-06-30", "value": 47.96 }, { "date": "2005-07-31", "value": 48.23 }, { "date": "2005-08-31", "value": 48.51 }, { "date": "2005-09-30", "value": 48.75 }, { "date": "2005-10-31", "value": 48.99 }, { "date": "2005-11-30", "value": 49.01 }, { "date": "2005-12-31", "value": 49.04 }, { "date": "2006-01-31", "value": 49.01 }, { "date": "2006-02-28", "value": 48.98 }, { "date": "2006-03-31", "value": 48.94 }, { "date": "2006-04-30", "value": 48.91 }, { "date": "2006-05-31", "value": 48.81 }, { "date": "2006-06-30", "value": 48.72 }, { "date": "2006-07-31", "value": 48.7 }, { "date": "2006-08-31", "value": 48.67 }, { "date": "2006-09-30", "value": 48.75 }, { "date": "2006-10-31", "value": 48.84 }, { "date": "2006-11-30", "value": 48.9 }, { "date": "2006-12-31", "value": 48.96 }, { "date": "2007-01-31", "value": 49.05 }, { "date": "2007-02-28", "value": 49.14 }, { "date": "2007-03-31", "value": 49.29 }, { "date": "2007-04-30", "value": 49.44 }, { "date": "2007-05-31", "value": 49.64 }, { "date": "2007-06-30", "value": 49.83 }, { "date": "2007-07-31", "value": 50.04 }, { "date": "2007-08-31", "value": 50.25 }, { "date": "2007-09-30", "value": 50.41 }, { "date": "2007-10-31", "value": 50.56 }, { "date": "2007-11-30", "value": 50.64 }, { "date": "2007-12-31", "value": 50.73 }, { "date": "2008-01-31", "value": 50.71 }, { "date": "2008-02-29", "value": 50.7 }, { "date": "2008-03-31", "value": 50.63 }, { "date": "2008-04-30", "value": 50.57 }, { "date": "2008-05-31", "value": 50.6 }, { "date": "2008-06-30", "value": 50.63 }, { "date": "2008-07-31", "value": 50.74 }, { "date": "2008-08-31", "value": 50.85 }, { "date": "2008-09-30", "value": 50.93 }, { "date": "2008-10-31", "value": 51.01 }, { "date": "2008-11-30", "value": 51.07 }, { "date": "2008-12-31", "value": 51.13 }, { "date": "2009-01-31", "value": 51.28 }, { "date": "2009-02-28", "value": 51.43 }, { "date": "2009-03-31", "value": 51.6 }, { "date": "2009-04-30", "value": 51.76 }, { "date": "2009-05-31", "value": 51.91 }, { "date": "2009-06-30", "value": 52.07 }, { "date": "2009-07-31", "value": 52.31 }, { "date": "2009-08-31", "value": 52.54 }, { "date": "2009-09-30", "value": 52.74 }, { "date": "2009-10-31", "value": 52.94 }, { "date": "2009-11-30", "value": 52.97 }, { "date": "2009-12-31", "value": 53 }, { "date": "2010-01-31", "value": 53.01 }, { "date": "2010-02-28", "value": 53.03 }, { "date": "2010-03-31", "value": 53.06 }, { "date": "2010-04-30", "value": 53.09 }, { "date": "2010-05-31", "value": 53.22 }, { "date": "2010-06-30", "value": 53.35 }, { "date": "2010-07-31", "value": 53.71 }, { "date": "2010-08-31", "value": 54.08 }, { "date": "2010-09-30", "value": 54.68 }, { "date": "2010-10-31", "value": 55.28 }, { "date": "2010-11-30", "value": 55.94 }, { "date": "2010-12-31", "value": 56.6 }, { "date": "2011-01-31", "value": 57.14 }, { "date": "2011-02-28", "value": 57.67 }, { "date": "2011-03-31", "value": 58.14 }, { "date": "2011-04-30", "value": 58.61 }, { "date": "2011-05-31", "value": 59.06 }, { "date": "2011-06-30", "value": 59.5 }, { "date": "2011-07-31", "value": 59.85 }, { "date": "2011-08-31", "value": 60.21 }, { "date": "2011-09-30", "value": 60.47 }, { "date": "2011-10-31", "value": 60.73 }, { "date": "2011-11-30", "value": 60.91 }, { "date": "2011-12-31", "value": 61.1 }, { "date": "2012-01-31", "value": 61.35 }, { "date": "2012-02-29", "value": 61.6 }, { "date": "2012-03-31", "value": 61.78 }, { "date": "2012-04-30", "value": 61.96 }, { "date": "2012-05-31", "value": 61.98 }, { "date": "2012-06-30", "value": 61.99 }, { "date": "2012-07-31", "value": 62.01 }, { "date": "2012-08-31", "value": 62.02 }, { "date": "2012-09-30", "value": 62.19 }, { "date": "2012-10-31", "value": 62.35 }, { "date": "2012-11-30", "value": 62.59 }, { "date": "2012-12-31", "value": 62.83 }, { "date": "2013-01-31", "value": 63.1 }, { "date": "2013-02-28", "value": 63.37 }, { "date": "2013-03-31", "value": 63.69 }, { "date": "2013-04-30", "value": 64.01 }, { "date": "2013-05-31", "value": 64.32 }, { "date": "2013-06-30", "value": 64.63 }, { "date": "2013-07-31", "value": 64.82 }, { "date": "2013-08-31", "value": 65.01 }, { "date": "2013-09-30", "value": 65.14 }, { "date": "2013-10-31", "value": 65.28 }, { "date": "2013-11-30", "value": 65.54 }, { "date": "2013-12-31", "value": 65.81 }, { "date": "2014-01-31", "value": 66.04 }, { "date": "2014-02-28", "value": 66.28 }, { "date": "2014-03-31", "value": 66.42 }, { "date": "2014-04-30", "value": 66.56 }, { "date": "2014-05-31", "value": 66.72 }, { "date": "2014-06-30", "value": 66.87 }, { "date": "2014-07-31", "value": 67.04 }, { "date": "2014-08-31", "value": 67.2 }, { "date": "2014-09-30", "value": 67.33 }, { "date": "2014-10-31", "value": 67.45 }, { "date": "2014-11-30", "value": 67.66 }, { "date": "2014-12-31", "value": 67.86 }, { "date": "2015-01-31", "value": 68.13 }, { "date": "2015-02-28", "value": 68.39 }, { "date": "2015-03-31", "value": 68.71 }, { "date": "2015-04-30", "value": 69.02 }, { "date": "2015-05-31", "value": 69.28 }, { "date": "2015-06-30", "value": 69.53 }, { "date": "2015-07-31", "value": 69.67 }, { "date": "2015-08-31", "value": 69.8 }, { "date": "2015-09-30", "value": 69.91 }, { "date": "2015-10-31", "value": 70.02 }, { "date": "2015-11-30", "value": 70.27 }, { "date": "2015-12-31", "value": 70.52 }, { "date": "2016-01-31", "value": 70.8 }, { "date": "2016-02-29", "value": 71.08 }, { "date": "2016-03-31", "value": 71.35 }, { "date": "2016-04-30", "value": 71.63 }, { "date": "2016-05-31", "value": 71.85 }, { "date": "2016-06-30", "value": 72.07 }, { "date": "2016-07-31", "value": 72.45 }, { "date": "2016-08-31", "value": 72.83 }, { "date": "2016-09-30", "value": 73.29 }, { "date": "2016-10-31", "value": 73.75 }, { "date": "2016-11-30", "value": 74.19 }, { "date": "2016-12-31", "value": 74.63 }, { "date": "2017-01-31", "value": 75.08 }, { "date": "2017-02-28", "value": 75.54 }, { "date": "2017-03-31", "value": 76.04 }, { "date": "2017-04-30", "value": 76.54 }]
+	  }, {
+	    "term": "Conjunctivitis",
+	    "points": [{ "date": "2003-12-31", "value": 10.49 }, { "date": "2004-01-31", "value": 10.66 }, { "date": "2004-02-29", "value": 10.83 }, { "date": "2004-03-31", "value": 10.99 }, { "date": "2004-04-30", "value": 11.16 }, { "date": "2004-05-31", "value": 11.32 }, { "date": "2004-06-30", "value": 11.48 }, { "date": "2004-07-31", "value": 11.64 }, { "date": "2004-08-31", "value": 11.81 }, { "date": "2004-09-30", "value": 11.99 }, { "date": "2004-10-31", "value": 12.16 }, { "date": "2004-11-30", "value": 12.32 }, { "date": "2004-12-31", "value": 12.48 }, { "date": "2005-01-31", "value": 12.61 }, { "date": "2005-02-28", "value": 12.73 }, { "date": "2005-03-31", "value": 12.82 }, { "date": "2005-04-30", "value": 12.91 }, { "date": "2005-05-31", "value": 12.98 }, { "date": "2005-06-30", "value": 13.05 }, { "date": "2005-07-31", "value": 13.11 }, { "date": "2005-08-31", "value": 13.17 }, { "date": "2005-09-30", "value": 13.22 }, { "date": "2005-10-31", "value": 13.28 }, { "date": "2005-11-30", "value": 13.33 }, { "date": "2005-12-31", "value": 13.38 }, { "date": "2006-01-31", "value": 13.43 }, { "date": "2006-02-28", "value": 13.48 }, { "date": "2006-03-31", "value": 13.54 }, { "date": "2006-04-30", "value": 13.6 }, { "date": "2006-05-31", "value": 13.64 }, { "date": "2006-06-30", "value": 13.68 }, { "date": "2006-07-31", "value": 13.66 }, { "date": "2006-08-31", "value": 13.63 }, { "date": "2006-09-30", "value": 13.56 }, { "date": "2006-10-31", "value": 13.48 }, { "date": "2006-11-30", "value": 13.43 }, { "date": "2006-12-31", "value": 13.38 }, { "date": "2007-01-31", "value": 13.38 }, { "date": "2007-02-28", "value": 13.39 }, { "date": "2007-03-31", "value": 13.44 }, { "date": "2007-04-30", "value": 13.5 }, { "date": "2007-05-31", "value": 13.59 }, { "date": "2007-06-30", "value": 13.69 }, { "date": "2007-07-31", "value": 13.8 }, { "date": "2007-08-31", "value": 13.92 }, { "date": "2007-09-30", "value": 14.02 }, { "date": "2007-10-31", "value": 14.12 }, { "date": "2007-11-30", "value": 14.16 }, { "date": "2007-12-31", "value": 14.21 }, { "date": "2008-01-31", "value": 14.21 }, { "date": "2008-02-29", "value": 14.2 }, { "date": "2008-03-31", "value": 14.15 }, { "date": "2008-04-30", "value": 14.1 }, { "date": "2008-05-31", "value": 14.03 }, { "date": "2008-06-30", "value": 13.95 }, { "date": "2008-07-31", "value": 13.87 }, { "date": "2008-08-31", "value": 13.8 }, { "date": "2008-09-30", "value": 13.73 }, { "date": "2008-10-31", "value": 13.67 }, { "date": "2008-11-30", "value": 13.6 }, { "date": "2008-12-31", "value": 13.54 }, { "date": "2009-01-31", "value": 13.5 }, { "date": "2009-02-28", "value": 13.46 }, { "date": "2009-03-31", "value": 13.46 }, { "date": "2009-04-30", "value": 13.46 }, { "date": "2009-05-31", "value": 13.48 }, { "date": "2009-06-30", "value": 13.51 }, { "date": "2009-07-31", "value": 13.51 }, { "date": "2009-08-31", "value": 13.51 }, { "date": "2009-09-30", "value": 13.45 }, { "date": "2009-10-31", "value": 13.4 }, { "date": "2009-11-30", "value": 13.39 }, { "date": "2009-12-31", "value": 13.38 }, { "date": "2010-01-31", "value": 13.44 }, { "date": "2010-02-28", "value": 13.5 }, { "date": "2010-03-31", "value": 13.61 }, { "date": "2010-04-30", "value": 13.73 }, { "date": "2010-05-31", "value": 13.95 }, { "date": "2010-06-30", "value": 14.16 }, { "date": "2010-07-31", "value": 14.52 }, { "date": "2010-08-31", "value": 14.87 }, { "date": "2010-09-30", "value": 15.32 }, { "date": "2010-10-31", "value": 15.77 }, { "date": "2010-11-30", "value": 16.19 }, { "date": "2010-12-31", "value": 16.6 }, { "date": "2011-01-31", "value": 16.9 }, { "date": "2011-02-28", "value": 17.21 }, { "date": "2011-03-31", "value": 17.44 }, { "date": "2011-04-30", "value": 17.67 }, { "date": "2011-05-31", "value": 17.86 }, { "date": "2011-06-30", "value": 18.06 }, { "date": "2011-07-31", "value": 18.17 }, { "date": "2011-08-31", "value": 18.27 }, { "date": "2011-09-30", "value": 18.26 }, { "date": "2011-10-31", "value": 18.25 }, { "date": "2011-11-30", "value": 18.21 }, { "date": "2011-12-31", "value": 18.16 }, { "date": "2012-01-31", "value": 18.12 }, { "date": "2012-02-29", "value": 18.08 }, { "date": "2012-03-31", "value": 18.02 }, { "date": "2012-04-30", "value": 17.95 }, { "date": "2012-05-31", "value": 17.86 }, { "date": "2012-06-30", "value": 17.77 }, { "date": "2012-07-31", "value": 17.69 }, { "date": "2012-08-31", "value": 17.62 }, { "date": "2012-09-30", "value": 17.58 }, { "date": "2012-10-31", "value": 17.55 }, { "date": "2012-11-30", "value": 17.52 }, { "date": "2012-12-31", "value": 17.49 }, { "date": "2013-01-31", "value": 17.45 }, { "date": "2013-02-28", "value": 17.41 }, { "date": "2013-03-31", "value": 17.35 }, { "date": "2013-04-30", "value": 17.29 }, { "date": "2013-05-31", "value": 17.17 }, { "date": "2013-06-30", "value": 17.05 }, { "date": "2013-07-31", "value": 16.89 }, { "date": "2013-08-31", "value": 16.73 }, { "date": "2013-09-30", "value": 16.6 }, { "date": "2013-10-31", "value": 16.47 }, { "date": "2013-11-30", "value": 16.38 }, { "date": "2013-12-31", "value": 16.28 }, { "date": "2014-01-31", "value": 16.22 }, { "date": "2014-02-28", "value": 16.15 }, { "date": "2014-03-31", "value": 16.17 }, { "date": "2014-04-30", "value": 16.18 }, { "date": "2014-05-31", "value": 16.27 }, { "date": "2014-06-30", "value": 16.37 }, { "date": "2014-07-31", "value": 16.5 }, { "date": "2014-08-31", "value": 16.63 }, { "date": "2014-09-30", "value": 16.75 }, { "date": "2014-10-31", "value": 16.88 }, { "date": "2014-11-30", "value": 17.02 }, { "date": "2014-12-31", "value": 17.16 }, { "date": "2015-01-31", "value": 17.3 }, { "date": "2015-02-28", "value": 17.44 }, { "date": "2015-03-31", "value": 17.56 }, { "date": "2015-04-30", "value": 17.67 }, { "date": "2015-05-31", "value": 17.81 }, { "date": "2015-06-30", "value": 17.95 }, { "date": "2015-07-31", "value": 18.14 }, { "date": "2015-08-31", "value": 18.32 }, { "date": "2015-09-30", "value": 18.43 }, { "date": "2015-10-31", "value": 18.54 }, { "date": "2015-11-30", "value": 18.59 }, { "date": "2015-12-31", "value": 18.64 }, { "date": "2016-01-31", "value": 18.67 }, { "date": "2016-02-29", "value": 18.71 }, { "date": "2016-03-31", "value": 18.71 }, { "date": "2016-04-30", "value": 18.7 }, { "date": "2016-05-31", "value": 18.62 }, { "date": "2016-06-30", "value": 18.53 }, { "date": "2016-07-31", "value": 18.54 }, { "date": "2016-08-31", "value": 18.55 }, { "date": "2016-09-30", "value": 18.62 }, { "date": "2016-10-31", "value": 18.7 }, { "date": "2016-11-30", "value": 18.78 }, { "date": "2016-12-31", "value": 18.87 }, { "date": "2017-01-31", "value": 18.96 }, { "date": "2017-02-28", "value": 19.06 }, { "date": "2017-03-31", "value": 19.17 }, { "date": "2017-04-30", "value": 19.27 }]
+	  }, {
+	    "term": "Ear pain",
+	    "points": [{ "date": "2003-12-31", "value": 3.31 }, { "date": "2004-01-31", "value": 3.42 }, { "date": "2004-02-29", "value": 3.53 }, { "date": "2004-03-31", "value": 3.63 }, { "date": "2004-04-30", "value": 3.73 }, { "date": "2004-05-31", "value": 3.83 }, { "date": "2004-06-30", "value": 3.92 }, { "date": "2004-07-31", "value": 4.02 }, { "date": "2004-08-31", "value": 4.12 }, { "date": "2004-09-30", "value": 4.21 }, { "date": "2004-10-31", "value": 4.31 }, { "date": "2004-11-30", "value": 4.34 }, { "date": "2004-12-31", "value": 4.38 }, { "date": "2005-01-31", "value": 4.39 }, { "date": "2005-02-28", "value": 4.4 }, { "date": "2005-03-31", "value": 4.4 }, { "date": "2005-04-30", "value": 4.4 }, { "date": "2005-05-31", "value": 4.41 }, { "date": "2005-06-30", "value": 4.41 }, { "date": "2005-07-31", "value": 4.42 }, { "date": "2005-08-31", "value": 4.42 }, { "date": "2005-09-30", "value": 4.42 }, { "date": "2005-10-31", "value": 4.42 }, { "date": "2005-11-30", "value": 4.41 }, { "date": "2005-12-31", "value": 4.41 }, { "date": "2006-01-31", "value": 4.41 }, { "date": "2006-02-28", "value": 4.4 }, { "date": "2006-03-31", "value": 4.4 }, { "date": "2006-04-30", "value": 4.41 }, { "date": "2006-05-31", "value": 4.41 }, { "date": "2006-06-30", "value": 4.42 }, { "date": "2006-07-31", "value": 4.42 }, { "date": "2006-08-31", "value": 4.42 }, { "date": "2006-09-30", "value": 4.42 }, { "date": "2006-10-31", "value": 4.42 }, { "date": "2006-11-30", "value": 4.42 }, { "date": "2006-12-31", "value": 4.41 }, { "date": "2007-01-31", "value": 4.41 }, { "date": "2007-02-28", "value": 4.41 }, { "date": "2007-03-31", "value": 4.41 }, { "date": "2007-04-30", "value": 4.41 }, { "date": "2007-05-31", "value": 4.42 }, { "date": "2007-06-30", "value": 4.42 }, { "date": "2007-07-31", "value": 4.43 }, { "date": "2007-08-31", "value": 4.43 }, { "date": "2007-09-30", "value": 4.43 }, { "date": "2007-10-31", "value": 4.44 }, { "date": "2007-11-30", "value": 4.43 }, { "date": "2007-12-31", "value": 4.43 }, { "date": "2008-01-31", "value": 4.43 }, { "date": "2008-02-29", "value": 4.44 }, { "date": "2008-03-31", "value": 4.44 }, { "date": "2008-04-30", "value": 4.44 }, { "date": "2008-05-31", "value": 4.44 }, { "date": "2008-06-30", "value": 4.44 }, { "date": "2008-07-31", "value": 4.45 }, { "date": "2008-08-31", "value": 4.45 }, { "date": "2008-09-30", "value": 4.5 }, { "date": "2008-10-31", "value": 4.54 }, { "date": "2008-11-30", "value": 4.62 }, { "date": "2008-12-31", "value": 4.71 }, { "date": "2009-01-31", "value": 4.8 }, { "date": "2009-02-28", "value": 4.89 }, { "date": "2009-03-31", "value": 4.98 }, { "date": "2009-04-30", "value": 5.07 }, { "date": "2009-05-31", "value": 5.16 }, { "date": "2009-06-30", "value": 5.25 }, { "date": "2009-07-31", "value": 5.31 }, { "date": "2009-08-31", "value": 5.38 }, { "date": "2009-09-30", "value": 5.39 }, { "date": "2009-10-31", "value": 5.41 }, { "date": "2009-11-30", "value": 5.41 }, { "date": "2009-12-31", "value": 5.41 }, { "date": "2010-01-31", "value": 5.41 }, { "date": "2010-02-28", "value": 5.4 }, { "date": "2010-03-31", "value": 5.4 }, { "date": "2010-04-30", "value": 5.41 }, { "date": "2010-05-31", "value": 5.42 }, { "date": "2010-06-30", "value": 5.44 }, { "date": "2010-07-31", "value": 5.49 }, { "date": "2010-08-31", "value": 5.54 }, { "date": "2010-09-30", "value": 5.63 }, { "date": "2010-10-31", "value": 5.72 }, { "date": "2010-11-30", "value": 5.81 }, { "date": "2010-12-31", "value": 5.9 }, { "date": "2011-01-31", "value": 5.99 }, { "date": "2011-02-28", "value": 6.08 }, { "date": "2011-03-31", "value": 6.17 }, { "date": "2011-04-30", "value": 6.26 }, { "date": "2011-05-31", "value": 6.33 }, { "date": "2011-06-30", "value": 6.4 }, { "date": "2011-07-31", "value": 6.42 }, { "date": "2011-08-31", "value": 6.43 }, { "date": "2011-09-30", "value": 6.43 }, { "date": "2011-10-31", "value": 6.43 }, { "date": "2011-11-30", "value": 6.43 }, { "date": "2011-12-31", "value": 6.43 }, { "date": "2012-01-31", "value": 6.43 }, { "date": "2012-02-29", "value": 6.43 }, { "date": "2012-03-31", "value": 6.44 }, { "date": "2012-04-30", "value": 6.45 }, { "date": "2012-05-31", "value": 6.48 }, { "date": "2012-06-30", "value": 6.51 }, { "date": "2012-07-31", "value": 6.59 }, { "date": "2012-08-31", "value": 6.67 }, { "date": "2012-09-30", "value": 6.75 }, { "date": "2012-10-31", "value": 6.84 }, { "date": "2012-11-30", "value": 6.93 }, { "date": "2012-12-31", "value": 7.02 }, { "date": "2013-01-31", "value": 7.11 }, { "date": "2013-02-28", "value": 7.2 }, { "date": "2013-03-31", "value": 7.28 }, { "date": "2013-04-30", "value": 7.36 }, { "date": "2013-05-31", "value": 7.39 }, { "date": "2013-06-30", "value": 7.41 }, { "date": "2013-07-31", "value": 7.42 }, { "date": "2013-08-31", "value": 7.42 }, { "date": "2013-09-30", "value": 7.42 }, { "date": "2013-10-31", "value": 7.42 }, { "date": "2013-11-30", "value": 7.42 }, { "date": "2013-12-31", "value": 7.41 }, { "date": "2014-01-31", "value": 7.41 }, { "date": "2014-02-28", "value": 7.4 }, { "date": "2014-03-31", "value": 7.41 }, { "date": "2014-04-30", "value": 7.42 }, { "date": "2014-05-31", "value": 7.48 }, { "date": "2014-06-30", "value": 7.54 }, { "date": "2014-07-31", "value": 7.63 }, { "date": "2014-08-31", "value": 7.73 }, { "date": "2014-09-30", "value": 7.81 }, { "date": "2014-10-31", "value": 7.89 }, { "date": "2014-11-30", "value": 7.99 }, { "date": "2014-12-31", "value": 8.08 }, { "date": "2015-01-31", "value": 8.18 }, { "date": "2015-02-28", "value": 8.27 }, { "date": "2015-03-31", "value": 8.32 }, { "date": "2015-04-30", "value": 8.38 }, { "date": "2015-05-31", "value": 8.39 }, { "date": "2015-06-30", "value": 8.4 }, { "date": "2015-07-31", "value": 8.4 }, { "date": "2015-08-31", "value": 8.4 }, { "date": "2015-09-30", "value": 8.4 }, { "date": "2015-10-31", "value": 8.4 }, { "date": "2015-11-30", "value": 8.4 }, { "date": "2015-12-31", "value": 8.41 }, { "date": "2016-01-31", "value": 8.4 }, { "date": "2016-02-29", "value": 8.4 }, { "date": "2016-03-31", "value": 8.4 }, { "date": "2016-04-30", "value": 8.41 }, { "date": "2016-05-31", "value": 8.45 }, { "date": "2016-06-30", "value": 8.5 }, { "date": "2016-07-31", "value": 8.6 }, { "date": "2016-08-31", "value": 8.7 }, { "date": "2016-09-30", "value": 8.8 }, { "date": "2016-10-31", "value": 8.9 }, { "date": "2016-11-30", "value": 8.99 }, { "date": "2016-12-31", "value": 9.09 }, { "date": "2017-01-31", "value": 9.18 }, { "date": "2017-02-28", "value": 9.28 }, { "date": "2017-03-31", "value": 9.39 }, { "date": "2017-04-30", "value": 9.49 }]
+	  }]
+	};
+
+	var averages = exports.averages = [];
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Stories = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _LineChart = __webpack_require__(18);
+
+	var _d = __webpack_require__(19);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(27);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Stories = exports.Stories = function () {
+	  function Stories(parentContainer) {
+	    _classCallCheck(this, Stories);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Stories, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'stories';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      elementsContainer.appendChild(chartsContainer);
+
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      var seasonalChart = new _LineChart.LineChart(chartItem, 'seasonal');
+	      d3.json('./data/seasonal-summer.json', function (data) {
+	        _loglevel2.default.info('Loaded story');
+	        _loglevel2.default.info(data);
+	        seasonalChart.updateData(data);
+	      });
+	    }
+	  }]);
+
+	  return Stories;
+	}();
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(28);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(24)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./stories.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./stories.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
 /* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(23)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page .charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  #stories.page .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Explore = undefined;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	// Components
+
+
+	// Data and Utils
+
+
+	// Types
+
+
+	// Libraries
+
+
+	//Styles
+
+
+	var _LineChart = __webpack_require__(18);
+
+	var _TrendsAPI = __webpack_require__(2);
+
+	var _ShinyAPI = __webpack_require__(30);
+
+	var _util = __webpack_require__(31);
+
+	var _data4 = __webpack_require__(15);
+
+	var _data5 = __webpack_require__(25);
+
+	var _loglevel = __webpack_require__(3);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	var _selectize = __webpack_require__(32);
+
+	var _selectize2 = _interopRequireDefault(_selectize);
+
+	var _jquery = __webpack_require__(16);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	__webpack_require__(35);
+
+	__webpack_require__(37);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Explore = exports.Explore = function () {
+	  function Explore(parentContainer, shinyAPI, trendsAPI, filter) {
+	    _classCallCheck(this, Explore);
+
+	    this.data = {
+	      prevDiseases: filter ? filter.terms : [],
+	      diseases: filter ? filter.terms : [],
+	      prevGeo: filter ? filter.geo : _data4.countries[0],
+	      geo: filter ? filter.geo : _data4.countries[0],
+	      seasonal: [],
+	      trend: [],
+	      total: [],
+	      totalPerLine: [],
+	      topQueries: [],
+	      dataToR: [],
+	      dataFromR: '',
+	      isMerged: false,
+	      isChanging: false,
+	      isLoading: filter ? true : false
+	    };
+	    var self = this;
+	    self.trendsAPI = trendsAPI;
+	    if (shinyAPI) {
+	      self.shinyAPI = shinyAPI;
+	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
+	        var _self$data = self.data,
+	            diseases = _self$data.diseases,
+	            total = _self$data.total;
+
+	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	        var data = self.data[type];
+	        var index = data.length;
+	        var obj = {};
+
+	        obj[type] = data.concat({
+	          term: diseases[index].name,
+	          points: self.parseDataFromR(dataFromR)
+	        });
+	        self.updateData(obj);
+
+	        // I'm still getting R Data for that one type
+	        if (obj[type].length < total.length) {
+	          // Trend? Keep parsing the already loaded data
+	          if (type === 'trend') {
+	            var dataToR = self.parseDataToR(type);
+	            self.shinyAPI.updateData(type, dataToR);
+
+	            // Seasonal? Go get more data from Google Trends
+	          } else if (type === 'seasonal') {
+	            self.getTrendsAPIGraph('seasonal');
+	          }
+
+	          // I'm done with this type!
+	        } else {
+	          // Trend? Start seasonal then
+	          if (type === 'trend') {
+	            self.getTrendsAPIGraph('seasonal');
+	            // Seasonal? Move on to load top queries
+	          } else if (type === 'seasonal') {
+	            self.updateData({ topQueries: [], isLoading: false });
+	            self.getTrendsAPITopQueries();
+	          }
+	        }
+	      });
+	    }
+
+	    self.createElements(parentContainer);
+
+	    if (filter) {
+	      self.getTrendsAPIGraph('trend');
+	    }
+	  }
+
+	  _createClass(Explore, [{
+	    key: 'handleSelectDiseaseChange',
+	    value: function handleSelectDiseaseChange(value, self) {
+	      _loglevel2.default.info('handleSelectDiseaseChange');
+	      var diseases = value.map(function (v) {
+	        return self.getDiseaseByEntity(v);
+	      });
+	      this.updateData({ diseases: diseases, isChanging: true });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'handleSelectGeoChange',
+	    value: function handleSelectGeoChange(value, self) {
+	      _loglevel2.default.info('handleSelectGeoChange');
+	      _loglevel2.default.info(value);
+	      var name = this.getCountryByIso(value).name;
+	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'getDiseaseByEntity',
+	    value: function getDiseaseByEntity(entity) {
+	      return _data4.terms.find(function (t) {
+	        return t.entity === entity;
+	      });
+	    }
+	  }, {
+	    key: 'getCountryByIso',
+	    value: function getCountryByIso(iso) {
+	      return _data4.countries.find(function (c) {
+	        return c.iso === iso;
+	      });
+	    }
+	  }, {
+	    key: 'cancelFilters',
+	    value: function cancelFilters(event, self) {
+	      _loglevel2.default.info('cancelFilters');
+	      var _self$data2 = self.data,
+	          prevDiseases = _self$data2.prevDiseases,
+	          prevGeo = _self$data2.prevGeo;
+
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
+	    }
+	  }, {
+	    key: 'confirmFilters',
+	    value: function confirmFilters(event, self) {
+	      _loglevel2.default.info('confirmFilters');
+	      var _self$data3 = self.data,
+	          diseases = _self$data3.diseases,
+	          geo = _self$data3.geo;
+
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({
+	        prevDiseases: diseases,
+	        prevGeo: geo,
+	        isChanging: false,
+	        isLoading: true,
+	        seasonal: [],
+	        trend: []
+	      });
+	      self.getTrendsAPIGraph('trend');
+	    }
+	  }, {
+	    key: 'toggleChartMerge',
+	    value: function toggleChartMerge(event, self) {
+	      var isMerged = self.data.isMerged;
+
+	      isMerged = isMerged ? false : true;
+	      this.seasonalChart.hide();
+	      this.updateData({ isMerged: isMerged });
+	    }
+	  }, {
+	    key: 'loadFilter',
+	    value: function loadFilter(filter) {
+	      var terms = filter.terms,
+	          geo = filter.geo;
+
+	      this.updateData({ prevDiseases: terms, diseases: terms, prevGeo: geo, geo: geo, isLoading: true });
+	      this.confirmNav.classList.add('hidden');
+	      this.getTrendsAPIGraph('trend');
+	    }
+	  }, {
+	    key: 'getTrendsAPIGraph',
+	    value: function getTrendsAPIGraph(type) {
+	      _loglevel2.default.info('getTrendsAPIGraph');
+	      var self = this;
+	      var _self$data4 = self.data,
+	          diseases = _self$data4.diseases,
+	          geo = _self$data4.geo,
+	          totalPerLine = _self$data4.totalPerLine;
+	      var shinyAPI = self.shinyAPI;
+
+	      var terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
+
+	      self.trendsAPI.getGraph({ terms: terms, geo: geo }, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', type);
+	        _loglevel2.default.info(val);
+
+	        var obj = {};
+	        if (type === 'trend') {
+	          obj['total'] = self.mapGraphResponse(val.lines);
+	        } else if (type === 'seasonal') {
+	          obj['totalPerLine'] = totalPerLine.concat(self.mapGraphResponse(val.lines));
+	        }
+	        self.updateData(obj);
+
+	        if (true) {
+	          var dataToR = self.parseDataToR(type);
+	          shinyAPI.updateData(type, dataToR);
+	        } else {
+	          var _obj = _extends({}, _data5.dummyData, {
+	            topQueries: [],
+	            isLoading: false
+	          });
+	          self.updateData(_obj);
+	          self.getTrendsAPITopQueries();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'mapGraphResponse',
+	    value: function mapGraphResponse(lines) {
+	      var diseases = this.data.diseases;
+
+	      return lines.map(function (l, i) {
+	        return { term: diseases[i].name, points: l.points };
+	      });
+	    }
+	  }, {
+	    key: 'getTrendsAPITopQueries',
+	    value: function getTrendsAPITopQueries() {
+	      _loglevel2.default.info('getTrendsAPITopQueries');
+	      var _data = this.data,
+	          diseases = _data.diseases,
+	          geo = _data.geo;
+	      var topQueries = this.data.topQueries;
+
+	      var index = topQueries.length;
+	      var disease = diseases[index];
+	      var self = this;
+
+	      self.trendsAPI.getTopQueries({ terms: [disease], geo: geo }, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', val);
+	        topQueries = topQueries.concat(val);
+	        self.updateData({ topQueries: topQueries });
+	        if (topQueries.length < diseases.length) {
+	          self.getTrendsAPITopQueries();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'parseDataToR',
+	    value: function parseDataToR(type) {
+	      _loglevel2.default.info('parseDataToR', type);
+	      var _data2 = this.data,
+	          total = _data2.total,
+	          totalPerLine = _data2.totalPerLine;
+	      var shinyAPI = this.shinyAPI;
+
+	      var index = this.data[type].length;
+	      var whichTotal = type === 'trend' ? total : totalPerLine;
+	      return whichTotal[index].points.map(function (p, i) {
+	        return p.date + ',' + p.value;
+	      });
+	    }
+	  }, {
+	    key: 'parseDataFromR',
+	    value: function parseDataFromR(dataFromR) {
+	      _loglevel2.default.info('parseDataFromR');
+	      var _data3 = this.data,
+	          diseases = _data3.diseases,
+	          total = _data3.total,
+	          seasonal = _data3.seasonal,
+	          trend = _data3.trend,
+	          isLoading = _data3.isLoading;
+
+	      var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	      var index = this.data[type].length;
+	      var newDataString = dataFromR.substring(dataFromR.indexOf(type) + type.length + 1);
+	      var newData = newDataString.split(',');
+	      if (type === 'seasonal') {
+	        newData = newData.slice(0, 13);
+	      }
+	      return newData.map(function (n, i) {
+	        var date = total[0].points[i].date;
+	        var value = Math.round(Number(n.trim()) * 100) / 100;
+	        return { date: date, value: value };
+	      });
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(obj) {
+	      var data = this.data;
+
+	      Object.assign(data, obj);
+	      _loglevel2.default.info(this.data);
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+	      var _this = this;
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'explore';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      // Loader
+	      this.loaderContainer = document.createElement('div');
+	      var loaderContainer = this.loaderContainer;
+
+	      loaderContainer.classList.add('loader-container');
+	      loaderContainer.style.top = elementsContainer.offsetTop + 'px';
+	      var loader = document.createElement('span');
+	      loader.classList.add('loader');
+	      loaderContainer.appendChild(loader);
+	      elementsContainer.appendChild(loaderContainer);
+
+	      // filtersMenu
+	      var filtersMenu = document.createElement('div');
+	      filtersMenu.classList.add('filters-menu');
+	      elementsContainer.appendChild(filtersMenu);
+
+	      var text1 = document.createElement('span');
+	      text1.innerHTML = 'Search interest from 2004 to today for ';
+	      filtersMenu.appendChild(text1);
+
+	      // Diseases
+	      var diseaseSelect = document.createElement('select');
+	      diseaseSelect.classList.add('disease-select');
+	      _data4.terms.forEach(function (d, i) {
+	        var option = document.createElement('option');
+	        option.setAttribute('value', d.entity);
+	        option.setAttribute('key', i);
+	        option.innerHTML = d.name;
+	        diseaseSelect.appendChild(option);
+	      });
+	      var bindHandleChange = function bindHandleChange(value) {
+	        return _this.handleSelectDiseaseChange(value, _this);
+	      };
+	      filtersMenu.appendChild(diseaseSelect);
+	      var diseaseSelectize = (0, _jquery2.default)(diseaseSelect).selectize({
+	        maxItems: 3,
+	        onChange: bindHandleChange,
+	        placeholder: 'Select'
+	      });
+	      this.diseaseSelect = diseaseSelectize[0].selectize;
+
+	      this.sentenceItem = document.createElement('span');
+	      var sentenceItem = this.sentenceItem;
+
+	      sentenceItem.classList.add('sentence-item');
+	      sentenceItem.innerHTML = ' in the ';
+	      filtersMenu.appendChild(sentenceItem);
+
+	      // Geo
+	      var geoSelect = document.createElement('select');
+	      geoSelect.classList.add('geo-select');
+	      geoSelect.name = 'geo-select';
+	      _data4.countries.forEach(function (c, i) {
+	        var option = document.createElement('option');
+	        option.setAttribute('value', c.iso);
+	        option.innerHTML = c.name;
+	        geoSelect.appendChild(option);
+	      });
+	      bindHandleChange = function bindHandleChange(value) {
+	        return _this.handleSelectGeoChange(value, _this);
+	      };
+	      filtersMenu.appendChild(geoSelect);
+	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
+	        maxItems: 1,
+	        onChange: bindHandleChange
+	      });
+	      this.geoSelect = geoSelectize[0].selectize;
+
+	      // Cancel / Done
+	      this.confirmNav = document.createElement('div');
+	      var confirmNav = this.confirmNav;
+
+	      confirmNav.classList.add('confirm-nav');
+	      confirmNav.classList.add('hidden');
+
+	      var cancelButton = document.createElement('button');
+	      cancelButton.innerHTML = 'Cancel';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.cancelFilters(evt, _this);
+	      };
+	      cancelButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(cancelButton);
+
+	      var doneButton = document.createElement('button');
+	      doneButton.innerHTML = 'Done';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.confirmFilters(evt, _this);
+	      };
+	      doneButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(doneButton);
+
+	      filtersMenu.appendChild(confirmNav);
+
+	      // Charts section
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      elementsContainer.appendChild(chartsContainer);
+
+	      // Seasonal Chart
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.seasonalChart = new _LineChart.LineChart(chartItem, 'seasonal');
+
+	      var toggleBar = document.createElement('div');
+	      toggleBar.classList.add('toggle-bar');
+	      elementsContainer.appendChild(toggleBar);
+
+	      var buttonContainer = document.createElement('div');
+	      buttonContainer.classList.add('button-container');
+	      toggleBar.appendChild(buttonContainer);
+
+	      this.mergeButton = document.createElement('a');
+	      var mergeButton = this.mergeButton;
+
+	      mergeButton.classList.add('icon');
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.toggleChartMerge(evt, _this);
+	      };
+	      mergeButton.addEventListener('click', bindHandleChange);
+	      buttonContainer.appendChild(mergeButton);
+
+	      var titlesContainer = document.createElement('div');
+	      titlesContainer.classList.add('titles-container');
+	      toggleBar.appendChild(titlesContainer);
+
+	      var title = document.createElement('p');
+	      title.classList.add('title');
+	      title.innerHTML = 'Seasonal';
+	      titlesContainer.appendChild(title);
+
+	      title = document.createElement('p');
+	      title.classList.add('title');
+	      title.innerHTML = 'Trend';
+	      titlesContainer.appendChild(title);
+
+	      // Trend chart
+	      chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.trendChart = new _LineChart.LineChart(chartItem, 'trend');
+
+	      var bottomContainer = document.createElement('div');
+	      bottomContainer.classList.add('bottom-container');
+	      elementsContainer.appendChild(bottomContainer);
+
+	      // Top Queries
+	      var topQueriesContainer = document.createElement('div');
+	      topQueriesContainer.classList.add('top-queries-container');
+	      bottomContainer.appendChild(topQueriesContainer);
+
+	      var topQueriesTitle = document.createElement('h4');
+	      topQueriesTitle.innerHTML = 'Top Related Queries';
+	      topQueriesContainer.appendChild(topQueriesTitle);
+
+	      this.topQueriesList = document.createElement('div');
+	      var topQueriesList = this.topQueriesList;
+
+	      topQueriesList.classList.add('top-queries-list');
+	      topQueriesContainer.appendChild(topQueriesList);
+
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'updateElements',
+	    value: function updateElements() {
+	      _loglevel2.default.info('updateElements');
+	      var data = this.data,
+	          loaderContainer = this.loaderContainer,
+	          diseaseSelect = this.diseaseSelect,
+	          geoSelect = this.geoSelect,
+	          sentenceItem = this.sentenceItem,
+	          mergeButton = this.mergeButton,
+	          seasonalChart = this.seasonalChart,
+	          trendChart = this.trendChart,
+	          topQueriesList = this.topQueriesList;
+	      var diseases = data.diseases,
+	          geo = data.geo,
+	          seasonal = data.seasonal,
+	          trend = data.trend,
+	          total = data.total,
+	          topQueries = data.topQueries,
+	          isMerged = data.isMerged,
+	          isChanging = data.isChanging,
+	          isLoading = data.isLoading;
+
+
+	      if (isLoading) {
+	        loaderContainer.classList.remove('hidden');
+	      } else {
+	        loaderContainer.classList.add('hidden');
+	      }
+
+	      diseaseSelect.setValue(diseases.map(function (d) {
+	        return d.entity;
+	      }), true);
+	      sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
+	      geoSelect.setValue(geo.iso, true);
+
+	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
+
+	      // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
+	      if (!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
+	        seasonalChart.updateData(seasonal);
+	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
+
+	        if (topQueries.length > 0) {
+
+	          var isEmpty = true;
+	          topQueriesList.innerHTML = '';
+	          for (var i = 0; i < topQueries.length; i++) {
+	            if (topQueries[i].item) {
+	              isEmpty = false;
+	              var listContainer = document.createElement('div');
+	              listContainer.classList.add('list-container');
+	              topQueriesList.appendChild(listContainer);
+
+	              var term = document.createElement('p');
+	              term.innerHTML = diseases[i].name;
+	              listContainer.appendChild(term);
+
+	              var list = document.createElement('ul');
+	              listContainer.appendChild(list);
+
+	              var _iteratorNormalCompletion = true;
+	              var _didIteratorError = false;
+	              var _iteratorError = undefined;
+
+	              try {
+	                for (var _iterator = topQueries[i].item[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                  var q = _step.value;
+
+	                  var listItem = document.createElement('li');
+	                  listItem.innerHTML = q.title;
+	                  list.appendChild(listItem);
+	                }
+	              } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion && _iterator.return) {
+	                    _iterator.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError) {
+	                    throw _iteratorError;
+	                  }
+	                }
+	              }
+	            }
+	          }
+	          var parent = topQueriesList.parentElement;
+	          if (parent) {
+	            isEmpty ? parent.classList.add('hidden') : parent.classList.remove('hidden');
+	          }
+	        }
+	      }
+	    }
+	  }]);
+
+	  return Explore;
+	}();
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30145,9 +30409,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _Explore = __webpack_require__(25);
+	var _Explore = __webpack_require__(29);
 
-	var _util = __webpack_require__(29);
+	var _util = __webpack_require__(31);
 
 	var _loglevel = __webpack_require__(3);
 
@@ -30251,7 +30515,7 @@
 	}();
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -30280,41 +30544,7 @@
 	}
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var dummyData = exports.dummyData = {
-	  "seasonal": [{
-	    "term": "Allergy",
-	    "points": [{ "date": "2003-12-31", "value": -8.05 }, { "date": "2004-01-31", "value": -7.35 }, { "date": "2004-02-29", "value": 3.41 }, { "date": "2004-03-31", "value": 19.37 }, { "date": "2004-04-30", "value": 13.08 }, { "date": "2004-05-31", "value": 4.29 }, { "date": "2004-06-30", "value": -0.81 }, { "date": "2004-07-31", "value": 0.75 }, { "date": "2004-08-31", "value": 2.63 }, { "date": "2004-09-30", "value": -4.71 }, { "date": "2004-10-31", "value": -9.79 }, { "date": "2004-11-30", "value": -12.84 }, { "date": "2004-12-31", "value": -8.05 }]
-	  }, {
-	    "term": "Conjunctivitis",
-	    "points": [{ "date": "2003-12-31", "value": 3.62 }, { "date": "2004-01-31", "value": 10.02 }, { "date": "2004-02-29", "value": 9.22 }, { "date": "2004-03-31", "value": 7.7 }, { "date": "2004-04-30", "value": 7.91 }, { "date": "2004-05-31", "value": -0.17 }, { "date": "2004-06-30", "value": -5.06 }, { "date": "2004-07-31", "value": -10.9 }, { "date": "2004-08-31", "value": -11.45 }, { "date": "2004-09-30", "value": -8.22 }, { "date": "2004-10-31", "value": -3.36 }, { "date": "2004-11-30", "value": 0.7 }, { "date": "2004-12-31", "value": 3.62 }]
-	  }, {
-	    "term": "Ear pain",
-	    "points": [{ "date": "2003-12-31", "value": 6.18 }, { "date": "2004-01-31", "value": 8.52 }, { "date": "2004-02-29", "value": 5.86 }, { "date": "2004-03-31", "value": -0.27 }, { "date": "2004-04-30", "value": -2.83 }, { "date": "2004-05-31", "value": -0.62 }, { "date": "2004-06-30", "value": 1.17 }, { "date": "2004-07-31", "value": -4.4 }, { "date": "2004-08-31", "value": -6.57 }, { "date": "2004-09-30", "value": -6.74 }, { "date": "2004-10-31", "value": -2.81 }, { "date": "2004-11-30", "value": 2.52 }, { "date": "2004-12-31", "value": 6.18 }]
-	  }],
-	  "trend": [{
-	    "term": "Allergy",
-	    "points": [{ "date": "2003-12-31", "value": 46.43 }, { "date": "2004-01-31", "value": 46.59 }, { "date": "2004-02-29", "value": 46.76 }, { "date": "2004-03-31", "value": 46.91 }, { "date": "2004-04-30", "value": 47.07 }, { "date": "2004-05-31", "value": 47.22 }, { "date": "2004-06-30", "value": 47.37 }, { "date": "2004-07-31", "value": 47.51 }, { "date": "2004-08-31", "value": 47.65 }, { "date": "2004-09-30", "value": 47.66 }, { "date": "2004-10-31", "value": 47.66 }, { "date": "2004-11-30", "value": 47.64 }, { "date": "2004-12-31", "value": 47.62 }, { "date": "2005-01-31", "value": 47.63 }, { "date": "2005-02-28", "value": 47.63 }, { "date": "2005-03-31", "value": 47.67 }, { "date": "2005-04-30", "value": 47.7 }, { "date": "2005-05-31", "value": 47.83 }, { "date": "2005-06-30", "value": 47.96 }, { "date": "2005-07-31", "value": 48.23 }, { "date": "2005-08-31", "value": 48.51 }, { "date": "2005-09-30", "value": 48.75 }, { "date": "2005-10-31", "value": 48.99 }, { "date": "2005-11-30", "value": 49.01 }, { "date": "2005-12-31", "value": 49.04 }, { "date": "2006-01-31", "value": 49.01 }, { "date": "2006-02-28", "value": 48.98 }, { "date": "2006-03-31", "value": 48.94 }, { "date": "2006-04-30", "value": 48.91 }, { "date": "2006-05-31", "value": 48.81 }, { "date": "2006-06-30", "value": 48.72 }, { "date": "2006-07-31", "value": 48.7 }, { "date": "2006-08-31", "value": 48.67 }, { "date": "2006-09-30", "value": 48.75 }, { "date": "2006-10-31", "value": 48.84 }, { "date": "2006-11-30", "value": 48.9 }, { "date": "2006-12-31", "value": 48.96 }, { "date": "2007-01-31", "value": 49.05 }, { "date": "2007-02-28", "value": 49.14 }, { "date": "2007-03-31", "value": 49.29 }, { "date": "2007-04-30", "value": 49.44 }, { "date": "2007-05-31", "value": 49.64 }, { "date": "2007-06-30", "value": 49.83 }, { "date": "2007-07-31", "value": 50.04 }, { "date": "2007-08-31", "value": 50.25 }, { "date": "2007-09-30", "value": 50.41 }, { "date": "2007-10-31", "value": 50.56 }, { "date": "2007-11-30", "value": 50.64 }, { "date": "2007-12-31", "value": 50.73 }, { "date": "2008-01-31", "value": 50.71 }, { "date": "2008-02-29", "value": 50.7 }, { "date": "2008-03-31", "value": 50.63 }, { "date": "2008-04-30", "value": 50.57 }, { "date": "2008-05-31", "value": 50.6 }, { "date": "2008-06-30", "value": 50.63 }, { "date": "2008-07-31", "value": 50.74 }, { "date": "2008-08-31", "value": 50.85 }, { "date": "2008-09-30", "value": 50.93 }, { "date": "2008-10-31", "value": 51.01 }, { "date": "2008-11-30", "value": 51.07 }, { "date": "2008-12-31", "value": 51.13 }, { "date": "2009-01-31", "value": 51.28 }, { "date": "2009-02-28", "value": 51.43 }, { "date": "2009-03-31", "value": 51.6 }, { "date": "2009-04-30", "value": 51.76 }, { "date": "2009-05-31", "value": 51.91 }, { "date": "2009-06-30", "value": 52.07 }, { "date": "2009-07-31", "value": 52.31 }, { "date": "2009-08-31", "value": 52.54 }, { "date": "2009-09-30", "value": 52.74 }, { "date": "2009-10-31", "value": 52.94 }, { "date": "2009-11-30", "value": 52.97 }, { "date": "2009-12-31", "value": 53 }, { "date": "2010-01-31", "value": 53.01 }, { "date": "2010-02-28", "value": 53.03 }, { "date": "2010-03-31", "value": 53.06 }, { "date": "2010-04-30", "value": 53.09 }, { "date": "2010-05-31", "value": 53.22 }, { "date": "2010-06-30", "value": 53.35 }, { "date": "2010-07-31", "value": 53.71 }, { "date": "2010-08-31", "value": 54.08 }, { "date": "2010-09-30", "value": 54.68 }, { "date": "2010-10-31", "value": 55.28 }, { "date": "2010-11-30", "value": 55.94 }, { "date": "2010-12-31", "value": 56.6 }, { "date": "2011-01-31", "value": 57.14 }, { "date": "2011-02-28", "value": 57.67 }, { "date": "2011-03-31", "value": 58.14 }, { "date": "2011-04-30", "value": 58.61 }, { "date": "2011-05-31", "value": 59.06 }, { "date": "2011-06-30", "value": 59.5 }, { "date": "2011-07-31", "value": 59.85 }, { "date": "2011-08-31", "value": 60.21 }, { "date": "2011-09-30", "value": 60.47 }, { "date": "2011-10-31", "value": 60.73 }, { "date": "2011-11-30", "value": 60.91 }, { "date": "2011-12-31", "value": 61.1 }, { "date": "2012-01-31", "value": 61.35 }, { "date": "2012-02-29", "value": 61.6 }, { "date": "2012-03-31", "value": 61.78 }, { "date": "2012-04-30", "value": 61.96 }, { "date": "2012-05-31", "value": 61.98 }, { "date": "2012-06-30", "value": 61.99 }, { "date": "2012-07-31", "value": 62.01 }, { "date": "2012-08-31", "value": 62.02 }, { "date": "2012-09-30", "value": 62.19 }, { "date": "2012-10-31", "value": 62.35 }, { "date": "2012-11-30", "value": 62.59 }, { "date": "2012-12-31", "value": 62.83 }, { "date": "2013-01-31", "value": 63.1 }, { "date": "2013-02-28", "value": 63.37 }, { "date": "2013-03-31", "value": 63.69 }, { "date": "2013-04-30", "value": 64.01 }, { "date": "2013-05-31", "value": 64.32 }, { "date": "2013-06-30", "value": 64.63 }, { "date": "2013-07-31", "value": 64.82 }, { "date": "2013-08-31", "value": 65.01 }, { "date": "2013-09-30", "value": 65.14 }, { "date": "2013-10-31", "value": 65.28 }, { "date": "2013-11-30", "value": 65.54 }, { "date": "2013-12-31", "value": 65.81 }, { "date": "2014-01-31", "value": 66.04 }, { "date": "2014-02-28", "value": 66.28 }, { "date": "2014-03-31", "value": 66.42 }, { "date": "2014-04-30", "value": 66.56 }, { "date": "2014-05-31", "value": 66.72 }, { "date": "2014-06-30", "value": 66.87 }, { "date": "2014-07-31", "value": 67.04 }, { "date": "2014-08-31", "value": 67.2 }, { "date": "2014-09-30", "value": 67.33 }, { "date": "2014-10-31", "value": 67.45 }, { "date": "2014-11-30", "value": 67.66 }, { "date": "2014-12-31", "value": 67.86 }, { "date": "2015-01-31", "value": 68.13 }, { "date": "2015-02-28", "value": 68.39 }, { "date": "2015-03-31", "value": 68.71 }, { "date": "2015-04-30", "value": 69.02 }, { "date": "2015-05-31", "value": 69.28 }, { "date": "2015-06-30", "value": 69.53 }, { "date": "2015-07-31", "value": 69.67 }, { "date": "2015-08-31", "value": 69.8 }, { "date": "2015-09-30", "value": 69.91 }, { "date": "2015-10-31", "value": 70.02 }, { "date": "2015-11-30", "value": 70.27 }, { "date": "2015-12-31", "value": 70.52 }, { "date": "2016-01-31", "value": 70.8 }, { "date": "2016-02-29", "value": 71.08 }, { "date": "2016-03-31", "value": 71.35 }, { "date": "2016-04-30", "value": 71.63 }, { "date": "2016-05-31", "value": 71.85 }, { "date": "2016-06-30", "value": 72.07 }, { "date": "2016-07-31", "value": 72.45 }, { "date": "2016-08-31", "value": 72.83 }, { "date": "2016-09-30", "value": 73.29 }, { "date": "2016-10-31", "value": 73.75 }, { "date": "2016-11-30", "value": 74.19 }, { "date": "2016-12-31", "value": 74.63 }, { "date": "2017-01-31", "value": 75.08 }, { "date": "2017-02-28", "value": 75.54 }, { "date": "2017-03-31", "value": 76.04 }, { "date": "2017-04-30", "value": 76.54 }]
-	  }, {
-	    "term": "Conjunctivitis",
-	    "points": [{ "date": "2003-12-31", "value": 10.49 }, { "date": "2004-01-31", "value": 10.66 }, { "date": "2004-02-29", "value": 10.83 }, { "date": "2004-03-31", "value": 10.99 }, { "date": "2004-04-30", "value": 11.16 }, { "date": "2004-05-31", "value": 11.32 }, { "date": "2004-06-30", "value": 11.48 }, { "date": "2004-07-31", "value": 11.64 }, { "date": "2004-08-31", "value": 11.81 }, { "date": "2004-09-30", "value": 11.99 }, { "date": "2004-10-31", "value": 12.16 }, { "date": "2004-11-30", "value": 12.32 }, { "date": "2004-12-31", "value": 12.48 }, { "date": "2005-01-31", "value": 12.61 }, { "date": "2005-02-28", "value": 12.73 }, { "date": "2005-03-31", "value": 12.82 }, { "date": "2005-04-30", "value": 12.91 }, { "date": "2005-05-31", "value": 12.98 }, { "date": "2005-06-30", "value": 13.05 }, { "date": "2005-07-31", "value": 13.11 }, { "date": "2005-08-31", "value": 13.17 }, { "date": "2005-09-30", "value": 13.22 }, { "date": "2005-10-31", "value": 13.28 }, { "date": "2005-11-30", "value": 13.33 }, { "date": "2005-12-31", "value": 13.38 }, { "date": "2006-01-31", "value": 13.43 }, { "date": "2006-02-28", "value": 13.48 }, { "date": "2006-03-31", "value": 13.54 }, { "date": "2006-04-30", "value": 13.6 }, { "date": "2006-05-31", "value": 13.64 }, { "date": "2006-06-30", "value": 13.68 }, { "date": "2006-07-31", "value": 13.66 }, { "date": "2006-08-31", "value": 13.63 }, { "date": "2006-09-30", "value": 13.56 }, { "date": "2006-10-31", "value": 13.48 }, { "date": "2006-11-30", "value": 13.43 }, { "date": "2006-12-31", "value": 13.38 }, { "date": "2007-01-31", "value": 13.38 }, { "date": "2007-02-28", "value": 13.39 }, { "date": "2007-03-31", "value": 13.44 }, { "date": "2007-04-30", "value": 13.5 }, { "date": "2007-05-31", "value": 13.59 }, { "date": "2007-06-30", "value": 13.69 }, { "date": "2007-07-31", "value": 13.8 }, { "date": "2007-08-31", "value": 13.92 }, { "date": "2007-09-30", "value": 14.02 }, { "date": "2007-10-31", "value": 14.12 }, { "date": "2007-11-30", "value": 14.16 }, { "date": "2007-12-31", "value": 14.21 }, { "date": "2008-01-31", "value": 14.21 }, { "date": "2008-02-29", "value": 14.2 }, { "date": "2008-03-31", "value": 14.15 }, { "date": "2008-04-30", "value": 14.1 }, { "date": "2008-05-31", "value": 14.03 }, { "date": "2008-06-30", "value": 13.95 }, { "date": "2008-07-31", "value": 13.87 }, { "date": "2008-08-31", "value": 13.8 }, { "date": "2008-09-30", "value": 13.73 }, { "date": "2008-10-31", "value": 13.67 }, { "date": "2008-11-30", "value": 13.6 }, { "date": "2008-12-31", "value": 13.54 }, { "date": "2009-01-31", "value": 13.5 }, { "date": "2009-02-28", "value": 13.46 }, { "date": "2009-03-31", "value": 13.46 }, { "date": "2009-04-30", "value": 13.46 }, { "date": "2009-05-31", "value": 13.48 }, { "date": "2009-06-30", "value": 13.51 }, { "date": "2009-07-31", "value": 13.51 }, { "date": "2009-08-31", "value": 13.51 }, { "date": "2009-09-30", "value": 13.45 }, { "date": "2009-10-31", "value": 13.4 }, { "date": "2009-11-30", "value": 13.39 }, { "date": "2009-12-31", "value": 13.38 }, { "date": "2010-01-31", "value": 13.44 }, { "date": "2010-02-28", "value": 13.5 }, { "date": "2010-03-31", "value": 13.61 }, { "date": "2010-04-30", "value": 13.73 }, { "date": "2010-05-31", "value": 13.95 }, { "date": "2010-06-30", "value": 14.16 }, { "date": "2010-07-31", "value": 14.52 }, { "date": "2010-08-31", "value": 14.87 }, { "date": "2010-09-30", "value": 15.32 }, { "date": "2010-10-31", "value": 15.77 }, { "date": "2010-11-30", "value": 16.19 }, { "date": "2010-12-31", "value": 16.6 }, { "date": "2011-01-31", "value": 16.9 }, { "date": "2011-02-28", "value": 17.21 }, { "date": "2011-03-31", "value": 17.44 }, { "date": "2011-04-30", "value": 17.67 }, { "date": "2011-05-31", "value": 17.86 }, { "date": "2011-06-30", "value": 18.06 }, { "date": "2011-07-31", "value": 18.17 }, { "date": "2011-08-31", "value": 18.27 }, { "date": "2011-09-30", "value": 18.26 }, { "date": "2011-10-31", "value": 18.25 }, { "date": "2011-11-30", "value": 18.21 }, { "date": "2011-12-31", "value": 18.16 }, { "date": "2012-01-31", "value": 18.12 }, { "date": "2012-02-29", "value": 18.08 }, { "date": "2012-03-31", "value": 18.02 }, { "date": "2012-04-30", "value": 17.95 }, { "date": "2012-05-31", "value": 17.86 }, { "date": "2012-06-30", "value": 17.77 }, { "date": "2012-07-31", "value": 17.69 }, { "date": "2012-08-31", "value": 17.62 }, { "date": "2012-09-30", "value": 17.58 }, { "date": "2012-10-31", "value": 17.55 }, { "date": "2012-11-30", "value": 17.52 }, { "date": "2012-12-31", "value": 17.49 }, { "date": "2013-01-31", "value": 17.45 }, { "date": "2013-02-28", "value": 17.41 }, { "date": "2013-03-31", "value": 17.35 }, { "date": "2013-04-30", "value": 17.29 }, { "date": "2013-05-31", "value": 17.17 }, { "date": "2013-06-30", "value": 17.05 }, { "date": "2013-07-31", "value": 16.89 }, { "date": "2013-08-31", "value": 16.73 }, { "date": "2013-09-30", "value": 16.6 }, { "date": "2013-10-31", "value": 16.47 }, { "date": "2013-11-30", "value": 16.38 }, { "date": "2013-12-31", "value": 16.28 }, { "date": "2014-01-31", "value": 16.22 }, { "date": "2014-02-28", "value": 16.15 }, { "date": "2014-03-31", "value": 16.17 }, { "date": "2014-04-30", "value": 16.18 }, { "date": "2014-05-31", "value": 16.27 }, { "date": "2014-06-30", "value": 16.37 }, { "date": "2014-07-31", "value": 16.5 }, { "date": "2014-08-31", "value": 16.63 }, { "date": "2014-09-30", "value": 16.75 }, { "date": "2014-10-31", "value": 16.88 }, { "date": "2014-11-30", "value": 17.02 }, { "date": "2014-12-31", "value": 17.16 }, { "date": "2015-01-31", "value": 17.3 }, { "date": "2015-02-28", "value": 17.44 }, { "date": "2015-03-31", "value": 17.56 }, { "date": "2015-04-30", "value": 17.67 }, { "date": "2015-05-31", "value": 17.81 }, { "date": "2015-06-30", "value": 17.95 }, { "date": "2015-07-31", "value": 18.14 }, { "date": "2015-08-31", "value": 18.32 }, { "date": "2015-09-30", "value": 18.43 }, { "date": "2015-10-31", "value": 18.54 }, { "date": "2015-11-30", "value": 18.59 }, { "date": "2015-12-31", "value": 18.64 }, { "date": "2016-01-31", "value": 18.67 }, { "date": "2016-02-29", "value": 18.71 }, { "date": "2016-03-31", "value": 18.71 }, { "date": "2016-04-30", "value": 18.7 }, { "date": "2016-05-31", "value": 18.62 }, { "date": "2016-06-30", "value": 18.53 }, { "date": "2016-07-31", "value": 18.54 }, { "date": "2016-08-31", "value": 18.55 }, { "date": "2016-09-30", "value": 18.62 }, { "date": "2016-10-31", "value": 18.7 }, { "date": "2016-11-30", "value": 18.78 }, { "date": "2016-12-31", "value": 18.87 }, { "date": "2017-01-31", "value": 18.96 }, { "date": "2017-02-28", "value": 19.06 }, { "date": "2017-03-31", "value": 19.17 }, { "date": "2017-04-30", "value": 19.27 }]
-	  }, {
-	    "term": "Ear pain",
-	    "points": [{ "date": "2003-12-31", "value": 3.31 }, { "date": "2004-01-31", "value": 3.42 }, { "date": "2004-02-29", "value": 3.53 }, { "date": "2004-03-31", "value": 3.63 }, { "date": "2004-04-30", "value": 3.73 }, { "date": "2004-05-31", "value": 3.83 }, { "date": "2004-06-30", "value": 3.92 }, { "date": "2004-07-31", "value": 4.02 }, { "date": "2004-08-31", "value": 4.12 }, { "date": "2004-09-30", "value": 4.21 }, { "date": "2004-10-31", "value": 4.31 }, { "date": "2004-11-30", "value": 4.34 }, { "date": "2004-12-31", "value": 4.38 }, { "date": "2005-01-31", "value": 4.39 }, { "date": "2005-02-28", "value": 4.4 }, { "date": "2005-03-31", "value": 4.4 }, { "date": "2005-04-30", "value": 4.4 }, { "date": "2005-05-31", "value": 4.41 }, { "date": "2005-06-30", "value": 4.41 }, { "date": "2005-07-31", "value": 4.42 }, { "date": "2005-08-31", "value": 4.42 }, { "date": "2005-09-30", "value": 4.42 }, { "date": "2005-10-31", "value": 4.42 }, { "date": "2005-11-30", "value": 4.41 }, { "date": "2005-12-31", "value": 4.41 }, { "date": "2006-01-31", "value": 4.41 }, { "date": "2006-02-28", "value": 4.4 }, { "date": "2006-03-31", "value": 4.4 }, { "date": "2006-04-30", "value": 4.41 }, { "date": "2006-05-31", "value": 4.41 }, { "date": "2006-06-30", "value": 4.42 }, { "date": "2006-07-31", "value": 4.42 }, { "date": "2006-08-31", "value": 4.42 }, { "date": "2006-09-30", "value": 4.42 }, { "date": "2006-10-31", "value": 4.42 }, { "date": "2006-11-30", "value": 4.42 }, { "date": "2006-12-31", "value": 4.41 }, { "date": "2007-01-31", "value": 4.41 }, { "date": "2007-02-28", "value": 4.41 }, { "date": "2007-03-31", "value": 4.41 }, { "date": "2007-04-30", "value": 4.41 }, { "date": "2007-05-31", "value": 4.42 }, { "date": "2007-06-30", "value": 4.42 }, { "date": "2007-07-31", "value": 4.43 }, { "date": "2007-08-31", "value": 4.43 }, { "date": "2007-09-30", "value": 4.43 }, { "date": "2007-10-31", "value": 4.44 }, { "date": "2007-11-30", "value": 4.43 }, { "date": "2007-12-31", "value": 4.43 }, { "date": "2008-01-31", "value": 4.43 }, { "date": "2008-02-29", "value": 4.44 }, { "date": "2008-03-31", "value": 4.44 }, { "date": "2008-04-30", "value": 4.44 }, { "date": "2008-05-31", "value": 4.44 }, { "date": "2008-06-30", "value": 4.44 }, { "date": "2008-07-31", "value": 4.45 }, { "date": "2008-08-31", "value": 4.45 }, { "date": "2008-09-30", "value": 4.5 }, { "date": "2008-10-31", "value": 4.54 }, { "date": "2008-11-30", "value": 4.62 }, { "date": "2008-12-31", "value": 4.71 }, { "date": "2009-01-31", "value": 4.8 }, { "date": "2009-02-28", "value": 4.89 }, { "date": "2009-03-31", "value": 4.98 }, { "date": "2009-04-30", "value": 5.07 }, { "date": "2009-05-31", "value": 5.16 }, { "date": "2009-06-30", "value": 5.25 }, { "date": "2009-07-31", "value": 5.31 }, { "date": "2009-08-31", "value": 5.38 }, { "date": "2009-09-30", "value": 5.39 }, { "date": "2009-10-31", "value": 5.41 }, { "date": "2009-11-30", "value": 5.41 }, { "date": "2009-12-31", "value": 5.41 }, { "date": "2010-01-31", "value": 5.41 }, { "date": "2010-02-28", "value": 5.4 }, { "date": "2010-03-31", "value": 5.4 }, { "date": "2010-04-30", "value": 5.41 }, { "date": "2010-05-31", "value": 5.42 }, { "date": "2010-06-30", "value": 5.44 }, { "date": "2010-07-31", "value": 5.49 }, { "date": "2010-08-31", "value": 5.54 }, { "date": "2010-09-30", "value": 5.63 }, { "date": "2010-10-31", "value": 5.72 }, { "date": "2010-11-30", "value": 5.81 }, { "date": "2010-12-31", "value": 5.9 }, { "date": "2011-01-31", "value": 5.99 }, { "date": "2011-02-28", "value": 6.08 }, { "date": "2011-03-31", "value": 6.17 }, { "date": "2011-04-30", "value": 6.26 }, { "date": "2011-05-31", "value": 6.33 }, { "date": "2011-06-30", "value": 6.4 }, { "date": "2011-07-31", "value": 6.42 }, { "date": "2011-08-31", "value": 6.43 }, { "date": "2011-09-30", "value": 6.43 }, { "date": "2011-10-31", "value": 6.43 }, { "date": "2011-11-30", "value": 6.43 }, { "date": "2011-12-31", "value": 6.43 }, { "date": "2012-01-31", "value": 6.43 }, { "date": "2012-02-29", "value": 6.43 }, { "date": "2012-03-31", "value": 6.44 }, { "date": "2012-04-30", "value": 6.45 }, { "date": "2012-05-31", "value": 6.48 }, { "date": "2012-06-30", "value": 6.51 }, { "date": "2012-07-31", "value": 6.59 }, { "date": "2012-08-31", "value": 6.67 }, { "date": "2012-09-30", "value": 6.75 }, { "date": "2012-10-31", "value": 6.84 }, { "date": "2012-11-30", "value": 6.93 }, { "date": "2012-12-31", "value": 7.02 }, { "date": "2013-01-31", "value": 7.11 }, { "date": "2013-02-28", "value": 7.2 }, { "date": "2013-03-31", "value": 7.28 }, { "date": "2013-04-30", "value": 7.36 }, { "date": "2013-05-31", "value": 7.39 }, { "date": "2013-06-30", "value": 7.41 }, { "date": "2013-07-31", "value": 7.42 }, { "date": "2013-08-31", "value": 7.42 }, { "date": "2013-09-30", "value": 7.42 }, { "date": "2013-10-31", "value": 7.42 }, { "date": "2013-11-30", "value": 7.42 }, { "date": "2013-12-31", "value": 7.41 }, { "date": "2014-01-31", "value": 7.41 }, { "date": "2014-02-28", "value": 7.4 }, { "date": "2014-03-31", "value": 7.41 }, { "date": "2014-04-30", "value": 7.42 }, { "date": "2014-05-31", "value": 7.48 }, { "date": "2014-06-30", "value": 7.54 }, { "date": "2014-07-31", "value": 7.63 }, { "date": "2014-08-31", "value": 7.73 }, { "date": "2014-09-30", "value": 7.81 }, { "date": "2014-10-31", "value": 7.89 }, { "date": "2014-11-30", "value": 7.99 }, { "date": "2014-12-31", "value": 8.08 }, { "date": "2015-01-31", "value": 8.18 }, { "date": "2015-02-28", "value": 8.27 }, { "date": "2015-03-31", "value": 8.32 }, { "date": "2015-04-30", "value": 8.38 }, { "date": "2015-05-31", "value": 8.39 }, { "date": "2015-06-30", "value": 8.4 }, { "date": "2015-07-31", "value": 8.4 }, { "date": "2015-08-31", "value": 8.4 }, { "date": "2015-09-30", "value": 8.4 }, { "date": "2015-10-31", "value": 8.4 }, { "date": "2015-11-30", "value": 8.4 }, { "date": "2015-12-31", "value": 8.41 }, { "date": "2016-01-31", "value": 8.4 }, { "date": "2016-02-29", "value": 8.4 }, { "date": "2016-03-31", "value": 8.4 }, { "date": "2016-04-30", "value": 8.41 }, { "date": "2016-05-31", "value": 8.45 }, { "date": "2016-06-30", "value": 8.5 }, { "date": "2016-07-31", "value": 8.6 }, { "date": "2016-08-31", "value": 8.7 }, { "date": "2016-09-30", "value": 8.8 }, { "date": "2016-10-31", "value": 8.9 }, { "date": "2016-11-30", "value": 8.99 }, { "date": "2016-12-31", "value": 9.09 }, { "date": "2017-01-31", "value": 9.18 }, { "date": "2017-02-28", "value": 9.28 }, { "date": "2017-03-31", "value": 9.39 }, { "date": "2017-04-30", "value": 9.49 }]
-	  }]
-	};
-
-	var averages = exports.averages = [[{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/059s97", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gh0x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07x_xw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/0lxt", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ft1_3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09d7vk", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9shd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r0j6j", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b8v9f", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0kfyl_5", "value": 1 }], [{ "term": "/m/01j4hd", "value": 32 }, { "term": "/m/0f8fc", "value": 55 }], [{ "term": "/m/01j4hd", "value": 10 }, { "term": "/m/02tfl8", "value": 55 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08x47t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08hpp7", "value": 4 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/0lxt", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026__2h", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025sjm9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06nyl4", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036b82", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06tbxm", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ryshn1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065tzg", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02gwty", "value": 20 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/0jwqt", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jbylc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05ztxfr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04r3p5", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m9zsx", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03545w", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03k275", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06wcg0z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/054xgp", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h3sypv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08g5r9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0wqdl_y", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/045hv5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03clsld", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02h98q", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05sfr2", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/016q5d", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07gylr", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0crhgf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gdzpf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jwvhgg", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gkfrn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0263nnq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01dzyw", "value": 6 }], [{ "term": "/m/01j4hd", "value": 46 }, { "term": "/m/0122t", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g6q2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05nn1b", "value": 2 }], [{ "term": "/m/01j4hd", "value": 14 }, { "term": "/m/012jc", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019szr", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02gwvb", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cvcl5", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04v6d0", "value": 3 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/0fd23", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/096m74", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01r718", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01t4q6", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05wt36", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036bqx", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02s64_", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c10rl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01j62y", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01j4hd", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07_vwb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/051vhjt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02gscl", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jtyb", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036br7", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03bxghw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/0lcdk", "value": 78 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01hr6t", "value": 12 }], [{ "term": "/m/01j4hd", "value": 66 }, { "term": "/m/0hg45", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gh8htd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03tlvj", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w1m45", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t9q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/099686", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01nvfh", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gxt1", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08mh71", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q6sdc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0brgy", "value": 45 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0m7pl", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0504pv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/056x7r", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02m3p2", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02l4fy", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f74cm", "value": 4 }], [{ "term": "/m/01j4hd", "value": 10 }, { "term": "/m/0k_9", "value": 57 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cz8y2h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01y4zk", "value": 45 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0831jw", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0wnw", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025s02j", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b1frk", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01mr85", "value": 36 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0flz_", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rfs8c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/041r6g", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06stpj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036dkg", "value": 1 }], [{ "term": "/m/01j4hd", "value": 20 }, { "term": "/m/0t1t", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j_6ngk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0nrd_", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07nsp9", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q2tjp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01c24r", "value": 35 }], [{ "term": "/m/01j4hd", "value": 23 }, { "term": "/m/09cds", "value": 51 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/0p7w5", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pkly", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/077dxt", "value": 3 }], [{ "term": "/m/01j4hd", "value": 16 }, { "term": "/m/0c78m", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0chf1d", "value": 57 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02z63fn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0l95", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hrw8", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08bp0k", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07k9v9w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/053y02n", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/034y_l", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hfxpg", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/090dzh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07ms80", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04dx3qn", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b1p89", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/089ks8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0405mqw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03rsgd", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01_4_n", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01sbgb", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh6svk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dn4_", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qdg9h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08z394", "value": 1 }], [{ "term": "/m/01j4hd", "value": 20 }, { "term": "/m/0142ky", "value": 69 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02nrsk", "value": 5 }], [{ "term": "/m/01j4hd", "value": 30 }, { "term": "/m/01glh", "value": 85 }], [{ "term": "/m/01j4hd", "value": 45 }, { "term": "/m/025hzf", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0180jb", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q5q8s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03h32hp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03whwhg", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bhbpzh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/078yyj8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04zxhhc", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/069j_5", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04rjcm", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pcqt7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bcyvy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025t67z", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bs79cp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4v_n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dxdd", "value": 25 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07468xh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/099t0f", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026stnc", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04cy_nk", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012ngbtr", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p4bk3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01t96l", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05d44n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01ljf2", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03z3vp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065wv1", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05tcsy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075bd16", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pnflk", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sch", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x4tcb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vzj_r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 10 }, { "term": "/m/012n6x", "value": 71 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037mv0", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dfmqkt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dg4snt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rtqbt", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08k14_", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064kj9p", "value": 42 }], [{ "term": "/m/01j4hd", "value": 24 }, { "term": "/m/01k1jq", "value": 53 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/011dzgb6", "value": 55 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05zy6c", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dlqb4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tjl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08cmfm", "value": 51 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q5s6", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b0h7r", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qgnm2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hsr1_z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mxl64", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mr6t", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j63q7l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03g_gxj", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jyxg", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027clgs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037ywk", "value": 30 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/03xp5n", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075yfz6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/03fz1q", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01t125", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04nlqr1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01j6mj", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08zy9f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/045hxd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cfb2d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fmphf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r0rdw", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01vzqb", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01hrdy", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0mdcl", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01r__", "value": 28 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08hy81", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01sbk1", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019m0c", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_81f", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fjyf", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pdgz2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012bldgw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025t7qd", "value": 5 }], [{ "term": "/m/01j4hd", "value": 62 }, { "term": "/m/080fvq7", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06pp7p", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02z1qhl", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p78x6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01w_2w", "value": 11 }], [{ "term": "/m/01j4hd", "value": 25 }, { "term": "/m/047gmsk", "value": 55 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/073m9q", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027bt0g", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027_4wl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_5n7", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07k9wg7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03vwc5", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p86vp", "value": 2 }], [{ "term": "/m/01j4hd", "value": 26 }, { "term": "/m/02zpsl", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07qwnz", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g9_2pv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/039412", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0149nm", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02777pt", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qb7yy", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09l_s7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 15 }, { "term": "/m/027vd9", "value": 50 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01l2ky", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_3c6", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/034z18", "value": 56 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pcm9t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01wxhm", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04xkg4", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025t1sl", "value": 35 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/042yl7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/042m3q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01l2l9", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qxxsk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dllzqv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 17 }, { "term": "/m/020gv", "value": 82 }], [{ "term": "/m/01j4hd", "value": 40 }, { "term": "/m/05frfm", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mrndk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/049wbg", "value": 1 }], [{ "term": "/m/01j4hd", "value": 56 }, { "term": "/m/0gg4h", "value": 24 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/01pf6", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08fnwn", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08_51g", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04g1lmg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cdrvd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 51 }, { "term": "/m/0fl_v", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p44wb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p45xp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c9w3f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07f_8c", "value": 3 }], [{ "term": "/m/01j4hd", "value": 49 }, { "term": "/m/0m7h6", "value": 78 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01lxx", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04yb5z", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qbn93", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0276115", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0268v", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02vkcrn", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gq6ht", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0219bz", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011q1xpz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d4x24", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05f344r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 30 }, { "term": "/m/0d_bk", "value": 51 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh9rhf", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02vlfrb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/020v3l", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08h6km", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jkys2b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gf8g", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q2xk1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01ny_v", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mvdfs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08ydrl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gj51x", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jr5f", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qkht2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065yks4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 40 }, { "term": "/m/02np4v", "value": 61 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06gx48m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036k30", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02mdc7", "value": 60 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0168pw", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07t2pp", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bwjd87", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021xcm", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d70n", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bltj", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01dl8m", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d0r78", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09vnrh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dfmqm9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06h43j3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh8c4z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012clh", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02z2637", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/043jxv5", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08ssqs", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0407j6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02ql75c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gh89fc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 60 }, { "term": "/m/097ns", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cg61", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c1gt", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4w6s", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w3jkd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jpnx", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02zdnj", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02cxr0", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02656gy", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075v3bx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mpx0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03qc8xf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065b00", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031c9y", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n2zp", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02py0vt", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c607t", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dfmqlr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/043hy3", "value": 82 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026gdg4", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03nmgjv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0glrsmb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0kg1nvy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/022xh", "value": 46 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/01qw1", "value": 53 }], [{ "term": "/m/01j4hd", "value": 25 }, { "term": "/m/02ry9q", "value": 39 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/0n073", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011smvs0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01j0hs", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cpdgx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0281lfw", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0240_y", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02v_hky", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fmtx", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0czbwwx", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0371d4", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06kqbx", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h976q1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03k22s", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b6hxcj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dljk3n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 29 }, { "term": "/m/0c36_", "value": 69 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/016kf9", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gj9_k1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f49cb", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04lcpr5", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04gpkvs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02gp9x", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bcsx9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0260nq7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0zdt17d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07ldcz", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05szbzm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0rfdr0v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/089r8q", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c532h", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09d1md", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qd609", "value": 0 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/01b_21", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qvqc7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02lmr4", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_hvl2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/023rn8", "value": 12 }], [{ "term": "/m/01j4hd", "value": 16 }, { "term": "/m/024_yy", "value": 62 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f7377", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b6l7_3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064qvry", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02ssz2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0x28640", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05bws4", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/028bw97", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j29g86", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/090wkz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/0463cq4", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04zjj3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025nm6", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08k_24", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gr4q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04rs9k", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bj54", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0mzm2", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011nkgqd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 53 }, { "term": "/m/08cqsh", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c_0xv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h3xwcs", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021fq9", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/028c4n", "value": 1 }], [{ "term": "/m/01j4hd", "value": 15 }, { "term": "/m/019rnl", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bs68yq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046j0s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_3lh", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q969m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fltf4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09z36s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/022y19", "value": 48 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08yzsq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05blz8d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gl4kp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0660m0", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c3c74", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_mn93", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s30", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0266tn8", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f2l74", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r3jk", "value": 57 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_mncd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08phwv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0383j_", "value": 27 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/014961", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08x7wr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 65 }, { "term": "/m/03dcyh", "value": 56 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_nxt", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/014qfd", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fpnjr", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0xnpq", "value": 48 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01l7xz", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021246", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019fy6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 24 }, { "term": "/m/09klv", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pc1dr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bg74m", "value": 8 }], [{ "term": "/m/01j4hd", "value": 65 }, { "term": "/m/073t8x", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d7gj3", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01sydv", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01zn1_", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027cv8v", "value": 3 }], [{ "term": "/m/01j4hd", "value": 7 }, { "term": "/m/03f_cb", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wv6r8", "value": 5 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/06x09g", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06djbj", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gn45k", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pbx5", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q4mnc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06xd3t", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c5s4", "value": 16 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/0c58k", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064r6nt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01q1s3", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04y94ty", "value": 0 }], [{ "term": "/m/01j4hd", "value": 7 }, { "term": "/m/0f3kl", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pv6ym", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b2cbl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/055lbw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0sghsdb", "value": 4 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/02b_m", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sx_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sw9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tkg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j7mdyv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03x17h", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01lsjf", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075v2rl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/076vs5y", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06mfqk", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tl2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9scp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jjrv", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02l_0n", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07bc25", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d4g_5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fm4gj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09rx552", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cyjcw", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gnl_f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/033mg5", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q6cvf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019bfk", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0crl43", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026y632", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q854j", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027fpnw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c7tsn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ckn0", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9svf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sgp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g9_00t", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mt1m8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036l18", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/076t2pw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/010vmq", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ygz2", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02510j", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07yl6y", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h3bn", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0264gx3", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04cslz", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01d3gn", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_xjz", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0255t_", "value": 51 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04czcv_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01qqq7", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01bztl", "value": 36 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07_7w6", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/055f85", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh6_0r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_x8m", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03wblc", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05vywy", "value": 51 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9szn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b6rk9", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03y0cn", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09b6_7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04_03f6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 30 }, { "term": "/m/0j80c", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bqhl7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/063ykc9", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04crjg4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/070kyz", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0rytkmx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/092b1g", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06x7t9c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b3n_k", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01hz11", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04y8g5q", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09c_t", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/022tc0", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0298jv", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rc7qj", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075k1p8", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08tgvr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cwyf3", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4wgq", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gs1mr", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08bvg8", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gq2nq", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jmy5", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/014x2z", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mw9m", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tjd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sc2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 25 }, { "term": "/m/02vrr", "value": 69 }], [{ "term": "/m/01j4hd", "value": 32 }, { "term": "/m/06rhk", "value": 56 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r3mv3", "value": 2 }], [{ "term": "/m/01j4hd", "value": 35 }, { "term": "/m/03tkm", "value": 75 }], [{ "term": "/m/01j4hd", "value": 46 }, { "term": "/m/03q5_w", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02mcv2", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wqbz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bzv6k", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/054gfnh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04nb5w", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03s352", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08fm2f", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09f0sx", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_3gg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04r4mtm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hcpy", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04trfb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_m2p", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047gmhy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0340vp", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01b_b2", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0184pc", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4yqp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rj8by", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mxfh7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08zgjt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07bblt", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dfmqjh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02y_82q", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d83xlw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05k5sc", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011b6z0v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sbc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mjhy", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/099x_8", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gkmws", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02yj5k", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qcf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06zxb3j", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sgx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05fs77x", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t6m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07v7rh", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02893yq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06w28x3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mpk9", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4wlx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09z409", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9smd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07t7mr3", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_jyjk", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qm5h6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05xf16", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f32c6", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03wzc0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0248jp", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/062phb", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0285p8k", "value": 0 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/01j6t0", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dfmqjz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/03s7fs", "value": 49 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/02xrl", "value": 49 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026r7rc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0278ng9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gq6y_", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09jw9n", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/013q86", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/018h28", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qcx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05v24jd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sg9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075v3x9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sg2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tf6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03bx9gs", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02sj16", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/051ztp2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/068940", "value": 1 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/0cjf0", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0118lbwm", "value": 6 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/01v3ks", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03nq4p", "value": 27 }], [{ "term": "/m/01j4hd", "value": 2 }, { "term": "/m/04y6tl1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t7l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qkp38", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06jb7p", "value": 5 }], [{ "term": "/m/01j4hd", "value": 29 }, { "term": "/m/06vg9d", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_pz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08vvjv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/018j1l", "value": 35 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/028n_3", "value": 38 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0286bt0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dt6ml", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03281", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04sws8", "value": 5 }], [{ "term": "/m/01j4hd", "value": 53 }, { "term": "/m/0b76y0", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bcwy3", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sn8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q52l8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04kfh3v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05bl1h2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02p4g5n", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bdpwk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064f42c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04crvkn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q7xv8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j642f1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jkg8w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fyd3", "value": 50 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06h44t6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c3_wg5", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027m5l6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05l1p0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c2y05", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0213yl", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pb2q", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02ybr", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f1nj8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06zlvw6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06h94m", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03xmsb", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f87zq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/01q6mh", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jj75", "value": 25 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pwkv7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 61 }, { "term": "/m/0h_b7zb", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01ppr8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0401r0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 29 }, { "term": "/m/03y91v", "value": 66 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/01b_5g", "value": 78 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03njtl", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02kd1ry", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04zh6_3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w1n2", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0268flm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r6d3v", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02zr3h", "value": 25 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05my3h5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/077598r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/019thv", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03pk5z", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03p2br", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07s7n", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jmvq", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02vl6qv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dr8s9", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01d20w", "value": 38 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b7n41", "value": 0 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/05__9r", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0chqj1", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0czdw5", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04gfv_", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07ckc_", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fkvcg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021tw2", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pcqg", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036zm", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p6gjd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f12tc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02p9mm9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t0p53", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08kn5j", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ck2w", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05sz3_h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qlx7x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/0ffxt", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046b2p", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cn9fh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/041cwm", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/029fv3", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cvpr9", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fl3qm", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0nbv1vz", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075g6sb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0515k0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q5pbx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t17", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j26_bj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02xh6k", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036s6", "value": 36 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9thm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c3rty", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01q1wv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07cszr", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02675h9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/03bwzh1", "value": 50 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b0f3b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d3gy", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026f2g_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_mrn4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cdg94", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03vwp3", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025yfnl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9snq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t5l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sp5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05v7ktz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q2vg0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t9_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 6 }, { "term": "/m/0j5fv", "value": 56 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/014wq_", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04tnmgr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031q2c", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mysbq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 44 }, { "term": "/m/01l2m3", "value": 79 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jg1z", "value": 45 }], [{ "term": "/m/01j4hd", "value": 33 }, { "term": "/m/01bfsv", "value": 59 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0rpj80_", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026qjtk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/051ynwt", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/054s8y", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/084stp", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c58b0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03jcdy", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n2t1", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01p1by", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n2gk", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/032ssz", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bblkc", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02sc7d", "value": 60 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03h1038", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03j3s", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0r3w6pn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04n8p1", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ttjj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j8q4", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02skgx", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g9qbf", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01g920", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w7_tf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06rt3n", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04gvbrl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046cxb", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/055_gj", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0273jfd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vqzq", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03zr21", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02clhl", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03y9lb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w_rc", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031ryh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/02p3nc", "value": 64 }], [{ "term": "/m/01j4hd", "value": 56 }, { "term": "/m/02497k", "value": 49 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tl9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0135xpqd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_9btt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hkgqq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/074fyv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ps0b", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05f44rg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 34 }, { "term": "/m/03nky3", "value": 77 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08fkxt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c2pby", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08ytrd", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04125r2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q33th", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q27cv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04v0fj", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06gfc6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02p74_2", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/033488", "value": 43 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04n3pf3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/0135xt", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q4106", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q9wp1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036mdg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04vy02", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01cw5r", "value": 38 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04txf7", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04xpzs", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08859_", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03z_m7", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02p0x7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04n7g6q", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02k540", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03bxj79", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02hlph", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02k7pj", "value": 45 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c4304", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06t7dc", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gty88", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0btccj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j_5n3_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0kfqw", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02hgsj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03jbly", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037h0g", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05qymp", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027p8_f", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05f45h", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b9f_5", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03xr5j", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x39__", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06wcg52", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02731s6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/042g01", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046z7d", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bl90", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fpjgc1", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01g5ln", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cfcn", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wwvw", "value": 2 }], [{ "term": "/m/01j4hd", "value": 12 }, { "term": "/m/0k95h", "value": 79 }], [{ "term": "/m/01j4hd", "value": 43 }, { "term": "/m/0k10t", "value": 21 }], [{ "term": "/m/01j4hd", "value": 61 }, { "term": "/m/03hz0", "value": 83 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/092xnv", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04lj5j", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_sbz", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04czf0w", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02vrdn", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02hl8g", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021m_f", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/085x_0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08dkq0", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01_wn1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0255l5", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09bl05", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h1gt3g", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02k53m", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0463t6w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0df47x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027q6ds", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qgl1w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 54 }, { "term": "/m/03gwt", "value": 84 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038k4x", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j_33wy", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04yfs7", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03vmt0", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_8j3", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bk6q", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ht87t7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0412nq4", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0262l9q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0340yl", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbv3wx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/048hpn", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dr4b5", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fjwcj", "value": 1 }], [{ "term": "/m/01j4hd", "value": 45 }, { "term": "/m/02hvph", "value": 76 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012rps", "value": 32 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/0hg11", "value": 78 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03wbww", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09_m33", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02fwvl", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02hwb2", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025sd3c", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gns", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cdwzx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wgfv", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0443mq", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011q023m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tjv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s9q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02yg4w", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/016mlj", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0mzty", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/013027b9", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d5xbx", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9szx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t8x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04zvx6w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t2h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04tnn60", "value": 0 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/04kl78", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02vnfx", "value": 68 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/098s1", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c9vn", "value": 10 }], [{ "term": "/m/01j4hd", "value": 38 }, { "term": "/m/018g78", "value": 73 }], [{ "term": "/m/01j4hd", "value": 11 }, { "term": "/m/0j7_w", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x0yg", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05_5py4", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cmmcy", "value": 43 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9spk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/0ddwt", "value": 79 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/09fz4", "value": 62 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ccqn_", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04qydt", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02xb32", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08hkdc", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gkds8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05l4gz", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9th4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bj09q", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0401rc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08g5q7", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01g45j", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h7msvs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pdffb", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mrtv4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/071nxk", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jy9m", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/014x04", "value": 47 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n_ct", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s_l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05bm66n", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/083h_x", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t28b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025r6w", "value": 23 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/02gr6s", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026f2q6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 7 }, { "term": "/m/04kllm9", "value": 55 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0654nrv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0775b_h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 53 }, { "term": "/m/0hgxh", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012n8p91", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q9ykd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b74b60", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p2zl8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/021hck", "value": 45 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/088b11", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s7p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03f3w1", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q61pp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bqpg", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036mhw", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046y3g", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q7d_4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02dfr6", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09rvk1t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ck_v6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j7l6mj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02mwg6", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/095xr2", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b6n52c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02kb_v7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 62 }, { "term": "/m/01psyx", "value": 80 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t4p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 29 }, { "term": "/m/09hbx", "value": 71 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b1qcr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03bxmbn", "value": 3 }], [{ "term": "/m/01j4hd", "value": 51 }, { "term": "/m/09v868h", "value": 60 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbvr3p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gffcz", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q5xyj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gj4qx", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038d_j", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/036mkm", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03f1lf", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02jrl1", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gtxsrh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4z32", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09k6f04", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06wfn90", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sy8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fp3b", "value": 59 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q3xhg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q49dz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04g22n", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vz7h7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbvqnv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02l37c", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047bx2y", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08zhxx", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/063_d30", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0703vzb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 57 }, { "term": "/m/02qwpq0", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09k76g", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04dxph", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s41", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08zm6q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/01w0hx", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012815pn", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bswkr", "value": 1 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/04psf", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0642tmh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03btw1", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03zrfj", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03l365", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06kjt9", "value": 46 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064v9c", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064n9x", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/079p0q", "value": 28 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hzqvxv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02v_qsl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04plrq", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0286w6_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tgq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jh911", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01l2st", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03yztw", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0958cm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_27m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cz8jtj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wrk9", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06ztvxs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02psvcf", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t2y", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04lf42r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/014mtn", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09v4pxz", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c7vv", "value": 35 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_039", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vymcn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06wfz5f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04rkydh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 20 }, { "term": "/m/020hwm", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s49", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04ct6c6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh8863", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q_qps", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03txkl", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08sx5r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/057nwjj", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07475k7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/072b9px", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05f4z9f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04r36", "value": 25 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08z6j9", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jn3l", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cs5n6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fltlr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_wdw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/049z6g", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07b8s3", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/069j2k", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05lrqf", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_78v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04csj2b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/02bft", "value": 79 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bf0tv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03f07j", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0418s3", "value": 25 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0tkcw_z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04t_81", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03bx917", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01m4w4", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06r0ps", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05417", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01srx9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_kz_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075yg4y", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f68fy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d2x17", "value": 31 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f9f42", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbl62", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07qctz", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04f2b7p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/057vp", "value": 49 }], [{ "term": "/m/01j4hd", "value": 51 }, { "term": "/m/0dc28", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04z9bf", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n2tg", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03z97xk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04v_ml", "value": 3 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/09d11", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031c33", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b5pfn", "value": 16 }], [{ "term": "/m/01j4hd", "value": 26 }, { "term": "/m/04x4r", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0swnk68", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04tksh", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025sktj", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j3cg_n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/059h7h", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047cg9y", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01npzs", "value": 3 }], [{ "term": "/m/01j4hd", "value": 65 }, { "term": "/m/08_6kp", "value": 80 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y7r4", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/095qsg", "value": 2 }], [{ "term": "/m/01j4hd", "value": 28 }, { "term": "/m/01hrbm", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gjf_1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ch8r9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09pv41", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_vzzv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c3y1s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fznr6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t3s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09rlb3", "value": 7 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/05904", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qdv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t8d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qd_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0527by", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03smvc", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02np4g", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mzxw", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05fc8yb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06399d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s__", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08bnqd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08vx8s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0drn8", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/022y3k", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9stt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02prmbk", "value": 2 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/01j9hg", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09lkp9", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bwgtst", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gxcc", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07873tt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05m9tg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9srn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gzn6", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s61", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9syy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03whtc", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c0g_p", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064klw1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02z08b_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0crg69x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02ql7wc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hnn3", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027jv1q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05m_jf3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0415_dy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/071ttc", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dds0h", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/046xb9", "value": 36 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/013677", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9r5h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0927l7", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s8r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04klj9n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0p8zvc5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0287zzh", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01dhgh", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019gky", "value": 38 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04_1ntx", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04vvbx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 23 }, { "term": "/m/0gk4g", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06w7x1v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_mfs", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08bbk2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04cw8c5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/058k0k", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wp6c", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c41jph", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qbnn", "value": 28 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/010pyz4s", "value": 1 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/0dvxcy", "value": 48 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mvdf9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09prs9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/05s5v6", "value": 46 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/034hsj", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05cz29", "value": 14 }], [{ "term": "/m/01j4hd", "value": 11 }, { "term": "/m/0gxb2", "value": 53 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/0m2w3", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0crhp0y", "value": 5 }], [{ "term": "/m/01j4hd", "value": 64 }, { "term": "/m/02r3cvb", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tg2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/043s7zg", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bmgh43", "value": 46 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t66", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m3q96", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c3x745", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09yql", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/074hph", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bk1jp", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06yg6t", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02py_03", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/043ryvl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01n597", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pm604", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05kzxm", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gljx", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x2gtl", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0zbvc0s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gnhp2", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jjvn", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05m_5tq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mxtkc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027ymbg", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04klgqw", "value": 35 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0272zb", "value": 18 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/0cjgc", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/096_r8", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04696g", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mv7sh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0868jh", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06gx48f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01wy8y", "value": 30 }], [{ "term": "/m/01j4hd", "value": 52 }, { "term": "/m/0905_p", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p2wz1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 44 }, { "term": "/m/02zbth", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027__kf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbmp2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012w48z4", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tg8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sm4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04970l", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01skrq", "value": 20 }], [{ "term": "/m/01j4hd", "value": 11 }, { "term": "/m/0fltx", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0m0ph75", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b0kl9", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d0_xj", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03rd74", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047glfs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011l_39k", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0997hp", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cx4hf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sfn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b743ls", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04yyq8", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06z9sn", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04b1kq", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c2p34", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0703vvz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027g3ht", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0476hh", "value": 36 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/090ryn", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b2v23", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08grsz", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bm26", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04qb4w9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064f44", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03qvff", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05pzb", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065zh_3", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04r4mtz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05blzpg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07y4xdl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04y5q8x", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06b4_8", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0wf_p0n", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047gmhk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02lmp9", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hn9q6v", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0pv4d", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06c4t0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04ndcq", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/050qm0", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wf7p", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02npcz", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04zh7_m", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03kb14", "value": 24 }], [{ "term": "/m/01j4hd", "value": 32 }, { "term": "/m/05mdx", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gk_k_6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/0743mf", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04w68t", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04kd970", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dllr8l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 60 }, { "term": "/m/01t6qr", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbvjx1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0360ph", "value": 1 }], [{ "term": "/m/01j4hd", "value": 1 }, { "term": "/m/062t2", "value": 56 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05dp09", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gk93mt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07vwp80", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06gb5_z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06qqyb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06rxny", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05sygqd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03skrx", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/071rm6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s6w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/029ggh", "value": 59 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c8wh1", "value": 1 }], [{ "term": "/m/01j4hd", "value": 56 }, { "term": "/m/0h1wz", "value": 77 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/063jn6", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01t09s", "value": 29 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/0g88b", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01c9lj", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q1s_9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04xgtj", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q8vlf", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05sj8", "value": 67 }], [{ "term": "/m/01j4hd", "value": 62 }, { "term": "/m/063zb", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qdsw7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0251gx", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01ny_g", "value": 15 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/023m3v", "value": 71 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bwj7fw", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dcs4", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065swx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gttzbm", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0711g3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t0qts", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01l954", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/089sp6", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b4v5v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/085pjw", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09szn7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05l8yp", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03750f", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064fq", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0kr76", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07kyr1", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038dtb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/059nnns", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075yg5b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hk_lf", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08z994", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0879yd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/032snl", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c012dy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 49 }, { "term": "/m/04cbz5", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027pqtp", "value": 28 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06v6kk", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w1fx", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04b586", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09g6vr0", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dkpdn", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0521vqs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tb6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075g6s4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07dlyv", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075v3bq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01rvjp", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9rz6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 14 }, { "term": "/m/0k9qw", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04c2n0", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/065_qd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gcq2w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d7sj2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 58 }, { "term": "/m/01gkcc", "value": 59 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03rwrr", "value": 18 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/01s3l8", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jzx0", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rr053", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08r62l", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038s2d", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c2dk", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02lv8g", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09p809", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07k9gz9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/067w_4", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047cfz7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07mvcp", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/059w29", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01b8zz", "value": 57 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0462xkz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bhbwcq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gr_p9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0508hk", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q1ncc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d6pnm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q7v1x", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04lgt34", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_9d1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f47kd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qwdjd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 15 }, { "term": "/m/0dq9p", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gjbz4s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01q1sz", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06hxx0", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02k88f", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02v6kp", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cx49", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gncj", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01m3h8", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sbn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sfw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/076r60r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t5t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06c4xv3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/034h9r", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ggb_w", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09qljf", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hlfpv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0615kf", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04yjg7n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03qcvl0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bl95z", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ctw0q", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c4p7_", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/035vzc", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p5_7y", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04dng0v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04l6qx", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/043s66f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025lwc", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_nx2", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c81h2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cz_hv", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04kgzqg", "value": 3 }], [{ "term": "/m/01j4hd", "value": 45 }, { "term": "/m/01qqp1", "value": 82 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_5xc6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01hjkt", "value": 31 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/01fxrj", "value": 79 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08k8yw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0n48mtn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bdky5", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ldwy", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04n4w2k", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06rf7m", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01k7nc", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gtw0t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06g3nz", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jcd6", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04cvmpm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sqm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/012zf3", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t2w3m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gk2pb", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bhc5r2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pq2mj", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07vwn8h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mvdqy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05_3zr", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026ljcg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04lg5mq", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bjszh", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q2n9f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0691c5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vxvm8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026689f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hzpvq0", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0751ss", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05c4nbg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09hgk_", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04ygjf4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p8sj", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ytmb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/098crk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 48 }, { "term": "/m/063yv", "value": 71 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03l9p5", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gdsn5", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03c15k9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b7jt4", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0260ph", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06t860", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031wv7", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0yn_knd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cg1lz", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027x98v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rxk72", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0267wp8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/087c0d", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06w5dlj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04c2m8", "value": 28 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/01s2ly", "value": 61 }], [{ "term": "/m/01j4hd", "value": 18 }, { "term": "/m/01fxyp", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0f7x8r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04_rt_", "value": 69 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08s9h0", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06w1x7x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08bp74", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08810p", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03nps17", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pfkpc", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qg2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02v2jk", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s9j", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b74tbc", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03080q", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04yfk_", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9spc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04pxm5", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tc8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tmf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tm6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08z6vk", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fv217", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fv203", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9td4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h_9sk9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05f6gm1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06phzx", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b77v22", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04tkvk", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037c4l", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jwzzd9", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019dmc", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0117wzhd", "value": 9 }], [{ "term": "/m/01j4hd", "value": 47 }, { "term": "/m/01jyld", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05nmqpm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rjt8c", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05d54_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05zn7mq", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/040z8c", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09z7xt", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ggv_7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02p1kqs", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m6bb0", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b767p_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 54 }, { "term": "/m/02mdz9", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dyhxj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06p_bp", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09jv3z", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rjq7r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07kj55d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025tjvy", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0knm7d1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09b5_f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09s7_h", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q4nr8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bj2by", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0crclyl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_tyf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038dpt", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07t7mz6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04dbtp", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04grp19", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09spqk", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q6gh9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/014sp", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/082wyl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gtybk6", "value": 1 }], [{ "term": "/m/01j4hd", "value": 16 }, { "term": "/m/02y_3dj", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h1hr7b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sqv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05sxjn6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_2b8m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01hrg2", "value": 1 }], [{ "term": "/m/01j4hd", "value": 17 }, { "term": "/m/0kbct", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05222s7", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_28n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05qtd5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 39 }, { "term": "/m/01_wxr", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04czg7h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gppk", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05z058", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05m_zv2", "value": 30 }], [{ "term": "/m/01j4hd", "value": 64 }, { "term": "/m/0yvgr", "value": 84 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03gzmf", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03qc9zr", "value": 18 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02cvvl", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031s_5", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q9_31", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/019bf4", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h80_xb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qgk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047m0zn", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026qvtc", "value": 4 }], [{ "term": "/m/01j4hd", "value": 51 }, { "term": "/m/013cc9", "value": 44 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fmz1", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07_bsl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h0qbm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q3mxq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/029mr9", "value": 19 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/079hg", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gfg_0y", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0255qr", "value": 13 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07c5n9", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027tv8t", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sxs", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tfw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wqjw", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0164bb", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025_mtj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hr6yls", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fv7w", "value": 15 }], [{ "term": "/m/01j4hd", "value": 45 }, { "term": "/m/012n6d", "value": 76 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04mr0d", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07746vw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06y96j", "value": 2 }], [{ "term": "/m/01j4hd", "value": 50 }, { "term": "/m/01cdt5", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01dl7h", "value": 56 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x0gvb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t0j4w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bbz9bz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09g711n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04fl9l", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06rsk8", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06rsny", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03h0kh2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/072hv", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08wnv9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dvg7b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09gp35z", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tdk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04kd9f3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gmcs4z", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05m_2vv", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04dfkg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05zr0l8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09v60_p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/0v4rnx", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fktd", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c3y21x", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j260bd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 64 }, { "term": "/m/071d3", "value": 73 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/017tfz", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cnmb", "value": 46 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jb2q", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sgh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07bztx", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025yc7f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03z97xw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/01hsr_", "value": 61 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/01d3sd", "value": 55 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0c_k31", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075yg5j", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qd2dt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0311pr", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gx2ttd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09v87qm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9thc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 18 }, { "term": "/m/0b76bty", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bh88t5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/04zjnsf", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q477l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07d0js", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04cv6sj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0j3gp5p", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0p9n0", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0726rf", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0133cx", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t3k", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/090j35", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s_b", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03znrn", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05mxp8t", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03zqp2", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/047qslv", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q48gs", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01jmfg", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/076zwwj", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05p5h7r", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02v58l", "value": 7 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/01flyj", "value": 43 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04q_81", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06382k", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03_7qy", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02777d4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02z14sp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fq0v0v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/032llx", "value": 33 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dg_lc", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d4b5s", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07468xq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02dzkc", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h_d29d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0ch68q", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0jt1lyb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05nb6gp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01g90h", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06jf34", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05v23cw", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t03d3", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02s645", "value": 49 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/078v5g", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_76s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027sbw1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/012lyw", "value": 67 }], [{ "term": "/m/01j4hd", "value": 30 }, { "term": "/m/056g4k", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05rtnw", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r50n7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 14 }, { "term": "/m/02y0js", "value": 77 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09g54b", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gxks", "value": 6 }], [{ "term": "/m/01j4hd", "value": 64 }, { "term": "/m/070yw", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02r_80w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0464mv7", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09rqdw4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/0p_cr", "value": 43 }], [{ "term": "/m/01j4hd", "value": 32 }, { "term": "/m/0466pc0", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0d_mn0", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09rq8z1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09zn19", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0892ty", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jmkz7", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04tr95", "value": 2 }], [{ "term": "/m/01j4hd", "value": 35 }, { "term": "/m/03k_qd", "value": 65 }], [{ "term": "/m/01j4hd", "value": 9 }, { "term": "/m/09bdp3", "value": 57 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/075z7_q", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sn1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9swy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9swq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t52", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t72", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03yzl6", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/059nnnk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06tr55s", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jr23", "value": 2 }], [{ "term": "/m/01j4hd", "value": 39 }, { "term": "/m/04jpj9y", "value": 58 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03zzcc", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05rxzz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037xdl", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07yqh1", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03h0d95", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05b5h0l", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0156z4", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m9zmr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03w94wq", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0zc0wnd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03crfch", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01vl0h", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05rhhy", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0500_3", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m4j90", "value": 15 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/01kcp2", "value": 84 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t0_0l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01nzjv", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0523q1y", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02py3_7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bfvmv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/074x0fv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026m6v", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pnp2q", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01k4yc", "value": 22 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01bpld", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vwpmt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9szd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02zcgm", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02jx54", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cmcngp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01p1zm", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09lpg2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05dzzb", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sf8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b6kt_8", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02kby4d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02kgmg", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03btxg", "value": 7 }], [{ "term": "/m/01j4hd", "value": 59 }, { "term": "/m/018_pw", "value": 74 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02777qv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05n00c6", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05l6q9", "value": 16 }], [{ "term": "/m/01j4hd", "value": 65 }, { "term": "/m/02gpbb", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bn2w", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tlk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tff", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tgy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tlr", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tlz", "value": 0 }], [{ "term": "/m/01j4hd", "value": 44 }, { "term": "/m/0pv6y", "value": 80 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t7w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rm_y4", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t26", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sjq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 29 }, { "term": "/m/03ng0t", "value": 57 }], [{ "term": "/m/01j4hd", "value": 42 }, { "term": "/m/025j63", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q28kg", "value": 9 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/010f9grj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/045c85", "value": 45 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04bm_r", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fq316n", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01q136", "value": 26 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03hk_dl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wv9sp", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03cr019", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sdm", "value": 0 }], [{ "term": "/m/01j4hd", "value": 53 }, { "term": "/m/09d28", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09sdrd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07h5sd", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025x27t", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04m9wt", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09k5ncy", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0269y8n", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h_8y", "value": 14 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011vmjv8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09k5vq8", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01fgvy", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/037xnt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pnnwh", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02pnnwv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01181t6w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rlx5d", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01z0b9", "value": 5 }], [{ "term": "/m/01j4hd", "value": 43 }, { "term": "/m/0146bp", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9stl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04kfhc9", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0844zv", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0703vrt", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06wfm2h", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9st5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01y2h01", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s9y", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02n2jh", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/052f98", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wmyj", "value": 23 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02f8hm", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g9wnz_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07wvs", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bmbd36", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07873v5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s5v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04qyzpf", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/018h13", "value": 68 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/045y32", "value": 8 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/07x16", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fvh3d", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9thx", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02shy2", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/040_ch", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h6m4f", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/055k6m", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qhh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/07k9rmb", "value": 63 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9stc", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/017ts5", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9s54", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05bjlj4", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05bl1y2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01vcpr", "value": 55 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/081dp", "value": 64 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vzydh", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/079tpsw", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0b6h30_", "value": 8 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0317gc", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03nxk25", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02wv6ss", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fkcf", "value": 11 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/039y0d", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04gp557", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/076zcl", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0wbjrwb", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fqvw9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jj6yp", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0gjdgxg", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03k28n", "value": 29 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025v410", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/045rjv", "value": 12 }], [{ "term": "/m/01j4hd", "value": 28 }, { "term": "/m/07rwf2", "value": 77 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gxj7", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07fn78", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/032zt5", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/011c6z46", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jmzm5", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04t973", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_g1v", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08gvtg", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0379jz", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02x2xmj", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0q42v", "value": 10 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0hzmhkt", "value": 7 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/012qjw", "value": 53 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05t0hc2", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09tktp", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h7q7v0", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06qjbg", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/08099", "value": 6 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04jmb5n", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038ytw", "value": 16 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06_hyyd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/086hz", "value": 69 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01dpzh", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05s_d8r", "value": 34 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03nkmb", "value": 5 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06vys2w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9sc9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/038dp3", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02q672l", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/064p33j", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06b0xmk", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t0v", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0119nqlg", "value": 20 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9t83", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h80_xq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07k3xc6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01cn60", "value": 1 }], [{ "term": "/m/01j4hd", "value": 20 }, { "term": "/m/03bx2xc", "value": 72 }], [{ "term": "/m/01j4hd", "value": 3 }, { "term": "/m/023s6n", "value": 69 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/025yl42", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02qd587", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/079y7m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07mzm6", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9qht", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9shv", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0917_9", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03d23v", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/095yj5", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06f89r", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02nj2r", "value": 1 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02w795_", "value": 0 }], [{ "term": "/m/01j4hd", "value": 18 }, { "term": "/m/01xrk2", "value": 61 }], [{ "term": "/m/01j4hd", "value": 50 }, { "term": "/m/02_x63", "value": 61 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02gl_t", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07k6xsb", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0268n_w", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02rxmf6", "value": 0 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/08xv95", "value": 50 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0517c6", "value": 3 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/04d7y3", "value": 32 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01j423", "value": 46 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0dl9tcq", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03p_fd", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03ncwn", "value": 45 }], [{ "term": "/m/01j4hd", "value": 10 }, { "term": "/m/017f7c", "value": 71 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/0dcsx", "value": 59 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01s2xh", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/016q32", "value": 37 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/026bcwh", "value": 2 }], [{ "term": "/m/01j4hd", "value": 10 }, { "term": "/m/098lw", "value": 41 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01c88f", "value": 33 }], [{ "term": "/m/01j4hd", "value": 14 }, { "term": "/m/0h99n", "value": 69 }], [{ "term": "/m/01j4hd", "value": 9 }, { "term": "/m/0gwj", "value": 61 }], [{ "term": "/m/01j4hd", "value": 16 }, { "term": "/m/01g2q", "value": 67 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01bcp7", "value": 34 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01t125", "value": 27 }], [{ "term": "/m/01j4hd", "value": 38 }, { "term": "/m/0134rc", "value": 78 }], [{ "term": "/m/01j4hd", "value": 9 }, { "term": "/m/0j8hd", "value": 51 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/01hwqk", "value": 69 }], [{ "term": "/m/01j4hd", "value": 4 }, { "term": "/m/0qcr0", "value": 77 }], [{ "term": "/m/01j4hd", "value": 36 }, { "term": "/m/0h1pq", "value": 82 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/0gzv0", "value": 74 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/0h1n9", "value": 70 }], [{ "term": "/m/01j4hd", "value": 7 }, { "term": "/m/0fl5x", "value": 70 }], [{ "term": "/m/01j4hd", "value": 31 }, { "term": "/m/023ndx", "value": 33 }], [{ "term": "/m/01j4hd", "value": 20 }, { "term": "/m/015slp", "value": 26 }], [{ "term": "/m/01j4hd", "value": 12 }, { "term": "/m/09wsg", "value": 27 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0g58pft", "value": 4 }], [{ "term": "/m/01j4hd", "value": 66 }, { "term": "/m/06xb9t", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/027813m", "value": 0 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/01kcry", "value": 48 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/06pxkw", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01s2xh", "value": 12 }], [{ "term": "/m/01j4hd", "value": 3 }, { "term": "/m/0cycc", "value": 25 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/080m_5j", "value": 3 }], [{ "term": "/m/01j4hd", "value": 26 }, { "term": "/m/01__7l", "value": 11 }], [{ "term": "/m/01j4hd", "value": 23 }, { "term": "/m/0hg1d", "value": 24 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/01r6j", "value": 66 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/0gxbfm", "value": 71 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/029577", "value": 81 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/0gk4g", "value": 75 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03m31g", "value": 28 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0208m", "value": 29 }], [{ "term": "/m/01j4hd", "value": 14 }, { "term": "/m/04nz3", "value": 52 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05fq5c", "value": 2 }], [{ "term": "/m/01j4hd", "value": 46 }, { "term": "/m/0mh4s", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "no trend?", "value": 0 }], [{ "term": "/m/01j4hd", "value": 4 }, { "term": "/m/0d19y2", "value": 40 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/05m_zpz", "value": 71 }], [{ "term": "/m/01j4hd", "value": 43 }, { "term": "/m/035b2g", "value": 66 }], [{ "term": "/m/01j4hd", "value": 57 }, { "term": "/m/06vr2", "value": 45 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/087z2", "value": 19 }], [{ "term": "/m/01j4hd", "value": 35 }, { "term": "/m/02jf6f", "value": 81 }], [{ "term": "/m/01j4hd", "value": 35 }, { "term": "/m/06g7c", "value": 88 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/024c2", "value": 29 }], [{ "term": "/m/01j4hd", "value": 47 }, { "term": "/m/02m76d", "value": 67 }], [{ "term": "/m/01j4hd", "value": 8 }, { "term": "/m/03bwzh1", "value": 50 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/01b_21", "value": 42 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0394df", "value": 4 }], [{ "term": "/m/01j4hd", "value": 5 }, { "term": "/m/0c58k", "value": 72 }], [{ "term": "/m/01j4hd", "value": 25 }, { "term": "/m/029s1", "value": 67 }], [{ "term": "/m/01j4hd", "value": 45 }, { "term": "/m/0117wrtj", "value": 2 }], [{ "term": "/m/01j4hd", "value": 40 }, { "term": "/m/0175qw", "value": 42 }], [{ "term": "/m/01j4hd", "value": 12 }, { "term": "/m/0g2gb", "value": 21 }], [{ "term": "/m/01j4hd", "value": 30 }, { "term": "/m/0d_bk", "value": 51 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/01xyfj", "value": 78 }], [{ "term": "/m/01j4hd", "value": 63 }, { "term": "/m/025hl8", "value": 70 }], [{ "term": "/m/01j4hd", "value": 34 }, { "term": "/m/0d_9n", "value": 66 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/05q45f7", "value": 4 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0259rv", "value": 17 }], [{ "term": "/m/01j4hd", "value": 53 }, { "term": "/m/0c5f7", "value": 60 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/03myr", "value": 49 }], [{ "term": "/m/01j4hd", "value": 26 }, { "term": "/m/09jg8", "value": 59 }], [{ "term": "/m/01j4hd", "value": 13 }, { "term": "/m/0k95h", "value": 81 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/022tb8", "value": 6 }], [{ "term": "/m/01j4hd", "value": 17 }, { "term": "/m/0qjk8", "value": 70 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02_j9l", "value": 29 }], [{ "term": "/m/01j4hd", "value": 19 }, { "term": "/m/040k6g", "value": 7 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01c5s1", "value": 24 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/02dfr6", "value": 12 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/09c_t", "value": 30 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/022tc0", "value": 21 }], [{ "term": "/m/01j4hd", "value": 64 }, { "term": "/m/0cfb2", "value": 77 }], [{ "term": "/m/01j4hd", "value": 48 }, { "term": "/m/0fsd1", "value": 74 }], [{ "term": "/m/01j4hd", "value": 16 }, { "term": "/m/07jwr", "value": 79 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/04p3w", "value": 56 }], [{ "term": "/m/01j4hd", "value": 27 }, { "term": "/m/0542n", "value": 60 }], [{ "term": "/m/01j4hd", "value": 28 }, { "term": "/m/01hrbm", "value": 6 }], [{ "term": "/m/01j4hd", "value": 43 }, { "term": "/m/014w_8", "value": 56 }], [{ "term": "/m/01j4hd", "value": 15 }, { "term": "/m/0dcqh", "value": 73 }], [{ "term": "/m/01j4hd", "value": 2 }, { "term": "/m/017s1k", "value": 19 }], [{ "term": "/m/01j4hd", "value": 49 }, { "term": "/m/01q6nb", "value": 13 }], [{ "term": "/m/01j4hd", "value": 60 }, { "term": "/m/068p_", "value": 55 }], [{ "term": "/m/01j4hd", "value": 52 }, { "term": "/m/016ygs", "value": 57 }], [{ "term": "/m/01j4hd", "value": 28 }, { "term": "/m/0c36_", "value": 69 }], [{ "term": "/m/01j4hd", "value": 35 }, { "term": "/m/0m32h", "value": 65 }], [{ "term": "/m/01j4hd", "value": 23 }, { "term": "/m/0pv62", "value": 69 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01ddth", "value": 51 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/0gzv0", "value": 74 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/031wv7", "value": 21 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0fm4r", "value": 5 }], [{ "term": "/m/01j4hd", "value": 41 }, { "term": "/m/0mzt3", "value": 49 }], [{ "term": "/m/01j4hd", "value": 33 }, { "term": "/m/074kq", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01b4_7", "value": 14 }], [{ "term": "/m/01j4hd", "value": 37 }, { "term": "/m/019thv", "value": 72 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0m72x", "value": 39 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0mzxc", "value": 2 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/01rt5h", "value": 44 }], [{ "term": "/m/01j4hd", "value": 55 }, { "term": "/m/023yjf", "value": 80 }], [{ "term": "/m/01j4hd", "value": 21 }, { "term": "/m/01kcry", "value": 48 }], [{ "term": "/m/01j4hd", "value": 57 }, { "term": "/m/0fm5n", "value": 54 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/057xn02", "value": 17 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/07s4l", "value": 48 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0270q1", "value": 15 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0h1r3", "value": 60 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0cghy1", "value": 0 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0w5y6wj", "value": 0 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/04psf", "value": 65 }], [{ "term": "/m/01j4hd", "value": 67 }, { "term": "/m/0bx3n7", "value": 33 }], [{ "term": "/m/01j4hd", "value": 22 }, { "term": "/m/02k6hp", "value": 53 }]];
-
-/***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -30338,7 +30568,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(16),__webpack_require__(32),__webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(16),__webpack_require__(33),__webpack_require__(34)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -33512,7 +33742,7 @@
 	}));
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -34016,7 +34246,7 @@
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -34156,16 +34386,16 @@
 	}));
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(35);
+	var content = __webpack_require__(36);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(21)(content, {});
+	var update = __webpack_require__(24)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -34182,10 +34412,10 @@
 	}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(20)();
+	exports = module.exports = __webpack_require__(23)();
 	// imports
 
 
@@ -34196,16 +34426,16 @@
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(37);
+	var content = __webpack_require__(38);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(21)(content, {});
+	var update = __webpack_require__(24)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -34222,21 +34452,21 @@
 	}
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(20)();
+	exports = module.exports = __webpack_require__(23)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n.selectize-input {\n  border: 0;\n  box-shadow: none;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  .selectize-input .item {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n\n.selectize-control.multi {\n  text-align: center;\n  height: 40px; }\n  .selectize-control.multi .selectize-input.items {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .selectize-control.multi .selectize-input.items div.item {\n      background-color: transparent; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n        color: #FA8200; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n        color: #FF91E6; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n        color: #009DF7; }\n\n.selectize-dropdown {\n  text-align: left; }\n\n#explore {\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n  #explore .filters-menu {\n    line-height: 40px; }\n    #explore .filters-menu .disease-select {\n      min-width: 50%; }\n      #explore .filters-menu .disease-select .selectize-input {\n        width: 50%; }\n    #explore .filters-menu .geo-select {\n      width: 280px;\n      display: inline-block;\n      vertical-align: top; }\n      #explore .filters-menu .geo-select .selectize-input {\n        text-align: left; }\n    #explore .filters-menu .sentence-item {\n      display: inline-block; }\n    #explore .filters-menu .confirm-nav {\n      display: inline-block; }\n      #explore .filters-menu .confirm-nav.hidden {\n        display: none; }\n  #explore .charts-container {\n    width: 100%;\n    height: 45vh;\n    display: flex;\n    flex-direction: row;\n    justify-content: space-between; }\n    #explore .charts-container .chart-item {\n      width: calc((100% - 20px*5)/2);\n      height: 100%; }\n  #explore .toggle-bar {\n    position: relative;\n    top: 0;\n    left: calc(50% - 60px/2);\n    width: 45vh;\n    height: 60px;\n    margin: 0 20px;\n    display: flex;\n    flex-direction: row;\n    text-align: center;\n    transform-origin: left;\n    transform: rotate(-90deg);\n    transform: translate(0, -32px) rotate(-90deg);\n    align-items: center; }\n    #explore .toggle-bar .button-container a {\n      display: block;\n      width: 32px;\n      height: 32px; }\n    #explore .toggle-bar .titles-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: column;\n      align-items: center; }\n      #explore .toggle-bar .titles-container .title {\n        width: 100%;\n        font-size: 11px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #explore .toggle-bar .titles-container .title:first-child {\n          border-bottom: 1px solid #000; }\n  #explore .bottom-container {\n    width: 100%;\n    height: 30vh;\n    padding-top: 20px; }\n    #explore .bottom-container .top-queries-container {\n      width: calc((100% - 20px*5)/2);\n      height: 100%;\n      display: flex;\n      flex-direction: column; }\n      #explore .bottom-container .top-queries-container.hidden {\n        display: none; }\n      #explore .bottom-container .top-queries-container .top-queries-list {\n        flex-grow: 1;\n        overflow-y: auto;\n        border-width: 2px 0;\n        border-style: solid;\n        border-color: #4422B3; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n.selectize-input {\n  border: 0;\n  box-shadow: none;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  .selectize-input .item {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n\n.selectize-control.multi {\n  text-align: center;\n  height: 40px; }\n  .selectize-control.multi .selectize-input.items {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .selectize-control.multi .selectize-input.items div.item {\n      background-color: transparent; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n        color: #FA8200; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n        color: #FF91E6; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n        color: #009DF7; }\n\n.selectize-dropdown {\n  text-align: left; }\n\n#explore.page {\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n  #explore.page .filters-menu {\n    line-height: 40px; }\n    #explore.page .filters-menu .disease-select {\n      min-width: 50%; }\n      #explore.page .filters-menu .disease-select .selectize-input {\n        width: 50%; }\n    #explore.page .filters-menu .geo-select {\n      width: 280px;\n      display: inline-block;\n      vertical-align: top; }\n      #explore.page .filters-menu .geo-select .selectize-input {\n        text-align: left; }\n    #explore.page .filters-menu .sentence-item {\n      display: inline-block; }\n    #explore.page .filters-menu .confirm-nav {\n      display: inline-block; }\n      #explore.page .filters-menu .confirm-nav.hidden {\n        display: none; }\n  #explore.page .charts-container {\n    width: 100%;\n    height: 45vh;\n    display: flex;\n    flex-direction: row;\n    justify-content: space-between; }\n    #explore.page .charts-container .chart-item {\n      width: calc((100% - 20px*5)/2);\n      height: 100%; }\n  #explore.page .toggle-bar {\n    position: relative;\n    top: 0;\n    left: calc(50% - 60px/2);\n    width: 45vh;\n    height: 60px;\n    margin: 0 20px;\n    display: flex;\n    flex-direction: row;\n    text-align: center;\n    transform-origin: left;\n    transform: rotate(-90deg);\n    transform: translate(0, -32px) rotate(-90deg);\n    align-items: center; }\n    #explore.page .toggle-bar .button-container a {\n      display: block;\n      width: 32px;\n      height: 32px; }\n    #explore.page .toggle-bar .titles-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: column;\n      align-items: center; }\n      #explore.page .toggle-bar .titles-container .title {\n        width: 100%;\n        font-size: 11px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #explore.page .toggle-bar .titles-container .title:first-child {\n          border-bottom: 1px solid #000; }\n  #explore.page .bottom-container {\n    width: 100%;\n    height: 30vh;\n    padding-top: 20px; }\n    #explore.page .bottom-container .top-queries-container {\n      width: calc((100% - 20px*5)/2);\n      height: 100%;\n      display: flex;\n      flex-direction: column; }\n      #explore.page .bottom-container .top-queries-container.hidden {\n        display: none; }\n      #explore.page .bottom-container .top-queries-container .top-queries-list {\n        flex-grow: 1;\n        overflow-y: auto;\n        border-width: 2px 0;\n        border-style: solid;\n        border-color: #4422B3; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34281,16 +34511,16 @@
 	}();
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(40);
+	var content = __webpack_require__(41);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(21)(content, {});
+	var update = __webpack_require__(24)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -34307,10 +34537,10 @@
 	}
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(20)();
+	exports = module.exports = __webpack_require__(23)();
 	// imports
 
 
@@ -34321,7 +34551,7 @@
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34336,7 +34566,7 @@
 
 	var _data = __webpack_require__(15);
 
-	var _data2 = __webpack_require__(30);
+	var _data2 = __webpack_require__(25);
 
 	var _loglevel = __webpack_require__(3);
 
@@ -34373,7 +34603,12 @@
 	      var index = averages.length;
 	      var term2 = _data.terms[index];
 	      var self = this;
-	      self.trendsAPI.getGraphAverages({ terms: [term1, term2], geo: _data.countries[0] }, function (val) {
+	      self.trendsAPI.getGraphAverages({
+	        terms: [term1, term2],
+	        geo: _data.countries[0],
+	        startDate: '2016-01',
+	        endDate: '2016-12'
+	      }, function (val) {
 	        console.log('From Google Trends: ', val);
 	        _loglevel2.default.info(term1.name + ' ' + val.averages[0].value + ' x ' + val.averages[1].value + ' ' + term2.name);
 	        self.updateData(val.averages);
