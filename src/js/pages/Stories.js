@@ -29,7 +29,7 @@ export class Stories {
     d3.json('./data/seasonal-summer.json', function(data) {
       log.info('Loaded story');
       log.info(data);
-      seasonalChart.updateData(data);
+      seasonalChart.updateData(data['US']);
     })
 
   }

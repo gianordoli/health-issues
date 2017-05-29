@@ -21,6 +21,7 @@ export class TrendsAPI {
 
         function start() {
           let apiKey, id;
+          log.info(Keys);
           if (ENV === 'PRODUCTION') {
             apiKey = Keys['PRODUCTION'];
             id = 'diseases-production';
