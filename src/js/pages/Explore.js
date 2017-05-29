@@ -65,8 +65,6 @@ export class Explore {
       total: [],
       totalPerLine: [],
       topQueries: [],
-      dataToR: [],
-      dataFromR: '',
       isMerged: false,
       isChanging: false,
       isLoading: filter ? true : false,
