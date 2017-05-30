@@ -55,3 +55,13 @@ export type TrendsAPIAverage = {
 export type TrendsAPIGraphAverages = {
   averages: TrendsAPIAverage[],
 }
+
+export type TrendsAPIRegion = {
+   regionCode: string,
+   regionName: string,
+   value: number,
+}
+
+export type TrendsAPIRegionsList = {
+  regions: TrendsAPIRegion[],
+}

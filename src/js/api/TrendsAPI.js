@@ -109,4 +109,13 @@ export class TrendsAPI {
     path = this.appendRestrictions(filter, path);
     this.executeCall(path, callback);
   }
+
+  getRegionsList(filter: Filter, callback) {
+    log.info('getTopQueries for:', filter);
+    const { geo, terms } = filter;
+    const term = terms[0];
+    let path = `https://www.googleapis.com/trends/v1beta/regions?term=${encodeURIComponent(term.entity)}`;
+    path = this.appendRestrictions(filter, path);
+    this.executeCall(path, callback);
+  }
 }
