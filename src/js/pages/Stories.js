@@ -30,7 +30,7 @@ export class Stories {
       log.info('Loaded story');
       log.info(data);
       seasonalChart.updateData(data['US']);
-    })
+    });
 
   }
 }

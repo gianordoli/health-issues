@@ -13,7 +13,7 @@ export type Geo = {
 
 export type Filter = {
   terms: Term[],
-  geo: Geo,
+  geo?: Geo,
   startDate?: string,
   endDate?: string,
 }

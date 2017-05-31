@@ -3,7 +3,6 @@
 import { LineChart } from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
-// import * as graphScroll from 'graph-scroll';
 import log from 'loglevel';
 import '../../sass/intro.scss';
 

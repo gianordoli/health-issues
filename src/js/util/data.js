@@ -372,6 +372,7 @@ export const terms = [
   {name:"Genital herpes",entity:"/m/05m_zpz",alias:null},
   {name:"Genital wart",entity:"/m/019thv",alias:null},
   {name:"Genu varum",entity:"/m/03pk5z",alias:null},
+  {name:"Gestational hypertension",entity:"/m/03p2br",alias:null},
   {name:"Giant-cell arteritis",entity:"/m/07s7n",alias:null},
   {name:"Gigantism",entity:"/m/01jmvq",alias:null},
   {name:"Gingival recession",entity:"/m/0dr8s9",alias:null},
@@ -618,6 +619,7 @@ export const terms = [
   {name:"Microcephaly",entity:"/m/01hrbm",alias:null},
   {name:"Micromastia",entity:"/m/09pv41",alias:null},
   {name:"Middle back pain",entity:"/m/09rlb3",alias:null},
+  {name:"Middle East respiratory syndrome",entity:"/m/0n46w_1",alias:null},
   {name:"Migraine",entity:"/m/05904",alias:null},
   {name:"Milium",entity:"/m/0527by",alias:null},
   {name:"Miosis",entity:"/m/03smvc",alias:null},
@@ -1017,7 +1019,7 @@ export const terms = [
   {name:"Xeroderma",entity:"/m/08xv95",alias:null},
   {name:"Xerophthalmia",entity:"/m/0517c6",alias:null},
   {name:"Xerostomia",entity:"/m/04d7y3",alias:null},
-  {name:"Yellow Fever",entity:"/m/087z2",alias:null},
+  {name:"Yellow fever",entity:"/m/087z2",alias:null},
   {name:"Zika virus",entity:"/m/080m_5j",alias:null}
 ];
 

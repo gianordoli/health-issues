@@ -21,7 +21,6 @@ export class TrendsAPI {
 
         function start() {
           let apiKey, id;
-          log.info(Keys);
           if (ENV === 'PRODUCTION') {
             apiKey = Keys['PRODUCTION'];
             id = 'diseases-production';
@@ -58,7 +57,7 @@ export class TrendsAPI {
 
   appendRestrictions(filter: Filter, path: string) {
     const { geo, startDate, endDate } = filter;
-    if (geo.iso !== 'world') {
+    if (geo && geo.iso !== 'world') {
       path += `&restrictions.geo=${geo.iso}`;
     }
     if (filter.startDate) {

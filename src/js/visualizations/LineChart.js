@@ -46,11 +46,11 @@ export class LineChart {
     });
   }
 
-  createElements(_parentContainer: HTMLElement) {
-    const parentContainer = d3.select(_parentContainer);
+  createElements(parentContainer: HTMLElement) {
+    const parentContainerSelection = d3.select(parentContainer);
     const { data, width, height, margin } = this;
 
-    this.svg = parentContainer.append('svg')
+    this.svg = parentContainerSelection.append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .attr('class', 'chart-canvas');

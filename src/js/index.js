@@ -1,5 +1,6 @@
 // @flow weak
 
+import { StoriesVizEpidemics } from './containers/StoriesVizEpidemics';
 import { Home } from './pages/Home';
 import { Intro } from './pages/Intro';
 import { Stories } from './pages/Stories';
@@ -10,7 +11,7 @@ import { TrendsAPI } from './api/TrendsAPI';
 import { terms, countries } from './util/data.js';
 import log from 'loglevel';
 import '../sass/App.scss';
-import Ranking from './scripts/Ranking';
+import GetMapData from './scripts/GetMapData';
 
 var app = app || {};
 
@@ -76,17 +77,22 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    const home = new Home(elementsContainer, trendsAPI);
-    const intro = new Intro(elementsContainer);
-    const stories = new Stories(elementsContainer);
-    explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
-    const about = new About(elementsContainer);
+    const storiesVizEpidemics = new StoriesVizEpidemics(elementsContainer);
 
-    const storiesDiv = document.querySelector('#stories.page');
-    if (storiesDiv) {
-      storiesOffsetTop = storiesDiv.offsetTop;
-    }
-    window.addEventListener('scroll', checkScroll);
+    //
+    // const home = new Home(elementsContainer, trendsAPI);
+    // const intro = new Intro(elementsContainer);
+    // const stories = new Stories(elementsContainer);
+    // explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
+    // const about = new About(elementsContainer);
+    //
+    // const storiesDiv = document.querySelector('#stories.page');
+    // if (storiesDiv) {
+    //   storiesOffsetTop = storiesDiv.offsetTop;
+    // }
+    // window.addEventListener('scroll', checkScroll);
+
+    // const getMapData = new GetMapData(trendsAPI);
   }
 
   const init = function(){
