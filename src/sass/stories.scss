@@ -1,6 +1,7 @@
 @import 'App';
 
-#stories.page {
+// #stories.page {
+#epidemics {
   .charts-container {
     width: 100%;
     height: 45vh;
@@ -12,5 +13,5 @@
       width: calc((100% - #{$col-gutter-large}*5)/2);
       height: 100%;
     }
-  }  
+  }
 }
