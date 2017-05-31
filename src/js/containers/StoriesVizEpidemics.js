@@ -71,7 +71,7 @@ export class StoriesVizEpidemics {
     slider.setAttribute('min', 0);
     slider.setAttribute('max', mapData.length);
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
-    slider.addEventListener('change', bindSliderChange);
+    slider.addEventListener('input', bindSliderChange);
     elementsContainer.appendChild(slider);
   }
 
