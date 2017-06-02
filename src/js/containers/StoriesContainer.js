@@ -1,6 +1,7 @@
 // @flow weak
 
 import stories from '../content/stories';
+import StoriesNavBar from './StoriesNavBar';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
@@ -49,28 +50,33 @@ export default class StoriesContainer {
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
 
     const elementsContainer = document.createElement('div');
+    elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-    const title = document.createElement('h1');
-    title.innerHTML = stories[storySection].title;
-    sectionHeader.appendChild(title);
+      const title = document.createElement('h1');
+      title.innerHTML = stories[storySection].title;
+      sectionHeader.appendChild(title);
 
-    const intro = document.createElement('p');
-    intro.innerHTML = stories[storySection].intro;
-    sectionHeader.appendChild(intro);
+      const intro = document.createElement('p');
+      intro.innerHTML = stories[storySection].intro;
+      sectionHeader.appendChild(intro);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body');
+    elementsContainer.appendChild(sectionBody);
 
-    const chartItem = document.createElement('div');
-    chartItem.classList.add('chart-item');
-    chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, chartType);
+      const chartsContainer = document.createElement('div');
+      chartsContainer.classList.add('charts-container');
+      sectionBody.appendChild(chartsContainer);
+
+        const chartItem = document.createElement('div');
+        chartItem.classList.add('chart-item');
+        chartsContainer.appendChild(chartItem);
+        this.chart = new LineChart(chartItem, chartType);
 
     const copyContainer = document.createElement('div');
     copyContainer.classList.add('case-copy');
@@ -79,7 +85,7 @@ export default class StoriesContainer {
       p.innerHTML = c;
       copyContainer.appendChild(p);
     }
-    elementsContainer.appendChild(copyContainer);
+    sectionBody.appendChild(copyContainer);
 
     this.updateElements();
   }
