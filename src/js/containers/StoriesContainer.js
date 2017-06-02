@@ -40,7 +40,11 @@ export default class StoriesContainer {
   }
 
   loadNewCase(event, self: StoriesContainer, currCase: number) {
-    self.updateData({ currCase });
+    const { storySection } = self.data;
+    const path = stories[storySection].cases[currCase].data;
+    d3.json(path, function(chartData) {
+      self.updateData({ currCase, chartData });
+    });
   }
 
   updateData(obj) {
