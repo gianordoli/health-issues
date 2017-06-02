@@ -3,7 +3,7 @@
 // Libraries
 import log from 'loglevel';
 
-export class About {
+export default class About {
 
   constructor(parentContainer: HTMLElement) {
     this.createElements(parentContainer);

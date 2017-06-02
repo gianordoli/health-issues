@@ -1,9 +1,9 @@
 // @flow weak
 
 // Components
-import { LineChart } from '../visualizations/LineChart';
-import { TrendsAPI } from '../api/TrendsAPI';
-import { ShinyAPI } from '../api/ShinyAPI';
+import LineChart from '../visualizations/LineChart';
+import TrendsAPI from '../api/TrendsAPI';
+import ShinyAPI from '../api/ShinyAPI';
 
 // Types
 import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types'
@@ -22,7 +22,7 @@ import $ from 'jquery';
 import 'selectize/dist/css/selectize.css';
 import '../../sass/explore.scss';
 
-export class Explore {
+export default class Explore {
 
   data: {
     prevDiseases: Term[],

@@ -1,6 +1,6 @@
 // @flow weak
 
-import { LineChart } from '../visualizations/LineChart';
+import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
 import log from 'loglevel';
@@ -8,7 +8,7 @@ import '../../sass/intro.scss';
 
 import { dummyData } from '../scripts/data';
 
-export class Intro {
+export default class Intro {
 
   chart: LineChart;
 
