@@ -10,7 +10,8 @@ import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util';
-import { terms, countries } from '../util/data';
+import terms from '../data/terms';
+import countries from '../data/countries';
 import { dummyData } from '../scripts/data';
 
 // Libraries

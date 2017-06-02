@@ -2,7 +2,8 @@
 
 import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPIRegionsList } from '../util/types';
-import { terms, countries } from '../util/data.js';
+import terms from '../data/terms';
+import countries from '../data/countries';
 import log from 'loglevel';
 
 export default class GetMapData {

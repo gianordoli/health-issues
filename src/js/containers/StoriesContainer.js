@@ -1,6 +1,6 @@
 // @flow weak
 
-import stories from '../content/stories';
+import stories from '../data/stories';
 import StoriesNavBar from './StoriesNavBar';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
