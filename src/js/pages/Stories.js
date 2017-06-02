@@ -1,5 +1,6 @@
 // @flow weak
 
+import StoriesContainer from '../containers/StoriesContainer';
 import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -18,19 +19,9 @@ export default class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
-
-    let chartItem = document.createElement('div');
-    chartItem.classList.add('chart-item');
-    chartsContainer.appendChild(chartItem);
-    const seasonalChart = new LineChart(chartItem, 'seasonal');
-    d3.json('./data/seasonal-summer.json', function(data) {
-      log.info('Loaded story');
-      log.info(data);
-      seasonalChart.updateData(data['US']);
-    });
+    const storiesSeasonal = new StoriesContainer(elementsContainer, 'seasonal', 'winter');
+    // const storiesHolidays = new Stories(elementsContainer, 'holidays', 'newYear');
+    // const storiesMedia = new Stories(elementsContainer, 'media', 'campaigns');
 
   }
 }

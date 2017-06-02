@@ -17,6 +17,10 @@ var app = app || {};
 
 app.main = (function (){
 
+  let explore;
+  let ticking = false;
+  let storiesOffsetTop;
+
   function loadShinyAPI() {
     const shinyAPI = new ShinyAPI();
     if (ENV !== 'DEVELOPMENT') {
@@ -34,10 +38,6 @@ app.main = (function (){
       render(shinyAPI, trendsAPI);
     });
   }
-
-  let explore;
-  let ticking = false;
-  let storiesOffsetTop;
 
   function checkScroll(e) {
     if (!ticking) {
@@ -80,8 +80,8 @@ app.main = (function (){
     // const storiesVizEpidemics = new StoriesVizEpidemics(elementsContainer);
 
 
-    const home = new Home(elementsContainer, trendsAPI);
-    const intro = new Intro(elementsContainer);
+    // const home = new Home(elementsContainer, trendsAPI);
+    // const intro = new Intro(elementsContainer);
     const stories = new Stories(elementsContainer);
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);

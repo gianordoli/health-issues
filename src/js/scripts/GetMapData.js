@@ -1,6 +1,6 @@
 // @flow weak
 
-import { TrendsAPI } from '../api/TrendsAPI';
+import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPIRegionsList } from '../util/types';
 import { terms, countries } from '../util/data.js';
 import log from 'loglevel';
