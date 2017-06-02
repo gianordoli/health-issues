@@ -2,6 +2,7 @@
 
 import stories from '../content/stories';
 import LineChart from '../visualizations/LineChart';
+import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
@@ -10,16 +11,21 @@ export default class StoriesContainer {
   data: {
     storySection: string,
     currCase: string,
-    chartData: [],
+    geoIso: string,
+    chartData: {
+      [key: string]: TrendsAPIGraph[]
+    },
   };
   chart: LineChart;
+  copy: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string, currCase: string) {
     log.info('StoriesContainer');
     const self = this;
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
       log.info(chartData);
-      self.data = { storySection, currCase, chartData };
+      const geoIso = stories[storySection].cases[currCase].geoList[0];
+      self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(parentContainer);
     });
   }
@@ -40,6 +46,7 @@ export default class StoriesContainer {
 
   createElements(parentContainer: HTMLElement) {
     const { storySection, currCase, chartData } = this.data;
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
 
     const elementsContainer = document.createElement('div');
     parentContainer.appendChild(elementsContainer);
@@ -56,28 +63,31 @@ export default class StoriesContainer {
     intro.innerHTML = stories[storySection].intro;
     sectionHeader.appendChild(intro);
 
-    // const chartsContainer = document.createElement('div');
-    // chartsContainer.classList.add('charts-container');
-    // elementsContainer.appendChild(chartsContainer);
-    //
-    // const chartItem = document.createElement('div');
-    // chartItem.classList.add('chart-item');
-    // chartsContainer.appendChild(chartItem);
-    // this.chart = new LineChart(chartItem, );
-    //
-    // this.slider = document.createElement('input');
-    // const { slider } = this;
-    // slider.setAttribute('type', 'range');
-    // slider.setAttribute('min', 0);
-    // slider.setAttribute('max', mapData.length);
-    // const bindSliderChange = evt => this.handleSliderChange(evt, this);
-    // slider.addEventListener('change', bindSliderChange);
-    // elementsContainer.appendChild(slider);
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    elementsContainer.appendChild(chartsContainer);
+
+    const chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.chart = new LineChart(chartItem, chartType);
+
+    const copyContainer = document.createElement('div');
+    copyContainer.classList.add('case-copy');
+    for(const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+    elementsContainer.appendChild(copyContainer);
+
+    this.updateElements();
   }
 
   updateElements() {
-    // const { currMonth, mapData } = this.data;
-    // const { worldMap } = this;
-    // worldMap.updateData(mapData[currMonth].regions);
+    const { chart } = this;
+    const { storySection, currCase, chartData, geoIso } = this.data;
+    const { chartType } = stories[storySection].cases[currCase];
+    chart.updateData(chartData[geoIso], chartType);
   }
 }

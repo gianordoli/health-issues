@@ -28,9 +28,10 @@ export default class LineChart {
     this.svg.classed('hidden-canvas', !this.svg.classed('hidden-canvas'));
   }
 
-  updateData(data: TrendsAPIGraph[]) {
+  updateData(data: TrendsAPIGraph[], type?: string) {
     this.data = this.parseDates(data);
-    console.log('D3 ->', this.data);
+    if (type) this.type = type;
+    // console.log('D3 ->', this.data);
     this.updateElements();
   }
 
