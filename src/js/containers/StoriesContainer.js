@@ -11,7 +11,7 @@ import log from 'loglevel';
 export default class StoriesContainer {
   data: {
     storySection: string,
-    currCase: string,
+    currCase: number,
     geoIso: string,
     chartData: {
       [key: string]: TrendsAPIGraph[]
@@ -20,12 +20,13 @@ export default class StoriesContainer {
   chart: LineChart;
   copy: HTMLElement;
 
-  constructor(parentContainer: HTMLElement, storySection: string, currCase: string) {
+  constructor(parentContainer: HTMLElement, storySection: string) {
     log.info('StoriesContainer');
     const self = this;
+    const currCase = 0;
+    const geoIso = stories[storySection].cases[currCase].geoList[0];
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
       log.info(chartData);
-      const geoIso = stories[storySection].cases[currCase].geoList[0];
       self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(parentContainer);
     });
@@ -36,6 +37,10 @@ export default class StoriesContainer {
     d3.json(path, function(chartData) {
       self.updateData({ chartData });
     });
+  }
+
+  loadNewCase(event, self: StoriesContainer, currCase: number) {
+    self.updateData({ currCase });
   }
 
   updateData(obj) {
@@ -68,6 +73,13 @@ export default class StoriesContainer {
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
+
+      const storiesNavBar = new StoriesNavBar(
+        sectionBody,
+        stories[storySection].cases.map(c => c.title),
+        this,
+        this.loadNewCase,
+      );
 
       const chartsContainer = document.createElement('div');
       chartsContainer.classList.add('charts-container');

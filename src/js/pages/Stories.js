@@ -19,7 +19,7 @@ export default class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const storiesSeasonal = new StoriesContainer(elementsContainer, 'seasonal', 'winter');
+    const storiesSeasonal = new StoriesContainer(elementsContainer, 'seasonal');
     // const storiesHolidays = new Stories(elementsContainer, 'holidays', 'newYear');
     // const storiesMedia = new Stories(elementsContainer, 'media', 'campaigns');
 
