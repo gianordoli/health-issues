@@ -18,7 +18,7 @@ export default class StoriesContainer {
     },
   };
   chart: LineChart;
-  copy: HTMLElement;
+  copyContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
     log.info('StoriesContainer');
@@ -94,7 +94,8 @@ export default class StoriesContainer {
         chartsContainer.appendChild(chartItem);
         this.chart = new LineChart(chartItem, chartType);
 
-    const copyContainer = document.createElement('div');
+    this.copyContainer = document.createElement('div');
+    const { copyContainer } = this;
     copyContainer.classList.add('case-copy');
     for(const c of copy) {
       const p = document.createElement('p');
@@ -107,9 +108,17 @@ export default class StoriesContainer {
   }
 
   updateElements() {
-    const { chart } = this;
+    const { chart, copyContainer } = this;
     const { storySection, currCase, chartData, geoIso } = this.data;
-    const { chartType } = stories[storySection].cases[currCase];
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+
     chart.updateData(chartData[geoIso], chartType);
+
+    copyContainer.innerHTML = '';
+    for(const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
   }
 }
