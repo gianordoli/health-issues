@@ -9,10 +9,8 @@ export default class StoriesNavBar {
     parentContainer: HTMLElement,
     cases: string[],
     self: StoriesContainer,
-    onChange: (self: StoriesContainer, currCase: number) => void
+    onChange: (event: Event, self: StoriesContainer, currCase: number) => void
   ) {
-    log.info('StoriesContainer');
-    log.info(onChange);
     this.createElements(parentContainer, cases, self, onChange);
   }
 
@@ -20,7 +18,7 @@ export default class StoriesNavBar {
     parentContainer: HTMLElement,
     cases: string[],
     self: StoriesContainer,
-    onChange: (currCase: number) => void
+    onChange: (event: Event, self: StoriesContainer, currCase: number) => void
   ) {
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('stories-nav-bar');

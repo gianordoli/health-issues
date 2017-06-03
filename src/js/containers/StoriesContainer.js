@@ -2,6 +2,7 @@
 
 import stories from '../data/stories';
 import StoriesNavBar from './StoriesNavBar';
+import FiltersMenu from './FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
@@ -17,6 +18,7 @@ export default class StoriesContainer {
       [key: string]: TrendsAPIGraph[]
     },
   };
+  filtersMenu: HTMLElement;
   chart: LineChart;
   copyContainer: HTMLElement;
 
@@ -39,7 +41,7 @@ export default class StoriesContainer {
     });
   }
 
-  loadNewCase(event, self: StoriesContainer, currCase: number) {
+  loadNewCase(event: Event, self: StoriesContainer, currCase: number) {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     d3.json(path, function(chartData) {
@@ -85,6 +87,8 @@ export default class StoriesContainer {
         this.loadNewCase,
       );
 
+      this.filtersMenu = new FiltersMenu(sectionBody, terms, geoList);
+
       const chartsContainer = document.createElement('div');
       chartsContainer.classList.add('charts-container');
       sectionBody.appendChild(chartsContainer);
@@ -108,9 +112,12 @@ export default class StoriesContainer {
   }
 
   updateElements() {
+    let { filtersMenu } = this;
     const { chart, copyContainer } = this;
     const { storySection, currCase, chartData, geoIso } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+
+    filtersMenu = new FiltersMenu(filtersMenu.parentNode, terms, geoList);
 
     chart.updateData(chartData[geoIso], chartType);
 

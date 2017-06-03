@@ -47,7 +47,6 @@ export default class Explore {
   confirmNav: HTMLElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
-  sentenceItem: HTMLElement;
 
   seasonalChart: LineChart;
   trendChart: LineChart;
@@ -297,9 +296,9 @@ export default class Explore {
     filtersMenu.classList.add('filters-menu');
     elementsContainer.appendChild(filtersMenu);
 
-    const text1 = document.createElement('span');
-    text1.innerHTML = 'Search interest from 2004 to today for ';
-    filtersMenu.appendChild(text1);
+    let text = document.createElement('span');
+    text.innerHTML = 'Search interest from 2004 to today for ';
+    filtersMenu.appendChild(text);
 
 
     // Diseases
@@ -321,13 +320,9 @@ export default class Explore {
     });
     this.diseaseSelect = diseaseSelectize[0].selectize;
 
-
-    this.sentenceItem = document.createElement('span');
-    const { sentenceItem } = this;
-    sentenceItem.classList.add('sentence-item');
-    sentenceItem.innerHTML = ' in the ';
-    filtersMenu.appendChild(sentenceItem);
-
+    text = document.createElement('span');
+    text.innerHTML = ' in ';
+    filtersMenu.appendChild(text);
 
     // Geo
     const geoSelect = document.createElement('select');
@@ -440,7 +435,7 @@ export default class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, sentenceItem, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
@@ -450,7 +445,6 @@ export default class Explore {
     }
 
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
-    sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
     geoSelect.setValue(geo.iso, true);
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';

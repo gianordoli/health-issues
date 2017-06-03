@@ -37,38 +37,6 @@
   flex-direction: column;
   justify-content: space-between;
 
-  .filters-menu {
-
-    line-height: 40px;
-
-    .disease-select {
-      min-width: 50%;
-      .selectize-input {
-        width: 50%;
-      }
-    }
-
-    .geo-select {
-      width: 280px;
-      display: inline-block;
-      vertical-align: top;
-      .selectize-input {
-        text-align: left;
-      }
-    }
-
-    .sentence-item {
-      display: inline-block;
-    }
-
-    .confirm-nav {
-      display: inline-block;
-      &.hidden {
-        display: none;
-      }
-    }
-  }
-
   .toggle-bar {
     position: relative;
     top: 0;

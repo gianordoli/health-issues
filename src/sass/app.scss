@@ -257,6 +257,44 @@ svg.chart-canvas {
   }
 }
 
+.filters-menu {
+
+  line-height: 40px;
+
+  .disease-select {
+    min-width: 50%;
+    .selectize-input {
+      width: 50%;
+    }
+  }
+
+  .terms-list {
+    @include type-body-2;
+    span {
+      padding: 0 $elements-padding/2;
+      &:nth-child(1) { color: $color-1; }
+      &:nth-child(2) { color: $color-2; }
+      &:nth-child(3) { color: $color-3; }
+    }
+  }
+
+  .geo-select {
+    width: 280px;
+    display: inline-block;
+    vertical-align: top;
+    .selectize-input {
+      text-align: left;
+    }
+  }
+
+  .confirm-nav {
+    display: inline-block;
+    &.hidden {
+      display: none;
+    }
+  }
+}
+
 /*-------------------- LOADER --------------------*/
 .loader-container{
   position: absolute;
