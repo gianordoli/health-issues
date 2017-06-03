@@ -23,6 +23,7 @@ export default class StoriesNavBar {
     onChange: (currCase: number) => void
   ) {
     const elementsContainer = document.createElement('div');
+    elementsContainer.classList.add('stories-nav-bar');
     parentContainer.appendChild(elementsContainer);
 
     for (let i = 0; i < cases.length; i++) {
