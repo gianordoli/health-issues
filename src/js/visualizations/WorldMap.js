@@ -30,8 +30,7 @@ export class WorldMap {
 
   createElements(parentContainer: HTMLElement) {
     const parentContainerSelection = d3.select(parentContainer);
-    const { data } = this;
-
+    // const { data } = this;
     // Dimensions are set by the parent div, which in turn is defined via css.
     // No need to worry about it!
     // const width = parentContainer.offsetWidth;
@@ -47,55 +46,40 @@ export class WorldMap {
     const worldMap = chart.append('g')
       .attr('class', 'map');
 
-    const color = d3.scaleThreshold()
-      .domain([10000,100000,500000,1000000,5000000,10000000,50000000,100000000,500000000,1500000000])
-      .range([
-        'rgb(247,251,255)',
-        'rgb(222,235,247)',
-        'rgb(198,219,239)',
-        'rgb(158,202,225)',
-        'rgb(107,174,214)',
-        'rgb(66,146,198)',
-        'rgb(33,113,181)',
-        'rgb(8,81,156)',
-        'rgb(8,48,107)',
-        'rgb(3,19,43)'
-      ]);
-
     const projection = d3.geoMercator()
         .scale((width - 3) / (2 * Math.PI))
         .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
 
-
-
-    log.info("data:" + data);   // how come it's empty?
-
-    d3.json("https://d3js.org/world-110m.v1.json", function(error, world) {
+    d3.json("https://gist.githubusercontent.com/alexwebgr/10249781/raw/2df84591a9e1fb891bcfde3a3c41d6cfc70cb5ee/world-topo.json", function(error, world) {
       if (error) throw error;
 
-      worldMap.insert("path")
-          .datum(topojson.feature(world, world.objects.land))
-          .attr("class", "land")
-          .attr("d", path);
+      // later - needs to double loop between our data & the map to compare the country/region code
+      var countries = world.objects.countries.geometries;
+      // log.info(countries);
+      //
+      //
 
+      
       worldMap.insert("path")
-          .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-          .attr("class", "boundary")
+          .datum(topojson.feature(world, world.objects.countries))
+          .attr("class", "countries")
           .attr("d", path);
     });
-
   }
 
   updateElements() {
     const { data, svg } = this;
 
-
-
+    log.info("data:" + JSON.stringify(data));
+    log.info("svgggg:" + JSON.stringify(svg));
     // Your update function goes here
     // you should be able to access any children of your svg by doing
-    // svg.select(...)
+
+    //testing
+    svg.selectAll('.countries')
+      .style("fill", "red");
 
 
 
