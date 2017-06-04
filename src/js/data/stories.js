@@ -67,7 +67,7 @@ module.exports = {
       {
         title: "Diwali Festival",
         data: "./data/holidays-diwali-festival.json",
-        terms: ["Burn"],
+        terms: ["Burn", "Pain"],
         geoList: ["India"],
         chartType: "seasonal",
         copy: [
