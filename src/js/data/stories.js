@@ -95,7 +95,7 @@ module.exports = {
       {
         title: "Campaigns",
         data: "./data/media-campaigns.json",
-          terms: ["Diabetes", "Breast Cancer", "HIV/AIDS"],
+          terms: ["Down's syndrome", "Breast Cancer", "Autism"],
         geoList: ["world"],
         chartType: "seasonal",
         copy: [
@@ -105,7 +105,7 @@ module.exports = {
       {
         title: "Pop Culture",
         data: "./data/media-pop-culture.json",
-        terms: ["Lupus", "Depression", "Amyotrophic lateral sclerosis"],
+        terms: ["Lupus", "Amyotrophic lateral sclerosis"],
         geoList: ["world"],
         chartType: "trend",
         copy: [
