@@ -6,7 +6,7 @@ import TrendsAPI from '../api/TrendsAPI';
 import ShinyAPI from '../api/ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types'
+import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types';
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util';

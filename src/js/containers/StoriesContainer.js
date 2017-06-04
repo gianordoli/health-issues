@@ -28,16 +28,8 @@ export default class StoriesContainer {
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
-      log.info(chartData);
       self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(parentContainer);
-    });
-  }
-
-  loadData(path: string) {
-    const self = this;
-    d3.json(path, function(chartData) {
-      self.updateData({ chartData });
     });
   }
 
@@ -49,6 +41,10 @@ export default class StoriesContainer {
     });
   }
 
+  changeGeo(geoIso: string, self: StoriesContainer) {
+    self.updateData({ geoIso });
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -57,7 +53,7 @@ export default class StoriesContainer {
   }
 
   createElements(parentContainer: HTMLElement) {
-    const { storySection, currCase, chartData } = this.data;
+    const { storySection, currCase, chartData, geoIso } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
 
     const elementsContainer = document.createElement('div');
@@ -87,7 +83,14 @@ export default class StoriesContainer {
         this.loadNewCase,
       );
 
-      this.filtersMenu = new FiltersMenu(sectionBody, terms, geoList);
+      this.filtersMenu = new FiltersMenu(
+        sectionBody,
+        terms,
+        geoList,
+        geoIso,
+        this,
+        this.changeGeo,
+      );
 
       const chartsContainer = document.createElement('div');
       chartsContainer.classList.add('charts-container');
@@ -116,8 +119,16 @@ export default class StoriesContainer {
     const { chart, copyContainer } = this;
     const { storySection, currCase, chartData, geoIso } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
-
-    filtersMenu = new FiltersMenu(filtersMenu.parentNode, terms, geoList);
+    log.info(geoIso);
+    const parent = filtersMenu.parentElement;
+    filtersMenu = new FiltersMenu(
+      filtersMenu.parentElement,
+      terms,
+      geoList,
+      geoIso,
+      this,
+      this.changeGeo,
+    );
 
     chart.updateData(chartData[geoIso], chartType);
 

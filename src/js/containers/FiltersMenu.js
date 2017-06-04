@@ -1,28 +1,41 @@
 // @flow weak
 
+import type { Geo } from '../util/types';
 import StoriesContainer from './StoriesContainer';
+import countries from '../data/countries';
 import log from 'loglevel';
-// import '../../sass/stories.scss';
+import selectize from 'selectize';
+import $ from 'jquery';
+import 'selectize/dist/css/selectize.css';
 
 export default class FiltersMenu {
+
+  // data: {
+  //   geo: Geo,
+  // };
+  // geoSelect?: selectize;
+
   constructor(
-    parentContainer: HTMLElement | Node,
+    parentContainer: ?Element,
     terms: string[],
     geoList: string[],
-    self?: StoriesContainer,
-    onGeoChange?: (event: Event, self: StoriesContainer, geo: string) => void
+    geoIso: string,
+    self: StoriesContainer,
+    onGeoChange: (geoIso: string, self: StoriesContainer) => void
   ) {
 
-    let elementsContainer = parentContainer.querySelector('.filters-menu');
+    let elementsContainer;
+    if (parentContainer) elementsContainer = parentContainer.querySelector('.filters-menu');
+
     if (elementsContainer) {
       elementsContainer.innerHTML = '';
     } else {
       elementsContainer = document.createElement('div');
       elementsContainer.classList.add('filters-menu');
-      parentContainer.appendChild(elementsContainer);  
+      if (parentContainer) parentContainer.appendChild(elementsContainer);
     }
 
-    this.createElements(elementsContainer, terms, geoList, self, onGeoChange);
+    this.createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange);
     return elementsContainer;
   }
 
@@ -30,8 +43,9 @@ export default class FiltersMenu {
     elementsContainer: HTMLElement,
     terms: string[],
     geoList: string[],
-    self?: StoriesContainer,
-    onGeoChange?: (event: Event, self: StoriesContainer, geo: string) => void
+    geoIso: string,
+    self: StoriesContainer,
+    onGeoChange: (geoIso: string, self: StoriesContainer) => void
   ) {
     let text = document.createElement('span');
     text.innerHTML = 'Search interest from 2004 to today for ';
@@ -55,6 +69,26 @@ export default class FiltersMenu {
       const geo = document.createElement('span');
       geo.innerHTML = geoList[0];
       elementsContainer.appendChild(geo);
+    } else {
+      const geoSelect = document.createElement('select');
+      geoSelect.classList.add('geo-select');
+      geoSelect.name = 'geo-select';
+      const geoEntities = countries.filter(c => {
+        if (geoList.indexOf(c.iso) > -1) return c
+      });
+      geoEntities.forEach((c, i) => {
+        const option = document.createElement('option');
+        option.setAttribute('value', c.iso);
+        option.innerHTML = c.name;
+        geoSelect.appendChild(option);
+      });
+      const bindHandleChange = value => onGeoChange(value, self);
+      elementsContainer.appendChild(geoSelect);
+      const geoSelectize = $(geoSelect).selectize({
+        maxItems: 1,
+        onChange: bindHandleChange
+      });
+      geoSelectize[0].selectize.setValue(geoIso, true);
     }
   }
 }

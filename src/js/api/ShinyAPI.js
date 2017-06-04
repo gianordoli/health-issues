@@ -1,6 +1,6 @@
 // @flow weak
 
-import { Explore } from '../pages/Explore';
+import Explore from '../pages/Explore';
 import { arrayIsEqual } from '../util/util';
 import log from 'loglevel';
 
