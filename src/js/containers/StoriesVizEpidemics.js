@@ -63,7 +63,7 @@ export class StoriesVizEpidemics {
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.worldMap = new WorldMap(chartItem);
+    this.worldMap = new WorldMap(chartItem, mapData);
 
     this.slider = document.createElement('input');
     const { slider } = this;

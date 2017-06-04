@@ -17,9 +17,9 @@ export class WorldMap {
   }[];
   svg: () => {};
 
-  constructor(parentContainer: HTMLElement) {
-    this.data = [];
-    this.createElements(parentContainer);
+  constructor(parentContainer: HTMLElement, data: TrendsAPIRegionsList) {
+    this.data = data;
+    this.createElements(parentContainer, data);
   }
 
   updateData(data) {
@@ -28,9 +28,9 @@ export class WorldMap {
     this.updateElements();
   }
 
-  createElements(parentContainer: HTMLElement) {
+  createElements(parentContainer: HTMLElement, data) {
     const parentContainerSelection = d3.select(parentContainer);
-    // const { data } = this;
+    log.info(data);
     // Dimensions are set by the parent div, which in turn is defined via css.
     // No need to worry about it!
     // const width = parentContainer.offsetWidth;
@@ -61,7 +61,7 @@ export class WorldMap {
       //
       //
 
-      
+
       worldMap.insert("path")
           .datum(topojson.feature(world, world.objects.countries))
           .attr("class", "countries")
