@@ -6,7 +6,7 @@ module.exports = {
       {
         title: "Winter",
         data: "./data/seasonal-winter.json",
-        terms: ["Cough", "Common cold", "High Blood Pressure"],
+        terms: ["Bronchitis", "Raynaud syndrome", "Cold"],
         geoList: ["US", "AU"],
         chartType: "seasonal",
         copy: [
