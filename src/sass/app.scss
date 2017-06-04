@@ -202,9 +202,9 @@ svg.chart-canvas {
     height: 0;
   }
 
-  path {
-    fill: none;
-  }
+  // path {
+  //   fill: none;
+  // }
 
   path, line {
     stroke-width: 2px;
@@ -255,10 +255,13 @@ svg.chart-canvas {
     //   fill: #fff;
     // }
 
-    .countries {
-      fill: #222;
-      stroke: #fff;
-      stroke-width: 0.5px;
+    .country {
+      // fill: transparent;
+      // stroke: #fff;
+      // stroke-width: 0.5px;
+      // path {
+      //   fill: auto;
+      // }
     }
 
     // .boundary {

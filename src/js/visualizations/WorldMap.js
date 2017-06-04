@@ -2,7 +2,6 @@
 
 import type { TrendsAPIRegionsList } from '../util/types';
 import * as d3 from 'd3';
-// import * as topojson from 'topojson';
 import * as topojson from 'topojson-client';
 import log from 'loglevel'; // Pretty handy log tool. Use log.info(something), instead of console.log()!
 
@@ -24,7 +23,7 @@ export class WorldMap {
 
   updateData(data) {
     this.data = data;
-    console.log('D3 ->', this.data);
+    // console.log('D3 ->', this.data);
     this.updateElements();
   }
 
@@ -32,7 +31,7 @@ export class WorldMap {
     log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
     const { data } = this;
-    log.info(data);
+    // log.info(data);
     // Dimensions are set by the parent div, which in turn is defined via css.
     // No need to worry about it!
     // const width = parentContainer.offsetWidth;
@@ -51,22 +50,45 @@ export class WorldMap {
     const projection = d3.geoMercator()
         .scale((width - 3) / (2 * Math.PI))
         .translate([width / 2, height / 2]);
-
     const path = d3.geoPath().projection(projection);
+
+    var color = d3.scaleThreshold()
+        .domain([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
+        .range(["#fff5eb",
+          "#fee6ce",
+          "#fdd0a2",
+          "#fdae6b",
+          "#fd8d3c",
+          "#f16913",
+          "#d94801",
+          "#a63603",
+          "#7f2704"
+        ]);
 
     d3.json("https://gist.githubusercontent.com/alexwebgr/10249781/raw/2df84591a9e1fb891bcfde3a3c41d6cfc70cb5ee/world-topo.json", function(error, world) {
       if (error) throw error;
 
-      // later - needs to double loop between our data & the map to compare the country/region code
-      var countries = world.objects.countries.geometries;
-      // log.info(countries);
-      //
-      //
+      const valueByRegion = {};
+      const worldFeatures = topojson.feature(world, world.objects.countries).features;
 
+      // testing some random year
+      // log.info(data[0].regions);
+      data[10].regions.forEach(d => { valueByRegion[d.regionCode] = +d.value; });
+      // log.info(valueByRegion);
 
-      worldMap.insert("path")
-          .datum(topojson.feature(world, world.objects.countries))
-          .attr("class", "countries")
+      worldFeatures.forEach(d => {
+        //if the country doesnt have any value (undefined), set d.value to zero
+        valueByRegion[d.properties.countryCode] ? d.value = valueByRegion[d.properties.countryCode] : d.value = 0;
+      });
+      log.info(valueByRegion);
+
+      worldMap.selectAll('.country')
+        .data(worldFeatures)
+        .enter().append('path')
+          .attr("class", "country")
+          .attr("fill", "none")
+          .attr("id", function(d) { return "code-" + d.properties.countryCode; }, true)
+          .attr("fill", function(d) { return color(valueByRegion[d.properties.countryCode]); })
           .attr("d", path);
     });
   }
@@ -74,14 +96,14 @@ export class WorldMap {
   updateElements() {
     const { data, svg } = this;
 
-    log.info("data:" + JSON.stringify(data));
-    log.info("svgggg:" + JSON.stringify(svg));
+    // log.info("data:" + JSON.stringify(data));
+    // log.info("svgggg:" + JSON.stringify(svg));
     // Your update function goes here
     // you should be able to access any children of your svg by doing
 
     //testing
-    svg.selectAll('.countries')
-      .style("fill", "red");
+
+    // }
 
 
 

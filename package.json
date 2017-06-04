@@ -32,6 +32,7 @@
     "d3-geo": "^1.6.4",
     "d3-geo-projection": "^2.1.2",
     "d3-scale": "^1.0.5",
+    "d3-scale-chromatic": "^1.1.1",
     "google-client-api": "^1.0.4",
     "graph-scroll": "^1.0.1",
     "jquery": "^3.2.1",
