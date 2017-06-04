@@ -19,7 +19,7 @@ export class WorldMap {
 
   constructor(parentContainer: HTMLElement, data: TrendsAPIRegionsList) {
     this.data = data;
-    this.createElements(parentContainer, data);
+    this.createElements(parentContainer);
   }
 
   updateData(data) {
@@ -28,8 +28,10 @@ export class WorldMap {
     this.updateElements();
   }
 
-  createElements(parentContainer: HTMLElement, data) {
+  createElements(parentContainer: HTMLElement) {
+    log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
+    const { data } = this;
     log.info(data);
     // Dimensions are set by the parent div, which in turn is defined via css.
     // No need to worry about it!
