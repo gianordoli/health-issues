@@ -1,4 +1,5 @@
 module.exports = [
+  // {name: "Vaccine", entity: "/m/07__7", alias: null},
   {name:"Abdominal distension",entity:"/m/09d7vk",alias:null},
   {name:"Abdominal obesity",entity:"/m/0f8fc",alias:null},
   {name:"Abdominal pain",entity:"/m/02tfl8",alias:null},
