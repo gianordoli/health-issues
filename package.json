@@ -29,12 +29,16 @@
   },
   "dependencies": {
     "d3": "^4.8.0",
+    "d3-geo": "^1.6.4",
+    "d3-geo-projection": "^2.1.2",
     "d3-scale": "^1.0.5",
     "google-client-api": "^1.0.4",
     "graph-scroll": "^1.0.1",
     "jquery": "^3.2.1",
     "loglevel": "^1.4.1",
     "normalize.css": "^7.0.0",
-    "selectize": "^0.12.4"
+    "selectize": "^0.12.4",
+    "topojson": "^3.0.0",
+    "topojson-client": "^3.0.0"
   }
 }

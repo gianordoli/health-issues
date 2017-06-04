@@ -191,7 +191,6 @@ body {
 }
 
 svg.chart-canvas {
-
   transition: opacity 0.5s ease-out, height 0.5s ease-out;
 
   &:first-child {
@@ -241,6 +240,30 @@ svg.chart-canvas {
 
   text {
     fill: $color-0;
+  }
+
+
+  ///additional styling for maps
+  .map {
+    .stroke {
+      fill: none;
+      stroke: #000;
+      stroke-width: 3px;
+    }
+
+    .fill {
+      fill: #fff;
+    }
+
+    .land {
+      fill: #222;
+    }
+
+    .boundary {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 0.5px;
+    }
   }
 }
 

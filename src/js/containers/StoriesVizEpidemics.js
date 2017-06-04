@@ -23,7 +23,7 @@ export class StoriesVizEpidemics {
     const self = this;
     d3.json('./data/epidemics-zika-virus.json', function(mapData) {
       log.info('Loaded story');
-      log.info(mapData);
+      // log.info(mapData);
       self.data = {
         currMonth: 0,
         mapData
