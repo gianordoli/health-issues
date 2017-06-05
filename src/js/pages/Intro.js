@@ -149,12 +149,12 @@ export default class Intro {
           yearlyLoop = setInterval(loopThroughYears, 1000);
         } else {
           clearInterval(yearlyLoop);
-          // if (i === 2) {
-          //   chart.updateData([chartData[0], chartData[index]], type);
-          // } else {
+          if (i === 2) {
+            chart.updateData([chartData[0], chartData[index]], type);
+          } else {
             clearInterval(yearlyLoop);
             chart.updateData([chartData[index]], type);
-          // }
+          }
         }
       });
   }
