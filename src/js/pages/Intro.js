@@ -1,5 +1,6 @@
 // @flow weak
 
+import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
@@ -9,19 +10,17 @@ import '../../sass/intro.scss';
 import { dummyData } from '../scripts/data';
 
 export default class Intro {
-
   chart: LineChart;
 
   constructor(parentContainer: HTMLElement) {
     this.createElements(parentContainer);
   }
 
-  createStoryBlock(id: number, content: string[]) {
+  createStoryBlock(content: string[]) {
     const div = document.createElement('div');
-    // div.id = 'story-' + id;
     div.classList.add('slide');
 
-    for(const c of content) {
+    for (const c of content) {
       const p = document.createElement('p');
       p.innerHTML = c;
       div.appendChild(p);
@@ -30,7 +29,6 @@ export default class Intro {
   }
 
   createElements(parentContainer: HTMLElement) {
-
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'intro';
     elementsContainer.classList.add('page');
@@ -40,13 +38,14 @@ export default class Intro {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-      const title = document.createElement('h1');
-      title.innerHTML = 'Trends and Seasonality';
-      sectionHeader.appendChild(title);
+    const title = document.createElement('h1');
+    title.innerHTML = 'Trends and Seasonality';
+    sectionHeader.appendChild(title);
 
-      const intro = document.createElement('p');
-      intro.innerHTML = "Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.";
-      sectionHeader.appendChild(intro);
+    const intro = document.createElement('p');
+    intro.innerHTML =
+      'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.';
+    sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body');
@@ -56,6 +55,13 @@ export default class Intro {
     chartsContainer.classList.add('charts-container');
     sectionBody.appendChild(chartsContainer);
 
+    const filtersMenu = new FiltersMenu(
+      chartsContainer,
+      ['Influenza'],
+      ['world'],
+      'world',
+    );
+
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
@@ -63,48 +69,58 @@ export default class Intro {
     // this.chart.updateData([dummyData.seasonal[0]]);
     const { chart } = this;
 
-    const slidesContainer = document.createElement('div')
+    const slidesContainer = document.createElement('div');
     slidesContainer.classList.add('slides-container');
     sectionBody.appendChild(slidesContainer);
 
-    slidesContainer.appendChild(this.createStoryBlock(
-      1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
+    slidesContainer.appendChild(
+      this.createStoryBlock([
+        'We can see some clear spikes in 2009, corresponding to the period of the Swine Flu epidemics. The rest of the graph has a lot of variation, that could be due to a seasonal cycle, but it’s hard to tell on this view.',
+      ])
+    );
 
-    slidesContainer.appendChild(this.createStoryBlock(
-      2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
+    slidesContainer.appendChild(
+      this.createStoryBlock([
+        'Taking a closer look on the chart year by year, it looks like a general pattern repeats over and over. In general, the interest is low during Spring and Summer, and starts rising as we approach the Fall.',
+        'Though the general curves are similar, the values vary a lot from one year to another — with 2009 being the obvious extreme of that.',
+        'Can we deduce a “normal” cycle for the influenza based on this data? Let’s step back to our 12-year period chart.',
+      ])
+    );
 
-    slidesContainer.appendChild(this.createStoryBlock(
-      3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
+    slidesContainer.appendChild(
+      this.createStoryBlock([
+        'First, let’s draw what seems to be the variation independent of the spikes. This gives us the <b>trend over time.</b>',
+        'The counterpart of this data would be the variation independent of the trend:',
+      ])
+    );
 
-    // sections.appendChild(this.createStoryBlock(
-    //   4, ['Those yearly cycles can be combined to reveal what would be a “normal” pattern. That allows us to take a closer look into how seasonal factors — in this case, the weather — affect the interest for a given health issue.']));
-    //
-    // sections.appendChild(this.createStoryBlock(
-    //   5, ['Because they’re influenced by the weather, those cycles will look almost like mirrored images from one hemisphere to another, since their seasons are the flipped.']));
-    //
-    // sections.appendChild(this.createStoryBlock(
-    //   6, ['But factors other than the weather can affect the cycles too. Notice how the searches for stomach bug coincide with the end-of-year holidays seasons in both the US and Brazil.',
-    //     'In Brazil, 2 minor spikes also happen around  Easter and the Sep 7th, the country’s Indepence Day.']));
-    //
-    // sections.appendChild(this.createStoryBlock(
-    //   7, ['But the overall trend is important too. It allows us to see how outbreaks developed — or at least how people reacted to them. The zyka virus didn’t really spread in the US, but it became a major concern because in the early 2016 anyway.',
-    //   'A concern bigger than it was in Brazil, where most of the cases developed.']));
+    slidesContainer.appendChild(
+      this.createStoryBlock([
+        'Say we flatten out the trend line, make it our baseline, and plot the remaining values relative to it.',
+        'Notice that we are still using a 100-point range scale, but now our values go from negative to positive because they are relative to our trend line, not to the actual search interest.',
+        'Now, some of this data is made of variations that don’t correspond to a yearly repetition.',
+      ])
+    );
 
-    // const sections = d3.select('#intro.page > .sections-container > section');
+    slidesContainer.appendChild(
+      this.createStoryBlock([
+        'To take that out, we combine all years into a single cycle, leaving what doesn’t seem to represent a seasonal pattern out. This gives us <b>seasonal interest per year</b> for influenza.',
+      ])
+    );
+
+
     const containerD3 = d3.select('#intro.page .section-body');
     const graphD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
-    log.info(slidesContainerD3);
     const slidesD3 = slidesContainerD3.selectAll('.slide');
-    log.info(slidesD3);
 
     graphScroll()
-    	.graph(graphD3)
-    	.container(containerD3)
-    	.sections(slidesD3)
-    	.offset(window.innerHeight/2)
-    	.on('active', function(i) {
-    		chart.updateData([dummyData.seasonal[i]])
-    	})
+      .graph(graphD3)
+      .container(containerD3)
+      .sections(slidesD3)
+      .offset(window.innerHeight / 2)
+      .on('active', function(i) {
+        chart.updateData([dummyData.seasonal[i]]);
+      });
   }
 }

@@ -21,8 +21,8 @@ export default class FiltersMenu {
     terms: string[],
     geoList: string[],
     geoIso: string,
-    self: StoriesLineCharts,
-    onGeoChange: (geoIso: string, self: StoriesLineCharts) => void
+    self?: StoriesLineCharts,
+    onGeoChange?: (geoIso: string, self: StoriesLineCharts) => void
   ) {
 
     let elementsContainer;
@@ -45,11 +45,11 @@ export default class FiltersMenu {
     terms: string[],
     geoList: string[],
     geoIso: string,
-    self: StoriesLineCharts,
-    onGeoChange: (geoIso: string, self: StoriesLineCharts) => void
+    self?: StoriesLineCharts,
+    onGeoChange?: (geoIso: string, self: StoriesLineCharts) => void
   ) {
     let text = document.createElement('span');
-    text.innerHTML = 'Search interest from 2004 to today for ';
+    text.innerHTML = 'Search interest from 2004 to 2016 for ';
     elementsContainer.appendChild(text);
 
     const termsList = document.createElement('span');
@@ -83,13 +83,16 @@ export default class FiltersMenu {
         option.innerHTML = c.name;
         geoSelect.appendChild(option);
       });
-      const bindHandleChange = value => onGeoChange(value, self);
-      elementsContainer.appendChild(geoSelect);
-      const geoSelectize = $(geoSelect).selectize({
-        maxItems: 1,
-        onChange: bindHandleChange
-      });
-      geoSelectize[0].selectize.setValue(geoIso, true);
+
+      if (self && onGeoChange) {
+        const bindHandleChange = value => onGeoChange(value, self);
+        elementsContainer.appendChild(geoSelect);
+        const geoSelectize = $(geoSelect).selectize({
+          maxItems: 1,
+          onChange: bindHandleChange
+        });
+        geoSelectize[0].selectize.setValue(geoIso, true);
+      }
     }
   }
 }
