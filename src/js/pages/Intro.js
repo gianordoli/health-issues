@@ -19,7 +19,7 @@ export default class Intro {
   createStoryBlock(id: number, content: string[]) {
     const div = document.createElement('div');
     // div.id = 'story-' + id;
-    div.classList.add('section');
+    div.classList.add('slide');
 
     for(const c of content) {
       const p = document.createElement('p');
@@ -36,9 +36,25 @@ export default class Intro {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header');
+    elementsContainer.appendChild(sectionHeader);
+
+      const title = document.createElement('h1');
+      title.innerHTML = 'Trends and Seasonality';
+      sectionHeader.appendChild(title);
+
+      const intro = document.createElement('p');
+      intro.innerHTML = "Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.";
+      sectionHeader.appendChild(intro);
+
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body');
+    elementsContainer.appendChild(sectionBody);
+
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    sectionBody.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -47,17 +63,17 @@ export default class Intro {
     // this.chart.updateData([dummyData.seasonal[0]]);
     const { chart } = this;
 
-    const sectionsContainer = document.createElement('div')
-    sectionsContainer.classList.add('sections-container');
-    elementsContainer.appendChild(sectionsContainer);
+    const slidesContainer = document.createElement('div')
+    slidesContainer.classList.add('slides-container');
+    sectionBody.appendChild(slidesContainer);
 
-    sectionsContainer.appendChild(this.createStoryBlock(
+    slidesContainer.appendChild(this.createStoryBlock(
       1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
 
-    sectionsContainer.appendChild(this.createStoryBlock(
+    slidesContainer.appendChild(this.createStoryBlock(
       2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
 
-    sectionsContainer.appendChild(this.createStoryBlock(
+    slidesContainer.appendChild(this.createStoryBlock(
       3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
 
     // sections.appendChild(this.createStoryBlock(
@@ -75,17 +91,17 @@ export default class Intro {
     //   'A concern bigger than it was in Brazil, where most of the cases developed.']));
 
     // const sections = d3.select('#intro.page > .sections-container > section');
-    const containerD3 = d3.selectAll('#intro.page');
+    const containerD3 = d3.select('#intro.page .section-body');
     const graphD3 = containerD3.select('.charts-container');
-    const sectionsContainerD3 = containerD3.selectAll('.sections-container');
-    log.info(sectionsContainerD3);
-    const sectionsD3 = sectionsContainerD3.selectAll('.section');
-    log.info(sectionsD3);
+    const slidesContainerD3 = containerD3.selectAll('.slides-container');
+    log.info(slidesContainerD3);
+    const slidesD3 = slidesContainerD3.selectAll('.slide');
+    log.info(slidesD3);
 
     graphScroll()
     	.graph(graphD3)
     	.container(containerD3)
-    	.sections(sectionsD3)
+    	.sections(slidesD3)
     	.offset(window.innerHeight/2)
     	.on('active', function(i) {
     		chart.updateData([dummyData.seasonal[i]])

@@ -18,65 +18,70 @@
   // }
 
   // #container{
-    position: relative;
+    // position: relative;
   // }
 
-  .sections-container {
-    margin-left: calc((100% - #{$col-gutter-large})/2 + #{$col-gutter-large});
-    width: calc((100% - #{$col-gutter-large})/2);
+  .section-body {
 
-    @include for-phone-down {
-      width: 100%;
-      position: relative;
-      margin: 0;
-      padding-top: 50vh;
-      z-index: 100;
-    }
-    .section {
-      width: 100%;
-      padding-bottom: 50vh;
-      opacity: 0.3;
+    position: relative;
+    
+    .slides-container {
+      margin-left: calc((100% - #{$col-gutter-large})/2 + #{$col-gutter-large});
+      width: calc((100% - #{$col-gutter-large})/2);
 
-      &.graph-scroll-active{
-        opacity: 1;
-      }
-      
       @include for-phone-down {
         width: 100%;
-        p {
-          padding: $col-gutter-small;
-          border: 1px solid black;
-          background-color: white;
+        position: relative;
+        margin: 0;
+        padding-top: 50vh;
+        z-index: 100;
+      }
+      .slide {
+        width: 100%;
+        padding-bottom: 50vh;
+        opacity: 0.3;
+
+        &.graph-scroll-active{
+          opacity: 1;
+        }
+
+        @include for-phone-down {
+          width: 100%;
+          p {
+            padding: $col-gutter-small;
+            border: 1px solid black;
+            background-color: white;
+          }
         }
       }
     }
-  }
 
-  .charts-container {
-    position: absolute;
-    top: $col-gutter-large;
-    width: calc((100% - #{$col-gutter-large}*5)/2);
-    height: 100vh;
+    .charts-container {
+      position: absolute;
+      top: $col-gutter-large;
+      width: calc((100% - #{$col-gutter-large}*5)/2);
+      height: 100vh;
 
-    @include for-phone-down {
-      top: $col-gutter-small;
-      width: calc(100% - #{$col-gutter-small}*2);
+      @include for-phone-down {
+        top: $col-gutter-small;
+        width: calc(100% - #{$col-gutter-small}*2);
+      }
+
+      .chart-item {
+        width: 100%;
+        height: 45vh;
+      }
     }
 
-    .chart-item {
-      width: 100%;
-      height: 45vh;
+    &.graph-scroll-fixed .charts-container {
+      position: fixed;
     }
-  }
 
-  &.graph-scroll-fixed .charts-container {
-    position: fixed;
-  }
+    &.graph-scroll-below .charts-container{
+      position: absolute;
+      top: auto;
+      bottom: 0px;
+    }
 
-  &.graph-scroll-below .charts-container{
-    position: absolute;
-    top: auto;
-    bottom: 0px;
   }
-
 }
