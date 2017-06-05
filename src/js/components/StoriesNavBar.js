@@ -1,6 +1,6 @@
 // @flow weak
 
-import StoriesContainer from './StoriesContainer';
+import StoriesLineCharts from '../containers/StoriesLineCharts';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
 
@@ -8,8 +8,8 @@ export default class StoriesNavBar {
   constructor(
     parentContainer: HTMLElement,
     cases: string[],
-    self: StoriesContainer,
-    onChange: (event: Event, self: StoriesContainer, currCase: number) => void
+    self: StoriesLineCharts,
+    onChange: (event: Event, self: StoriesLineCharts, currCase: number) => void
   ) {
     this.createElements(parentContainer, cases, self, onChange);
   }
@@ -17,8 +17,8 @@ export default class StoriesNavBar {
   createElements(
     parentContainer: HTMLElement,
     cases: string[],
-    self: StoriesContainer,
-    onChange: (event: Event, self: StoriesContainer, currCase: number) => void
+    self: StoriesLineCharts,
+    onChange: (event: Event, self: StoriesLineCharts, currCase: number) => void
   ) {
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('stories-nav-bar');

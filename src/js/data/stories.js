@@ -36,39 +36,39 @@ module.exports = {
           "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
         ],
       },
-      {
-        title: "Fall",
-        data: "./data/seasonal-fall.json",
-        terms: [],
-        geoList: ["US", "AU"],
-        chartType: "seasonal",
-        copy: [
-          "Copy about Fall. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-        ],
-      },
+      // {
+      //   title: "Fall",
+      //   data: "./data/seasonal-fall.json",
+      //   terms: [],
+      //   geoList: ["US", "AU"],
+      //   chartType: "seasonal",
+      //   copy: [
+      //     "Copy about Fall. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+      //     "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+      //   ],
+      // },
     ],
   },
   holidays: {
     title: "Holidays",
     intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
     cases: [
-      {
-        title: "New Year",
-        data: "./data/holidays-new-year.json",
-        terms: ["Indigestion", "Headache"],
-        geoList: ["world"],
-        chartType: "seasonal",
-        copy: [
-          "Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-        ],
-      },
+      // {
+      //   title: "New Year",
+      //   data: "./data/holidays-new-year.json",
+      //   terms: ["Indigestion", "Headache"],
+      //   geoList: ["world"],
+      //   chartType: "seasonal",
+      //   copy: [
+      //     "Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+      //     "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+      //   ],
+      // },
       {
         title: "Diwali Festival",
         data: "./data/holidays-diwali-festival.json",
         terms: ["Burn", "Pain"],
-        geoList: ["India"],
+        geoList: ["IN"],
         chartType: "seasonal",
         copy: [
           "Copy about Diwali Festival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
@@ -79,7 +79,7 @@ module.exports = {
         title: "Brazilian Carnival",
         data: "./data/holidays-brazilian-carnival.json",
         terms: ["Mononucleosis"],
-        geoList: ["Brazil"],
+        geoList: ["BR"],
         chartType: "seasonal",
         copy: [
           "Copy about Brazilian Carnival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
@@ -95,7 +95,7 @@ module.exports = {
       {
         title: "Campaigns",
         data: "./data/media-campaigns.json",
-          terms: ["Down's syndrome", "Breast Cancer", "Autism"],
+        terms: ["Down's syndrome", "Breast Cancer", "Autism"],
         geoList: ["world"],
         chartType: "seasonal",
         copy: [

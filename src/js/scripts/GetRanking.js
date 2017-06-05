@@ -7,7 +7,7 @@ import countries from '../data/countries';
 import { averages } from './data.js';
 import log from 'loglevel';
 
-export default class Ranking {
+export default class GetRanking {
 
   data: TrendsAPIGraphAverages;
   term1: Term;

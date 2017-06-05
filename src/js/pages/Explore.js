@@ -279,6 +279,23 @@ export default class Explore {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+      const stickyHeader = document.createElement('div');
+      stickyHeader.classList.add('sticky-header');
+      stickyHeader.innerHTML = "Explore";
+      elementsContainer.appendChild(stickyHeader);
+
+      const sectionHeader = document.createElement('div');
+      sectionHeader.classList.add('section-header');
+      elementsContainer.appendChild(sectionHeader);
+
+        const intro = document.createElement('p');
+        intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+        sectionHeader.appendChild(intro);
+
+      const sectionBody = document.createElement('div');
+      sectionBody.classList.add('section-body');
+      elementsContainer.appendChild(sectionBody);
+
 
     // Loader
     this.loaderContainer = document.createElement('div');
@@ -288,13 +305,13 @@ export default class Explore {
     const loader = document.createElement('span');
     loader.classList.add('loader');
     loaderContainer.appendChild(loader);
-    elementsContainer.appendChild(loaderContainer);
+    sectionBody.appendChild(loaderContainer);
 
 
     // filtersMenu
     const filtersMenu = document.createElement('div');
     filtersMenu.classList.add('filters-menu');
-    elementsContainer.appendChild(filtersMenu);
+    sectionBody.appendChild(filtersMenu);
 
     let text = document.createElement('span');
     text.innerHTML = 'Search interest from 2004 to today for ';
@@ -367,7 +384,7 @@ export default class Explore {
     // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    sectionBody.appendChild(chartsContainer);
 
     // Seasonal Chart
     let chartItem = document.createElement('div');
@@ -377,7 +394,7 @@ export default class Explore {
 
     const toggleBar = document.createElement('div');
     toggleBar.classList.add('toggle-bar');
-    elementsContainer.appendChild(toggleBar);
+    sectionBody.appendChild(toggleBar);
 
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('button-container');
@@ -414,7 +431,7 @@ export default class Explore {
 
     const bottomContainer = document.createElement('div');
     bottomContainer.classList.add('bottom-container');
-    elementsContainer.appendChild(bottomContainer);
+    sectionBody.appendChild(bottomContainer);
 
     // Top Queries
     const topQueriesContainer = document.createElement('div');

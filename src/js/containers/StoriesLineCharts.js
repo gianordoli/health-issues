@@ -1,15 +1,15 @@
 // @flow weak
 
 import stories from '../data/stories';
-import StoriesNavBar from './StoriesNavBar';
-import FiltersMenu from './FiltersMenu';
+import StoriesNavBar from '../components/StoriesNavBar';
+import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
 
-export default class StoriesContainer {
+export default class StoriesLineCharts {
   data: {
     storySection: string,
     currCase: number,
@@ -23,25 +23,30 @@ export default class StoriesContainer {
   copyContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
-    log.info('StoriesContainer');
+    log.info('StoriesLineCharts');
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    log.info(stories[storySection].cases[currCase].data);
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
+      log.info(chartData);
       self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(parentContainer);
     });
   }
 
-  loadNewCase(event: Event, self: StoriesContainer, currCase: number) {
+  loadNewCase(event: Event, self: StoriesLineCharts, currCase: number) {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
+    const geoIso = stories[storySection].cases[currCase].geoList[0];
+    log.info(path);
     d3.json(path, function(chartData) {
-      self.updateData({ currCase, chartData });
+      log.info(chartData);
+      self.updateData({ currCase, chartData, geoIso });
     });
   }
 
-  changeGeo(geoIso: string, self: StoriesContainer) {
+  changeGeo(geoIso: string, self: StoriesLineCharts) {
     self.updateData({ geoIso });
   }
 

@@ -1,6 +1,6 @@
 // @flow weak
 
-import StoriesContainer from '../containers/StoriesContainer';
+import StoriesLineCharts from '../containers/StoriesLineCharts';
 import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -19,9 +19,14 @@ export default class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const storiesSeasonal = new StoriesContainer(elementsContainer, 'seasonal');
-    const storiesHolidays = new StoriesContainer(elementsContainer, 'holidays');
-    const storiesMedia = new StoriesContainer(elementsContainer, 'media');
+    const stickyHeader = document.createElement('div');
+    stickyHeader.classList.add('sticky-header');
+    stickyHeader.innerHTML = "Stories";
+    elementsContainer.appendChild(stickyHeader);
+
+    // const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
+    const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
+    const storiesMedia = new StoriesLineCharts(elementsContainer, 'media');
 
   }
 }

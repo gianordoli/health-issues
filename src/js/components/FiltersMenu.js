@@ -1,7 +1,8 @@
 // @flow weak
 
 import type { Geo } from '../util/types';
-import StoriesContainer from './StoriesContainer';
+import StoriesLineCharts from '../containers/StoriesLineCharts';
+import Explore from '../pages/Explore';
 import countries from '../data/countries';
 import log from 'loglevel';
 import selectize from 'selectize';
@@ -20,8 +21,8 @@ export default class FiltersMenu {
     terms: string[],
     geoList: string[],
     geoIso: string,
-    self: StoriesContainer,
-    onGeoChange: (geoIso: string, self: StoriesContainer) => void
+    self: StoriesLineCharts,
+    onGeoChange: (geoIso: string, self: StoriesLineCharts) => void
   ) {
 
     let elementsContainer;
@@ -44,8 +45,8 @@ export default class FiltersMenu {
     terms: string[],
     geoList: string[],
     geoIso: string,
-    self: StoriesContainer,
-    onGeoChange: (geoIso: string, self: StoriesContainer) => void
+    self: StoriesLineCharts,
+    onGeoChange: (geoIso: string, self: StoriesLineCharts) => void
   ) {
     let text = document.createElement('span');
     text.innerHTML = 'Search interest from 2004 to today for ';
