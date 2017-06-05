@@ -23,13 +23,10 @@ export default class StoriesLineCharts {
   copyContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
-    log.info('StoriesLineCharts');
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
-    log.info(stories[storySection].cases[currCase].data);
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
-      log.info(chartData);
       self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(parentContainer);
     });
@@ -39,9 +36,7 @@ export default class StoriesLineCharts {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
-    log.info(path);
     d3.json(path, function(chartData) {
-      log.info(chartData);
       self.updateData({ currCase, chartData, geoIso });
     });
   }
@@ -53,7 +48,6 @@ export default class StoriesLineCharts {
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
-    log.info(this.data);
     this.updateElements();
   }
 
@@ -124,7 +118,6 @@ export default class StoriesLineCharts {
     const { chart, copyContainer } = this;
     const { storySection, currCase, chartData, geoIso } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
-    log.info(geoIso);
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,
