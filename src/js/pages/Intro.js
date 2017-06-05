@@ -54,16 +54,20 @@ export default class Intro {
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    sectionBody.appendChild(chartsContainer);
+    const visuals = document.createElement('div');
+    visuals.classList.add('visuals');
+    sectionBody.appendChild(visuals);
 
     const filtersMenu = new FiltersMenu(
-      chartsContainer,
+      visuals,
       ['Influenza'],
       ['world'],
       'world',
     );
+
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    visuals.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -112,7 +116,7 @@ export default class Intro {
 
 
     const containerD3 = d3.select('#intro.page .section-body');
-    const graphD3 = containerD3.select('.charts-container');
+    const visualsD3 = containerD3.select('.visuals');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');
 
@@ -133,18 +137,24 @@ export default class Intro {
     }
 
     graphScroll()
-      .graph(graphD3)
+      .graph(visualsD3)
       .container(containerD3)
       .sections(slidesD3)
       .offset(window.innerHeight / 2)
       .on('active', function(i) {
         const type = i < 3 ? 'trend' : 'seasonal';
         const index = i < 2 ? i : i - 1;
-        if (i !== 1) {
-          clearInterval(yearlyLoop);
-          chart.updateData([chartData[index]], type);
-        } else {
+
+        if (i === 1) {
           yearlyLoop = setInterval(loopThroughYears, 1000);
+        } else {
+          clearInterval(yearlyLoop);
+          // if (i === 2) {
+          //   chart.updateData([chartData[0], chartData[index]], type);
+          // } else {
+            clearInterval(yearlyLoop);
+            chart.updateData([chartData[index]], type);
+          // }
         }
       });
   }

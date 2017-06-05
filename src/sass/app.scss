@@ -264,6 +264,8 @@ svg.chart-canvas {
 .filters-menu {
 
   line-height: 40px;
+  display: block;
+  width: 100%;
 
   .disease-select {
     min-width: 50%;
