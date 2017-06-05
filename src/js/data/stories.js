@@ -1,6 +1,6 @@
 module.exports = {
   seasonal: {
-    title: "Seasonal",
+    title: "Seasons",
     intro: "See how environmental conditions affect your health. Switch between the US and Australia to see how North and Southern hemisphere experience opposite cycles.",
     cases: [
       {

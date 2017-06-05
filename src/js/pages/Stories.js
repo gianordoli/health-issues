@@ -1,6 +1,7 @@
 // @flow weak
 
 import StoriesLineCharts from '../containers/StoriesLineCharts';
+import StoriesRanking from '../containers/StoriesRanking';
 import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -24,9 +25,10 @@ export default class Stories {
     stickyHeader.innerHTML = "Stories";
     elementsContainer.appendChild(stickyHeader);
 
-    // const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
+    const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
     const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
     const storiesMedia = new StoriesLineCharts(elementsContainer, 'media');
+    const storiesRanking = new StoriesRanking(elementsContainer);
 
   }
 }

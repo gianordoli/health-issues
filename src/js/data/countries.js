@@ -240,7 +240,7 @@ module.exports = [
   {iso:"UA",name:"Ukraine"},
   {iso:"AE",name:"United Arab Emirates"},
   {iso:"GB",name:"United Kingdom"},
-  {iso:"US",name:"United States"},
+  {iso:"US",name:"the United States"},
   {iso:"UY",name:"Uruguay"},
   {iso:"UZ",name:"Uzbekistan"},
   {iso:"VU",name:"Vanuatu"},

@@ -68,7 +68,7 @@ export default class FiltersMenu {
 
     if (geoList.length === 1) {
       const geo = document.createElement('span');
-      geo.innerHTML = geoList[0];
+      geo.innerHTML = countries.find(c => c.iso === geoList[0]).name;
       elementsContainer.appendChild(geo);
     } else {
       const geoSelect = document.createElement('select');
