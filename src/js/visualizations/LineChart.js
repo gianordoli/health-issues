@@ -2,6 +2,7 @@
 
 import type { TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
+import log from 'loglevel';
 
 export default class LineChart {
 
@@ -32,6 +33,7 @@ export default class LineChart {
     this.data = this.parseDates(data);
     if (type) this.type = type;
     // console.log('D3 ->', this.data);
+    log.info(this.type);
     this.updateElements();
   }
 
@@ -119,9 +121,10 @@ export default class LineChart {
       .transition()
       .duration(transitionDuration)
       .call(yAxis);
+
     chart.select('g.y')
       .selectAll(".tick text")
-      .each(function(d,i){
+      .each(function(d, i){
         d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
       });
 
@@ -132,8 +135,15 @@ export default class LineChart {
 
     if (type === 'seasonal') {
       chart.select('g.x path')
+        .transition()
+        .duration(transitionDuration)
         .style('transform', 'translate(0, -'+height/2+'px)');
     } else {
+      chart.select('g.x path')
+      .transition()
+      .duration(transitionDuration)
+      .style('transform', 'none');
+
       chart.select('g.x')
         .selectAll(".tick text")
         .each(function(d,i){

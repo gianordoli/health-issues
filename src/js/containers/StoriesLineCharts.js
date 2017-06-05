@@ -26,9 +26,14 @@ export default class StoriesLineCharts {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+
+    const elementsContainer = document.createElement('div');
+    elementsContainer.classList.add('story-section');
+    parentContainer.appendChild(elementsContainer);
+
     d3.json(stories[storySection].cases[currCase].data, function(chartData) {
       self.data = { storySection, currCase, chartData, geoIso };
-      self.createElements(parentContainer);
+      self.createElements(elementsContainer);
     });
   }
 
@@ -51,13 +56,9 @@ export default class StoriesLineCharts {
     this.updateElements();
   }
 
-  createElements(parentContainer: HTMLElement) {
+  createElements(elementsContainer: HTMLElement) {
     const { storySection, currCase, chartData, geoIso } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
-
-    const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('story-section');
-    parentContainer.appendChild(elementsContainer);
 
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header');

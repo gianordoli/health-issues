@@ -25,17 +25,10 @@ export default class Stories {
     stickyHeader.innerHTML = "Stories";
     elementsContainer.appendChild(stickyHeader);
 
-    const sections = [];
-    for(let i = 0; i < 4; i++) {
-      const section = document.createElement('div');
-      elementsContainer.appendChild(section);
-      sections.push(section);
-    }
-
-    const storiesSeasonal = new StoriesLineCharts(sections[0], 'seasonal');
-    const storiesHolidays = new StoriesLineCharts(sections[1], 'holidays');
-    const storiesMedia = new StoriesLineCharts(sections[2], 'media');
-    const storiesRanking = new StoriesRanking(sections[3]);
+    const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
+    const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
+    const storiesMedia = new StoriesLineCharts(elementsContainer, 'media');
+    const storiesRanking = new StoriesRanking(elementsContainer);
 
   }
 }
