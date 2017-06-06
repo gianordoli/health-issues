@@ -110,7 +110,7 @@ export default class TrendsAPI {
   }
 
   getRegionsList(filter: Filter, callback) {
-    log.info('getTopQueries for:', filter);
+    log.info('getRegionsList for:', filter);
     const { geo, terms } = filter;
     const term = terms[0];
     let path = `https://www.googleapis.com/trends/v1beta/regions?term=${encodeURIComponent(term.entity)}`;

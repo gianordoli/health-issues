@@ -16,11 +16,11 @@ export default class StoriesEpidemics {
     currCase: number,
     geoIso: string,
     currMonth: number,
-    mapData: TrendsAPIRegionsList,
+    mapData: Array<TrendsAPIRegionsList>,
   };
   filtersMenu: HTMLElement;
   worldMap: WorldMap;
-  slider: HTMLElement;
+  slider: HTMLInputElement;
   copyContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
@@ -42,7 +42,7 @@ export default class StoriesEpidemics {
 
   loadNewCase(
     event: Event,
-    self: StoriesLineCharts,
+    self: StoriesEpidemics,
     elementsContainer: HTMLElement,
     currCase: number
   ) {
@@ -52,21 +52,22 @@ export default class StoriesEpidemics {
     elementsContainer.querySelectorAll('a').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
-    d3.json(path, function(chartData) {
-      self.updateData({ currCase, chartData, geoIso });
+    d3.json(path, function(mapData) {
+      self.slider.value = 0;
+      self.slider.setAttribute('max', mapData.length - 1);
+      self.updateData({ currCase, mapData, geoIso });
     });
   }
 
-  handleSliderChange(event, self: StoriesVizEpidemics) {
+  handleSliderChange(event, self: StoriesEpidemics) {
     const { value } = event.target;
-    const currMonth = value;
+    const currMonth = parseInt(value);
     self.updateData({ currMonth });
   }
 
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
-    log.info(this.data);
     this.updateElements();
   }
 
@@ -123,8 +124,9 @@ export default class StoriesEpidemics {
     this.slider = document.createElement('input');
     const { slider } = this;
     slider.setAttribute('type', 'range');
-    slider.setAttribute('min', 0);
-    slider.setAttribute('max', mapData.length - 1);
+    slider.setAttribute('min', '0');
+    slider.setAttribute('max', (mapData.length - 1).toString());
+    slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
     chartsContainer.appendChild(slider);

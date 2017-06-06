@@ -21,7 +21,7 @@
 
     .case-copy {
       @include columns(1);
-    }    
+    }
 
     .stories-nav-bar {
 
@@ -86,6 +86,10 @@
       }
     }
   }
+}
+
+input[type="range"] {
+  width: 100%;
 }
 
 

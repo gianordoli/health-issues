@@ -20,10 +20,25 @@ export default class GetMapData {
         terms: [terms.find(t => t.name === 'Zika virus')],
         startDate: '2015-04',
         endDate: '2017-01',
-      }
+      },
+      {
+        terms: [terms.find(t => t.name === 'EBOV')],
+        startDate: '2014-01',
+        endDate: '2015-05',
+      },
+      {
+        terms: [terms.find(t => t.name === 'Middle East respiratory syndrome')],
+        startDate: '2013-01',
+        endDate: '2015-12',
+      },
+      {
+        terms: [terms.find(t => t.name === 'Yellow fever')],
+        startDate: '2016-11',
+        endDate: '2017-05',
+      },
     ]
     this.trendsAPI = trendsAPI;
-    this.callTrendsApi(this.filters[0], this.filters[0].startDate);
+    this.callTrendsApi(this.filters[3], this.filters[3].startDate);
   }
 
   nextMonth(date: string) {

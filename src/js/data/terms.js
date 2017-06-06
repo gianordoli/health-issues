@@ -622,7 +622,7 @@ module.exports = [
   {name:"Microcephaly",entity:"/m/01hrbm",alias:null},
   {name:"Micromastia",entity:"/m/09pv41",alias:null},
   {name:"Middle back pain",entity:"/m/09rlb3",alias:null},
-  {name:"Middle East respiratory syndrome",entity:"/m/0n46w_1",alias:null},
+  {name:"Middle East respiratory syndrome",entity:"/m/0n46w_1",alias:"MERS"},
   {name:"Migraine",entity:"/m/05904",alias:null},
   {name:"Milium",entity:"/m/0527by",alias:null},
   {name:"Miosis",entity:"/m/03smvc",alias:null},
