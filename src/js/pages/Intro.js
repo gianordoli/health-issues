@@ -77,7 +77,7 @@ export default class Intro {
 
     slidesContainer.appendChild(
       this.createStoryBlock([
-        'We can see some clear spikes in 2009, corresponding to the period of the Swine Flu epidemics. The rest of the graph has a lot of variation, that could be due to a seasonal cycle, but it’s hard to tell on this view.',
+        'We can see some clear spikes in 2009, corresponding to the period of the Swine Flu epidemics. The rest of the graph has a lot of variation that could be due to a seasonal cycle, but it’s hard to tell on this view.',
       ])
     );
 
