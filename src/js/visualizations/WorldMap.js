@@ -72,14 +72,10 @@ export class WorldMap {
       const worldFeatures = topojson.feature(world, world.objects.countries).features;
 
       // testing some random year
-      // log.info(data[0].regions);
+      // replace this '10' with the index data passed from the slider....
       data[10].regions.forEach(d => { valueByRegion[d.regionCode] = +d.value; });
-      // log.info(valueByRegion);
-
-      worldFeatures.forEach(d => {
-        //if the country doesnt have any value (undefined), set d.value to zero
-        valueByRegion[d.properties.countryCode] ? d.value = valueByRegion[d.properties.countryCode] : d.value = 0;
-      });
+      //if the country doesnt have any value (undefined), set d.value to zero
+      worldFeatures.forEach(d => { valueByRegion[d.properties.countryCode] ? d.value = valueByRegion[d.properties.countryCode] : d.value = 0; });
       log.info(valueByRegion);
 
       worldMap.selectAll('.country')
@@ -88,7 +84,7 @@ export class WorldMap {
           .attr("class", "country")
           .attr("fill", "none")
           .attr("id", function(d) { return "code-" + d.properties.countryCode; }, true)
-          .attr("fill", function(d) { return color(valueByRegion[d.properties.countryCode]); })
+          .attr("fill", function(d) { log.info(d); return color(valueByRegion[d.properties.countryCode]); })
           .attr("d", path);
     });
   }
@@ -98,19 +94,6 @@ export class WorldMap {
 
     // log.info("data:" + JSON.stringify(data));
     // log.info("svgggg:" + JSON.stringify(svg));
-    // Your update function goes here
-    // you should be able to access any children of your svg by doing
 
-    //testing
-
-    // }
-
-
-
-
-    // The data won't always send all of the countries.
-    // I could have written a script to fill out the missing ones with zeros,
-    // but decided to leave that to you... :P
-    // You could simply reset all country values and then update the new ones?
   }
 }
