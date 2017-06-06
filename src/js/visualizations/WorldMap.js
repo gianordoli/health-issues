@@ -7,17 +7,21 @@ import log from 'loglevel'; // Pretty handy log tool. Use log.info(something), i
 
 export class WorldMap {
 
-  // Notice that the chart gets one list of regions/values at a time,
-  // never the full timeline!
   data: {
      regionCode: string,
      regionName: string,
      value: number,
   }[];
+  width: number;
+  height: number;
+  margin: { top: number, left: number, bottom: number, right: number };
   svg: () => {};
 
   constructor(parentContainer: HTMLElement, data: TrendsAPIRegionsList) {
     this.data = data;
+    this.margin = {top: 4, right: 4, bottom: 32, left: 32};
+    this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
+    this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }
 
@@ -30,23 +34,20 @@ export class WorldMap {
   createElements(parentContainer: HTMLElement) {
     log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
-    const { data } = this;
-    // log.info(data);
-    // Dimensions are set by the parent div, which in turn is defined via css.
-    // No need to worry about it!
-    // const width = parentContainer.offsetWidth;
-    // const height = parentContainer.offsetHeight;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const { data, width, height, margin } = this;
 
     const chart = this.svg = parentContainerSelection.append('svg')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
       .attr('class', 'chart-canvas');
+  }
 
-    const worldMap = chart.append('g')
-      .attr('class', 'map');
+  updateElements() {
+    const { data, width, height, margin, svg} = this;
 
+    // To Do:
+    // 1. change the projection
+    // 2. fix the black color, this is when the region is undefined in our dataset
     const projection = d3.geoMercator()
         .scale((width - 3) / (2 * Math.PI))
         .translate([width / 2, height / 2]);
@@ -71,12 +72,13 @@ export class WorldMap {
       const valueByRegion = {};
       const worldFeatures = topojson.feature(world, world.objects.countries).features;
 
-      // testing some random year
-      // replace this '10' with the index data passed from the slider....
-      data[10].regions.forEach(d => { valueByRegion[d.regionCode] = +d.value; });
+      data.forEach(d => { valueByRegion[d.regionCode] = +d.value; });
       //if the country doesnt have any value (undefined), set d.value to zero
       worldFeatures.forEach(d => { valueByRegion[d.properties.countryCode] ? d.value = valueByRegion[d.properties.countryCode] : d.value = 0; });
-      log.info(valueByRegion);
+      // log.info(valueByRegion);
+
+      const worldMap = svg.append('g')
+        .attr('class', 'map');
 
       worldMap.selectAll('.country')
         .data(worldFeatures)
@@ -84,16 +86,9 @@ export class WorldMap {
           .attr("class", "country")
           .attr("fill", "none")
           .attr("id", function(d) { return "code-" + d.properties.countryCode; }, true)
-          .attr("fill", function(d) { log.info(d); return color(valueByRegion[d.properties.countryCode]); })
+          .attr("fill", function(d) { return color(valueByRegion[d.properties.countryCode]); })
           .attr("d", path);
     });
-  }
-
-  updateElements() {
-    const { data, svg } = this;
-
-    // log.info("data:" + JSON.stringify(data));
-    // log.info("svgggg:" + JSON.stringify(svg));
 
   }
 }
