@@ -3,6 +3,7 @@
 //---------------------- COLOR -----------------------//
 
 $color-black: #333;
+$color-gray: #ECECEC;
 $color-0: #4422B3;
 $color-1: #FA8200;
 $color-2: #FF91E6;
@@ -38,7 +39,11 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-h3 {
-
+  font-size: 16px;
+  font-family: $font-sans;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 @mixin type-h4 {
@@ -123,6 +128,10 @@ a {
 
 h1, h2, h3, h4, h5, h6, p, ul, li { margin: 0 };
 
+h3 {
+  @include type-h3;
+}
+
 h4 {
   @include type-h4;
 }
@@ -184,6 +193,30 @@ b {
   @include for-phone-down {
     padding: $col-gutter-small;
   }
+}
+
+.story-section {
+  &:not(:last-child) {
+    margin-bottom: $col-gutter-large*2;
+  }
+
+  @include for-phone-down {
+    &:not(:last-child) {
+      margin-bottom: $col-gutter-small*2;
+    }
+  }
+}
+
+.section-body {
+  background-color: white;
+  color: $color-black;
+  padding: $col-gutter-large;
+  margin-top: $col-gutter-large;
+
+  @include for-phone-down {
+    padding: $col-gutter-small;
+    margin-top: $col-gutter-small;
+  };
 }
 
 .filters-menu {

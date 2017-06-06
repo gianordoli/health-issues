@@ -41,7 +41,7 @@ export default class Intro {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-    const title = document.createElement('h1');
+    const title = document.createElement('h3');
     title.innerHTML = 'Trends and Seasonality';
     sectionHeader.appendChild(title);
 
@@ -54,12 +54,8 @@ export default class Intro {
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
-    const visuals = document.createElement('div');
-    visuals.classList.add('visuals');
-    sectionBody.appendChild(visuals);
-
     const filtersMenu = new FiltersMenu(
-      visuals,
+      sectionBody,
       ['Influenza'],
       ['world'],
       'world',
@@ -67,7 +63,7 @@ export default class Intro {
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    visuals.appendChild(chartsContainer);
+    sectionBody.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -116,7 +112,7 @@ export default class Intro {
 
 
     const containerD3 = d3.select('#intro.page .section-body');
-    const visualsD3 = containerD3.select('.visuals');
+    const chartsContainerD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');
 
@@ -137,7 +133,7 @@ export default class Intro {
     }
 
     graphScroll()
-      .graph(visualsD3)
+      .graph(chartsContainerD3)
       .container(containerD3)
       .sections(slidesD3)
       .offset(window.innerHeight / 2)

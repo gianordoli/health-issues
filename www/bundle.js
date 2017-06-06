@@ -56,19 +56,19 @@
 
 	var _Intro2 = _interopRequireDefault(_Intro);
 
-	var _Stories = __webpack_require__(32);
+	var _Stories = __webpack_require__(46);
 
 	var _Stories2 = _interopRequireDefault(_Stories);
 
-	var _Explore = __webpack_require__(42);
+	var _Explore = __webpack_require__(32);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
-	var _About = __webpack_require__(47);
+	var _About = __webpack_require__(49);
 
 	var _About2 = _interopRequireDefault(_About);
 
-	var _ShinyAPI = __webpack_require__(43);
+	var _ShinyAPI = __webpack_require__(33);
 
 	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
 
@@ -88,9 +88,9 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(48);
+	__webpack_require__(50);
 
-	var _GetMapData = __webpack_require__(50);
+	var _GetMapData = __webpack_require__(52);
 
 	var _GetMapData2 = _interopRequireDefault(_GetMapData);
 
@@ -163,8 +163,8 @@
 	    // const storiesVizEpidemics = new StoriesVizEpidemics(elementsContainer);
 
 
-	    // const home = new Home(elementsContainer, trendsAPI);
-	    // const intro = new Intro(elementsContainer);
+	    var home = new _Home2.default(elementsContainer, trendsAPI);
+	    var intro = new _Intro2.default(elementsContainer);
 	    var stories = new _Stories2.default(elementsContainer);
 	    explore = new _Explore2.default(elementsContainer, shinyAPI, trendsAPI);
 	    var about = new _About2.default(elementsContainer);
@@ -17337,7 +17337,7 @@
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page {\n  background-color: #4422B3; }\n  #stories.page .story-section .section-header {\n    color: white; }\n  #stories.page .story-section .section-body {\n    background-color: white;\n    color: #333; }\n    #stories.page .story-section .section-body .stories-nav-bar p {\n      display: inline-block;\n      padding: 0 12px; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px;\n  display: block;\n  width: 100%; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page {\n  background-color: #4422B3; }\n  #stories.page .story-section .section-header {\n    color: white; }\n  #stories.page .story-section .section-body {\n    background-color: white;\n    color: #333; }\n    #stories.page .story-section .section-body .stories-nav-bar p {\n      display: inline-block;\n      padding: 0 12px; }\n", ""]);
 
 	// exports
 
@@ -19179,7 +19179,7 @@
 
 	"use strict";
 
-	module.exports = [{ iso: "world", name: "the world" }, { iso: "AF", name: "Afghanistan" }, { iso: "AX", name: "Åland" }, { iso: "AL", name: "Albania" }, { iso: "DZ", name: "Algeria" }, { iso: "AS", name: "American Samoa" }, { iso: "AD", name: "Andorra" }, { iso: "AO", name: "Angola" }, { iso: "AI", name: "Anguilla" }, { iso: "AQ", name: "Antarctica" }, { iso: "AG", name: "Antigua and Barbuda" }, { iso: "AR", name: "Argentina" }, { iso: "AM", name: "Armenia" }, { iso: "AW", name: "Aruba" }, { iso: "AU", name: "Australia" }, { iso: "AT", name: "Austria" }, { iso: "AZ", name: "Azerbaijan" }, { iso: "BS", name: "Bahamas" }, { iso: "BH", name: "Bahrain" }, { iso: "BD", name: "Bangladesh" }, { iso: "BB", name: "Barbados" }, { iso: "BY", name: "Belarus" }, { iso: "BE", name: "Belgium" }, { iso: "BZ", name: "Belize" }, { iso: "BJ", name: "Benin" }, { iso: "BM", name: "Bermuda" }, { iso: "BT", name: "Bhutan" }, { iso: "BO", name: "Bolivia" }, { iso: "BQ", name: "Bonaire" }, { iso: "BA", name: "Bosnia and Herzegovina" }, { iso: "BW", name: "Botswana" }, { iso: "BV", name: "Bouvet Island" }, { iso: "BR", name: "Brazil" }, { iso: "IO", name: "British Indian Ocean Territory" }, { iso: "VG", name: "British Virgin Islands" }, { iso: "BN", name: "Brunei" }, { iso: "BG", name: "Bulgaria" }, { iso: "BF", name: "Burkina Faso" }, { iso: "BI", name: "Burundi" }, { iso: "KH", name: "Cambodia" }, { iso: "CM", name: "Cameroon" }, { iso: "CA", name: "Canada" }, { iso: "CV", name: "Cape Verde" }, { iso: "KY", name: "Cayman Islands" }, { iso: "CF", name: "Central African Republic" }, { iso: "TD", name: "Chad" }, { iso: "CL", name: "Chile" }, { iso: "CN", name: "China" }, { iso: "CX", name: "Christmas Island" }, { iso: "CC", name: "Cocos [Keeling] Islands" }, { iso: "CO", name: "Colombia" }, { iso: "KM", name: "Comoros" }, { iso: "CK", name: "Cook Islands" }, { iso: "CR", name: "Costa Rica" }, { iso: "HR", name: "Croatia" }, { iso: "CU", name: "Cuba" }, { iso: "CW", name: "Curacao" }, { iso: "CY", name: "Cyprus" }, { iso: "CZ", name: "Czechia" }, { iso: "CD", name: "Democratic Republic of the Congo" }, { iso: "DK", name: "Denmark" }, { iso: "DJ", name: "Djibouti" }, { iso: "DM", name: "Dominica" }, { iso: "DO", name: "Dominican Republic" }, { iso: "TL", name: "East Timor" }, { iso: "EC", name: "Ecuador" }, { iso: "EG", name: "Egypt" }, { iso: "SV", name: "El Salvador" }, { iso: "GQ", name: "Equatorial Guinea" }, { iso: "ER", name: "Eritrea" }, { iso: "EE", name: "Estonia" }, { iso: "ET", name: "Ethiopia" }, { iso: "FK", name: "Falkland Islands" }, { iso: "FO", name: "Faroe Islands" }, { iso: "FJ", name: "Fiji" }, { iso: "FI", name: "Finland" }, { iso: "FR", name: "France" }, { iso: "GF", name: "French Guiana" }, { iso: "PF", name: "French Polynesia" }, { iso: "TF", name: "French Southern Territories" }, { iso: "GA", name: "Gabon" }, { iso: "GM", name: "Gambia" }, { iso: "GE", name: "Georgia" }, { iso: "DE", name: "Germany" }, { iso: "GH", name: "Ghana" }, { iso: "GI", name: "Gibraltar" }, { iso: "GR", name: "Greece" }, { iso: "GL", name: "Greenland" }, { iso: "GD", name: "Grenada" }, { iso: "GP", name: "Guadeloupe" }, { iso: "GU", name: "Guam" }, { iso: "GT", name: "Guatemala" }, { iso: "GG", name: "Guernsey" }, { iso: "GN", name: "Guinea" }, { iso: "GW", name: "Guinea-Bissau" }, { iso: "GY", name: "Guyana" }, { iso: "HT", name: "Haiti" }, { iso: "HM", name: "Heard Island and McDonald Islands" }, { iso: "HN", name: "Honduras" }, { iso: "HK", name: "Hong Kong" }, { iso: "HU", name: "Hungary" }, { iso: "IS", name: "Iceland" }, { iso: "IN", name: "India" }, { iso: "ID", name: "Indonesia" }, { iso: "IR", name: "Iran" }, { iso: "IQ", name: "Iraq" }, { iso: "IE", name: "Ireland" }, { iso: "IM", name: "Isle of Man" }, { iso: "IL", name: "Israel" }, { iso: "IT", name: "Italy" }, { iso: "CI", name: "Ivory Coast" }, { iso: "JM", name: "Jamaica" }, { iso: "JP", name: "Japan" }, { iso: "JE", name: "Jersey" }, { iso: "JO", name: "Jordan" }, { iso: "KZ", name: "Kazakhstan" }, { iso: "KE", name: "Kenya" }, { iso: "KI", name: "Kiribati" }, { iso: "XK", name: "Kosovo" }, { iso: "KW", name: "Kuwait" }, { iso: "KG", name: "Kyrgyzstan" }, { iso: "LA", name: "Laos" }, { iso: "LV", name: "Latvia" }, { iso: "LB", name: "Lebanon" }, { iso: "LS", name: "Lesotho" }, { iso: "LR", name: "Liberia" }, { iso: "LY", name: "Libya" }, { iso: "LI", name: "Liechtenstein" }, { iso: "LT", name: "Lithuania" }, { iso: "LU", name: "Luxembourg" }, { iso: "MO", name: "Macao" }, { iso: "MK", name: "Macedonia" }, { iso: "MG", name: "Madagascar" }, { iso: "MW", name: "Malawi" }, { iso: "MY", name: "Malaysia" }, { iso: "MV", name: "Maldives" }, { iso: "ML", name: "Mali" }, { iso: "MT", name: "Malta" }, { iso: "MH", name: "Marshall Islands" }, { iso: "MQ", name: "Martinique" }, { iso: "MR", name: "Mauritania" }, { iso: "MU", name: "Mauritius" }, { iso: "YT", name: "Mayotte" }, { iso: "MX", name: "Mexico" }, { iso: "FM", name: "Micronesia" }, { iso: "MD", name: "Moldova" }, { iso: "MC", name: "Monaco" }, { iso: "MN", name: "Mongolia" }, { iso: "ME", name: "Montenegro" }, { iso: "MS", name: "Montserrat" }, { iso: "MA", name: "Morocco" }, { iso: "MZ", name: "Mozambique" }, { iso: "MM", name: "Myanmar [Burma]" }, { iso: "NA", name: "Namibia" }, { iso: "NR", name: "Nauru" }, { iso: "NP", name: "Nepal" }, { iso: "NL", name: "Netherlands" }, { iso: "AN", name: "Netherlands Antilles" }, { iso: "NC", name: "New Caledonia" }, { iso: "NZ", name: "New Zealand" }, { iso: "NI", name: "Nicaragua" }, { iso: "NE", name: "Niger" }, { iso: "NG", name: "Nigeria" }, { iso: "NU", name: "Niue" }, { iso: "NF", name: "Norfolk Island" }, { iso: "KP", name: "North Korea" }, { iso: "MP", name: "Northern Mariana Islands" }, { iso: "NO", name: "Norway" }, { iso: "OM", name: "Oman" }, { iso: "PK", name: "Pakistan" }, { iso: "PW", name: "Palau" }, { iso: "PS", name: "Palestine" }, { iso: "PA", name: "Panama" }, { iso: "PG", name: "Papua New Guinea" }, { iso: "PY", name: "Paraguay" }, { iso: "PE", name: "Peru" }, { iso: "PH", name: "Philippines" }, { iso: "PN", name: "Pitcairn Islands" }, { iso: "PL", name: "Poland" }, { iso: "PT", name: "Portugal" }, { iso: "PR", name: "Puerto Rico" }, { iso: "QA", name: "Qatar" }, { iso: "CG", name: "Republic of the Congo" }, { iso: "RE", name: "Réunion" }, { iso: "RO", name: "Romania" }, { iso: "RU", name: "Russia" }, { iso: "RW", name: "Rwanda" }, { iso: "BL", name: "Saint Barthélemy" }, { iso: "SH", name: "Saint Helena" }, { iso: "KN", name: "Saint Kitts and Nevis" }, { iso: "LC", name: "Saint Lucia" }, { iso: "MF", name: "Saint Martin" }, { iso: "PM", name: "Saint Pierre and Miquelon" }, { iso: "VC", name: "Saint Vincent and the Grenadines" }, { iso: "WS", name: "Samoa" }, { iso: "SM", name: "San Marino" }, { iso: "ST", name: "São Tomé and Príncipe" }, { iso: "SA", name: "Saudi Arabia" }, { iso: "SN", name: "Senegal" }, { iso: "RS", name: "Serbia" }, { iso: "CS", name: "Serbia and Montenegro" }, { iso: "SC", name: "Seychelles" }, { iso: "SL", name: "Sierra Leone" }, { iso: "SG", name: "Singapore" }, { iso: "SX", name: "Sint Maarten" }, { iso: "SK", name: "Slovakia" }, { iso: "SI", name: "Slovenia" }, { iso: "SB", name: "Solomon Islands" }, { iso: "SO", name: "Somalia" }, { iso: "ZA", name: "South Africa" }, { iso: "GS", name: "South Georgia and the South Sandwich Islands" }, { iso: "KR", name: "South Korea" }, { iso: "SS", name: "South Sudan" }, { iso: "ES", name: "Spain" }, { iso: "LK", name: "Sri Lanka" }, { iso: "SD", name: "Sudan" }, { iso: "SR", name: "Suriname" }, { iso: "SJ", name: "Svalbard and Jan Mayen" }, { iso: "SZ", name: "Swaziland" }, { iso: "SE", name: "Sweden" }, { iso: "CH", name: "Switzerland" }, { iso: "SY", name: "Syria" }, { iso: "TW", name: "Taiwan" }, { iso: "TJ", name: "Tajikistan" }, { iso: "TZ", name: "Tanzania" }, { iso: "TH", name: "Thailand" }, { iso: "TG", name: "Togo" }, { iso: "TK", name: "Tokelau" }, { iso: "TO", name: "Tonga" }, { iso: "TT", name: "Trinidad and Tobago" }, { iso: "TN", name: "Tunisia" }, { iso: "TR", name: "Turkey" }, { iso: "TM", name: "Turkmenistan" }, { iso: "TC", name: "Turks and Caicos Islands" }, { iso: "TV", name: "Tuvalu" }, { iso: "UM", name: "U.S. Minor Outlying Islands" }, { iso: "VI", name: "U.S. Virgin Islands" }, { iso: "UG", name: "Uganda" }, { iso: "UA", name: "Ukraine" }, { iso: "AE", name: "United Arab Emirates" }, { iso: "GB", name: "United Kingdom" }, { iso: "US", name: "United States" }, { iso: "UY", name: "Uruguay" }, { iso: "UZ", name: "Uzbekistan" }, { iso: "VU", name: "Vanuatu" }, { iso: "VA", name: "Vatican City" }, { iso: "VE", name: "Venezuela" }, { iso: "VN", name: "Vietnam" }, { iso: "WF", name: "Wallis and Futuna" }, { iso: "EH", name: "Western Sahara" }, { iso: "YE", name: "Yemen" }, { iso: "ZM", name: "Zambia" }, { iso: "ZW", name: "Zimbabwe" }];
+	module.exports = [{ iso: "world", name: "the world" }, { iso: "AF", name: "Afghanistan" }, { iso: "AX", name: "Åland" }, { iso: "AL", name: "Albania" }, { iso: "DZ", name: "Algeria" }, { iso: "AS", name: "American Samoa" }, { iso: "AD", name: "Andorra" }, { iso: "AO", name: "Angola" }, { iso: "AI", name: "Anguilla" }, { iso: "AQ", name: "Antarctica" }, { iso: "AG", name: "Antigua and Barbuda" }, { iso: "AR", name: "Argentina" }, { iso: "AM", name: "Armenia" }, { iso: "AW", name: "Aruba" }, { iso: "AU", name: "Australia" }, { iso: "AT", name: "Austria" }, { iso: "AZ", name: "Azerbaijan" }, { iso: "BS", name: "Bahamas" }, { iso: "BH", name: "Bahrain" }, { iso: "BD", name: "Bangladesh" }, { iso: "BB", name: "Barbados" }, { iso: "BY", name: "Belarus" }, { iso: "BE", name: "Belgium" }, { iso: "BZ", name: "Belize" }, { iso: "BJ", name: "Benin" }, { iso: "BM", name: "Bermuda" }, { iso: "BT", name: "Bhutan" }, { iso: "BO", name: "Bolivia" }, { iso: "BQ", name: "Bonaire" }, { iso: "BA", name: "Bosnia and Herzegovina" }, { iso: "BW", name: "Botswana" }, { iso: "BV", name: "Bouvet Island" }, { iso: "BR", name: "Brazil" }, { iso: "IO", name: "British Indian Ocean Territory" }, { iso: "VG", name: "British Virgin Islands" }, { iso: "BN", name: "Brunei" }, { iso: "BG", name: "Bulgaria" }, { iso: "BF", name: "Burkina Faso" }, { iso: "BI", name: "Burundi" }, { iso: "KH", name: "Cambodia" }, { iso: "CM", name: "Cameroon" }, { iso: "CA", name: "Canada" }, { iso: "CV", name: "Cape Verde" }, { iso: "KY", name: "Cayman Islands" }, { iso: "CF", name: "Central African Republic" }, { iso: "TD", name: "Chad" }, { iso: "CL", name: "Chile" }, { iso: "CN", name: "China" }, { iso: "CX", name: "Christmas Island" }, { iso: "CC", name: "Cocos [Keeling] Islands" }, { iso: "CO", name: "Colombia" }, { iso: "KM", name: "Comoros" }, { iso: "CK", name: "Cook Islands" }, { iso: "CR", name: "Costa Rica" }, { iso: "HR", name: "Croatia" }, { iso: "CU", name: "Cuba" }, { iso: "CW", name: "Curacao" }, { iso: "CY", name: "Cyprus" }, { iso: "CZ", name: "Czechia" }, { iso: "CD", name: "Democratic Republic of the Congo" }, { iso: "DK", name: "Denmark" }, { iso: "DJ", name: "Djibouti" }, { iso: "DM", name: "Dominica" }, { iso: "DO", name: "Dominican Republic" }, { iso: "TL", name: "East Timor" }, { iso: "EC", name: "Ecuador" }, { iso: "EG", name: "Egypt" }, { iso: "SV", name: "El Salvador" }, { iso: "GQ", name: "Equatorial Guinea" }, { iso: "ER", name: "Eritrea" }, { iso: "EE", name: "Estonia" }, { iso: "ET", name: "Ethiopia" }, { iso: "FK", name: "Falkland Islands" }, { iso: "FO", name: "Faroe Islands" }, { iso: "FJ", name: "Fiji" }, { iso: "FI", name: "Finland" }, { iso: "FR", name: "France" }, { iso: "GF", name: "French Guiana" }, { iso: "PF", name: "French Polynesia" }, { iso: "TF", name: "French Southern Territories" }, { iso: "GA", name: "Gabon" }, { iso: "GM", name: "Gambia" }, { iso: "GE", name: "Georgia" }, { iso: "DE", name: "Germany" }, { iso: "GH", name: "Ghana" }, { iso: "GI", name: "Gibraltar" }, { iso: "GR", name: "Greece" }, { iso: "GL", name: "Greenland" }, { iso: "GD", name: "Grenada" }, { iso: "GP", name: "Guadeloupe" }, { iso: "GU", name: "Guam" }, { iso: "GT", name: "Guatemala" }, { iso: "GG", name: "Guernsey" }, { iso: "GN", name: "Guinea" }, { iso: "GW", name: "Guinea-Bissau" }, { iso: "GY", name: "Guyana" }, { iso: "HT", name: "Haiti" }, { iso: "HM", name: "Heard Island and McDonald Islands" }, { iso: "HN", name: "Honduras" }, { iso: "HK", name: "Hong Kong" }, { iso: "HU", name: "Hungary" }, { iso: "IS", name: "Iceland" }, { iso: "IN", name: "India" }, { iso: "ID", name: "Indonesia" }, { iso: "IR", name: "Iran" }, { iso: "IQ", name: "Iraq" }, { iso: "IE", name: "Ireland" }, { iso: "IM", name: "Isle of Man" }, { iso: "IL", name: "Israel" }, { iso: "IT", name: "Italy" }, { iso: "CI", name: "Ivory Coast" }, { iso: "JM", name: "Jamaica" }, { iso: "JP", name: "Japan" }, { iso: "JE", name: "Jersey" }, { iso: "JO", name: "Jordan" }, { iso: "KZ", name: "Kazakhstan" }, { iso: "KE", name: "Kenya" }, { iso: "KI", name: "Kiribati" }, { iso: "XK", name: "Kosovo" }, { iso: "KW", name: "Kuwait" }, { iso: "KG", name: "Kyrgyzstan" }, { iso: "LA", name: "Laos" }, { iso: "LV", name: "Latvia" }, { iso: "LB", name: "Lebanon" }, { iso: "LS", name: "Lesotho" }, { iso: "LR", name: "Liberia" }, { iso: "LY", name: "Libya" }, { iso: "LI", name: "Liechtenstein" }, { iso: "LT", name: "Lithuania" }, { iso: "LU", name: "Luxembourg" }, { iso: "MO", name: "Macao" }, { iso: "MK", name: "Macedonia" }, { iso: "MG", name: "Madagascar" }, { iso: "MW", name: "Malawi" }, { iso: "MY", name: "Malaysia" }, { iso: "MV", name: "Maldives" }, { iso: "ML", name: "Mali" }, { iso: "MT", name: "Malta" }, { iso: "MH", name: "Marshall Islands" }, { iso: "MQ", name: "Martinique" }, { iso: "MR", name: "Mauritania" }, { iso: "MU", name: "Mauritius" }, { iso: "YT", name: "Mayotte" }, { iso: "MX", name: "Mexico" }, { iso: "FM", name: "Micronesia" }, { iso: "MD", name: "Moldova" }, { iso: "MC", name: "Monaco" }, { iso: "MN", name: "Mongolia" }, { iso: "ME", name: "Montenegro" }, { iso: "MS", name: "Montserrat" }, { iso: "MA", name: "Morocco" }, { iso: "MZ", name: "Mozambique" }, { iso: "MM", name: "Myanmar [Burma]" }, { iso: "NA", name: "Namibia" }, { iso: "NR", name: "Nauru" }, { iso: "NP", name: "Nepal" }, { iso: "NL", name: "Netherlands" }, { iso: "AN", name: "Netherlands Antilles" }, { iso: "NC", name: "New Caledonia" }, { iso: "NZ", name: "New Zealand" }, { iso: "NI", name: "Nicaragua" }, { iso: "NE", name: "Niger" }, { iso: "NG", name: "Nigeria" }, { iso: "NU", name: "Niue" }, { iso: "NF", name: "Norfolk Island" }, { iso: "KP", name: "North Korea" }, { iso: "MP", name: "Northern Mariana Islands" }, { iso: "NO", name: "Norway" }, { iso: "OM", name: "Oman" }, { iso: "PK", name: "Pakistan" }, { iso: "PW", name: "Palau" }, { iso: "PS", name: "Palestine" }, { iso: "PA", name: "Panama" }, { iso: "PG", name: "Papua New Guinea" }, { iso: "PY", name: "Paraguay" }, { iso: "PE", name: "Peru" }, { iso: "PH", name: "Philippines" }, { iso: "PN", name: "Pitcairn Islands" }, { iso: "PL", name: "Poland" }, { iso: "PT", name: "Portugal" }, { iso: "PR", name: "Puerto Rico" }, { iso: "QA", name: "Qatar" }, { iso: "CG", name: "Republic of the Congo" }, { iso: "RE", name: "Réunion" }, { iso: "RO", name: "Romania" }, { iso: "RU", name: "Russia" }, { iso: "RW", name: "Rwanda" }, { iso: "BL", name: "Saint Barthélemy" }, { iso: "SH", name: "Saint Helena" }, { iso: "KN", name: "Saint Kitts and Nevis" }, { iso: "LC", name: "Saint Lucia" }, { iso: "MF", name: "Saint Martin" }, { iso: "PM", name: "Saint Pierre and Miquelon" }, { iso: "VC", name: "Saint Vincent and the Grenadines" }, { iso: "WS", name: "Samoa" }, { iso: "SM", name: "San Marino" }, { iso: "ST", name: "São Tomé and Príncipe" }, { iso: "SA", name: "Saudi Arabia" }, { iso: "SN", name: "Senegal" }, { iso: "RS", name: "Serbia" }, { iso: "CS", name: "Serbia and Montenegro" }, { iso: "SC", name: "Seychelles" }, { iso: "SL", name: "Sierra Leone" }, { iso: "SG", name: "Singapore" }, { iso: "SX", name: "Sint Maarten" }, { iso: "SK", name: "Slovakia" }, { iso: "SI", name: "Slovenia" }, { iso: "SB", name: "Solomon Islands" }, { iso: "SO", name: "Somalia" }, { iso: "ZA", name: "South Africa" }, { iso: "GS", name: "South Georgia and the South Sandwich Islands" }, { iso: "KR", name: "South Korea" }, { iso: "SS", name: "South Sudan" }, { iso: "ES", name: "Spain" }, { iso: "LK", name: "Sri Lanka" }, { iso: "SD", name: "Sudan" }, { iso: "SR", name: "Suriname" }, { iso: "SJ", name: "Svalbard and Jan Mayen" }, { iso: "SZ", name: "Swaziland" }, { iso: "SE", name: "Sweden" }, { iso: "CH", name: "Switzerland" }, { iso: "SY", name: "Syria" }, { iso: "TW", name: "Taiwan" }, { iso: "TJ", name: "Tajikistan" }, { iso: "TZ", name: "Tanzania" }, { iso: "TH", name: "Thailand" }, { iso: "TG", name: "Togo" }, { iso: "TK", name: "Tokelau" }, { iso: "TO", name: "Tonga" }, { iso: "TT", name: "Trinidad and Tobago" }, { iso: "TN", name: "Tunisia" }, { iso: "TR", name: "Turkey" }, { iso: "TM", name: "Turkmenistan" }, { iso: "TC", name: "Turks and Caicos Islands" }, { iso: "TV", name: "Tuvalu" }, { iso: "UM", name: "U.S. Minor Outlying Islands" }, { iso: "VI", name: "U.S. Virgin Islands" }, { iso: "UG", name: "Uganda" }, { iso: "UA", name: "Ukraine" }, { iso: "AE", name: "United Arab Emirates" }, { iso: "GB", name: "United Kingdom" }, { iso: "US", name: "the United States" }, { iso: "UY", name: "Uruguay" }, { iso: "UZ", name: "Uzbekistan" }, { iso: "VU", name: "Vanuatu" }, { iso: "VA", name: "Vatican City" }, { iso: "VE", name: "Venezuela" }, { iso: "VN", name: "Vietnam" }, { iso: "WF", name: "Wallis and Futuna" }, { iso: "EH", name: "Western Sahara" }, { iso: "YE", name: "Yemen" }, { iso: "ZM", name: "Zambia" }, { iso: "ZW", name: "Zimbabwe" }];
 
 /***/ }),
 /* 25 */
@@ -29452,7 +29452,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _LineChart = __webpack_require__(27);
+	var _FiltersMenu = __webpack_require__(27);
+
+	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
+
+	var _LineChart = __webpack_require__(31);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
@@ -29460,15 +29464,13 @@
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _graphScroll = __webpack_require__(28);
+	var _graphScroll = __webpack_require__(43);
 
 	var _loglevel = __webpack_require__(4);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(29);
-
-	var _data = __webpack_require__(31);
+	__webpack_require__(44);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -29480,15 +29482,23 @@
 	  function Intro(parentContainer) {
 	    _classCallCheck(this, Intro);
 
-	    this.createElements(parentContainer);
+	    var self = this;
+
+	    var elementsContainer = document.createElement('div');
+	    elementsContainer.id = 'intro';
+	    elementsContainer.classList.add('page');
+	    parentContainer.appendChild(elementsContainer);
+
+	    d3.json('./data/intro-influenza.json', function (chartData) {
+	      self.createElements(elementsContainer, chartData);
+	    });
 	  }
 
 	  _createClass(Intro, [{
 	    key: 'createStoryBlock',
-	    value: function createStoryBlock(id, content) {
+	    value: function createStoryBlock(content) {
 	      var div = document.createElement('div');
-	      // div.id = 'story-' + id;
-	      div.classList.add('section');
+	      div.classList.add('slide');
 
 	      var _iteratorNormalCompletion = true;
 	      var _didIteratorError = false;
@@ -29521,59 +29531,91 @@
 	    }
 	  }, {
 	    key: 'createElements',
-	    value: function createElements(parentContainer) {
+	    value: function createElements(elementsContainer, chartData) {
 
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'intro';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
+	      var sectionHeader = document.createElement('div');
+	      sectionHeader.classList.add('section-header');
+	      elementsContainer.appendChild(sectionHeader);
+
+	      var title = document.createElement('h1');
+	      title.innerHTML = 'Trends and Seasonality';
+	      sectionHeader.appendChild(title);
+
+	      var intro = document.createElement('p');
+	      intro.innerHTML = 'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.';
+	      sectionHeader.appendChild(intro);
+
+	      var sectionBody = document.createElement('div');
+	      sectionBody.classList.add('section-body');
+	      elementsContainer.appendChild(sectionBody);
+
+	      var visuals = document.createElement('div');
+	      visuals.classList.add('visuals');
+	      sectionBody.appendChild(visuals);
+
+	      var filtersMenu = new _FiltersMenu2.default(visuals, ['Influenza'], ['world'], 'world');
 
 	      var chartsContainer = document.createElement('div');
 	      chartsContainer.classList.add('charts-container');
-	      elementsContainer.appendChild(chartsContainer);
+	      visuals.appendChild(chartsContainer);
 
 	      var chartItem = document.createElement('div');
 	      chartItem.classList.add('chart-item');
 	      chartsContainer.appendChild(chartItem);
-	      this.chart = new _LineChart2.default(chartItem, 'seasonal');
-	      // this.chart.updateData([dummyData.seasonal[0]]);
+	      this.chart = new _LineChart2.default(chartItem, 'trend');
 	      var chart = this.chart;
 
 
-	      var sectionsContainer = document.createElement('div');
-	      sectionsContainer.classList.add('sections-container');
-	      elementsContainer.appendChild(sectionsContainer);
+	      var slidesContainer = document.createElement('div');
+	      slidesContainer.classList.add('slides-container');
+	      sectionBody.appendChild(slidesContainer);
 
-	      sectionsContainer.appendChild(this.createStoryBlock(1, ['Most searches for health issues have a clear pattern throughout the year. Notice how the interest in sore throat goes up towards the end of the year in the US and down as it gets close to the Summer.']));
+	      slidesContainer.appendChild(this.createStoryBlock(['We can see some clear spikes in 2009, corresponding to the period of the Swine Flu epidemics. The rest of the graph has a lot of variation, that could be due to a seasonal cycle, but it’s hard to tell on this view.']));
 
-	      sectionsContainer.appendChild(this.createStoryBlock(2, ['However, this cycle is also affected by an overall trend — in this case, searches for sore throat have been increasing since 2004.']));
+	      slidesContainer.appendChild(this.createStoryBlock(['Taking a closer look on the chart year by year, it looks like a general pattern repeats over and over. In general, the interest is low during Spring and Summer, and starts rising as we approach the Fall.', 'Though the general curves are similar, the values vary a lot from one year to another — with 2009 being the obvious extreme of that.', 'Can we deduce a “normal” cycle for the influenza based on this data? Let’s step back to our 12-year period chart.']));
 
-	      sectionsContainer.appendChild(this.createStoryBlock(3, ['If we were to split the seasonal cycle and the overall trend into 2, our charts would look like this.']));
+	      slidesContainer.appendChild(this.createStoryBlock(['First, let’s draw what seems to be the variation independent of the spikes. This gives us the <b>trend over time.</b>', 'The counterpart of this data would be the variation independent of the trend:']));
 
-	      // sections.appendChild(this.createStoryBlock(
-	      //   4, ['Those yearly cycles can be combined to reveal what would be a “normal” pattern. That allows us to take a closer look into how seasonal factors — in this case, the weather — affect the interest for a given health issue.']));
-	      //
-	      // sections.appendChild(this.createStoryBlock(
-	      //   5, ['Because they’re influenced by the weather, those cycles will look almost like mirrored images from one hemisphere to another, since their seasons are the flipped.']));
-	      //
-	      // sections.appendChild(this.createStoryBlock(
-	      //   6, ['But factors other than the weather can affect the cycles too. Notice how the searches for stomach bug coincide with the end-of-year holidays seasons in both the US and Brazil.',
-	      //     'In Brazil, 2 minor spikes also happen around  Easter and the Sep 7th, the country’s Indepence Day.']));
-	      //
-	      // sections.appendChild(this.createStoryBlock(
-	      //   7, ['But the overall trend is important too. It allows us to see how outbreaks developed — or at least how people reacted to them. The zyka virus didn’t really spread in the US, but it became a major concern because in the early 2016 anyway.',
-	      //   'A concern bigger than it was in Brazil, where most of the cases developed.']));
+	      slidesContainer.appendChild(this.createStoryBlock(['Say we flatten out the trend line, make it our baseline, and plot the remaining values relative to it.', 'Notice that we are still using a 100-point range scale, but now our values go from negative to positive because they are relative to our trend line, not to the actual search interest.', 'Now, some of this data is made of variations that don’t correspond to a yearly repetition.']));
 
-	      // const sections = d3.select('#intro.page > .sections-container > section');
-	      var containerD3 = d3.selectAll('#intro.page');
-	      var graphD3 = containerD3.select('.charts-container');
-	      var sectionsContainerD3 = containerD3.selectAll('.sections-container');
-	      _loglevel2.default.info(sectionsContainerD3);
-	      var sectionsD3 = sectionsContainerD3.selectAll('.section');
-	      _loglevel2.default.info(sectionsD3);
+	      slidesContainer.appendChild(this.createStoryBlock(['To take that out, we combine all years into a single cycle, leaving what doesn’t seem to represent a seasonal pattern out. This gives us <b>seasonal interest per year</b> for influenza.']));
 
-	      (0, _graphScroll.graphScroll)().graph(graphD3).container(containerD3).sections(sectionsD3).offset(window.innerHeight / 2).on('active', function (i) {
-	        chart.updateData([_data.dummyData.seasonal[i]]);
+	      var containerD3 = d3.select('#intro.page .section-body');
+	      var visualsD3 = containerD3.select('.visuals');
+	      var slidesContainerD3 = containerD3.selectAll('.slides-container');
+	      var slidesD3 = slidesContainerD3.selectAll('.slide');
+
+	      var yearlyLoop = void 0;
+	      var yearlyLoopIndex = 0;
+	      function loopThroughYears() {
+	        var data = {
+	          term: chartData[0].term,
+	          points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12)
+	        };
+	        chart.updateData([data], 'trend');
+	        if (yearlyLoopIndex < 12) {
+	          yearlyLoopIndex++;
+	        } else {
+	          yearlyLoopIndex = 0;
+	          clearInterval(yearlyLoop);
+	        }
+	      }
+
+	      (0, _graphScroll.graphScroll)().graph(visualsD3).container(containerD3).sections(slidesD3).offset(window.innerHeight / 2).on('active', function (i) {
+	        var type = i < 3 ? 'trend' : 'seasonal';
+	        var index = i < 2 ? i : i - 1;
+
+	        if (i === 1) {
+	          yearlyLoop = setInterval(loopThroughYears, 1000);
+	        } else {
+	          clearInterval(yearlyLoop);
+	          if (i === 2) {
+	            chart.updateData([chartData[0], chartData[index]], type);
+	          } else {
+	            clearInterval(yearlyLoop);
+	            chart.updateData([chartData[index]], type);
+	          }
+	        }
 	      });
 	    }
 	  }]);
@@ -29593,17 +29635,547 @@
 	  value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _StoriesLineCharts = __webpack_require__(28);
+
+	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
+
+	var _Explore = __webpack_require__(32);
+
+	var _Explore2 = _interopRequireDefault(_Explore);
+
+	var _countries = __webpack_require__(24);
+
+	var _countries2 = _interopRequireDefault(_countries);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	var _selectize = __webpack_require__(36);
+
+	var _selectize2 = _interopRequireDefault(_selectize);
+
+	var _jquery = __webpack_require__(25);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	__webpack_require__(39);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var FiltersMenu = function () {
+
+	  // data: {
+	  //   geo: Geo,
+	  // };
+	  // geoSelect?: selectize;
+
+	  function FiltersMenu(parentContainer, terms, geoList, geoIso, self, onGeoChange) {
+	    _classCallCheck(this, FiltersMenu);
+
+	    var elementsContainer = void 0;
+	    if (parentContainer) elementsContainer = parentContainer.querySelector('.filters-menu');
+
+	    if (elementsContainer) {
+	      elementsContainer.innerHTML = '';
+	    } else {
+	      elementsContainer = document.createElement('div');
+	      elementsContainer.classList.add('filters-menu');
+	      if (parentContainer) parentContainer.appendChild(elementsContainer);
+	    }
+
+	    this.createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange);
+	    return elementsContainer;
+	  }
+
+	  _createClass(FiltersMenu, [{
+	    key: 'createElements',
+	    value: function createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange) {
+	      var text = document.createElement('span');
+	      text.innerHTML = 'Search interest from 2004 to 2016 for ';
+	      elementsContainer.appendChild(text);
+
+	      var termsList = document.createElement('span');
+	      termsList.classList.add('terms-list');
+	      elementsContainer.appendChild(termsList);
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var t = _step.value;
+
+	          var s = document.createElement('span');
+	          s.innerHTML = t;
+	          termsList.appendChild(s);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      text = document.createElement('span');
+	      text.innerHTML = ' in ';
+	      elementsContainer.appendChild(text);
+
+	      if (geoList.length === 1) {
+	        var geo = document.createElement('span');
+	        geo.innerHTML = _countries2.default.find(function (c) {
+	          return c.iso === geoList[0];
+	        }).name;
+	        elementsContainer.appendChild(geo);
+	      } else {
+	        var geoSelect = document.createElement('select');
+	        geoSelect.classList.add('geo-select');
+	        geoSelect.name = 'geo-select';
+	        var geoEntities = _countries2.default.filter(function (c) {
+	          if (geoList.indexOf(c.iso) > -1) return c;
+	        });
+	        geoEntities.forEach(function (c, i) {
+	          var option = document.createElement('option');
+	          option.setAttribute('value', c.iso);
+	          option.innerHTML = c.name;
+	          geoSelect.appendChild(option);
+	        });
+
+	        if (self && onGeoChange) {
+	          var bindHandleChange = function bindHandleChange(value) {
+	            return onGeoChange(value, self);
+	          };
+	          elementsContainer.appendChild(geoSelect);
+	          var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
+	            maxItems: 1,
+	            onChange: bindHandleChange
+	          });
+	          geoSelectize[0].selectize.setValue(geoIso, true);
+	        }
+	      }
+	    }
+	  }]);
+
+	  return FiltersMenu;
+	}();
+
+	exports.default = FiltersMenu;
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _stories = __webpack_require__(29);
+
+	var _stories2 = _interopRequireDefault(_stories);
+
+	var _StoriesNavBar = __webpack_require__(30);
+
+	var _StoriesNavBar2 = _interopRequireDefault(_StoriesNavBar);
+
+	var _FiltersMenu = __webpack_require__(27);
+
+	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
+
+	var _LineChart = __webpack_require__(31);
+
+	var _LineChart2 = _interopRequireDefault(_LineChart);
 
 	var _d = __webpack_require__(3);
 
 	var d3 = _interopRequireWildcard(_d);
 
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	//  weak
+	// import '../../sass/stories.scss';
+
+	var StoriesLineCharts = function () {
+	  function StoriesLineCharts(parentContainer, storySection) {
+	    _classCallCheck(this, StoriesLineCharts);
+
+	    var self = this;
+	    var currCase = 0;
+	    var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+
+	    var elementsContainer = document.createElement('div');
+	    elementsContainer.classList.add('story-section');
+	    parentContainer.appendChild(elementsContainer);
+
+	    d3.json(_stories2.default[storySection].cases[currCase].data, function (chartData) {
+	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso };
+	      self.createElements(elementsContainer);
+	    });
+	  }
+
+	  _createClass(StoriesLineCharts, [{
+	    key: 'loadNewCase',
+	    value: function loadNewCase(event, self, currCase) {
+	      var storySection = self.data.storySection;
+
+	      var path = _stories2.default[storySection].cases[currCase].data;
+	      var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	      d3.json(path, function (chartData) {
+	        self.updateData({ currCase: currCase, chartData: chartData, geoIso: geoIso });
+	      });
+	    }
+	  }, {
+	    key: 'changeGeo',
+	    value: function changeGeo(geoIso, self) {
+	      self.updateData({ geoIso: geoIso });
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(obj) {
+	      var data = this.data;
+
+	      Object.assign(data, obj);
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(elementsContainer) {
+	      var _data = this.data,
+	          storySection = _data.storySection,
+	          currCase = _data.currCase,
+	          chartData = _data.chartData,
+	          geoIso = _data.geoIso;
+	      var _stories$storySection = _stories2.default[storySection].cases[currCase],
+	          terms = _stories$storySection.terms,
+	          geoList = _stories$storySection.geoList,
+	          chartType = _stories$storySection.chartType,
+	          copy = _stories$storySection.copy;
+
+
+	      var sectionHeader = document.createElement('div');
+	      sectionHeader.classList.add('section-header');
+	      elementsContainer.appendChild(sectionHeader);
+
+	      var title = document.createElement('h1');
+	      title.innerHTML = _stories2.default[storySection].title;
+	      sectionHeader.appendChild(title);
+
+	      var intro = document.createElement('p');
+	      intro.innerHTML = _stories2.default[storySection].intro;
+	      sectionHeader.appendChild(intro);
+
+	      var sectionBody = document.createElement('div');
+	      sectionBody.classList.add('section-body');
+	      elementsContainer.appendChild(sectionBody);
+
+	      var storiesNavBar = new _StoriesNavBar2.default(sectionBody, _stories2.default[storySection].cases.map(function (c) {
+	        return c.title;
+	      }), this, this.loadNewCase);
+
+	      this.filtersMenu = new _FiltersMenu2.default(sectionBody, terms, geoList, geoIso, this, this.changeGeo);
+
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      sectionBody.appendChild(chartsContainer);
+
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.chart = new _LineChart2.default(chartItem, chartType);
+
+	      this.copyContainer = document.createElement('div');
+	      var copyContainer = this.copyContainer;
+
+	      copyContainer.classList.add('case-copy');
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var c = _step.value;
+
+	          var p = document.createElement('p');
+	          p.innerHTML = c;
+	          copyContainer.appendChild(p);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      sectionBody.appendChild(copyContainer);
+
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'updateElements',
+	    value: function updateElements() {
+	      var filtersMenu = this.filtersMenu;
+	      var chart = this.chart,
+	          copyContainer = this.copyContainer;
+	      var _data2 = this.data,
+	          storySection = _data2.storySection,
+	          currCase = _data2.currCase,
+	          chartData = _data2.chartData,
+	          geoIso = _data2.geoIso;
+	      var _stories$storySection2 = _stories2.default[storySection].cases[currCase],
+	          terms = _stories$storySection2.terms,
+	          geoList = _stories$storySection2.geoList,
+	          chartType = _stories$storySection2.chartType,
+	          copy = _stories$storySection2.copy;
+
+	      var parent = filtersMenu.parentElement;
+	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, this, this.changeGeo);
+
+	      chart.updateData(chartData[geoIso], chartType);
+
+	      copyContainer.innerHTML = '';
+	      var _iteratorNormalCompletion2 = true;
+	      var _didIteratorError2 = false;
+	      var _iteratorError2 = undefined;
+
+	      try {
+	        for (var _iterator2 = copy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	          var c = _step2.value;
+
+	          var p = document.createElement('p');
+	          p.innerHTML = c;
+	          copyContainer.appendChild(p);
+	        }
+	      } catch (err) {
+	        _didIteratorError2 = true;
+	        _iteratorError2 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	            _iterator2.return();
+	          }
+	        } finally {
+	          if (_didIteratorError2) {
+	            throw _iteratorError2;
+	          }
+	        }
+	      }
+	    }
+	  }]);
+
+	  return StoriesLineCharts;
+	}();
+
+	exports.default = StoriesLineCharts;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  seasonal: {
+	    title: "Seasons",
+	    intro: "See how environmental conditions affect your health. Switch between the US and Australia to see how North and Southern hemisphere experience opposite cycles.",
+	    cases: [{
+	      title: "Winter",
+	      data: "./data/seasonal-winter.json",
+	      terms: ["Bronchitis", "Raynaud syndrome", "Cold"],
+	      geoList: ["US", "AU"],
+	      chartType: "seasonal",
+	      copy: ["Copy about Winter. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
+	    }, {
+	      title: "Spring",
+	      data: "./data/seasonal-spring.json",
+	      terms: ["Chickenpox", "Conjunctivitis", "Allergy"],
+	      geoList: ["US", "AU"],
+	      chartType: "seasonal",
+	      copy: ["Copy about Spring. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
+	    }, {
+	      title: "Summer",
+	      data: "./data/seasonal-summer.json",
+	      terms: ["Candidiasis", "Skin rash", "Diarrhea"],
+	      geoList: ["US", "AU"],
+	      chartType: "seasonal",
+	      copy: ["Copy about Summer. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
+	    }]
+	  },
+	  holidays: {
+	    title: "Holidays",
+	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    cases: [
+	    // {
+	    //   title: "New Year",
+	    //   data: "./data/holidays-new-year.json",
+	    //   terms: ["Indigestion", "Headache"],
+	    //   geoList: ["world"],
+	    //   chartType: "seasonal",
+	    //   copy: [
+	    //     "Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    //     "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    //   ],
+	    // },
+	    {
+	      title: "Diwali Festival",
+	      data: "./data/holidays-diwali-festival.json",
+	      terms: ["Burn", "Pain"],
+	      geoList: ["IN"],
+	      chartType: "seasonal",
+	      copy: ["Copy about Diwali Festival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
+	    }, {
+	      title: "Brazilian Carnival",
+	      data: "./data/holidays-brazilian-carnival.json",
+	      terms: ["Mononucleosis"],
+	      geoList: ["BR"],
+	      chartType: "seasonal",
+	      copy: ["Copy about Brazilian Carnival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
+	    }]
+	  },
+	  media: {
+	    title: "Media",
+	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    cases: [{
+	      title: "Campaigns",
+	      data: "./data/media-campaigns.json",
+	      terms: ["Down's syndrome", "Breast Cancer", "Autism"],
+	      geoList: ["world"],
+	      chartType: "seasonal",
+	      copy: ["Not every growth in searches are directly related with an increase in cases of a disease. Examples of that are the huge campaigns of conscientization about breast cancer, that occur during the month of October, about diabetes, that happens on November, and HIV/Aids, which international day of awareness is always celebrated on December 1st. On these dates, the interest are much higher in comparison with other periods of the year."]
+	    }, {
+	      title: "Pop Culture",
+	      data: "./data/media-pop-culture.json",
+	      terms: ["Lupus", "Amyotrophic lateral sclerosis"],
+	      geoList: ["world"],
+	      chartType: "trend",
+	      copy: ["Celebrities also play a major role in the popularity of certain health topics. That's what happened with lupus, an inflammatory disease that affects joints, skin and kidneys. The number of searches increased when the singer Selena Gomez canceled her shows to make treatments for this illness, on October 2015 and September 2016. A similar phenomenon occurred with depression: the interest for this topic reached its peak on August 2014, when the actor Robin Williams killed himself.", "Finally, ALS, a problem in the nervous system, has passed from anonymity to trending topic during the \"ice bucket challenge\""]
+	    }, {
+	      title: "Anti-vaccine",
+	      data: "./data/media-anti-vaccine.json",
+	      terms: ["Vaccine", "Measles"],
+	      geoList: ["world"],
+	      chartType: "trend",
+	      copy: ["The movements of parents who refuse to give vaccines for their children proclaim that immunization is a cause of autism and other maladies. Besides the fact that there are no scientific evidence to prove this accusations, the vaccines rejection is related with measles outbreaks, that happened in Ohio (2014) and California (2015). It is possible to note an increase in web searches during this periods. Health authorities blame radical groups for the sudden growth of this infectious disease in US."]
+	    }]
+	  }
+	};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _StoriesLineCharts = __webpack_require__(28);
+
+	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	// import '../../sass/stories.scss';
+
+	var StoriesNavBar = function () {
+	  function StoriesNavBar(parentContainer, cases, self, onChange) {
+	    _classCallCheck(this, StoriesNavBar);
+
+	    this.createElements(parentContainer, cases, self, onChange);
+	  }
+
+	  _createClass(StoriesNavBar, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer, cases, self, onChange) {
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.classList.add('stories-nav-bar');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var _loop = function _loop(i) {
+	        var p = document.createElement('p');
+	        p.innerHTML = cases[i];
+	        var bindClick = function bindClick(evt) {
+	          return onChange(evt, self, i);
+	        };
+	        p.addEventListener('click', bindClick);
+	        elementsContainer.appendChild(p);
+	      };
+
+	      for (var i = 0; i < cases.length; i++) {
+	        _loop(i);
+	      }
+	    }
+	  }]);
+
+	  return StoriesNavBar;
+	}();
+
+	exports.default = StoriesNavBar;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _d = __webpack_require__(3);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var LineChart = function () {
 	  function LineChart(parentContainer, type) {
@@ -29628,6 +30200,7 @@
 	      this.data = this.parseDates(data);
 	      if (type) this.type = type;
 	      // console.log('D3 ->', this.data);
+	      _loglevel2.default.info(this.type);
 	      this.updateElements();
 	    }
 	  }, {
@@ -29720,6 +30293,7 @@
 	      var chart = svg.select('.chart');
 
 	      chart.select('g.y').transition().duration(transitionDuration).call(yAxis);
+
 	      chart.select('g.y').selectAll(".tick text").each(function (d, i) {
 	        d3.select(this).classed('hidden', i % 2 !== 0 ? true : false);
 	      });
@@ -29727,8 +30301,10 @@
 	      chart.select('g.x').transition().duration(transitionDuration).call(xAxis);
 
 	      if (type === 'seasonal') {
-	        chart.select('g.x path').style('transform', 'translate(0, -' + height / 2 + 'px)');
+	        chart.select('g.x path').transition().duration(transitionDuration).style('transform', 'translate(0, -' + height / 2 + 'px)');
 	      } else {
+	        chart.select('g.x path').transition().duration(transitionDuration).style('transform', 'none');
+
 	        chart.select('g.x').selectAll(".tick text").each(function (d, i) {
 	          d3.select(this).classed('hidden', i % 2 !== 0 ? true : false);
 	        });
@@ -29752,215 +30328,779 @@
 	exports.default = LineChart;
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	(function (global, factory) {
-		 true ? factory(exports, __webpack_require__(3)) :
-		typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
-		(factory((global.d3 = global.d3 || {}),global.d3));
-	}(this, (function (exports,d3) { 'use strict';
+	'use strict';
 
-	function graphScroll(){
-	  var windowHeight,
-	      dispatch$$1 = d3.dispatch("scroll", "active"),
-	      sections = d3.select('null'),
-	      i = NaN,
-	      sectionPos = [],
-	      n,
-	      graph = d3.select('null'),
-	      isFixed = null,
-	      isBelow = null,
-	      container = d3.select('body'),
-	      containerStart = 0,
-	      belowStart,
-	      eventId = Math.random(),
-	      offset = 200;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  function reposition(){
-	    var i1 = 0;
-	    sectionPos.forEach(function(d, i){
-	      if (d < pageYOffset - containerStart + offset) i1 = i;
-	    });
-	    i1 = Math.min(n - 1, i1);
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	    var isBelow1 = pageYOffset > belowStart;
-	    if (isBelow != isBelow1){
-	      isBelow = isBelow1;
-	      container.classed('graph-scroll-below', isBelow);
-	    }
-	    var isFixed1 = !isBelow && pageYOffset > containerStart;
-	    if (isFixed != isFixed1){
-	      isFixed = isFixed1;
-	      container.classed('graph-scroll-fixed', isFixed);
-	    }
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	    if (isBelow) i1 = n - 1;
+	// Components
 
-	    if (i != i1){
-	      sections.classed('graph-scroll-active', function(d, i){ return i === i1 });
 
-	      dispatch$$1.call('active', null, i1);
+	// Data and Utils
 
-	      i = i1;
-	    }
-	  }
 
-	  function resize(){
-	    sectionPos = [];
-	    var startPos;
-	    sections.each(function(d, i){
-	      if (!i) startPos = this.getBoundingClientRect().top;
-	      sectionPos.push(this.getBoundingClientRect().top -  startPos); });
+	// Types
 
-	    var containerBB = container.node().getBoundingClientRect();
-	    var graphHeight = graph.node() ? graph.node().getBoundingClientRect().height : 0;
 
-	    containerStart = containerBB.top + pageYOffset;
-	    belowStart = containerBB.bottom - graphHeight + pageYOffset;
-	  }
+	// Libraries
 
-	  function keydown() {
-	    if (!isFixed) return
-	    var delta;
-	    switch (d3.event.keyCode) {
-	      case 39: // right arrow
-	      if (d3.event.metaKey) return
-	      case 40: // down arrow
-	      case 34: // page down
-	      delta = d3.event.metaKey ? Infinity : 1 ;break
-	      case 37: // left arrow
-	      if (d3.event.metaKey) return
-	      case 38: // up arrow
-	      case 33: // page up
-	      delta = d3.event.metaKey ? -Infinity : -1 ;break
-	      case 32: // space
-	      delta = d3.event.shiftKey ? -1 : 1
-	      ;break
-	      default: return
-	    }
 
-	    var i1 = Math.max(0, Math.min(i + delta, n - 1));
-	    if (i1 == i) return // let browser handle scrolling past last section
-	    d3.select(document.documentElement)
-	        .interrupt()
-	      .transition()
-	        .duration(500)
-	        .tween("scroll", function() {
-	          var i = d3.interpolateNumber(pageYOffset, sectionPos[i1] + containerStart);
-	          return function(t) { scrollTo(0, i(t)); }
+	//Styles
+
+
+	var _LineChart = __webpack_require__(31);
+
+	var _LineChart2 = _interopRequireDefault(_LineChart);
+
+	var _TrendsAPI = __webpack_require__(10);
+
+	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
+
+	var _ShinyAPI = __webpack_require__(33);
+
+	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
+
+	var _util = __webpack_require__(34);
+
+	var _terms = __webpack_require__(23);
+
+	var _terms2 = _interopRequireDefault(_terms);
+
+	var _countries = __webpack_require__(24);
+
+	var _countries2 = _interopRequireDefault(_countries);
+
+	var _data4 = __webpack_require__(35);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	var _selectize = __webpack_require__(36);
+
+	var _selectize2 = _interopRequireDefault(_selectize);
+
+	var _jquery = __webpack_require__(25);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	__webpack_require__(39);
+
+	__webpack_require__(41);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Explore = function () {
+	  function Explore(parentContainer, shinyAPI, trendsAPI, filter) {
+	    _classCallCheck(this, Explore);
+
+	    this.data = {
+	      prevDiseases: filter ? filter.terms : [],
+	      diseases: filter ? filter.terms : [],
+	      prevGeo: filter ? filter.geo : _countries2.default[0],
+	      geo: filter ? filter.geo : _countries2.default[0],
+	      seasonal: [],
+	      trend: [],
+	      total: [],
+	      totalPerLine: [],
+	      topQueries: [],
+	      isMerged: false,
+	      isChanging: false,
+	      isLoading: filter ? true : false
+	    };
+	    var self = this;
+	    self.trendsAPI = trendsAPI;
+	    if (shinyAPI) {
+	      self.shinyAPI = shinyAPI;
+	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
+	        var _self$data = self.data,
+	            diseases = _self$data.diseases,
+	            total = _self$data.total;
+
+	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	        var data = self.data[type];
+	        var index = data.length;
+	        var obj = {};
+
+	        obj[type] = data.concat({
+	          term: diseases[index].name,
+	          points: self.parseDataFromR(dataFromR)
 	        });
+	        self.updateData(obj);
 
-	    d3.event.preventDefault();
+	        // I'm still getting R Data for that one type
+	        if (obj[type].length < total.length) {
+	          // Trend? Keep parsing the already loaded data
+	          if (type === 'trend') {
+	            var dataToR = self.parseDataToR(type);
+	            self.shinyAPI.updateData(type, dataToR);
+
+	            // Seasonal? Go get more data from Google Trends
+	          } else if (type === 'seasonal') {
+	            self.getTrendsAPIGraph('seasonal');
+	          }
+
+	          // I'm done with this type!
+	        } else {
+	          // Trend? Start seasonal then
+	          if (type === 'trend') {
+	            self.getTrendsAPIGraph('seasonal');
+	            // Seasonal? Move on to load top queries
+	          } else if (type === 'seasonal') {
+	            self.updateData({ topQueries: [], isLoading: false });
+	            self.getTrendsAPITopQueries();
+	          }
+	        }
+	      });
+	    }
+
+	    self.createElements(parentContainer);
+
+	    if (filter) {
+	      self.getTrendsAPIGraph('trend');
+	    }
 	  }
 
+	  _createClass(Explore, [{
+	    key: 'handleSelectDiseaseChange',
+	    value: function handleSelectDiseaseChange(value, self) {
+	      _loglevel2.default.info('handleSelectDiseaseChange');
+	      var diseases = value.map(function (v) {
+	        return self.getDiseaseByEntity(v);
+	      });
+	      this.updateData({ diseases: diseases, isChanging: true });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'handleSelectGeoChange',
+	    value: function handleSelectGeoChange(value, self) {
+	      _loglevel2.default.info('handleSelectGeoChange');
+	      _loglevel2.default.info(value);
+	      var name = this.getCountryByIso(value).name;
+	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
+	      self.confirmNav.classList.remove('hidden');
+	    }
+	  }, {
+	    key: 'getDiseaseByEntity',
+	    value: function getDiseaseByEntity(entity) {
+	      return _terms2.default.find(function (t) {
+	        return t.entity === entity;
+	      });
+	    }
+	  }, {
+	    key: 'getCountryByIso',
+	    value: function getCountryByIso(iso) {
+	      return _countries2.default.find(function (c) {
+	        return c.iso === iso;
+	      });
+	    }
+	  }, {
+	    key: 'cancelFilters',
+	    value: function cancelFilters(event, self) {
+	      _loglevel2.default.info('cancelFilters');
+	      var _self$data2 = self.data,
+	          prevDiseases = _self$data2.prevDiseases,
+	          prevGeo = _self$data2.prevGeo;
 
-	  var rv ={};
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
+	    }
+	  }, {
+	    key: 'confirmFilters',
+	    value: function confirmFilters(event, self) {
+	      _loglevel2.default.info('confirmFilters');
+	      var _self$data3 = self.data,
+	          diseases = _self$data3.diseases,
+	          geo = _self$data3.geo;
 
-	  rv.container = function(_x){
-	    if (!_x) return container
+	      self.confirmNav.classList.add('hidden');
+	      self.updateData({
+	        prevDiseases: diseases,
+	        prevGeo: geo,
+	        isChanging: false,
+	        isLoading: true,
+	        totalPerLine: [],
+	        seasonal: [],
+	        trend: []
+	      });
+	      self.getTrendsAPIGraph('trend');
+	    }
+	  }, {
+	    key: 'toggleChartMerge',
+	    value: function toggleChartMerge(event, self) {
+	      var isMerged = self.data.isMerged;
 
-	    container = _x;
-	    return rv
-	  };
+	      isMerged = isMerged ? false : true;
+	      this.seasonalChart.hide();
+	      this.updateData({ isMerged: isMerged });
+	    }
+	  }, {
+	    key: 'getTrendsAPIGraph',
+	    value: function getTrendsAPIGraph(type) {
+	      _loglevel2.default.info('getTrendsAPIGraph');
+	      var self = this;
+	      var _self$data4 = self.data,
+	          diseases = _self$data4.diseases,
+	          geo = _self$data4.geo,
+	          totalPerLine = _self$data4.totalPerLine;
+	      var shinyAPI = self.shinyAPI;
 
-	  rv.graph = function(_x){
-	    if (!_x) return graph
+	      var terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
 
-	    graph = _x;
-	    return rv
-	  };
+	      self.trendsAPI.getGraph({ terms: terms, geo: geo }, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', type);
+	        _loglevel2.default.info(val);
 
-	  rv.eventId = function(_x){
-	    if (!_x) return eventId
+	        var obj = {};
+	        if (type === 'trend') {
+	          obj['total'] = self.mapGraphResponse(val.lines);
+	        } else if (type === 'seasonal') {
+	          obj['totalPerLine'] = totalPerLine.concat(self.mapGraphResponse(val.lines));
+	        }
+	        self.updateData(obj);
 
-	    eventId = _x;
-	    return rv
-	  };
+	        if (true) {
+	          var dataToR = self.parseDataToR(type);
+	          shinyAPI.updateData(type, dataToR);
+	        } else {
+	          var _obj = _extends({}, _data4.dummyData, {
+	            topQueries: [],
+	            isLoading: false
+	          });
+	          self.updateData(_obj);
+	          self.getTrendsAPITopQueries();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'mapGraphResponse',
+	    value: function mapGraphResponse(lines) {
+	      var diseases = this.data.diseases;
 
-	  rv.sections = function (_x){
-	    if (!_x) return sections
+	      return lines.map(function (l, i) {
+	        return { term: diseases[i].name, points: l.points };
+	      });
+	    }
+	  }, {
+	    key: 'getTrendsAPITopQueries',
+	    value: function getTrendsAPITopQueries() {
+	      _loglevel2.default.info('getTrendsAPITopQueries');
+	      var _data = this.data,
+	          diseases = _data.diseases,
+	          geo = _data.geo;
+	      var topQueries = this.data.topQueries;
 
-	    sections = _x;
-	    n = sections.size();
+	      var index = topQueries.length;
+	      var disease = diseases[index];
+	      var self = this;
 
-	    d3.select(window)
-	        .on('scroll.gscroll'  + eventId, reposition)
-	        .on('resize.gscroll'  + eventId, resize)
-	        .on('keydown.gscroll' + eventId, keydown);
-	    
-	    resize();
-	    d3.timer(reposition);
-	    if (window['gscrollTimer' + eventId]) window['gscrollTimer' + eventId].stop();
-	    window['gscrollTimer' + eventId] = d3.timer(reposition);
+	      self.trendsAPI.getTopQueries({ terms: [disease], geo: geo }, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', val);
+	        topQueries = topQueries.concat(val);
+	        self.updateData({ topQueries: topQueries });
+	        if (topQueries.length < diseases.length) {
+	          self.getTrendsAPITopQueries();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'parseDataToR',
+	    value: function parseDataToR(type) {
+	      _loglevel2.default.info('parseDataToR', type);
+	      var _data2 = this.data,
+	          total = _data2.total,
+	          totalPerLine = _data2.totalPerLine;
+	      var shinyAPI = this.shinyAPI;
 
-	    return rv
-	  };
+	      var index = this.data[type].length;
+	      var whichTotal = type === 'trend' ? total : totalPerLine;
+	      return whichTotal[index].points.map(function (p, i) {
+	        return p.date + ',' + p.value;
+	      });
+	    }
+	  }, {
+	    key: 'parseDataFromR',
+	    value: function parseDataFromR(dataFromR) {
+	      _loglevel2.default.info('parseDataFromR');
+	      var _data3 = this.data,
+	          diseases = _data3.diseases,
+	          total = _data3.total,
+	          seasonal = _data3.seasonal,
+	          trend = _data3.trend,
+	          isLoading = _data3.isLoading;
 
-	  rv.on = function() {
-	    var value = dispatch$$1.on.apply(dispatch$$1, arguments);
-	    return value === dispatch$$1 ? rv : value;
-	  };
-	  
-	  rv.offset = function(_x) {
-	    if(!_x) return offset
-	    
-	    offset = _x;
-	    return rv
-	  };
+	      var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
+	      var index = this.data[type].length;
+	      var newDataString = dataFromR.substring(dataFromR.indexOf(type) + type.length + 1);
+	      var newData = newDataString.split(',');
+	      if (type === 'seasonal') {
+	        newData = newData.slice(0, 13);
+	      }
+	      return newData.map(function (n, i) {
+	        var date = total[0].points[i].date;
+	        var value = Math.round(Number(n.trim()) * 100) / 100;
+	        return { date: date, value: value };
+	      });
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(obj) {
+	      var data = this.data;
 
-	  return rv
-	}
+	      Object.assign(data, obj);
+	      _loglevel2.default.info(this.data);
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+	      var _this = this;
 
-	exports.graphScroll = graphScroll;
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'explore';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
 
-	Object.defineProperty(exports, '__esModule', { value: true });
+	      var stickyHeader = document.createElement('div');
+	      stickyHeader.classList.add('sticky-header');
+	      stickyHeader.innerHTML = "Explore";
+	      elementsContainer.appendChild(stickyHeader);
 
-	})));
+	      var sectionHeader = document.createElement('div');
+	      sectionHeader.classList.add('section-header');
+	      elementsContainer.appendChild(sectionHeader);
 
+	      var intro = document.createElement('p');
+	      intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+	      sectionHeader.appendChild(intro);
+
+	      var sectionBody = document.createElement('div');
+	      sectionBody.classList.add('section-body');
+	      elementsContainer.appendChild(sectionBody);
+
+	      // Loader
+	      this.loaderContainer = document.createElement('div');
+	      var loaderContainer = this.loaderContainer;
+
+	      loaderContainer.classList.add('loader-container');
+	      loaderContainer.style.top = elementsContainer.offsetTop + 'px';
+	      var loader = document.createElement('span');
+	      loader.classList.add('loader');
+	      loaderContainer.appendChild(loader);
+	      sectionBody.appendChild(loaderContainer);
+
+	      // filtersMenu
+	      var filtersMenu = document.createElement('div');
+	      filtersMenu.classList.add('filters-menu');
+	      sectionBody.appendChild(filtersMenu);
+
+	      var text = document.createElement('span');
+	      text.innerHTML = 'Search interest from 2004 to today for ';
+	      filtersMenu.appendChild(text);
+
+	      // Diseases
+	      var diseaseSelect = document.createElement('select');
+	      diseaseSelect.classList.add('disease-select');
+	      _terms2.default.forEach(function (d, i) {
+	        var option = document.createElement('option');
+	        option.setAttribute('value', d.entity);
+	        option.setAttribute('key', i);
+	        option.innerHTML = d.alias ? d.alias : d.name;
+	        diseaseSelect.appendChild(option);
+	      });
+	      var bindHandleChange = function bindHandleChange(value) {
+	        return _this.handleSelectDiseaseChange(value, _this);
+	      };
+	      filtersMenu.appendChild(diseaseSelect);
+	      var diseaseSelectize = (0, _jquery2.default)(diseaseSelect).selectize({
+	        maxItems: 3,
+	        onChange: bindHandleChange,
+	        placeholder: 'Select'
+	      });
+	      this.diseaseSelect = diseaseSelectize[0].selectize;
+
+	      text = document.createElement('span');
+	      text.innerHTML = ' in ';
+	      filtersMenu.appendChild(text);
+
+	      // Geo
+	      var geoSelect = document.createElement('select');
+	      geoSelect.classList.add('geo-select');
+	      geoSelect.name = 'geo-select';
+	      _countries2.default.forEach(function (c, i) {
+	        var option = document.createElement('option');
+	        option.setAttribute('value', c.iso);
+	        option.innerHTML = c.name;
+	        geoSelect.appendChild(option);
+	      });
+	      bindHandleChange = function bindHandleChange(value) {
+	        return _this.handleSelectGeoChange(value, _this);
+	      };
+	      filtersMenu.appendChild(geoSelect);
+	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
+	        maxItems: 1,
+	        onChange: bindHandleChange
+	      });
+	      this.geoSelect = geoSelectize[0].selectize;
+
+	      // Cancel / Done
+	      this.confirmNav = document.createElement('div');
+	      var confirmNav = this.confirmNav;
+
+	      confirmNav.classList.add('confirm-nav');
+	      confirmNav.classList.add('hidden');
+
+	      var cancelButton = document.createElement('button');
+	      cancelButton.innerHTML = 'Cancel';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.cancelFilters(evt, _this);
+	      };
+	      cancelButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(cancelButton);
+
+	      var doneButton = document.createElement('button');
+	      doneButton.innerHTML = 'Done';
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.confirmFilters(evt, _this);
+	      };
+	      doneButton.addEventListener('click', bindHandleChange);
+	      confirmNav.appendChild(doneButton);
+
+	      filtersMenu.appendChild(confirmNav);
+
+	      // Charts section
+	      var chartsContainer = document.createElement('div');
+	      chartsContainer.classList.add('charts-container');
+	      sectionBody.appendChild(chartsContainer);
+
+	      // Seasonal Chart
+	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.seasonalChart = new _LineChart2.default(chartItem, 'seasonal');
+
+	      var toggleBar = document.createElement('div');
+	      toggleBar.classList.add('toggle-bar');
+	      sectionBody.appendChild(toggleBar);
+
+	      var buttonContainer = document.createElement('div');
+	      buttonContainer.classList.add('button-container');
+	      toggleBar.appendChild(buttonContainer);
+
+	      this.mergeButton = document.createElement('a');
+	      var mergeButton = this.mergeButton;
+
+	      mergeButton.classList.add('icon');
+	      bindHandleChange = function bindHandleChange(evt) {
+	        return _this.toggleChartMerge(evt, _this);
+	      };
+	      mergeButton.addEventListener('click', bindHandleChange);
+	      buttonContainer.appendChild(mergeButton);
+
+	      var titlesContainer = document.createElement('div');
+	      titlesContainer.classList.add('titles-container');
+	      toggleBar.appendChild(titlesContainer);
+
+	      var title = document.createElement('p');
+	      title.classList.add('title');
+	      title.innerHTML = 'Seasonal';
+	      titlesContainer.appendChild(title);
+
+	      title = document.createElement('p');
+	      title.classList.add('title');
+	      title.innerHTML = 'Trend';
+	      titlesContainer.appendChild(title);
+
+	      // Trend chart
+	      chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.trendChart = new _LineChart2.default(chartItem, 'trend');
+
+	      var bottomContainer = document.createElement('div');
+	      bottomContainer.classList.add('bottom-container');
+	      sectionBody.appendChild(bottomContainer);
+
+	      // Top Queries
+	      var topQueriesContainer = document.createElement('div');
+	      topQueriesContainer.classList.add('top-queries-container');
+	      bottomContainer.appendChild(topQueriesContainer);
+
+	      var topQueriesTitle = document.createElement('h4');
+	      topQueriesTitle.innerHTML = 'Top Related Queries';
+	      topQueriesContainer.appendChild(topQueriesTitle);
+
+	      this.topQueriesList = document.createElement('div');
+	      var topQueriesList = this.topQueriesList;
+
+	      topQueriesList.classList.add('top-queries-list');
+	      topQueriesContainer.appendChild(topQueriesList);
+
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'updateElements',
+	    value: function updateElements() {
+	      _loglevel2.default.info('updateElements');
+	      var data = this.data,
+	          loaderContainer = this.loaderContainer,
+	          diseaseSelect = this.diseaseSelect,
+	          geoSelect = this.geoSelect,
+	          mergeButton = this.mergeButton,
+	          seasonalChart = this.seasonalChart,
+	          trendChart = this.trendChart,
+	          topQueriesList = this.topQueriesList;
+	      var diseases = data.diseases,
+	          geo = data.geo,
+	          seasonal = data.seasonal,
+	          trend = data.trend,
+	          total = data.total,
+	          topQueries = data.topQueries,
+	          isMerged = data.isMerged,
+	          isChanging = data.isChanging,
+	          isLoading = data.isLoading;
+
+
+	      if (isLoading) {
+	        loaderContainer.classList.remove('hidden');
+	      } else {
+	        loaderContainer.classList.add('hidden');
+	      }
+
+	      diseaseSelect.setValue(diseases.map(function (d) {
+	        return d.entity;
+	      }), true);
+	      geoSelect.setValue(geo.iso, true);
+
+	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
+
+	      // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
+	      if (!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
+	        seasonalChart.updateData(seasonal);
+	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
+
+	        if (topQueries.length > 0) {
+
+	          var isEmpty = true;
+	          topQueriesList.innerHTML = '';
+	          for (var i = 0; i < topQueries.length; i++) {
+	            if (topQueries[i].item) {
+	              isEmpty = false;
+	              var listContainer = document.createElement('div');
+	              listContainer.classList.add('list-container');
+	              topQueriesList.appendChild(listContainer);
+
+	              var term = document.createElement('p');
+	              term.innerHTML = diseases[i].name;
+	              listContainer.appendChild(term);
+
+	              var list = document.createElement('ul');
+	              listContainer.appendChild(list);
+
+	              var _iteratorNormalCompletion = true;
+	              var _didIteratorError = false;
+	              var _iteratorError = undefined;
+
+	              try {
+	                for (var _iterator = topQueries[i].item[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                  var q = _step.value;
+
+	                  var listItem = document.createElement('li');
+	                  listItem.innerHTML = q.title;
+	                  list.appendChild(listItem);
+	                }
+	              } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion && _iterator.return) {
+	                    _iterator.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError) {
+	                    throw _iteratorError;
+	                  }
+	                }
+	              }
+	            }
+	          }
+	          var parent = topQueriesList.parentElement;
+	          if (parent) {
+	            isEmpty ? parent.classList.add('hidden') : parent.classList.remove('hidden');
+	          }
+	        }
+	      }
+	    }
+	  }]);
+
+	  return Explore;
+	}();
+
+	exports.default = Explore;
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
+	'use strict';
 
-	// load the styles
-	var content = __webpack_require__(30);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(8)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss", function() {
-				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _Explore = __webpack_require__(32);
+
+	var _Explore2 = _interopRequireDefault(_Explore);
+
+	var _util = __webpack_require__(34);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var ShinyAPI = function () {
+	  function ShinyAPI() {
+	    _classCallCheck(this, ShinyAPI);
+
+	    this.data = {
+	      dataToR: {
+	        seasonal: [],
+	        trend: []
+	      },
+	      dataFromR: {
+	        seasonal: '',
+	        trend: ''
+	      }
+	    };
+	    _loglevel2.default.info('ShinyAPI');
+	  }
+
+	  _createClass(ShinyAPI, [{
+	    key: 'setup',
+	    value: function setup(callback) {
+	      _loglevel2.default.info('addShinyListeners');
+	      var self = this;
+
+	      $(document).on('shiny:connected', function (event) {
+	        _loglevel2.default.info('Connected to Shiny server');
+	      });
+
+	      $(document).on('shiny:sessioninitialized', function (event) {
+	        _loglevel2.default.info('Shiny session initialized');
+
+	        // Create a loop to ping the Shiny server and keep the websocket connection on
+	        clearInterval(self.keepShinyAlive);
+	        self.keepShinyAlive = setInterval(pingShiny, 10000);
+	        function pingShiny() {
+	          var timestamp = Date.now();
+	          Shiny.onInputChange('ping', timestamp);
+	        }
+
+	        self.isInitialized = true;
+	        callback();
+	      });
+
+	      $(document).on('shiny:idle', function (event) {
+	        _loglevel2.default.info('Shiny session idle');
+	      });
+
+	      $(document).on('shiny:disconnected', function (event) {
+	        _loglevel2.default.info('Disconnected from Shiny server');
+	        location.reload();
+	      });
+	    }
+	  }, {
+	    key: 'setCallback',
+	    value: function setCallback(explore, callback) {
+	      _loglevel2.default.info('Shiny setCallback');
+	      var self = this;
+	      self.dataProcessingCallback = callback;
+	      self.explore = explore;
+	      // Add listener for stl data
+	      Shiny.addCustomMessageHandler('seasonalCallback', function (dataFromR) {
+	        _loglevel2.default.info('From R: ', dataFromR);
+	        self.data.dataFromR.seasonal = dataFromR;
+	        self.dataProcessingCallback(explore, dataFromR);
+	      });
+	      Shiny.addCustomMessageHandler('trendCallback', function (dataFromR) {
+	        _loglevel2.default.info('From R: ', dataFromR);
+	        self.data.dataFromR.trend = dataFromR;
+	        _loglevel2.default.info(self.data);
+	        self.dataProcessingCallback(explore, dataFromR);
+	      });
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(type, data) {
+	      _loglevel2.default.info('ShinyAPI updateData');
+	      _loglevel2.default.info(type);
+	      var _data = this.data,
+	          dataToR = _data.dataToR,
+	          dataFromR = _data.dataFromR;
+
+	      if ((0, _util.arrayIsEqual)(dataToR[type], data)) {
+	        this.dataProcessingCallback(this.explore, dataFromR[type]);
+	      } else {
+	        dataToR[type] = data;
+	        _loglevel2.default.info(this.data);
+	        Shiny.onInputChange(type, data);
+	      }
+	    }
+	  }]);
+
+	  return ShinyAPI;
+	}();
+
+	exports.default = ShinyAPI;
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.arrayIsEqual = arrayIsEqual;
+	function arrayIsEqual(array1, array2) {
+	  if (!array1 || !array2) return false;
+
+	  // compare lengths - can save a lot of time
+	  if (array1.length != array2.length) return false;
+
+	  for (var i = 0, l = array1.length; i < l; i++) {
+	    // Check if we have nested arrays
+	    if (array1[i] instanceof Array && array2[i] instanceof Array) {
+	      // recurse into the nested arrays
+	      if (!array1[i].equals(array2[i])) return false;
+	    } else if (array1[i] != array2[i]) {
+	      // Warning - two different object instances will never be equal: {x:20} != {x:20}
+	      return false;
+	    }
+	  }
+	  return true;
 	}
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(7)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page {\n  position: relative; }\n  #intro.page .sections-container {\n    margin-left: calc((100% - 20px)/2 + 20px);\n    width: calc((100% - 20px)/2); }\n    @media (max-width: 600px) {\n      #intro.page .sections-container {\n        width: 100%;\n        position: relative;\n        margin: 0;\n        padding-top: 50vh;\n        z-index: 100; } }\n    #intro.page .sections-container .section {\n      width: 100%;\n      padding-bottom: 50vh;\n      opacity: 0.3; }\n      #intro.page .sections-container .section.graph-scroll-active {\n        opacity: 1; }\n      @media (max-width: 600px) {\n        #intro.page .sections-container .section {\n          width: 100%; }\n          #intro.page .sections-container .section p {\n            padding: 12px;\n            border: 1px solid black;\n            background-color: white; } }\n  #intro.page .charts-container {\n    position: absolute;\n    top: 20px;\n    width: calc((100% - 20px*5)/2);\n    height: 100vh; }\n    @media (max-width: 600px) {\n      #intro.page .charts-container {\n        top: 12px;\n        width: calc(100% - 12px*2); } }\n    #intro.page .charts-container .chart-item {\n      width: 100%;\n      height: 45vh; }\n  #intro.page.graph-scroll-fixed .charts-container {\n    position: fixed; }\n  #intro.page.graph-scroll-below .charts-container {\n    position: absolute;\n    top: auto;\n    bottom: 0px; }\n", ""]);
-
-	// exports
-
-
-/***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -29994,590 +31134,7 @@
 	var averages = exports.averages = [];
 
 /***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _StoriesContainer = __webpack_require__(33);
-
-	var _StoriesContainer2 = _interopRequireDefault(_StoriesContainer);
-
-	var _LineChart = __webpack_require__(27);
-
-	var _LineChart2 = _interopRequireDefault(_LineChart);
-
-	var _d = __webpack_require__(3);
-
-	var d3 = _interopRequireWildcard(_d);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	__webpack_require__(5);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Stories = function () {
-	  function Stories(parentContainer) {
-	    _classCallCheck(this, Stories);
-
-	    this.createElements(parentContainer);
-	  }
-
-	  _createClass(Stories, [{
-	    key: 'createElements',
-	    value: function createElements(parentContainer) {
-
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'stories';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
-
-	      var storiesSeasonal = new _StoriesContainer2.default(elementsContainer, 'seasonal');
-	      var storiesHolidays = new _StoriesContainer2.default(elementsContainer, 'holidays');
-	      var storiesMedia = new _StoriesContainer2.default(elementsContainer, 'media');
-	    }
-	  }]);
-
-	  return Stories;
-	}();
-
-	exports.default = Stories;
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _stories = __webpack_require__(34);
-
-	var _stories2 = _interopRequireDefault(_stories);
-
-	var _StoriesNavBar = __webpack_require__(35);
-
-	var _StoriesNavBar2 = _interopRequireDefault(_StoriesNavBar);
-
-	var _FiltersMenu = __webpack_require__(36);
-
-	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
-
-	var _LineChart = __webpack_require__(27);
-
-	var _LineChart2 = _interopRequireDefault(_LineChart);
-
-	var _d = __webpack_require__(3);
-
-	var d3 = _interopRequireWildcard(_d);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	// import '../../sass/stories.scss';
-
-	var StoriesContainer = function () {
-	  function StoriesContainer(parentContainer, storySection) {
-	    _classCallCheck(this, StoriesContainer);
-
-	    _loglevel2.default.info('StoriesContainer');
-	    var self = this;
-	    var currCase = 0;
-	    var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
-	    d3.json(_stories2.default[storySection].cases[currCase].data, function (chartData) {
-	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso };
-	      self.createElements(parentContainer);
-	    });
-	  }
-
-	  _createClass(StoriesContainer, [{
-	    key: 'loadNewCase',
-	    value: function loadNewCase(event, self, currCase) {
-	      var storySection = self.data.storySection;
-
-	      var path = _stories2.default[storySection].cases[currCase].data;
-	      d3.json(path, function (chartData) {
-	        self.updateData({ currCase: currCase, chartData: chartData });
-	      });
-	    }
-	  }, {
-	    key: 'changeGeo',
-	    value: function changeGeo(geoIso, self) {
-	      self.updateData({ geoIso: geoIso });
-	    }
-	  }, {
-	    key: 'updateData',
-	    value: function updateData(obj) {
-	      var data = this.data;
-
-	      Object.assign(data, obj);
-	      _loglevel2.default.info(this.data);
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'createElements',
-	    value: function createElements(parentContainer) {
-	      var _data = this.data,
-	          storySection = _data.storySection,
-	          currCase = _data.currCase,
-	          chartData = _data.chartData,
-	          geoIso = _data.geoIso;
-	      var _stories$storySection = _stories2.default[storySection].cases[currCase],
-	          terms = _stories$storySection.terms,
-	          geoList = _stories$storySection.geoList,
-	          chartType = _stories$storySection.chartType,
-	          copy = _stories$storySection.copy;
-
-
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.classList.add('story-section');
-	      parentContainer.appendChild(elementsContainer);
-
-	      var sectionHeader = document.createElement('div');
-	      sectionHeader.classList.add('section-header');
-	      elementsContainer.appendChild(sectionHeader);
-
-	      var title = document.createElement('h1');
-	      title.innerHTML = _stories2.default[storySection].title;
-	      sectionHeader.appendChild(title);
-
-	      var intro = document.createElement('p');
-	      intro.innerHTML = _stories2.default[storySection].intro;
-	      sectionHeader.appendChild(intro);
-
-	      var sectionBody = document.createElement('div');
-	      sectionBody.classList.add('section-body');
-	      elementsContainer.appendChild(sectionBody);
-
-	      var storiesNavBar = new _StoriesNavBar2.default(sectionBody, _stories2.default[storySection].cases.map(function (c) {
-	        return c.title;
-	      }), this, this.loadNewCase);
-
-	      this.filtersMenu = new _FiltersMenu2.default(sectionBody, terms, geoList, geoIso, this, this.changeGeo);
-
-	      var chartsContainer = document.createElement('div');
-	      chartsContainer.classList.add('charts-container');
-	      sectionBody.appendChild(chartsContainer);
-
-	      var chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.chart = new _LineChart2.default(chartItem, chartType);
-
-	      this.copyContainer = document.createElement('div');
-	      var copyContainer = this.copyContainer;
-
-	      copyContainer.classList.add('case-copy');
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      sectionBody.appendChild(copyContainer);
-
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'updateElements',
-	    value: function updateElements() {
-	      var filtersMenu = this.filtersMenu;
-	      var chart = this.chart,
-	          copyContainer = this.copyContainer;
-	      var _data2 = this.data,
-	          storySection = _data2.storySection,
-	          currCase = _data2.currCase,
-	          chartData = _data2.chartData,
-	          geoIso = _data2.geoIso;
-	      var _stories$storySection2 = _stories2.default[storySection].cases[currCase],
-	          terms = _stories$storySection2.terms,
-	          geoList = _stories$storySection2.geoList,
-	          chartType = _stories$storySection2.chartType,
-	          copy = _stories$storySection2.copy;
-
-	      _loglevel2.default.info(geoIso);
-	      var parent = filtersMenu.parentElement;
-	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, this, this.changeGeo);
-
-	      chart.updateData(chartData[geoIso], chartType);
-
-	      copyContainer.innerHTML = '';
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
-
-	      try {
-	        for (var _iterator2 = copy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var c = _step2.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
-	          }
-	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
-	          }
-	        }
-	      }
-	    }
-	  }]);
-
-	  return StoriesContainer;
-	}();
-
-	exports.default = StoriesContainer;
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	module.exports = {
-	  seasonal: {
-	    title: "Seasonal",
-	    intro: "See how environmental conditions affect your health. Switch between the US and Australia to see how North and Southern hemisphere experience opposite cycles.",
-	    cases: [{
-	      title: "Winter",
-	      data: "./data/seasonal-winter.json",
-	      terms: ["Cough", "Common cold", "High Blood Pressure"],
-	      geoList: ["US", "AU"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Winter. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Spring",
-	      data: "./data/seasonal-spring.json",
-	      terms: ["Chickenpox", "Conjunctivitis", "Allergy"],
-	      geoList: ["US", "AU"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Spring. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Summer",
-	      data: "./data/seasonal-summer.json",
-	      terms: ["Candidiasis", "Skin rash", "Diarrhea"],
-	      geoList: ["US", "AU"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Summer. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Fall",
-	      data: "./data/seasonal-fall.json",
-	      terms: [],
-	      geoList: ["US", "AU"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Fall. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }]
-	  },
-	  holidays: {
-	    title: "Holidays",
-	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-	    cases: [{
-	      title: "New Year",
-	      data: "./data/holidays-new-year.json",
-	      terms: ["Indigestion", "Headache"],
-	      geoList: ["world"],
-	      chartType: "seasonal",
-	      copy: ["Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Diwali Festival",
-	      data: "./data/holidays-diwali-festival.json",
-	      terms: ["Burn", "Pain"],
-	      geoList: ["India"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Diwali Festival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Brazilian Carnival",
-	      data: "./data/holidays-brazilian-carnival.json",
-	      terms: ["Mononucleosis"],
-	      geoList: ["Brazil"],
-	      chartType: "seasonal",
-	      copy: ["Copy about Brazilian Carnival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }]
-	  },
-	  media: {
-	    title: "Media",
-	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-	    cases: [{
-	      title: "Campaigns",
-	      data: "./data/media-campaigns.json",
-	      terms: ["Down's syndrome", "Breast Cancer", "Autism"],
-	      geoList: ["world"],
-	      chartType: "seasonal",
-	      copy: ["Not every growth in searches are directly related with an increase in cases of a disease. Examples of that are the huge campaigns of conscientization about breast cancer, that occur during the month of October, about diabetes, that happens on November, and HIV/Aids, which international day of awareness is always celebrated on December 1st. On these dates, the interest are much higher in comparison with other periods of the year."]
-	    }, {
-	      title: "Pop Culture",
-	      data: "./data/media-pop-culture.json",
-	      terms: ["Lupus", "Amyotrophic lateral sclerosis"],
-	      geoList: ["world"],
-	      chartType: "trend",
-	      copy: ["Celebrities also play a major role in the popularity of certain health topics. That's what happened with lupus, an inflammatory disease that affects joints, skin and kidneys. The number of searches increased when the singer Selena Gomez canceled her shows to make treatments for this illness, on October 2015 and September 2016. A similar phenomenon occurred with depression: the interest for this topic reached its peak on August 2014, when the actor Robin Williams killed himself.", "Finally, ALS, a problem in the nervous system, has passed from anonymity to trending topic during the \"ice bucket challenge\""]
-	    }, {
-	      title: "Anti-vaccine",
-	      data: "./data/media-anti-vaccine.json",
-	      terms: ["Vaccine", "Measles"],
-	      geoList: ["world"],
-	      chartType: "trend",
-	      copy: ["The movements of parents who refuse to give vaccines for their children proclaim that immunization is a cause of autism and other maladies. Besides the fact that there are no scientific evidence to prove this accusations, the vaccines rejection is related with measles outbreaks, that happened in Ohio (2014) and California (2015). It is possible to note an increase in web searches during this periods. Health authorities blame radical groups for the sudden growth of this infectious disease in US."]
-	    }]
-	  }
-	};
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _StoriesContainer = __webpack_require__(33);
-
-	var _StoriesContainer2 = _interopRequireDefault(_StoriesContainer);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	// import '../../sass/stories.scss';
-
-	var StoriesNavBar = function () {
-	  function StoriesNavBar(parentContainer, cases, self, onChange) {
-	    _classCallCheck(this, StoriesNavBar);
-
-	    this.createElements(parentContainer, cases, self, onChange);
-	  }
-
-	  _createClass(StoriesNavBar, [{
-	    key: 'createElements',
-	    value: function createElements(parentContainer, cases, self, onChange) {
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.classList.add('stories-nav-bar');
-	      parentContainer.appendChild(elementsContainer);
-
-	      var _loop = function _loop(i) {
-	        var p = document.createElement('p');
-	        p.innerHTML = cases[i];
-	        var bindClick = function bindClick(evt) {
-	          return onChange(evt, self, i);
-	        };
-	        p.addEventListener('click', bindClick);
-	        elementsContainer.appendChild(p);
-	      };
-
-	      for (var i = 0; i < cases.length; i++) {
-	        _loop(i);
-	      }
-	    }
-	  }]);
-
-	  return StoriesNavBar;
-	}();
-
-	exports.default = StoriesNavBar;
-
-/***/ }),
 /* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _StoriesContainer = __webpack_require__(33);
-
-	var _StoriesContainer2 = _interopRequireDefault(_StoriesContainer);
-
-	var _countries = __webpack_require__(24);
-
-	var _countries2 = _interopRequireDefault(_countries);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	var _selectize = __webpack_require__(37);
-
-	var _selectize2 = _interopRequireDefault(_selectize);
-
-	var _jquery = __webpack_require__(25);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	__webpack_require__(40);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var FiltersMenu = function () {
-
-	  // data: {
-	  //   geo: Geo,
-	  // };
-	  // geoSelect?: selectize;
-
-	  function FiltersMenu(parentContainer, terms, geoList, geoIso, self, onGeoChange) {
-	    _classCallCheck(this, FiltersMenu);
-
-	    var elementsContainer = void 0;
-	    if (parentContainer) elementsContainer = parentContainer.querySelector('.filters-menu');
-
-	    if (elementsContainer) {
-	      elementsContainer.innerHTML = '';
-	    } else {
-	      elementsContainer = document.createElement('div');
-	      elementsContainer.classList.add('filters-menu');
-	      if (parentContainer) parentContainer.appendChild(elementsContainer);
-	    }
-
-	    this.createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange);
-	    return elementsContainer;
-	  }
-
-	  _createClass(FiltersMenu, [{
-	    key: 'createElements',
-	    value: function createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange) {
-	      var text = document.createElement('span');
-	      text.innerHTML = 'Search interest from 2004 to today for ';
-	      elementsContainer.appendChild(text);
-
-	      var termsList = document.createElement('span');
-	      termsList.classList.add('terms-list');
-	      elementsContainer.appendChild(termsList);
-
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var t = _step.value;
-
-	          var s = document.createElement('span');
-	          s.innerHTML = t;
-	          termsList.appendChild(s);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      text = document.createElement('span');
-	      text.innerHTML = ' in ';
-	      elementsContainer.appendChild(text);
-
-	      if (geoList.length === 1) {
-	        var geo = document.createElement('span');
-	        geo.innerHTML = geoList[0];
-	        elementsContainer.appendChild(geo);
-	      } else {
-	        var geoSelect = document.createElement('select');
-	        geoSelect.classList.add('geo-select');
-	        geoSelect.name = 'geo-select';
-	        var geoEntities = _countries2.default.filter(function (c) {
-	          if (geoList.indexOf(c.iso) > -1) return c;
-	        });
-	        geoEntities.forEach(function (c, i) {
-	          var option = document.createElement('option');
-	          option.setAttribute('value', c.iso);
-	          option.innerHTML = c.name;
-	          geoSelect.appendChild(option);
-	        });
-	        var bindHandleChange = function bindHandleChange(value) {
-	          return onGeoChange(value, self);
-	        };
-	        elementsContainer.appendChild(geoSelect);
-	        var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
-	          maxItems: 1,
-	          onChange: bindHandleChange
-	        });
-	        geoSelectize[0].selectize.setValue(geoIso, true);
-	      }
-	    }
-	  }]);
-
-	  return FiltersMenu;
-	}();
-
-	exports.default = FiltersMenu;
-
-/***/ }),
-/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -30601,7 +31158,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(25),__webpack_require__(38),__webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(25),__webpack_require__(37),__webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -33775,7 +34332,7 @@
 	}));
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -34279,7 +34836,7 @@
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -34419,13 +34976,13 @@
 	}));
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(41);
+	var content = __webpack_require__(40);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(8)(content, {});
@@ -34445,7 +35002,7 @@
 	}
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(7)();
@@ -34459,768 +35016,13 @@
 
 
 /***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	// Components
-
-
-	// Data and Utils
-
-
-	// Types
-
-
-	// Libraries
-
-
-	//Styles
-
-
-	var _LineChart = __webpack_require__(27);
-
-	var _LineChart2 = _interopRequireDefault(_LineChart);
-
-	var _TrendsAPI = __webpack_require__(10);
-
-	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
-
-	var _ShinyAPI = __webpack_require__(43);
-
-	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
-
-	var _util = __webpack_require__(44);
-
-	var _terms = __webpack_require__(23);
-
-	var _terms2 = _interopRequireDefault(_terms);
-
-	var _countries = __webpack_require__(24);
-
-	var _countries2 = _interopRequireDefault(_countries);
-
-	var _data4 = __webpack_require__(31);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	var _selectize = __webpack_require__(37);
-
-	var _selectize2 = _interopRequireDefault(_selectize);
-
-	var _jquery = __webpack_require__(25);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	__webpack_require__(40);
-
-	__webpack_require__(45);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Explore = function () {
-	  function Explore(parentContainer, shinyAPI, trendsAPI, filter) {
-	    _classCallCheck(this, Explore);
-
-	    this.data = {
-	      prevDiseases: filter ? filter.terms : [],
-	      diseases: filter ? filter.terms : [],
-	      prevGeo: filter ? filter.geo : _countries2.default[0],
-	      geo: filter ? filter.geo : _countries2.default[0],
-	      seasonal: [],
-	      trend: [],
-	      total: [],
-	      totalPerLine: [],
-	      topQueries: [],
-	      isMerged: false,
-	      isChanging: false,
-	      isLoading: filter ? true : false
-	    };
-	    var self = this;
-	    self.trendsAPI = trendsAPI;
-	    if (shinyAPI) {
-	      self.shinyAPI = shinyAPI;
-	      self.shinyAPI.setCallback(self, function (explore, dataFromR) {
-	        var _self$data = self.data,
-	            diseases = _self$data.diseases,
-	            total = _self$data.total;
-
-	        var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
-	        var data = self.data[type];
-	        var index = data.length;
-	        var obj = {};
-
-	        obj[type] = data.concat({
-	          term: diseases[index].name,
-	          points: self.parseDataFromR(dataFromR)
-	        });
-	        self.updateData(obj);
-
-	        // I'm still getting R Data for that one type
-	        if (obj[type].length < total.length) {
-	          // Trend? Keep parsing the already loaded data
-	          if (type === 'trend') {
-	            var dataToR = self.parseDataToR(type);
-	            self.shinyAPI.updateData(type, dataToR);
-
-	            // Seasonal? Go get more data from Google Trends
-	          } else if (type === 'seasonal') {
-	            self.getTrendsAPIGraph('seasonal');
-	          }
-
-	          // I'm done with this type!
-	        } else {
-	          // Trend? Start seasonal then
-	          if (type === 'trend') {
-	            self.getTrendsAPIGraph('seasonal');
-	            // Seasonal? Move on to load top queries
-	          } else if (type === 'seasonal') {
-	            self.updateData({ topQueries: [], isLoading: false });
-	            self.getTrendsAPITopQueries();
-	          }
-	        }
-	      });
-	    }
-
-	    self.createElements(parentContainer);
-
-	    if (filter) {
-	      self.getTrendsAPIGraph('trend');
-	    }
-	  }
-
-	  _createClass(Explore, [{
-	    key: 'handleSelectDiseaseChange',
-	    value: function handleSelectDiseaseChange(value, self) {
-	      _loglevel2.default.info('handleSelectDiseaseChange');
-	      var diseases = value.map(function (v) {
-	        return self.getDiseaseByEntity(v);
-	      });
-	      this.updateData({ diseases: diseases, isChanging: true });
-	      self.confirmNav.classList.remove('hidden');
-	    }
-	  }, {
-	    key: 'handleSelectGeoChange',
-	    value: function handleSelectGeoChange(value, self) {
-	      _loglevel2.default.info('handleSelectGeoChange');
-	      _loglevel2.default.info(value);
-	      var name = this.getCountryByIso(value).name;
-	      this.updateData({ geo: { iso: value, name: name, isChanging: true } });
-	      self.confirmNav.classList.remove('hidden');
-	    }
-	  }, {
-	    key: 'getDiseaseByEntity',
-	    value: function getDiseaseByEntity(entity) {
-	      return _terms2.default.find(function (t) {
-	        return t.entity === entity;
-	      });
-	    }
-	  }, {
-	    key: 'getCountryByIso',
-	    value: function getCountryByIso(iso) {
-	      return _countries2.default.find(function (c) {
-	        return c.iso === iso;
-	      });
-	    }
-	  }, {
-	    key: 'cancelFilters',
-	    value: function cancelFilters(event, self) {
-	      _loglevel2.default.info('cancelFilters');
-	      var _self$data2 = self.data,
-	          prevDiseases = _self$data2.prevDiseases,
-	          prevGeo = _self$data2.prevGeo;
-
-	      self.confirmNav.classList.add('hidden');
-	      self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
-	    }
-	  }, {
-	    key: 'confirmFilters',
-	    value: function confirmFilters(event, self) {
-	      _loglevel2.default.info('confirmFilters');
-	      var _self$data3 = self.data,
-	          diseases = _self$data3.diseases,
-	          geo = _self$data3.geo;
-
-	      self.confirmNav.classList.add('hidden');
-	      self.updateData({
-	        prevDiseases: diseases,
-	        prevGeo: geo,
-	        isChanging: false,
-	        isLoading: true,
-	        totalPerLine: [],
-	        seasonal: [],
-	        trend: []
-	      });
-	      self.getTrendsAPIGraph('trend');
-	    }
-	  }, {
-	    key: 'toggleChartMerge',
-	    value: function toggleChartMerge(event, self) {
-	      var isMerged = self.data.isMerged;
-
-	      isMerged = isMerged ? false : true;
-	      this.seasonalChart.hide();
-	      this.updateData({ isMerged: isMerged });
-	    }
-	  }, {
-	    key: 'getTrendsAPIGraph',
-	    value: function getTrendsAPIGraph(type) {
-	      _loglevel2.default.info('getTrendsAPIGraph');
-	      var self = this;
-	      var _self$data4 = self.data,
-	          diseases = _self$data4.diseases,
-	          geo = _self$data4.geo,
-	          totalPerLine = _self$data4.totalPerLine;
-	      var shinyAPI = self.shinyAPI;
-
-	      var terms = type === 'trend' ? diseases : [diseases[totalPerLine.length]];
-
-	      self.trendsAPI.getGraph({ terms: terms, geo: geo }, function (val) {
-	        _loglevel2.default.info('From Google Trends: ', type);
-	        _loglevel2.default.info(val);
-
-	        var obj = {};
-	        if (type === 'trend') {
-	          obj['total'] = self.mapGraphResponse(val.lines);
-	        } else if (type === 'seasonal') {
-	          obj['totalPerLine'] = totalPerLine.concat(self.mapGraphResponse(val.lines));
-	        }
-	        self.updateData(obj);
-
-	        if (true) {
-	          var dataToR = self.parseDataToR(type);
-	          shinyAPI.updateData(type, dataToR);
-	        } else {
-	          var _obj = _extends({}, _data4.dummyData, {
-	            topQueries: [],
-	            isLoading: false
-	          });
-	          self.updateData(_obj);
-	          self.getTrendsAPITopQueries();
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'mapGraphResponse',
-	    value: function mapGraphResponse(lines) {
-	      var diseases = this.data.diseases;
-
-	      return lines.map(function (l, i) {
-	        return { term: diseases[i].name, points: l.points };
-	      });
-	    }
-	  }, {
-	    key: 'getTrendsAPITopQueries',
-	    value: function getTrendsAPITopQueries() {
-	      _loglevel2.default.info('getTrendsAPITopQueries');
-	      var _data = this.data,
-	          diseases = _data.diseases,
-	          geo = _data.geo;
-	      var topQueries = this.data.topQueries;
-
-	      var index = topQueries.length;
-	      var disease = diseases[index];
-	      var self = this;
-
-	      self.trendsAPI.getTopQueries({ terms: [disease], geo: geo }, function (val) {
-	        _loglevel2.default.info('From Google Trends: ', val);
-	        topQueries = topQueries.concat(val);
-	        self.updateData({ topQueries: topQueries });
-	        if (topQueries.length < diseases.length) {
-	          self.getTrendsAPITopQueries();
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'parseDataToR',
-	    value: function parseDataToR(type) {
-	      _loglevel2.default.info('parseDataToR', type);
-	      var _data2 = this.data,
-	          total = _data2.total,
-	          totalPerLine = _data2.totalPerLine;
-	      var shinyAPI = this.shinyAPI;
-
-	      var index = this.data[type].length;
-	      var whichTotal = type === 'trend' ? total : totalPerLine;
-	      return whichTotal[index].points.map(function (p, i) {
-	        return p.date + ',' + p.value;
-	      });
-	    }
-	  }, {
-	    key: 'parseDataFromR',
-	    value: function parseDataFromR(dataFromR) {
-	      _loglevel2.default.info('parseDataFromR');
-	      var _data3 = this.data,
-	          diseases = _data3.diseases,
-	          total = _data3.total,
-	          seasonal = _data3.seasonal,
-	          trend = _data3.trend,
-	          isLoading = _data3.isLoading;
-
-	      var type = dataFromR.indexOf('trend') > -1 ? 'trend' : 'seasonal';
-	      var index = this.data[type].length;
-	      var newDataString = dataFromR.substring(dataFromR.indexOf(type) + type.length + 1);
-	      var newData = newDataString.split(',');
-	      if (type === 'seasonal') {
-	        newData = newData.slice(0, 13);
-	      }
-	      return newData.map(function (n, i) {
-	        var date = total[0].points[i].date;
-	        var value = Math.round(Number(n.trim()) * 100) / 100;
-	        return { date: date, value: value };
-	      });
-	    }
-	  }, {
-	    key: 'updateData',
-	    value: function updateData(obj) {
-	      var data = this.data;
-
-	      Object.assign(data, obj);
-	      _loglevel2.default.info(this.data);
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'createElements',
-	    value: function createElements(parentContainer) {
-	      var _this = this;
-
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'explore';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
-
-	      // Loader
-	      this.loaderContainer = document.createElement('div');
-	      var loaderContainer = this.loaderContainer;
-
-	      loaderContainer.classList.add('loader-container');
-	      loaderContainer.style.top = elementsContainer.offsetTop + 'px';
-	      var loader = document.createElement('span');
-	      loader.classList.add('loader');
-	      loaderContainer.appendChild(loader);
-	      elementsContainer.appendChild(loaderContainer);
-
-	      // filtersMenu
-	      var filtersMenu = document.createElement('div');
-	      filtersMenu.classList.add('filters-menu');
-	      elementsContainer.appendChild(filtersMenu);
-
-	      var text = document.createElement('span');
-	      text.innerHTML = 'Search interest from 2004 to today for ';
-	      filtersMenu.appendChild(text);
-
-	      // Diseases
-	      var diseaseSelect = document.createElement('select');
-	      diseaseSelect.classList.add('disease-select');
-	      _terms2.default.forEach(function (d, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', d.entity);
-	        option.setAttribute('key', i);
-	        option.innerHTML = d.alias ? d.alias : d.name;
-	        diseaseSelect.appendChild(option);
-	      });
-	      var bindHandleChange = function bindHandleChange(value) {
-	        return _this.handleSelectDiseaseChange(value, _this);
-	      };
-	      filtersMenu.appendChild(diseaseSelect);
-	      var diseaseSelectize = (0, _jquery2.default)(diseaseSelect).selectize({
-	        maxItems: 3,
-	        onChange: bindHandleChange,
-	        placeholder: 'Select'
-	      });
-	      this.diseaseSelect = diseaseSelectize[0].selectize;
-
-	      text = document.createElement('span');
-	      text.innerHTML = ' in ';
-	      filtersMenu.appendChild(text);
-
-	      // Geo
-	      var geoSelect = document.createElement('select');
-	      geoSelect.classList.add('geo-select');
-	      geoSelect.name = 'geo-select';
-	      _countries2.default.forEach(function (c, i) {
-	        var option = document.createElement('option');
-	        option.setAttribute('value', c.iso);
-	        option.innerHTML = c.name;
-	        geoSelect.appendChild(option);
-	      });
-	      bindHandleChange = function bindHandleChange(value) {
-	        return _this.handleSelectGeoChange(value, _this);
-	      };
-	      filtersMenu.appendChild(geoSelect);
-	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
-	        maxItems: 1,
-	        onChange: bindHandleChange
-	      });
-	      this.geoSelect = geoSelectize[0].selectize;
-
-	      // Cancel / Done
-	      this.confirmNav = document.createElement('div');
-	      var confirmNav = this.confirmNav;
-
-	      confirmNav.classList.add('confirm-nav');
-	      confirmNav.classList.add('hidden');
-
-	      var cancelButton = document.createElement('button');
-	      cancelButton.innerHTML = 'Cancel';
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.cancelFilters(evt, _this);
-	      };
-	      cancelButton.addEventListener('click', bindHandleChange);
-	      confirmNav.appendChild(cancelButton);
-
-	      var doneButton = document.createElement('button');
-	      doneButton.innerHTML = 'Done';
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.confirmFilters(evt, _this);
-	      };
-	      doneButton.addEventListener('click', bindHandleChange);
-	      confirmNav.appendChild(doneButton);
-
-	      filtersMenu.appendChild(confirmNav);
-
-	      // Charts section
-	      var chartsContainer = document.createElement('div');
-	      chartsContainer.classList.add('charts-container');
-	      elementsContainer.appendChild(chartsContainer);
-
-	      // Seasonal Chart
-	      var chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.seasonalChart = new _LineChart2.default(chartItem, 'seasonal');
-
-	      var toggleBar = document.createElement('div');
-	      toggleBar.classList.add('toggle-bar');
-	      elementsContainer.appendChild(toggleBar);
-
-	      var buttonContainer = document.createElement('div');
-	      buttonContainer.classList.add('button-container');
-	      toggleBar.appendChild(buttonContainer);
-
-	      this.mergeButton = document.createElement('a');
-	      var mergeButton = this.mergeButton;
-
-	      mergeButton.classList.add('icon');
-	      bindHandleChange = function bindHandleChange(evt) {
-	        return _this.toggleChartMerge(evt, _this);
-	      };
-	      mergeButton.addEventListener('click', bindHandleChange);
-	      buttonContainer.appendChild(mergeButton);
-
-	      var titlesContainer = document.createElement('div');
-	      titlesContainer.classList.add('titles-container');
-	      toggleBar.appendChild(titlesContainer);
-
-	      var title = document.createElement('p');
-	      title.classList.add('title');
-	      title.innerHTML = 'Seasonal';
-	      titlesContainer.appendChild(title);
-
-	      title = document.createElement('p');
-	      title.classList.add('title');
-	      title.innerHTML = 'Trend';
-	      titlesContainer.appendChild(title);
-
-	      // Trend chart
-	      chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.trendChart = new _LineChart2.default(chartItem, 'trend');
-
-	      var bottomContainer = document.createElement('div');
-	      bottomContainer.classList.add('bottom-container');
-	      elementsContainer.appendChild(bottomContainer);
-
-	      // Top Queries
-	      var topQueriesContainer = document.createElement('div');
-	      topQueriesContainer.classList.add('top-queries-container');
-	      bottomContainer.appendChild(topQueriesContainer);
-
-	      var topQueriesTitle = document.createElement('h4');
-	      topQueriesTitle.innerHTML = 'Top Related Queries';
-	      topQueriesContainer.appendChild(topQueriesTitle);
-
-	      this.topQueriesList = document.createElement('div');
-	      var topQueriesList = this.topQueriesList;
-
-	      topQueriesList.classList.add('top-queries-list');
-	      topQueriesContainer.appendChild(topQueriesList);
-
-	      this.updateElements();
-	    }
-	  }, {
-	    key: 'updateElements',
-	    value: function updateElements() {
-	      _loglevel2.default.info('updateElements');
-	      var data = this.data,
-	          loaderContainer = this.loaderContainer,
-	          diseaseSelect = this.diseaseSelect,
-	          geoSelect = this.geoSelect,
-	          mergeButton = this.mergeButton,
-	          seasonalChart = this.seasonalChart,
-	          trendChart = this.trendChart,
-	          topQueriesList = this.topQueriesList;
-	      var diseases = data.diseases,
-	          geo = data.geo,
-	          seasonal = data.seasonal,
-	          trend = data.trend,
-	          total = data.total,
-	          topQueries = data.topQueries,
-	          isMerged = data.isMerged,
-	          isChanging = data.isChanging,
-	          isLoading = data.isLoading;
-
-
-	      if (isLoading) {
-	        loaderContainer.classList.remove('hidden');
-	      } else {
-	        loaderContainer.classList.add('hidden');
-	      }
-
-	      diseaseSelect.setValue(diseases.map(function (d) {
-	        return d.entity;
-	      }), true);
-	      geoSelect.setValue(geo.iso, true);
-
-	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
-
-	      // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
-	      if (!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
-	        seasonalChart.updateData(seasonal);
-	        isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
-
-	        if (topQueries.length > 0) {
-
-	          var isEmpty = true;
-	          topQueriesList.innerHTML = '';
-	          for (var i = 0; i < topQueries.length; i++) {
-	            if (topQueries[i].item) {
-	              isEmpty = false;
-	              var listContainer = document.createElement('div');
-	              listContainer.classList.add('list-container');
-	              topQueriesList.appendChild(listContainer);
-
-	              var term = document.createElement('p');
-	              term.innerHTML = diseases[i].name;
-	              listContainer.appendChild(term);
-
-	              var list = document.createElement('ul');
-	              listContainer.appendChild(list);
-
-	              var _iteratorNormalCompletion = true;
-	              var _didIteratorError = false;
-	              var _iteratorError = undefined;
-
-	              try {
-	                for (var _iterator = topQueries[i].item[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                  var q = _step.value;
-
-	                  var listItem = document.createElement('li');
-	                  listItem.innerHTML = q.title;
-	                  list.appendChild(listItem);
-	                }
-	              } catch (err) {
-	                _didIteratorError = true;
-	                _iteratorError = err;
-	              } finally {
-	                try {
-	                  if (!_iteratorNormalCompletion && _iterator.return) {
-	                    _iterator.return();
-	                  }
-	                } finally {
-	                  if (_didIteratorError) {
-	                    throw _iteratorError;
-	                  }
-	                }
-	              }
-	            }
-	          }
-	          var parent = topQueriesList.parentElement;
-	          if (parent) {
-	            isEmpty ? parent.classList.add('hidden') : parent.classList.remove('hidden');
-	          }
-	        }
-	      }
-	    }
-	  }]);
-
-	  return Explore;
-	}();
-
-	exports.default = Explore;
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _Explore = __webpack_require__(42);
-
-	var _Explore2 = _interopRequireDefault(_Explore);
-
-	var _util = __webpack_require__(44);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var ShinyAPI = function () {
-	  function ShinyAPI() {
-	    _classCallCheck(this, ShinyAPI);
-
-	    this.data = {
-	      dataToR: {
-	        seasonal: [],
-	        trend: []
-	      },
-	      dataFromR: {
-	        seasonal: '',
-	        trend: ''
-	      }
-	    };
-	    _loglevel2.default.info('ShinyAPI');
-	  }
-
-	  _createClass(ShinyAPI, [{
-	    key: 'setup',
-	    value: function setup(callback) {
-	      _loglevel2.default.info('addShinyListeners');
-	      var self = this;
-
-	      $(document).on('shiny:connected', function (event) {
-	        _loglevel2.default.info('Connected to Shiny server');
-	      });
-
-	      $(document).on('shiny:sessioninitialized', function (event) {
-	        _loglevel2.default.info('Shiny session initialized');
-
-	        // Create a loop to ping the Shiny server and keep the websocket connection on
-	        clearInterval(self.keepShinyAlive);
-	        self.keepShinyAlive = setInterval(pingShiny, 10000);
-	        function pingShiny() {
-	          var timestamp = Date.now();
-	          Shiny.onInputChange('ping', timestamp);
-	        }
-
-	        self.isInitialized = true;
-	        callback();
-	      });
-
-	      $(document).on('shiny:idle', function (event) {
-	        _loglevel2.default.info('Shiny session idle');
-	      });
-
-	      $(document).on('shiny:disconnected', function (event) {
-	        _loglevel2.default.info('Disconnected from Shiny server');
-	        location.reload();
-	      });
-	    }
-	  }, {
-	    key: 'setCallback',
-	    value: function setCallback(explore, callback) {
-	      _loglevel2.default.info('Shiny setCallback');
-	      var self = this;
-	      self.dataProcessingCallback = callback;
-	      self.explore = explore;
-	      // Add listener for stl data
-	      Shiny.addCustomMessageHandler('seasonalCallback', function (dataFromR) {
-	        _loglevel2.default.info('From R: ', dataFromR);
-	        self.data.dataFromR.seasonal = dataFromR;
-	        self.dataProcessingCallback(explore, dataFromR);
-	      });
-	      Shiny.addCustomMessageHandler('trendCallback', function (dataFromR) {
-	        _loglevel2.default.info('From R: ', dataFromR);
-	        self.data.dataFromR.trend = dataFromR;
-	        _loglevel2.default.info(self.data);
-	        self.dataProcessingCallback(explore, dataFromR);
-	      });
-	    }
-	  }, {
-	    key: 'updateData',
-	    value: function updateData(type, data) {
-	      _loglevel2.default.info('ShinyAPI updateData');
-	      _loglevel2.default.info(type);
-	      var _data = this.data,
-	          dataToR = _data.dataToR,
-	          dataFromR = _data.dataFromR;
-
-	      if ((0, _util.arrayIsEqual)(dataToR[type], data)) {
-	        this.dataProcessingCallback(this.explore, dataFromR[type]);
-	      } else {
-	        dataToR[type] = data;
-	        _loglevel2.default.info(this.data);
-	        Shiny.onInputChange(type, data);
-	      }
-	    }
-	  }]);
-
-	  return ShinyAPI;
-	}();
-
-	exports.default = ShinyAPI;
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.arrayIsEqual = arrayIsEqual;
-	function arrayIsEqual(array1, array2) {
-	  if (!array1 || !array2) return false;
-
-	  // compare lengths - can save a lot of time
-	  if (array1.length != array2.length) return false;
-
-	  for (var i = 0, l = array1.length; i < l; i++) {
-	    // Check if we have nested arrays
-	    if (array1[i] instanceof Array && array2[i] instanceof Array) {
-	      // recurse into the nested arrays
-	      if (!array1[i].equals(array2[i])) return false;
-	    } else if (array1[i] != array2[i]) {
-	      // Warning - two different object instances will never be equal: {x:20} != {x:20}
-	      return false;
-	    }
-	  }
-	  return true;
-	}
-
-/***/ }),
-/* 45 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(46);
+	var content = __webpack_require__(42);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(8)(content, {});
@@ -35240,7 +35042,7 @@
 	}
 
 /***/ }),
-/* 46 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(7)();
@@ -35248,13 +35050,470 @@
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n.selectize-input {\n  border: 0;\n  box-shadow: none;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  .selectize-input .item {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n\n.selectize-control.multi {\n  text-align: center;\n  height: 40px; }\n  .selectize-control.multi .selectize-input.items {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .selectize-control.multi .selectize-input.items div.item {\n      background-color: transparent; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n        color: #FA8200; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n        color: #FF91E6; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n        color: #009DF7; }\n\n.selectize-dropdown {\n  text-align: left; }\n\n#explore.page {\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n  #explore.page .toggle-bar {\n    position: relative;\n    top: 0;\n    left: calc(50% - 60px/2);\n    width: 45vh;\n    height: 60px;\n    margin: 0 20px;\n    display: flex;\n    flex-direction: row;\n    text-align: center;\n    transform-origin: left;\n    transform: rotate(-90deg);\n    transform: translate(0, -32px) rotate(-90deg);\n    align-items: center; }\n    #explore.page .toggle-bar .button-container a {\n      display: block;\n      width: 32px;\n      height: 32px; }\n    #explore.page .toggle-bar .titles-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: column;\n      align-items: center; }\n      #explore.page .toggle-bar .titles-container .title {\n        width: 100%;\n        font-size: 11px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #explore.page .toggle-bar .titles-container .title:first-child {\n          border-bottom: 1px solid #000; }\n  #explore.page .bottom-container {\n    width: 100%;\n    height: 30vh;\n    padding-top: 20px; }\n    #explore.page .bottom-container .top-queries-container {\n      width: calc((100% - 20px*5)/2);\n      height: 100%;\n      display: flex;\n      flex-direction: column; }\n      #explore.page .bottom-container .top-queries-container.hidden {\n        display: none; }\n      #explore.page .bottom-container .top-queries-container .top-queries-list {\n        flex-grow: 1;\n        overflow-y: auto;\n        border-width: 2px 0;\n        border-style: solid;\n        border-color: #4422B3; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px;\n  display: block;\n  width: 100%; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n.selectize-input {\n  border: 0;\n  box-shadow: none;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  .selectize-input .item {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n\n.selectize-control.multi {\n  text-align: center;\n  height: 40px; }\n  .selectize-control.multi .selectize-input.items {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .selectize-control.multi .selectize-input.items div.item {\n      background-color: transparent; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(1) {\n        color: #FA8200; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(2) {\n        color: #FF91E6; }\n      .selectize-control.multi .selectize-input.items div.item:nth-child(3) {\n        color: #009DF7; }\n\n.selectize-dropdown {\n  text-align: left; }\n\n#explore.page {\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between; }\n  #explore.page .toggle-bar {\n    position: relative;\n    top: 0;\n    left: calc(50% - 60px/2);\n    width: 45vh;\n    height: 60px;\n    margin: 0 20px;\n    display: flex;\n    flex-direction: row;\n    text-align: center;\n    transform-origin: left;\n    transform: rotate(-90deg);\n    transform: translate(0, -32px) rotate(-90deg);\n    align-items: center; }\n    #explore.page .toggle-bar .button-container a {\n      display: block;\n      width: 32px;\n      height: 32px; }\n    #explore.page .toggle-bar .titles-container {\n      flex-grow: 1;\n      display: flex;\n      flex-direction: column;\n      align-items: center; }\n      #explore.page .toggle-bar .titles-container .title {\n        width: 100%;\n        font-size: 11px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #explore.page .toggle-bar .titles-container .title:first-child {\n          border-bottom: 1px solid #000; }\n  #explore.page .bottom-container {\n    width: 100%;\n    height: 30vh;\n    padding-top: 20px; }\n    #explore.page .bottom-container .top-queries-container {\n      width: calc((100% - 20px*5)/2);\n      height: 100%;\n      display: flex;\n      flex-direction: column; }\n      #explore.page .bottom-container .top-queries-container.hidden {\n        display: none; }\n      #explore.page .bottom-container .top-queries-container .top-queries-list {\n        flex-grow: 1;\n        overflow-y: auto;\n        border-width: 2px 0;\n        border-style: solid;\n        border-color: #4422B3; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+		 true ? factory(exports, __webpack_require__(3)) :
+		typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
+		(factory((global.d3 = global.d3 || {}),global.d3));
+	}(this, (function (exports,d3) { 'use strict';
+
+	function graphScroll(){
+	  var windowHeight,
+	      dispatch$$1 = d3.dispatch("scroll", "active"),
+	      sections = d3.select('null'),
+	      i = NaN,
+	      sectionPos = [],
+	      n,
+	      graph = d3.select('null'),
+	      isFixed = null,
+	      isBelow = null,
+	      container = d3.select('body'),
+	      containerStart = 0,
+	      belowStart,
+	      eventId = Math.random(),
+	      offset = 200;
+
+	  function reposition(){
+	    var i1 = 0;
+	    sectionPos.forEach(function(d, i){
+	      if (d < pageYOffset - containerStart + offset) i1 = i;
+	    });
+	    i1 = Math.min(n - 1, i1);
+
+	    var isBelow1 = pageYOffset > belowStart;
+	    if (isBelow != isBelow1){
+	      isBelow = isBelow1;
+	      container.classed('graph-scroll-below', isBelow);
+	    }
+	    var isFixed1 = !isBelow && pageYOffset > containerStart;
+	    if (isFixed != isFixed1){
+	      isFixed = isFixed1;
+	      container.classed('graph-scroll-fixed', isFixed);
+	    }
+
+	    if (isBelow) i1 = n - 1;
+
+	    if (i != i1){
+	      sections.classed('graph-scroll-active', function(d, i){ return i === i1 });
+
+	      dispatch$$1.call('active', null, i1);
+
+	      i = i1;
+	    }
+	  }
+
+	  function resize(){
+	    sectionPos = [];
+	    var startPos;
+	    sections.each(function(d, i){
+	      if (!i) startPos = this.getBoundingClientRect().top;
+	      sectionPos.push(this.getBoundingClientRect().top -  startPos); });
+
+	    var containerBB = container.node().getBoundingClientRect();
+	    var graphHeight = graph.node() ? graph.node().getBoundingClientRect().height : 0;
+
+	    containerStart = containerBB.top + pageYOffset;
+	    belowStart = containerBB.bottom - graphHeight + pageYOffset;
+	  }
+
+	  function keydown() {
+	    if (!isFixed) return
+	    var delta;
+	    switch (d3.event.keyCode) {
+	      case 39: // right arrow
+	      if (d3.event.metaKey) return
+	      case 40: // down arrow
+	      case 34: // page down
+	      delta = d3.event.metaKey ? Infinity : 1 ;break
+	      case 37: // left arrow
+	      if (d3.event.metaKey) return
+	      case 38: // up arrow
+	      case 33: // page up
+	      delta = d3.event.metaKey ? -Infinity : -1 ;break
+	      case 32: // space
+	      delta = d3.event.shiftKey ? -1 : 1
+	      ;break
+	      default: return
+	    }
+
+	    var i1 = Math.max(0, Math.min(i + delta, n - 1));
+	    if (i1 == i) return // let browser handle scrolling past last section
+	    d3.select(document.documentElement)
+	        .interrupt()
+	      .transition()
+	        .duration(500)
+	        .tween("scroll", function() {
+	          var i = d3.interpolateNumber(pageYOffset, sectionPos[i1] + containerStart);
+	          return function(t) { scrollTo(0, i(t)); }
+	        });
+
+	    d3.event.preventDefault();
+	  }
+
+
+	  var rv ={};
+
+	  rv.container = function(_x){
+	    if (!_x) return container
+
+	    container = _x;
+	    return rv
+	  };
+
+	  rv.graph = function(_x){
+	    if (!_x) return graph
+
+	    graph = _x;
+	    return rv
+	  };
+
+	  rv.eventId = function(_x){
+	    if (!_x) return eventId
+
+	    eventId = _x;
+	    return rv
+	  };
+
+	  rv.sections = function (_x){
+	    if (!_x) return sections
+
+	    sections = _x;
+	    n = sections.size();
+
+	    d3.select(window)
+	        .on('scroll.gscroll'  + eventId, reposition)
+	        .on('resize.gscroll'  + eventId, resize)
+	        .on('keydown.gscroll' + eventId, keydown);
+	    
+	    resize();
+	    d3.timer(reposition);
+	    if (window['gscrollTimer' + eventId]) window['gscrollTimer' + eventId].stop();
+	    window['gscrollTimer' + eventId] = d3.timer(reposition);
+
+	    return rv
+	  };
+
+	  rv.on = function() {
+	    var value = dispatch$$1.on.apply(dispatch$$1, arguments);
+	    return value === dispatch$$1 ? rv : value;
+	  };
+	  
+	  rv.offset = function(_x) {
+	    if(!_x) return offset
+	    
+	    offset = _x;
+	    return rv
+	  };
+
+	  return rv
+	}
+
+	exports.graphScroll = graphScroll;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(45);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(8)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./intro.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(7)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px;\n  display: block;\n  width: 100%; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page .section-body {\n  position: relative; }\n  #intro.page .section-body .slides-container {\n    margin-left: calc((100% - 20px)/2 + 20px);\n    width: calc((100% - 20px)/2); }\n    @media (max-width: 600px) {\n      #intro.page .section-body .slides-container {\n        width: 100%;\n        position: relative;\n        margin: 0;\n        padding-top: 50vh;\n        z-index: 100; } }\n    #intro.page .section-body .slides-container .slide {\n      width: 100%;\n      padding-bottom: 50vh;\n      opacity: 0.3; }\n      #intro.page .section-body .slides-container .slide.graph-scroll-active {\n        opacity: 1; }\n      @media (max-width: 600px) {\n        #intro.page .section-body .slides-container .slide {\n          width: 100%; }\n          #intro.page .section-body .slides-container .slide p {\n            padding: 12px;\n            border: 1px solid black;\n            background-color: white; } }\n  #intro.page .section-body .visuals {\n    position: absolute;\n    top: 20px;\n    height: 100vh; }\n    @media (max-width: 600px) {\n      #intro.page .section-body .visuals {\n        top: 12px;\n        width: calc(100% - 12px*2); } }\n  #intro.page .section-body.graph-scroll-fixed .visuals {\n    position: fixed; }\n  #intro.page .section-body.graph-scroll-below .visuals {\n    position: absolute;\n    top: auto;\n    bottom: 0px; }\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _StoriesLineCharts = __webpack_require__(28);
+
+	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
+
+	var _StoriesRanking = __webpack_require__(47);
+
+	var _StoriesRanking2 = _interopRequireDefault(_StoriesRanking);
+
+	var _LineChart = __webpack_require__(31);
+
+	var _LineChart2 = _interopRequireDefault(_LineChart);
+
+	var _d = __webpack_require__(3);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(5);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Stories = function () {
+	  function Stories(parentContainer) {
+	    _classCallCheck(this, Stories);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Stories, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'stories';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var stickyHeader = document.createElement('div');
+	      stickyHeader.classList.add('sticky-header');
+	      stickyHeader.innerHTML = "Stories";
+	      elementsContainer.appendChild(stickyHeader);
+
+	      var storiesSeasonal = new _StoriesLineCharts2.default(elementsContainer, 'seasonal');
+	      var storiesHolidays = new _StoriesLineCharts2.default(elementsContainer, 'holidays');
+	      var storiesMedia = new _StoriesLineCharts2.default(elementsContainer, 'media');
+	      var storiesRanking = new _StoriesRanking2.default(elementsContainer);
+	    }
+	  }]);
+
+	  return Stories;
+	}();
+
+	exports.default = Stories;
+
+/***/ }),
 /* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _ranking = __webpack_require__(48);
+
+	var _ranking2 = _interopRequireDefault(_ranking);
+
+	var _loglevel = __webpack_require__(4);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var StoriesRanking = function () {
+	  function StoriesRanking(parentContainer) {
+	    _classCallCheck(this, StoriesRanking);
+
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(StoriesRanking, [{
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.classList.add('story-section');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var sectionHeader = document.createElement('div');
+	      sectionHeader.classList.add('section-header');
+	      elementsContainer.appendChild(sectionHeader);
+
+	      var title = document.createElement('h1');
+	      title.innerHTML = 'Top 10';
+	      sectionHeader.appendChild(title);
+
+	      var intro = document.createElement('p');
+	      intro.innerHTML = "These are the main health-related worries in the world, by year.";
+	      sectionHeader.appendChild(intro);
+
+	      var sectionBody = document.createElement('div');
+	      sectionBody.classList.add('section-body');
+	      elementsContainer.appendChild(sectionBody);
+
+	      var rankingTable = document.createElement('div');
+	      rankingTable.classList.add('ranking-table');
+	      sectionBody.appendChild(rankingTable);
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = _ranking2.default[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var r = _step.value;
+
+	          var rankingColumn = document.createElement('div');
+	          rankingColumn.classList.add('ranking-column');
+	          rankingTable.appendChild(rankingColumn);
+
+	          var header = document.createElement('div');
+	          header.classList.add('header');
+	          header.innerHTML = r.year;
+	          rankingColumn.appendChild(header);
+
+	          var list = document.createElement('ul');
+	          list.classList.add('body');
+	          rankingColumn.appendChild(list);
+
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
+
+	          try {
+	            for (var _iterator2 = r.diseases[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var d = _step2.value;
+
+	              var item = document.createElement('li');
+	              item.innerHTML = d;
+	              list.appendChild(item);
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	              }
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+	    }
+	  }]);
+
+	  return StoriesRanking;
+	}();
+
+	exports.default = StoriesRanking;
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	module.exports = [{
+	  year: 2004,
+	  diseases: ["Pain", "Cancer", "HIV/AIDS", "Diabetes mellitus", "Depression", "Allergy", "Amyotrophic lateral sclerosis", "Stress", "Infection", "Obesity"]
+	}, {
+	  year: 2005,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "HIV/AIDS", "Depression", "Infection", "Amyotrophic lateral sclerosis", "Allergy", "Stress", "Burn"]
+	}, {
+	  year: 2006,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "HIV/AIDS", "Depression", "Allergy", "Infection", "Stress", "Amyotrophic lateral sclerosis", "Acne"]
+	}, {
+	  year: 2007,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "HIV/AIDS", "Depression", "Allergy", "Amyotrophic lateral sclerosis", "Infection", "Stress", "Acne"]
+	}, {
+	  year: 2008,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "HIV/AIDS", "Allergy", "Infection", "Amyotrophic lateral sclerosis", "Depression", "Acne", "Stress"]
+	}, {
+	  year: 2009,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "Influenza", "HIV/AIDS", "Acne", "Allergy", "Infection", "Amyotrophic lateral sclerosis", "Depression"]
+	}, {
+	  year: 2010,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "Acne", "Allergy", "Infection", "HIV/AIDS", "Depression", "Amyotrophic lateral sclerosis", "Burn"]
+	}, {
+	  year: 2011,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "Acne", "Allergy", "Infection", "Depression", "Burn", "Amyotrophic lateral sclerosis", "HIV/AIDS"]
+	}, {
+	  year: 2012,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "Acne", "Allergy", "Headache", "Cough", "Infection", "Itch", "Diarrhea"]
+	}, {
+	  year: 2013,
+	  diseases: ["Pain", "Cancer", "Acne", "Diabetes mellitus", "Allergy", "Headache", "Fever", "Itch", "Diarrhea", "Infection"]
+	}, {
+	  year: 2014,
+	  diseases: ["Pain", "Cancer", "Diabetes mellitus", "Acne", "Allergy", "Amyotrophic lateral sclerosis", "Cough", "Headache", "Itch", "Fever"]
+	}, {
+	  year: 2015,
+	  diseases: ["Pain", "Cancer", "Acne", "Diabetes mellitus", "Headache", "Itch", "Allergy", "Diarrhea", "Cough", "Fever"]
+	}, {
+	  year: 2016,
+	  diseases: ["Pain", "Cancer", "Acne", "Diabetes mellitus", "Headache", "Itch", "Allergy", "Diarrhea", "Cough", "Fever"]
+	}];
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35291,6 +35550,86 @@
 	      elementsContainer.id = 'about';
 	      elementsContainer.classList.add('page');
 	      parentContainer.appendChild(elementsContainer);
+
+	      var summary = document.createElement('div');
+	      summary.innerHTML = "SearchMD is a collaboration between the Google News Lab and Gabriel Gianordoli. It uses Google Search Trends to identify patterns in health-related searches.";
+	      elementsContainer.appendChild(summary);
+
+	      var aboutData = document.createElement('div');
+	      elementsContainer.appendChild(aboutData);
+
+	      var h4 = document.createElement('h4');
+	      h4.innerHTML = "Data";
+	      aboutData.appendChild(h4);
+
+	      var p = document.createElement('p');
+	      p.innerHTML = "All data in this project comes from Google Trends, and the search terms are <a href='https://www.google.com/intl/es419/insidesearch/features/search/knowledge.html' target='_blank'>Google Knowledge Graph</a> topics — which provides language-agnostic results and prevents “shingles” from returning searches for “roof shingles,” for example.";
+	      aboutData.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "The seasonal and trend are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='' target='_blank'>Medium post</a> for more information.";
+	      aboutData.appendChild(p);
+
+	      var aboutTeam = document.createElement('div');
+	      elementsContainer.appendChild(aboutTeam);
+
+	      h4 = document.createElement('h4');
+	      h4.innerHTML = "Team";
+	      aboutTeam.appendChild(h4);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Consultancy";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "Simon Rogers (Google News Lab) and Alberto Cairo";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Data Support";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "Sabrina Elfarra and Jennifer Lee (Google News Lab)";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Concept";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "<a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a> and <a href='http://laurasalaberry.com' target='_blank'>Laura Salaberry</a>";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Data Visualization, Design and Development";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "Gabriel Gianordoli";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Art Direction and Illustration";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "Laura Salaberry";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.classList.add('type-body-2');
+	      p.innerHTML = "Research";
+	      aboutTeam.appendChild(p);
+
+	      p = document.createElement('p');
+	      p.innerHTML = "André Biernath";
+	      aboutTeam.appendChild(p);
 	    }
 	  }]);
 
@@ -35300,13 +35639,13 @@
 	exports.default = About;
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(49);
+	var content = __webpack_require__(51);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(8)(content, {});
@@ -35326,7 +35665,7 @@
 	}
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(7)();
@@ -35334,13 +35673,13 @@
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\na.icon {\n  width: 32px;\n  height: 32px;\n  border-radius: 16px;\n  background-color: #333; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  display: flex;\n  flex-direction: column;\n  max-width: 960px;\n  text-align: left;\n  margin: auto; }\n\n.page {\n  width: 100%;\n  min-height: 100vh;\n  margin: 0;\n  border: 0;\n  padding: 20px;\n  border: 1px solid #DDD; }\n  @media (max-width: 600px) {\n    .page {\n      padding: 12px; } }\n\n.filters-menu {\n  text-align: center; }\n\n.chart-item {\n  width: 100%; }\n\nsvg.chart-canvas {\n  transition: opacity 0.5s ease-out, height 0.5s ease-out; }\n  svg.chart-canvas:first-child {\n    margin-bottom: 30px; }\n  svg.chart-canvas.hidden-canvas {\n    opacity: 0;\n    height: 0; }\n  svg.chart-canvas path {\n    fill: none; }\n  svg.chart-canvas path, svg.chart-canvas line {\n    stroke-width: 2px; }\n  svg.chart-canvas g.axis line {\n    stroke: #4422B3; }\n  svg.chart-canvas g.axis.x path {\n    stroke: #4422B3;\n    stroke-opacity: 0.24; }\n  svg.chart-canvas g.axis.y path {\n    stroke-opacity: 0; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(1) {\n    stroke: #FA8200; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(2) {\n    stroke: #FF91E6; }\n  svg.chart-canvas g.time-series path.line.disease:nth-child(3) {\n    stroke: #009DF7; }\n  svg.chart-canvas text {\n    fill: #4422B3; }\n\n.charts-container {\n  width: 100%;\n  height: 45vh;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between; }\n  .charts-container .chart-item {\n    width: calc((100% - 20px*5)/2);\n    height: 100%; }\n\n.filters-menu {\n  line-height: 40px;\n  display: block;\n  width: 100%; }\n  .filters-menu .disease-select {\n    min-width: 50%; }\n    .filters-menu .disease-select .selectize-input {\n      width: 50%; }\n  .filters-menu .terms-list {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    .filters-menu .terms-list span {\n      padding: 0 6px; }\n      .filters-menu .terms-list span:nth-child(1) {\n        color: #FA8200; }\n      .filters-menu .terms-list span:nth-child(2) {\n        color: #FF91E6; }\n      .filters-menu .terms-list span:nth-child(3) {\n        color: #009DF7; }\n  .filters-menu .geo-select {\n    width: 280px;\n    display: inline-block;\n    vertical-align: top; }\n    .filters-menu .geo-select .selectize-input {\n      text-align: left; }\n  .filters-menu .confirm-nav {\n    display: inline-block; }\n    .filters-menu .confirm-nav.hidden {\n      display: none; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 100; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

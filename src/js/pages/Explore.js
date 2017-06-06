@@ -392,34 +392,34 @@ export default class Explore {
     chartsContainer.appendChild(chartItem);
     this.seasonalChart = new LineChart(chartItem, 'seasonal');
 
-    const toggleBar = document.createElement('div');
-    toggleBar.classList.add('toggle-bar');
-    sectionBody.appendChild(toggleBar);
-
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('button-container');
-    toggleBar.appendChild(buttonContainer);
-
-    this.mergeButton = document.createElement('a');
-    const { mergeButton } = this;
-    mergeButton.classList.add('icon');
-    bindHandleChange = evt => this.toggleChartMerge(evt, this);
-    mergeButton.addEventListener('click', bindHandleChange);
-    buttonContainer.appendChild(mergeButton);
-
-    const titlesContainer = document.createElement('div');
-    titlesContainer.classList.add('titles-container');
-    toggleBar.appendChild(titlesContainer);
-
-    let title = document.createElement('p');
-    title.classList.add('title');
-    title.innerHTML = 'Seasonal';
-    titlesContainer.appendChild(title);
-
-    title = document.createElement('p');
-    title.classList.add('title');
-    title.innerHTML = 'Trend';
-    titlesContainer.appendChild(title);
+    // const toggleBar = document.createElement('div');
+    // toggleBar.classList.add('toggle-bar');
+    // sectionBody.appendChild(toggleBar);
+    //
+    // const buttonContainer = document.createElement('div');
+    // buttonContainer.classList.add('button-container');
+    // toggleBar.appendChild(buttonContainer);
+    //
+    // this.mergeButton = document.createElement('a');
+    // const { mergeButton } = this;
+    // mergeButton.classList.add('icon');
+    // bindHandleChange = evt => this.toggleChartMerge(evt, this);
+    // mergeButton.addEventListener('click', bindHandleChange);
+    // buttonContainer.appendChild(mergeButton);
+    //
+    // const titlesContainer = document.createElement('div');
+    // titlesContainer.classList.add('titles-container');
+    // toggleBar.appendChild(titlesContainer);
+    //
+    // let title = document.createElement('p');
+    // title.classList.add('title');
+    // title.innerHTML = 'Seasonal';
+    // titlesContainer.appendChild(title);
+    //
+    // title = document.createElement('p');
+    // title.classList.add('title');
+    // title.innerHTML = 'Trend';
+    // titlesContainer.appendChild(title);
 
 
     // Trend chart
@@ -429,14 +429,14 @@ export default class Explore {
     this.trendChart = new LineChart(chartItem, 'trend');
 
 
-    const bottomContainer = document.createElement('div');
-    bottomContainer.classList.add('bottom-container');
-    sectionBody.appendChild(bottomContainer);
+    // const bottomContainer = document.createElement('div');
+    // bottomContainer.classList.add('bottom-container');
+    // sectionBody.appendChild(bottomContainer);
 
     // Top Queries
     const topQueriesContainer = document.createElement('div');
     topQueriesContainer.classList.add('top-queries-container');
-    bottomContainer.appendChild(topQueriesContainer);
+    sectionBody.appendChild(topQueriesContainer);
 
     const topQueriesTitle = document.createElement('h4');
     topQueriesTitle.innerHTML = 'Top Related Queries';

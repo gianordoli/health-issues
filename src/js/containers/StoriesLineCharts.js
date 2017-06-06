@@ -64,7 +64,7 @@ export default class StoriesLineCharts {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-      const title = document.createElement('h1');
+      const title = document.createElement('h3');
       title.innerHTML = stories[storySection].title;
       sectionHeader.appendChild(title);
 

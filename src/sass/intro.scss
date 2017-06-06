@@ -2,6 +2,8 @@
 
 #intro.page {
 
+  background-color: $color-gray;
+
   .section-body {
 
     position: relative;
@@ -37,7 +39,7 @@
       }
     }
 
-    .visuals {
+    .charts-container {
       position: absolute;
       top: $col-gutter-large;
       height: 100vh;
@@ -48,11 +50,11 @@
       }
     }
 
-    &.graph-scroll-fixed .visuals {
+    &.graph-scroll-fixed .charts-container {
       position: fixed;
     }
 
-    &.graph-scroll-below .visuals{
+    &.graph-scroll-below .charts-container {
       position: absolute;
       top: auto;
       bottom: 0px;

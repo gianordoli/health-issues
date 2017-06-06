@@ -19,7 +19,7 @@ export default class StoriesRanking {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-      const title = document.createElement('h1');
+      const title = document.createElement('h3');
       title.innerHTML = 'Top 10';
       sectionHeader.appendChild(title);
 
