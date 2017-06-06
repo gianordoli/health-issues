@@ -57,6 +57,40 @@
       .case-copy {
         @include columns(1);
       }
+
+      .ranking-table {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        .ranking-column {
+          display: inline-block;
+          width: 18%;
+          margin: 0 $elements-margin $elements-margin*2 0;
+
+          @include for-phone-down {
+            width: 30%;
+          };
+
+          .header {
+            background-color: $color-0;
+            color: white;
+            padding-left: $elements-padding;
+            @include type-body-2;
+          }
+
+          ul {
+            list-style: none;
+            padding-left: 0;
+
+            li {
+              border-bottom: 1px solid $color-gray;
+              padding-left: $elements-padding;
+            }
+          }
+        }
+      }
     }
   }
 }
