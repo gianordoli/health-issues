@@ -83,10 +83,15 @@ export default class WorldMap {
 
       //if the country doesnt have any value (undefined), set d.value to zero
       worldFeatures.forEach(d => {
+        // log.info(valueByRegion[d.properties.countryCode]);
         valueByRegion[d.properties.countryCode]
           ? (d.value = valueByRegion[d.properties.countryCode])
           : (d.value = 0);
       });
+      // log.info(worldFeatures);
+      // worldFeatures.map(d => {
+      //
+      // });
 
       const worldMap = svg.select('.map');
 
@@ -98,7 +103,12 @@ export default class WorldMap {
         .append('path')
         .attr('class', 'country')
         .merge(countries)
-        .attr('fill', d => `rgba(250, 130, 0, ${valueByRegion[d.properties.countryCode]/100}`)
+        .attr('fill', d => {
+          const value = valueByRegion[d.properties.countryCode];
+          // log.info(value);
+          const alpha = value === undefined ? 0 : value/100;
+          return `rgba(250, 130, 0, ${alpha})`
+        })
         .attr('d', path);
   }
 }
