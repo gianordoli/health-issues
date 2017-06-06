@@ -18,9 +18,12 @@ import { dummyData } from '../scripts/data';
 import log from 'loglevel';
 import selectize from 'selectize';
 import $ from 'jquery';
+import Stickyfill from 'stickyfill';
+const stickyfill = Stickyfill();
 
 //Styles
 import 'selectize/dist/css/selectize.css';
+import '../../sass/sticky.scss';
 import '../../sass/explore.scss';
 
 export default class Explore {
