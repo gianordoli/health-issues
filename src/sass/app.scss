@@ -3,6 +3,7 @@
 //---------------------- COLOR -----------------------//
 
 $color-black: #333;
+$color-gray: #ECECEC;
 $color-0: #4422B3;
 $color-1: #FA8200;
 $color-2: #FF91E6;
@@ -18,6 +19,48 @@ $elements-margin: $baseline-height;
 $elements-padding: $baseline-height;
 
 $icon-size: 32px;
+
+.row {
+  width: 100%;
+}
+//
+// .column {
+//   display: inline-block;
+//   vertical-align: top;
+//   &:not(:first-child) {
+//     margin-left: $col-gutter-small;
+//   }
+// }
+
+@mixin columns($number) {
+  display: inline-block;
+  vertical-align: top;
+
+  &:not(:first-child) {
+    margin-left: $col-gutter-small;
+  }
+
+  @if $number == 1 {
+    width: calc((100% - 2*#{$col-gutter-small}) * 1/3);
+
+  } @else if $number == 2 {
+    width: calc((100% - 2*#{$col-gutter-small}) * 2/3 + 1*#{$col-gutter-small});
+
+  } @else if $number == 3 {
+    width: 100%;
+  }
+
+  @include for-phone-down {
+    width: 100%;    
+    &:not(:first-child) {
+      margin-left: 0;
+    }
+  };
+}
+//
+// .one-column     { @extend .column; width: calc((100% - 2*#{$col-gutter-small}) * 1/3); }
+// .two-columns    { @extend .column; width: calc((100% - 2*#{$col-gutter-small}) * 2/3 + 1*#{$col-gutter-small}); }
+// .three-columns  { @extend .column; width: 100%; }
 
 
 
@@ -38,7 +81,11 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-h3 {
-
+  font-size: 16px;
+  font-family: $font-sans;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 @mixin type-h4 {
@@ -76,9 +123,10 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-button {
-  font-size: 11px;
+  font-size: 12px;
   font-family: $font-sans;
   font-weight: 900;
+  line-height: $baseline-height;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -123,6 +171,10 @@ a {
 
 h1, h2, h3, h4, h5, h6, p, ul, li { margin: 0 };
 
+h3 {
+  @include type-h3;
+}
+
 h4 {
   @include type-h4;
 }
@@ -150,6 +202,10 @@ body {
   color: $color-black;
   @include type-body-1;
   text-align: center;
+}
+
+b {
+  @include type-body-2;
 }
 
 *:focus {
@@ -180,6 +236,24 @@ body {
   @include for-phone-down {
     padding: $col-gutter-small;
   }
+}
+
+.section-header {
+  margin-bottom: $col-gutter-large;
+
+  @include for-phone-down {
+    margin-bottom: $col-gutter-small;
+  };
+}
+
+.section-body {
+  background-color: white;
+  color: $color-black;
+  padding: $col-gutter-large;
+
+  @include for-phone-down {
+    padding: $col-gutter-small;
+  };
 }
 
 .filters-menu {
@@ -269,6 +343,59 @@ svg.chart-canvas {
     //   stroke: #fff;
     //   stroke-width: 0.5px;
     // }
+  }
+}
+
+.charts-container {
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .chart-item {
+    width: calc((100% - #{$col-gutter-large}*5)/2);
+    height: 100%;
+  }
+}
+
+.filters-menu {
+
+  line-height: 40px;
+  display: block;
+  width: 100%;
+
+  .disease-select {
+    min-width: 50%;
+    .selectize-input {
+      width: 50%;
+    }
+  }
+
+  .terms-list {
+    @include type-body-2;
+    span {
+      padding: 0 $elements-padding/2;
+      &:nth-child(1) { color: $color-1; }
+      &:nth-child(2) { color: $color-2; }
+      &:nth-child(3) { color: $color-3; }
+    }
+  }
+
+  .geo-select {
+    width: 280px;
+    display: inline-block;
+    vertical-align: top;
+    .selectize-input {
+      text-align: left;
+    }
+  }
+
+  .confirm-nav {
+    display: inline-block;
+    &.hidden {
+      display: none;
+    }
   }
 }
 

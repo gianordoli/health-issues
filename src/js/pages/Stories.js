@@ -1,11 +1,13 @@
 // @flow weak
 
-import { LineChart } from '../visualizations/LineChart';
+import StoriesLineCharts from '../containers/StoriesLineCharts';
+import StoriesRanking from '../containers/StoriesRanking';
+import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
 
-export class Stories {
+export default class Stories {
 
   constructor(parentContainer: HTMLElement) {
     this.createElements(parentContainer);
@@ -18,19 +20,15 @@ export class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    const stickyHeader = document.createElement('div');
+    stickyHeader.classList.add('sticky-header');
+    stickyHeader.innerHTML = "Stories";
+    elementsContainer.appendChild(stickyHeader);
 
-    let chartItem = document.createElement('div');
-    chartItem.classList.add('chart-item');
-    chartsContainer.appendChild(chartItem);
-    const seasonalChart = new LineChart(chartItem, 'seasonal');
-    d3.json('./data/seasonal-summer.json', function(data) {
-      log.info('Loaded story');
-      log.info(data);
-      seasonalChart.updateData(data['US']);
-    });
+    const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
+    const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
+    const storiesMedia = new StoriesLineCharts(elementsContainer, 'media');
+    const storiesRanking = new StoriesRanking(elementsContainer);
 
   }
 }

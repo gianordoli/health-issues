@@ -4,7 +4,7 @@ import type { Filter } from '../util/types';
 import { Keys } from '../../keys/Keys';
 import log from 'loglevel';
 
-export class TrendsAPI {
+export default class TrendsAPI {
 
   gapi: () => {};
 

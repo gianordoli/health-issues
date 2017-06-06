@@ -1,10 +1,10 @@
 // @flow weak
 
-import { Explore } from '../pages/Explore';
+import Explore from '../pages/Explore';
 import { arrayIsEqual } from '../util/util';
 import log from 'loglevel';
 
-export class ShinyAPI {
+export default class ShinyAPI {
 
   data: {
     dataToR: {

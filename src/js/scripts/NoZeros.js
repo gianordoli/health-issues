@@ -1,9 +1,10 @@
 // @flow weak
 
 // Components
-import { TrendsAPI } from '../api/TrendsAPI';
+import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter } from '../util/types';
-import { terms, countries } from '../util/util.js';
+import terms from '../data/terms';
+import countries from '../data/countries';
 
 export class NoZeros {
 

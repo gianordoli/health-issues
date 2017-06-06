@@ -1,12 +1,13 @@
 // @flow weak
 
-import { TrendsAPI } from '../api/TrendsAPI';
+import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPIGraphAverages } from '../util/types';
-import { terms, countries } from '../util/data.js';
+import terms from '../data/terms';
+import countries from '../data/countries';
 import { averages } from './data.js';
 import log from 'loglevel';
 
-export default class Ranking {
+export default class GetRanking {
 
   data: TrendsAPIGraphAverages;
   term1: Term;

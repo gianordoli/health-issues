@@ -1,12 +1,13 @@
 // @flow weak
 
-import { TrendsAPI } from '../api/TrendsAPI';
+import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
-import { terms, countries } from '../util/data';
+import terms from '../data/terms';
+import countries from '../data/countries';
 import $ from 'jquery';
 import log from 'loglevel';
 
-export class Home {
+export default class Home {
 
   data: {
     geo: Geo,

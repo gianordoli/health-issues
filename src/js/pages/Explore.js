@@ -1,28 +1,32 @@
 // @flow weak
 
 // Components
-import { LineChart } from '../visualizations/LineChart';
-import { TrendsAPI } from '../api/TrendsAPI';
-import { ShinyAPI } from '../api/ShinyAPI';
+import LineChart from '../visualizations/LineChart';
+import TrendsAPI from '../api/TrendsAPI';
+import ShinyAPI from '../api/ShinyAPI';
 
 // Types
-import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types'
+import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types';
 
 // Data and Utils
 import { arrayIsEqual } from '../util/util';
-import { terms, countries } from '../util/data';
+import terms from '../data/terms';
+import countries from '../data/countries';
 import { dummyData } from '../scripts/data';
 
 // Libraries
 import log from 'loglevel';
 import selectize from 'selectize';
 import $ from 'jquery';
+import Stickyfill from 'stickyfill';
+const stickyfill = Stickyfill();
 
 //Styles
 import 'selectize/dist/css/selectize.css';
+import '../../sass/sticky.scss';
 import '../../sass/explore.scss';
 
-export class Explore {
+export default class Explore {
 
   data: {
     prevDiseases: Term[],
@@ -46,7 +50,6 @@ export class Explore {
   confirmNav: HTMLElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
-  sentenceItem: HTMLElement;
 
   seasonalChart: LineChart;
   trendChart: LineChart;
@@ -279,6 +282,23 @@ export class Explore {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+      const stickyHeader = document.createElement('div');
+      stickyHeader.classList.add('sticky-header');
+      stickyHeader.innerHTML = "Explore";
+      elementsContainer.appendChild(stickyHeader);
+
+      const sectionHeader = document.createElement('div');
+      sectionHeader.classList.add('section-header');
+      elementsContainer.appendChild(sectionHeader);
+
+        const intro = document.createElement('p');
+        intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+        sectionHeader.appendChild(intro);
+
+      const sectionBody = document.createElement('div');
+      sectionBody.classList.add('section-body');
+      elementsContainer.appendChild(sectionBody);
+
 
     // Loader
     this.loaderContainer = document.createElement('div');
@@ -288,17 +308,17 @@ export class Explore {
     const loader = document.createElement('span');
     loader.classList.add('loader');
     loaderContainer.appendChild(loader);
-    elementsContainer.appendChild(loaderContainer);
+    sectionBody.appendChild(loaderContainer);
 
 
     // filtersMenu
     const filtersMenu = document.createElement('div');
     filtersMenu.classList.add('filters-menu');
-    elementsContainer.appendChild(filtersMenu);
+    sectionBody.appendChild(filtersMenu);
 
-    const text1 = document.createElement('span');
-    text1.innerHTML = 'Search interest from 2004 to today for ';
-    filtersMenu.appendChild(text1);
+    let text = document.createElement('span');
+    text.innerHTML = 'Search interest from 2004 to today for ';
+    filtersMenu.appendChild(text);
 
 
     // Diseases
@@ -320,13 +340,9 @@ export class Explore {
     });
     this.diseaseSelect = diseaseSelectize[0].selectize;
 
-
-    this.sentenceItem = document.createElement('span');
-    const { sentenceItem } = this;
-    sentenceItem.classList.add('sentence-item');
-    sentenceItem.innerHTML = ' in the ';
-    filtersMenu.appendChild(sentenceItem);
-
+    text = document.createElement('span');
+    text.innerHTML = ' in ';
+    filtersMenu.appendChild(text);
 
     // Geo
     const geoSelect = document.createElement('select');
@@ -371,7 +387,7 @@ export class Explore {
     // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    sectionBody.appendChild(chartsContainer);
 
     // Seasonal Chart
     let chartItem = document.createElement('div');
@@ -379,34 +395,34 @@ export class Explore {
     chartsContainer.appendChild(chartItem);
     this.seasonalChart = new LineChart(chartItem, 'seasonal');
 
-    const toggleBar = document.createElement('div');
-    toggleBar.classList.add('toggle-bar');
-    elementsContainer.appendChild(toggleBar);
-
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('button-container');
-    toggleBar.appendChild(buttonContainer);
-
-    this.mergeButton = document.createElement('a');
-    const { mergeButton } = this;
-    mergeButton.classList.add('icon');
-    bindHandleChange = evt => this.toggleChartMerge(evt, this);
-    mergeButton.addEventListener('click', bindHandleChange);
-    buttonContainer.appendChild(mergeButton);
-
-    const titlesContainer = document.createElement('div');
-    titlesContainer.classList.add('titles-container');
-    toggleBar.appendChild(titlesContainer);
-
-    let title = document.createElement('p');
-    title.classList.add('title');
-    title.innerHTML = 'Seasonal';
-    titlesContainer.appendChild(title);
-
-    title = document.createElement('p');
-    title.classList.add('title');
-    title.innerHTML = 'Trend';
-    titlesContainer.appendChild(title);
+    // const toggleBar = document.createElement('div');
+    // toggleBar.classList.add('toggle-bar');
+    // sectionBody.appendChild(toggleBar);
+    //
+    // const buttonContainer = document.createElement('div');
+    // buttonContainer.classList.add('button-container');
+    // toggleBar.appendChild(buttonContainer);
+    //
+    // this.mergeButton = document.createElement('a');
+    // const { mergeButton } = this;
+    // mergeButton.classList.add('icon');
+    // bindHandleChange = evt => this.toggleChartMerge(evt, this);
+    // mergeButton.addEventListener('click', bindHandleChange);
+    // buttonContainer.appendChild(mergeButton);
+    //
+    // const titlesContainer = document.createElement('div');
+    // titlesContainer.classList.add('titles-container');
+    // toggleBar.appendChild(titlesContainer);
+    //
+    // let title = document.createElement('p');
+    // title.classList.add('title');
+    // title.innerHTML = 'Seasonal';
+    // titlesContainer.appendChild(title);
+    //
+    // title = document.createElement('p');
+    // title.classList.add('title');
+    // title.innerHTML = 'Trend';
+    // titlesContainer.appendChild(title);
 
 
     // Trend chart
@@ -416,14 +432,14 @@ export class Explore {
     this.trendChart = new LineChart(chartItem, 'trend');
 
 
-    const bottomContainer = document.createElement('div');
-    bottomContainer.classList.add('bottom-container');
-    elementsContainer.appendChild(bottomContainer);
+    // const bottomContainer = document.createElement('div');
+    // bottomContainer.classList.add('bottom-container');
+    // sectionBody.appendChild(bottomContainer);
 
     // Top Queries
     const topQueriesContainer = document.createElement('div');
     topQueriesContainer.classList.add('top-queries-container');
-    bottomContainer.appendChild(topQueriesContainer);
+    sectionBody.appendChild(topQueriesContainer);
 
     const topQueriesTitle = document.createElement('h4');
     topQueriesTitle.innerHTML = 'Top Related Queries';
@@ -439,7 +455,7 @@ export class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, sentenceItem, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
@@ -449,7 +465,6 @@ export class Explore {
     }
 
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
-    sentenceItem.innerHTML = geo.article ? 'in the' : 'in';
     geoSelect.setValue(geo.iso, true);
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
