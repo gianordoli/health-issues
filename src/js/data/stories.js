@@ -124,4 +124,40 @@ module.exports = {
       },
     ],
   },
+  epidemics: {
+    title: "Epidemics",
+    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+    cases: [
+      {
+        title: "Zika",
+        data: "./data/epidemics-zika.json",
+        terms: ["Zika virus"],
+        geoList: ["world"],
+        copy: [
+          "Copy about Brazilian Carnival. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+        ],
+      },
+      // {
+      //   title: "Pop Culture",
+      //   data: "./data/media-pop-culture.json",
+      //   terms: ["Lupus", "Amyotrophic lateral sclerosis"],
+      //   geoList: ["world"],
+      //   chartType: "trend",
+      //   copy: [
+      //     "Celebrities also play a major role in the popularity of certain health topics. That's what happened with lupus, an inflammatory disease that affects joints, skin and kidneys. The number of searches increased when the singer Selena Gomez canceled her shows to make treatments for this illness, on October 2015 and September 2016. A similar phenomenon occurred with depression: the interest for this topic reached its peak on August 2014, when the actor Robin Williams killed himself.", "Finally, ALS, a problem in the nervous system, has passed from anonymity to trending topic during the \"ice bucket challenge\"",
+      //   ],
+      // },
+      // {
+      //   title: "Anti-vaccine",
+      //   data: "./data/media-anti-vaccine.json",
+      //   terms: ["Vaccine", "Measles"],
+      //   geoList: ["world"],
+      //   chartType: "trend",
+      //   copy: [
+      //     "The movements of parents who refuse to give vaccines for their children proclaim that immunization is a cause of autism and other maladies. Besides the fact that there are no scientific evidence to prove this accusations, the vaccines rejection is related with measles outbreaks, that happened in Ohio (2014) and California (2015). It is possible to note an increase in web searches during this periods. Health authorities blame radical groups for the sudden growth of this infectious disease in US.",
+      //   ],
+      // },
+    ],
+  },
 };

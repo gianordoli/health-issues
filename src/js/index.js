@@ -1,6 +1,5 @@
 // @flow weak
 
-import { StoriesVizEpidemics } from './containers/StoriesVizEpidemics';
 import Home from './pages/Home';
 import Intro from './pages/Intro';
 import Stories from './pages/Stories';
@@ -12,6 +11,7 @@ import terms from './data/terms';
 import countries from './data/countries';
 import log from 'loglevel';
 import '../sass/App.scss';
+
 import GetMapData from './scripts/GetMapData';
 
 var app = app || {};
@@ -77,9 +77,6 @@ app.main = (function (){
     if (body) {
       body.appendChild(elementsContainer);
     }
-
-    // const storiesVizEpidemics = new StoriesVizEpidemics(elementsContainer);
-
 
     const home = new Home(elementsContainer, trendsAPI);
     const intro = new Intro(elementsContainer);

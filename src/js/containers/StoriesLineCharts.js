@@ -26,12 +26,13 @@ export default class StoriesLineCharts {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const path = stories[storySection].cases[currCase].data;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
-    d3.json(stories[storySection].cases[currCase].data, function(chartData) {
+    d3.json(path, function(chartData) {
       self.data = { storySection, currCase, chartData, geoIso };
       self.createElements(elementsContainer);
     });

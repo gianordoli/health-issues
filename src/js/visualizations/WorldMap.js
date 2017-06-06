@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import log from 'loglevel'; // Pretty handy log tool. Use log.info(something), instead of console.log()!
 
-export class WorldMap {
+export default class WorldMap {
   data: Array<TrendsAPIRegion>;
   width: number;
   height: number;

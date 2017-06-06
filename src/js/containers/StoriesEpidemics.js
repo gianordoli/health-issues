@@ -1,30 +1,41 @@
 // @flow weak
 
+import stories from '../data/stories';
+import StoriesNavBar from '../components/StoriesNavBar';
+import FiltersMenu from '../components/FiltersMenu';
+import WorldMap from '../visualizations/WorldMap';
 import type { TrendsAPIRegion, TrendsAPIRegionsList } from '../util/types';
-import { WorldMap } from '../visualizations/WorldMap';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
 
-export class StoriesVizEpidemics {
-
+export default class StoriesEpidemics {
 
   data: {
-    currMonth: number;
+    storySection: string,
+    currCase: number,
+    geoIso: string,
+    currMonth: number,
     mapData: TrendsAPIRegionsList,
   };
+  filtersMenu: HTMLElement;
   worldMap: WorldMap;
   slider: HTMLElement;
+  copyContainer: HTMLElement;
 
-  constructor(parentContainer: HTMLElement) {
+  constructor(parentContainer: HTMLElement, storySection: string) {
     const self = this;
-    d3.json('./data/epidemics-zika-virus.json', function(mapData) {
-      log.info('Loaded story');
-      log.info(mapData);
-      self.data = {
-        currMonth: 0,
-        mapData
-      };
+    const currCase = 0;
+    const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const currMonth = 0;
+    const path = stories[storySection].cases[currCase].data;
+
+    const elementsContainer = document.createElement('div');
+    elementsContainer.classList.add('story-section');
+    parentContainer.appendChild(elementsContainer);
+
+    d3.json(path, function(mapData) {
+      self.data = { storySection, currCase, mapData, geoIso, currMonth };
       self.createElements(parentContainer);
     });
   }
@@ -44,6 +55,7 @@ export class StoriesVizEpidemics {
 
   createElements(parentContainer: HTMLElement) {
     const { mapData, currMonth } = this.data;
+    log.info(mapData);
 
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'epidemics';
