@@ -15,7 +15,7 @@ export default class StoriesLineCharts {
     currCase: number,
     geoIso: string,
     chartData: {
-      [key: string]: TrendsAPIGraph[]
+      [key: string]: TrendsAPIGraph[],
     },
   };
   filtersMenu: HTMLElement;
@@ -37,10 +37,18 @@ export default class StoriesLineCharts {
     });
   }
 
-  loadNewCase(event: Event, self: StoriesLineCharts, currCase: number) {
+  loadNewCase(
+    event: Event,
+    self: StoriesLineCharts,
+    elementsContainer: HTMLElement,
+    currCase: number
+  ) {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    elementsContainer.querySelectorAll('a').forEach((e, i) => {
+      i === currCase ? e.classList.add('active') : e.classList.remove('active')
+    });
     d3.json(path, function(chartData) {
       self.updateData({ currCase, chartData, geoIso });
     });
@@ -58,53 +66,55 @@ export default class StoriesLineCharts {
 
   createElements(elementsContainer: HTMLElement) {
     const { storySection, currCase, chartData, geoIso } = this.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+      currCase
+    ];
 
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
-      const title = document.createElement('h3');
-      title.innerHTML = stories[storySection].title;
-      sectionHeader.appendChild(title);
+    const title = document.createElement('h3');
+    title.innerHTML = stories[storySection].title;
+    sectionHeader.appendChild(title);
 
-      const intro = document.createElement('p');
-      intro.innerHTML = stories[storySection].intro;
-      sectionHeader.appendChild(intro);
+    const intro = document.createElement('p');
+    intro.innerHTML = stories[storySection].intro;
+    sectionHeader.appendChild(intro);
 
-      const storiesNavBar = new StoriesNavBar(
-        elementsContainer,
-        stories[storySection].cases.map(c => c.title),
-        this,
-        this.loadNewCase,
-      );
+    const storiesNavBar = new StoriesNavBar(
+      elementsContainer,
+      stories[storySection].cases.map(c => c.title),
+      this,
+      this.loadNewCase
+    );
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
-      this.filtersMenu = new FiltersMenu(
-        sectionBody,
-        terms,
-        geoList,
-        geoIso,
-        this,
-        this.changeGeo,
-      );
+    this.filtersMenu = new FiltersMenu(
+      sectionBody,
+      terms,
+      geoList,
+      geoIso,
+      this,
+      this.changeGeo
+    );
 
-      const chartsContainer = document.createElement('div');
-      chartsContainer.classList.add('charts-container');
-      sectionBody.appendChild(chartsContainer);
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    sectionBody.appendChild(chartsContainer);
 
-        const chartItem = document.createElement('div');
-        chartItem.classList.add('chart-item');
-        chartsContainer.appendChild(chartItem);
-        this.chart = new LineChart(chartItem, chartType);
+    const chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.chart = new LineChart(chartItem, chartType);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;
     copyContainer.classList.add('case-copy');
-    for(const c of copy) {
+    for (const c of copy) {
       const p = document.createElement('p');
       p.innerHTML = c;
       copyContainer.appendChild(p);
@@ -118,7 +128,9 @@ export default class StoriesLineCharts {
     let { filtersMenu } = this;
     const { chart, copyContainer } = this;
     const { storySection, currCase, chartData, geoIso } = this.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+      currCase
+    ];
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,
@@ -126,13 +138,13 @@ export default class StoriesLineCharts {
       geoList,
       geoIso,
       this,
-      this.changeGeo,
+      this.changeGeo
     );
 
     chart.updateData(chartData[geoIso], chartType);
 
     copyContainer.innerHTML = '';
-    for(const c of copy) {
+    for (const c of copy) {
       const p = document.createElement('p');
       p.innerHTML = c;
       copyContainer.appendChild(p);

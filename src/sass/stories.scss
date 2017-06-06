@@ -38,8 +38,10 @@
         padding: $elements-padding/2;
         color: $color-0;
         margin-left: $elements-margin;
+        transition-property: background-color, color;
+        transition-duration: 0.25s;
 
-        &:hover, &:active {
+        &:hover, &:active, &.active {
           background-color: $color-0;
           color: white;
         }
