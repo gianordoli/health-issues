@@ -384,10 +384,14 @@ export default class Explore {
     filtersMenu.appendChild(confirmNav);
 
 
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
+
     // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    sectionBody.appendChild(chartsContainer);
+    row.appendChild(chartsContainer);
 
     // Seasonal Chart
     let chartItem = document.createElement('div');
@@ -439,7 +443,7 @@ export default class Explore {
     // Top Queries
     const topQueriesContainer = document.createElement('div');
     topQueriesContainer.classList.add('top-queries-container');
-    sectionBody.appendChild(topQueriesContainer);
+    row.appendChild(topQueriesContainer);
 
     const topQueriesTitle = document.createElement('h4');
     topQueriesTitle.innerHTML = 'Top Related Queries';
