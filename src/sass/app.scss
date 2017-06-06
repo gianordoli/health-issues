@@ -51,7 +51,7 @@ $icon-size: 32px;
   }
 
   @include for-phone-down {
-    width: 100%;    
+    width: 100%;
     &:not(:first-child) {
       margin-left: 0;
     }
@@ -276,46 +276,47 @@ svg.chart-canvas {
     height: 0;
   }
 
-  // path {
-  //   fill: none;
-  // }
-
-  path, line {
-    stroke-width: 2px;
-  }
-
-  g.axis {
-
-    line {
-      stroke: $color-0;
+  .line-chart {
+    path {
+      fill: none;
     }
 
-    &.x {
-      path {
+    path, line {
+      stroke-width: 2px;
+    }
+
+    g.axis {
+
+      line {
         stroke: $color-0;
-        stroke-opacity: 0.24;
+      }
+
+      &.x {
+        path {
+          stroke: $color-0;
+          stroke-opacity: 0.24;
+        }
+      }
+
+      &.y {
+        path {
+          stroke-opacity: 0;
+        }
       }
     }
 
-    &.y {
-      path {
-        stroke-opacity: 0;
+    g.time-series {
+      path.line.disease {
+        &:nth-child(1) { stroke: $color-1; }
+        &:nth-child(2) { stroke: $color-2; }
+        &:nth-child(3) { stroke: $color-3; }
       }
     }
-  }
 
-  g.time-series {
-    path.line.disease {
-      &:nth-child(1) { stroke: $color-1; }
-      &:nth-child(2) { stroke: $color-2; }
-      &:nth-child(3) { stroke: $color-3; }
+    text {
+      fill: $color-0;
     }
   }
-
-  text {
-    fill: $color-0;
-  }
-
 
   ///additional styling for maps
   .map {

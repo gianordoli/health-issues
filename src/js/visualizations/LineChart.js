@@ -61,7 +61,7 @@ export default class LineChart {
     const chart = this.svg
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-      .attr('class', 'chart');
+      .attr('class', 'line-chart');
 
     chart.append('g')
       .attr('class', 'x axis')
@@ -115,7 +115,7 @@ export default class LineChart {
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.value); });
 
-    const chart = svg.select('.chart');
+    const chart = svg.select('.line-chart');
 
     chart.select('g.y')
       .transition()
