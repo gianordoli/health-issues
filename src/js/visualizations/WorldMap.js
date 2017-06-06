@@ -9,13 +9,22 @@ export class WorldMap {
   data: Array<TrendsAPIRegion>;
   width: number;
   height: number;
+  worldFeatures;
   svg: () => {};
 
   constructor(parentContainer: HTMLElement, data: Array<TrendsAPIRegion>) {
-    this.data = data;
-    this.width = parentContainer.offsetWidth;
-    this.height = parentContainer.offsetHeight;
-    this.createElements(parentContainer);
+    const self = this;
+    self.data = data;
+    self.width = parentContainer.offsetWidth;
+    self.height = parentContainer.offsetHeight;
+    d3.json(
+      'https://gist.githubusercontent.com/alexwebgr/10249781/raw/2df84591a9e1fb891bcfde3a3c41d6cfc70cb5ee/world-topo.json',
+      function(error, world) {
+        self.worldFeatures = topojson.feature(world, world.objects.countries)
+          .features;
+        self.createElements(parentContainer);
+      }
+    );
   }
 
   updateData(data) {
@@ -27,7 +36,7 @@ export class WorldMap {
   createElements(parentContainer: HTMLElement) {
     log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
-    const { data, width, height } = this;
+    const { width, height } = this;
 
     this.svg = parentContainerSelection
       .append('svg')
@@ -36,10 +45,12 @@ export class WorldMap {
       .attr('class', 'chart-canvas');
 
     const worldMap = this.svg.append('g').attr('class', 'map');
+
+    this.updateElements();
   }
 
   updateElements() {
-    const { data, width, height, svg } = this;
+    const { data, width, height, svg, worldFeatures } = this;
 
     // To Do:
     // 1. change the projection
@@ -65,61 +76,29 @@ export class WorldMap {
         '#7f2704',
       ]);
 
-    d3.json(
-      'https://gist.githubusercontent.com/alexwebgr/10249781/raw/2df84591a9e1fb891bcfde3a3c41d6cfc70cb5ee/world-topo.json',
-      function(error, world) {
-        if (error) throw error;
+      const valueByRegion = {};
+      data.forEach(d => {
+        valueByRegion[d.regionCode] = +d.value;
+      });
 
-        const valueByRegion = {};
-        const worldFeatures = topojson.feature(world, world.objects.countries)
-          .features;
+      //if the country doesnt have any value (undefined), set d.value to zero
+      worldFeatures.forEach(d => {
+        valueByRegion[d.properties.countryCode]
+          ? (d.value = valueByRegion[d.properties.countryCode])
+          : (d.value = 0);
+      });
 
-        data.forEach(d => {
-          valueByRegion[d.regionCode] = +d.value;
-        });
-        //if the country doesnt have any value (undefined), set d.value to zero
-        worldFeatures.forEach(d => {
-          valueByRegion[d.properties.countryCode]
-            ? (d.value = valueByRegion[d.properties.countryCode])
-            : (d.value = 0);
-        });
-        // log.info(valueByRegion);
+      const worldMap = svg.select('.map');
 
-        const worldMap = svg.select('.map');
-        log.info(worldMap);
+      const countries = worldMap.selectAll('.country')
+        .data(worldFeatures);
 
-        const countries = worldMap.selectAll('.country')
-          .data(worldFeatures);
-
-        const countriesEnterUpdate = countries
-          .enter()
-          .append('path')
-          .attr('class', 'country')
-          .merge(countries)
-          .attr('fill', function(d) {
-            return color(valueByRegion[d.properties.countryCode]);
-          })
-          .attr('d', path);
-
-        // worldMap
-        //   .selectAll('.country')
-        //   .data(worldFeatures)
-        //   .enter()
-        //   .append('path')
-        //   .attr('class', 'country')
-        //   .attr('fill', 'none')
-        //   .attr(
-        //     'id',
-        //     function(d) {
-        //       return 'code-' + d.properties.countryCode;
-        //     },
-        //     true
-        //   )
-        //   .attr('fill', function(d) {
-        //     return color(valueByRegion[d.properties.countryCode]);
-        //   })
-        //   .attr('d', path);
-      }
-    );
+      const countriesEnterUpdate = countries
+        .enter()
+        .append('path')
+        .attr('class', 'country')
+        .merge(countries)
+        .attr('fill', d => `rgba(250, 130, 0, ${valueByRegion[d.properties.countryCode]/100}`)
+        .attr('d', path);
   }
 }

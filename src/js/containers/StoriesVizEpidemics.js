@@ -29,10 +29,6 @@ export class StoriesVizEpidemics {
     });
   }
 
-  getDateRange() {
-    // retu
-  }
-
   handleSliderChange(event, self: StoriesVizEpidemics) {
     const { value } = event.target;
     const currMonth = value;
@@ -47,7 +43,7 @@ export class StoriesVizEpidemics {
   }
 
   createElements(parentContainer: HTMLElement) {
-    const { mapData } = this.data;
+    const { mapData, currMonth } = this.data;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'epidemics';
@@ -60,13 +56,13 @@ export class StoriesVizEpidemics {
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.worldMap = new WorldMap(chartItem, mapData);
+    this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
 
     this.slider = document.createElement('input');
     const { slider } = this;
     slider.setAttribute('type', 'range');
     slider.setAttribute('min', 0);
-    slider.setAttribute('max', mapData.length);
+    slider.setAttribute('max', mapData.length - 1);
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
     elementsContainer.appendChild(slider);
