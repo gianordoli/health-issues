@@ -20,6 +20,48 @@ $elements-padding: $baseline-height;
 
 $icon-size: 32px;
 
+.row {
+  width: 100%;
+}
+//
+// .column {
+//   display: inline-block;
+//   vertical-align: top;
+//   &:not(:first-child) {
+//     margin-left: $col-gutter-small;
+//   }
+// }
+
+@mixin columns($number) {
+  display: inline-block;
+  vertical-align: top;
+
+  &:not(:first-child) {
+    margin-left: $col-gutter-small;
+  }
+
+  @if $number == 1 {
+    width: calc((100% - 2*#{$col-gutter-small}) * 1/3);
+
+  } @else if $number == 2 {
+    width: calc((100% - 2*#{$col-gutter-small}) * 2/3 + 1*#{$col-gutter-small});
+
+  } @else if $number == 3 {
+    width: 100%;
+  }
+
+  @include for-phone-down {
+    width: 100%;    
+    &:not(:first-child) {
+      margin-left: 0;
+    }
+  };
+}
+//
+// .one-column     { @extend .column; width: calc((100% - 2*#{$col-gutter-small}) * 1/3); }
+// .two-columns    { @extend .column; width: calc((100% - 2*#{$col-gutter-small}) * 2/3 + 1*#{$col-gutter-small}); }
+// .three-columns  { @extend .column; width: 100%; }
+
 
 
 //-------------------- TYPOGRAPHY --------------------//

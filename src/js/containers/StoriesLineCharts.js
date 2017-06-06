@@ -102,24 +102,28 @@ export default class StoriesLineCharts {
       this.changeGeo
     );
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    sectionBody.appendChild(chartsContainer);
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
 
-    const chartItem = document.createElement('div');
-    chartItem.classList.add('chart-item');
-    chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, chartType);
+      const chartsContainer = document.createElement('div');
+      chartsContainer.classList.add('charts-container');
+      row.appendChild(chartsContainer);
 
-    this.copyContainer = document.createElement('div');
-    const { copyContainer } = this;
-    copyContainer.classList.add('case-copy');
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
-    sectionBody.appendChild(copyContainer);
+        const chartItem = document.createElement('div');
+        chartItem.classList.add('chart-item');
+        chartsContainer.appendChild(chartItem);
+        this.chart = new LineChart(chartItem, chartType);
+
+      this.copyContainer = document.createElement('div');
+      const { copyContainer } = this;
+      copyContainer.classList.add('case-copy');
+      for (const c of copy) {
+        const p = document.createElement('p');
+        p.innerHTML = c;
+        copyContainer.appendChild(p);
+      }
+      row.appendChild(copyContainer);
 
     this.updateElements();
   }

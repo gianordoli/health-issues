@@ -48,5 +48,15 @@
       }
     }
 
+    .section-body {
+
+      .charts-container {
+        @include columns(2);
+      }
+
+      .case-copy {
+        @include columns(1);
+      }
+    }
   }
 }
