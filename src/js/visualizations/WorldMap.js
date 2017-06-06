@@ -1,5 +1,6 @@
 // @flow weak
 
+import { map } from '../util/util';
 import type { TrendsAPIRegion } from '../util/types';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
@@ -81,17 +82,11 @@ export default class WorldMap {
         valueByRegion[d.regionCode] = +d.value;
       });
 
-      //if the country doesnt have any value (undefined), set d.value to zero
       worldFeatures.forEach(d => {
-        // log.info(valueByRegion[d.properties.countryCode]);
         valueByRegion[d.properties.countryCode]
           ? (d.value = valueByRegion[d.properties.countryCode])
           : (d.value = 0);
       });
-      // log.info(worldFeatures);
-      // worldFeatures.map(d => {
-      //
-      // });
 
       const worldMap = svg.select('.map');
 
@@ -105,7 +100,6 @@ export default class WorldMap {
         .merge(countries)
         .attr('fill', d => {
           const value = valueByRegion[d.properties.countryCode];
-          // log.info(value);
           const alpha = value === undefined ? 0 : value/100;
           return `rgba(250, 130, 0, ${alpha})`
         })
