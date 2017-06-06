@@ -36,7 +36,24 @@ export default class StoriesEpidemics {
 
     d3.json(path, function(mapData) {
       self.data = { storySection, currCase, mapData, geoIso, currMonth };
-      self.createElements(parentContainer);
+      self.createElements(elementsContainer);
+    });
+  }
+
+  loadNewCase(
+    event: Event,
+    self: StoriesLineCharts,
+    elementsContainer: HTMLElement,
+    currCase: number
+  ) {
+    const { storySection } = self.data;
+    const path = stories[storySection].cases[currCase].data;
+    const geoIso = stories[storySection].cases[currCase].geoList[0];
+    elementsContainer.querySelectorAll('a').forEach((e, i) => {
+      i === currCase ? e.classList.add('active') : e.classList.remove('active')
+    });
+    d3.json(path, function(chartData) {
+      self.updateData({ currCase, chartData, geoIso });
     });
   }
 
@@ -53,21 +70,54 @@ export default class StoriesEpidemics {
     this.updateElements();
   }
 
-  createElements(parentContainer: HTMLElement) {
-    const { mapData, currMonth } = this.data;
-    log.info(mapData);
+  createElements(elementsContainer: HTMLElement) {
+    const { storySection, currCase, mapData, geoIso, currMonth } = this.data;
+    const { terms, geoList, copy } = stories[storySection].cases[
+      currCase
+    ];
 
-    const elementsContainer = document.createElement('div');
-    elementsContainer.id = 'epidemics';
-    parentContainer.appendChild(elementsContainer);
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header');
+    elementsContainer.appendChild(sectionHeader);
+
+    const title = document.createElement('h3');
+    title.innerHTML = stories[storySection].title;
+    sectionHeader.appendChild(title);
+
+    const intro = document.createElement('p');
+    intro.innerHTML = stories[storySection].intro;
+    sectionHeader.appendChild(intro);
+
+    const storiesNavBar = new StoriesNavBar(
+      elementsContainer,
+      stories[storySection].cases.map(c => c.title),
+      this,
+      this.loadNewCase
+    );
+
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body');
+    elementsContainer.appendChild(sectionBody);
+
+    this.filtersMenu = new FiltersMenu(
+      sectionBody,
+      terms,
+      geoList,
+      geoIso
+    );
+
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    elementsContainer.appendChild(chartsContainer);
+    row.appendChild(chartsContainer);
 
-    let chartItem = document.createElement('div');
+    const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
+
     this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
 
     this.slider = document.createElement('input');
@@ -77,12 +127,41 @@ export default class StoriesEpidemics {
     slider.setAttribute('max', mapData.length - 1);
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
-    elementsContainer.appendChild(slider);
+    chartsContainer.appendChild(slider);
+
+    this.copyContainer = document.createElement('div');
+    const { copyContainer } = this;
+    copyContainer.classList.add('case-copy');
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+    row.appendChild(copyContainer);
   }
 
   updateElements() {
-    const { currMonth, mapData } = this.data;
-    const { worldMap } = this;
+    let { filtersMenu } = this;
+    const { worldMap, copyContainer } = this;
+    const { storySection, currCase, mapData, geoIso, currMonth } = this.data;
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+      currCase
+    ];
+    const parent = filtersMenu.parentElement;
+    filtersMenu = new FiltersMenu(
+      filtersMenu.parentElement,
+      terms,
+      geoList,
+      geoIso
+    );
+
     worldMap.updateData(mapData[currMonth].regions);
+
+    copyContainer.innerHTML = '';
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
   }
 }
