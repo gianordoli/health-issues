@@ -81,9 +81,10 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-button {
-  font-size: 11px;
+  font-size: 12px;
   font-family: $font-sans;
   font-weight: 900;
+  line-height: $baseline-height;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -195,27 +196,21 @@ b {
   }
 }
 
-.story-section {
-  &:not(:last-child) {
-    margin-bottom: $col-gutter-large*2;
-  }
+.section-header {
+  margin-bottom: $col-gutter-large;
 
   @include for-phone-down {
-    &:not(:last-child) {
-      margin-bottom: $col-gutter-small*2;
-    }
-  }
+    margin-bottom: $col-gutter-small;
+  };
 }
 
 .section-body {
   background-color: white;
   color: $color-black;
   padding: $col-gutter-large;
-  margin-top: $col-gutter-large;
 
   @include for-phone-down {
     padding: $col-gutter-small;
-    margin-top: $col-gutter-small;
   };
 }
 

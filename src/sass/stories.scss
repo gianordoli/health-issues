@@ -5,19 +5,46 @@
 
   .story-section {
 
+    &:not(:last-child) {
+      margin-bottom: $col-gutter-large*2;
+    }
+
+    @include for-phone-down {
+      &:not(:last-child) {
+        margin-bottom: $col-gutter-small*2;
+      }
+    }
+
     .section-header {
       color: white;
     }
 
-    .section-body {
+    .stories-nav-bar {
 
-      .stories-nav-bar {
+      min-height: $baseline-height * 4;
+      background-color: white;
+      border-bottom: 1px solid $color-0;
 
-        p {
-          display: inline-block;
-          padding: 0 $elements-padding;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+
+      a {
+        @include type-button;
+        cursor: pointer;
+        display: inline-block;
+        padding: $elements-padding/2;
+        color: $color-0;
+        margin-left: $elements-margin;
+
+        &:hover, &:active {
+          background-color: $color-0;
+          color: white;
         }
       }
     }
+
   }
 }

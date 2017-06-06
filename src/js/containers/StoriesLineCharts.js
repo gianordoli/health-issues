@@ -72,16 +72,16 @@ export default class StoriesLineCharts {
       intro.innerHTML = stories[storySection].intro;
       sectionHeader.appendChild(intro);
 
-    const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
-
       const storiesNavBar = new StoriesNavBar(
-        sectionBody,
+        elementsContainer,
         stories[storySection].cases.map(c => c.title),
         this,
         this.loadNewCase,
       );
+
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body');
+    elementsContainer.appendChild(sectionBody);
 
       this.filtersMenu = new FiltersMenu(
         sectionBody,
