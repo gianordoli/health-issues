@@ -63,5 +63,6 @@ export type TrendsAPIRegion = {
 }
 
 export type TrendsAPIRegionsList = {
+  month: string,
   regions: TrendsAPIRegion[],
 }

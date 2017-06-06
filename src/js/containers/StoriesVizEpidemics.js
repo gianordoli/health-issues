@@ -1,6 +1,6 @@
 // @flow weak
 
-import type { TrendsAPIRegionsList } from '../util/types';
+import type { TrendsAPIRegion, TrendsAPIRegionsList } from '../util/types';
 import { WorldMap } from '../visualizations/WorldMap';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -11,10 +11,7 @@ export class StoriesVizEpidemics {
 
   data: {
     currMonth: number;
-    mapData: {
-      month: string,
-      regions: TrendsAPIRegionsList
-    }[]
+    mapData: TrendsAPIRegionsList,
   };
   worldMap: WorldMap;
   slider: HTMLElement;
