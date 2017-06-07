@@ -61,9 +61,13 @@ export default class Intro {
       'world',
     );
 
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
+
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    sectionBody.appendChild(chartsContainer);
+    row.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -73,7 +77,7 @@ export default class Intro {
 
     const slidesContainer = document.createElement('div');
     slidesContainer.classList.add('slides-container');
-    sectionBody.appendChild(slidesContainer);
+    row.appendChild(slidesContainer);
 
     slidesContainer.appendChild(
       this.createStoryBlock([
@@ -111,7 +115,7 @@ export default class Intro {
     );
 
 
-    const containerD3 = d3.select('#intro.page .section-body');
+    const containerD3 = d3.select('#intro.page .section-body .row');
     const chartsContainerD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');
