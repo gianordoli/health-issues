@@ -54,17 +54,6 @@ module.exports = {
     intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
     cases: [
       {
-        title: "New Year",
-        data: "./data/holidays-new-year.json",
-        terms: ["Winter vomiting bug", "Chest pain"],
-        geoList: ["world"],
-        chartType: "seasonal",
-        copy: [
-          "Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-        ],
-      },
-      {
         title: "Diwali Festival",
         data: "./data/holidays-diwali-festival.json",
         terms: ["Burn", "Pain"],
@@ -86,6 +75,17 @@ module.exports = {
           "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
         ],
       },
+      {
+        title: "New Year",
+        data: "./data/holidays-new-year.json",
+        terms: ["Winter vomiting bug", "Chest pain"],
+        geoList: ["world"],
+        chartType: "seasonal",
+        copy: [
+          "Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+        ],
+      },      
     ],
   },
   media: {
