@@ -100,8 +100,14 @@ export default class WorldMap {
         .merge(countries)
         .attr('fill', d => {
           const value = valueByRegion[d.properties.countryCode];
-          const alpha = value === undefined ? 0 : value/100;
+          // const alpha = value === undefined ? 0 : value/100;
+          // let alpha;
+          // if (value === undefined || value ==) {
+          //   alpha = 0;
+          // }
+          const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
           return `rgba(250, 130, 0, ${alpha})`
+          // return `rgba(68, 34, 179, ${alpha})`
         })
         .attr('d', path);
   }

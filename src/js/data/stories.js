@@ -129,16 +129,6 @@ module.exports = {
     intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
     cases: [
       {
-        title: "Zika",
-        data: "./data/epidemics-zika.json",
-        terms: ["Zika virus"],
-        geoList: ["world"],
-        copy: [
-          "Copy about Zika virus. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-        ],
-      },
-      {
         title: "Ebola",
         data: "./data/epidemics-ebola.json",
         terms: ["Ebola"],
@@ -148,6 +138,16 @@ module.exports = {
           "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
         ],
       },
+      {
+        title: "Zika",
+        data: "./data/epidemics-zika.json",
+        terms: ["Zika virus"],
+        geoList: ["world"],
+        copy: [
+          "Copy about Zika virus. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+        ],
+      },      
       {
         title: "MERS",
         data: "./data/epidemics-mers.json",

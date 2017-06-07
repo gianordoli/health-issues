@@ -87,6 +87,10 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-h5 {
+  font-size: 12px;
+  font-family: $font-sans;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 
 }
 
@@ -216,19 +220,30 @@ b {
   min-height: 100vh;
   margin: 0;
   border: 0;
-  padding: $col-gutter-large;
   border: 1px solid #DDD;
+}
+
+.sticky-header {
+  width: 100%;
+  height: $baseline-height * 4;
+  background-color: white;
+  color: $color-0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: $col-gutter-large;
+  @include type-h5;
 
   @include for-phone-down {
-    padding: $col-gutter-small;
-  }
+    padding-left: $col-gutter-small;
+  };
 }
 
 .section-header {
-  margin-bottom: $col-gutter-large;
+  margin: $col-gutter-large;
 
   @include for-phone-down {
-    margin-bottom: $col-gutter-small;
+    margin: $col-gutter-small;
   };
 }
 
@@ -236,14 +251,12 @@ b {
   background-color: white;
   color: $color-black;
   padding: $col-gutter-large;
+  margin: 0 $col-gutter-large $col-gutter-large $col-gutter-large;
 
   @include for-phone-down {
     padding: $col-gutter-small;
+    margin: 0 $col-gutter-small $col-gutter-small $col-gutter-small;
   };
-}
-
-.filters-menu {
-  text-align: center;
 }
 
 svg.chart-canvas {
@@ -321,9 +334,11 @@ svg.chart-canvas {
 
 .filters-menu {
 
+  text-align: center;
   line-height: 40px;
   display: block;
   width: 100%;
+  margin-bottom: $baseline-height * 2;
 
   .disease-select {
     min-width: 50%;
