@@ -4,7 +4,7 @@ import stories from '../data/stories';
 import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import WorldMap from '../visualizations/WorldMap';
-import type { TrendsAPIRegion, TrendsAPIRegionsList } from '../util/types';
+import type { TrendsAPIRegionsList, TrendsAPIGraph  } from '../util/types';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
@@ -17,6 +17,7 @@ export default class StoriesEpidemics {
     geoIso: string,
     currMonth: number,
     mapData: Array<TrendsAPIRegionsList>,
+    chartData: Array<TrendsAPIGraph>,
   };
   filtersMenu: HTMLElement;
   worldMap: WorldMap;
@@ -28,13 +29,15 @@ export default class StoriesEpidemics {
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     const currMonth = 0;
-    const path = stories[storySection].cases[currCase].data;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
-    d3.json(path, function(mapData) {
+    const mapDataPath = stories[storySection].cases[currCase].mapData;
+
+    d3.json(mapDataPath, function(mapData) {
+
       self.data = { storySection, currCase, mapData, geoIso, currMonth };
       self.createElements(elementsContainer);
     });
@@ -47,15 +50,16 @@ export default class StoriesEpidemics {
     currCase: number
   ) {
     const { storySection } = self.data;
-    const path = stories[storySection].cases[currCase].data;
+    const mapDataPath = stories[storySection].cases[currCase].mapData;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     elementsContainer.querySelectorAll('a').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
-    d3.json(path, function(mapData) {
-      self.slider.value = 0;
-      self.slider.setAttribute('max', mapData.length - 1);
-      self.updateData({ currCase, mapData, geoIso });
+    d3.json(mapDataPath, function(mapData) {
+      const currMonth = 0;
+      self.slider.value = '0';
+      self.slider.setAttribute('max', (mapData.length - 1).toString());
+      self.updateData({ currCase, mapData, geoIso, currMonth });
     });
   }
 
