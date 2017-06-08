@@ -1030,4 +1030,5 @@ module.exports = [
   {name:"Xerostomia",entity:"/m/04d7y3",alias:null},
   {name:"Yellow fever",entity:"/m/087z2",alias:null},
   {name:"Zika virus",entity:"/m/080m_5j",alias:null},
+  {name:"Ebola epidemic",entity:"/m/0100__9q",alias:null},
 ];

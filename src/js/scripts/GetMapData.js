@@ -17,6 +17,11 @@ export default class GetMapData {
     this.data = [];
     this.filters = [
       {
+        terms: [terms.find(t => t.name === 'Ebola epidemic')],
+        startDate: '2014-01',
+        endDate: '2015-05',
+      },
+      {
         terms: [terms.find(t => t.name === 'Zika virus')],
         startDate: '2015-04',
         endDate: '2017-01',
@@ -38,7 +43,7 @@ export default class GetMapData {
       },
     ]
     this.trendsAPI = trendsAPI;
-    this.callTrendsApi(this.filters[3], this.filters[3].startDate);
+    this.callTrendsApi(this.filters[0], this.filters[0].startDate);
   }
 
   nextMonth(date: string) {

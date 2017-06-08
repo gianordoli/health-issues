@@ -33,7 +33,7 @@ module.exports = {
           "Copy about Winter. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
           "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
         ],
-      },      
+      },
       // {
       //   title: "Fall",
       //   data: "./data/seasonal-fall.json",
@@ -126,7 +126,8 @@ module.exports = {
     cases: [
       {
         title: "Ebola",
-        data: "./data/epidemics-ebola.json",
+        mapData: "./data/epidemics-ebola.json",
+        chartData: "./data/epidemics-ebola-time-series.json",
         terms: ["Ebola"],
         geoList: ["world"],
         copy: [
@@ -135,8 +136,20 @@ module.exports = {
         ],
       },
       {
+        title: "Ebola epidemic",
+        mapData: "./data/epidemics-ebola-epidemic.json",
+        chartData: "./data/epidemics-ebola-epidemic-time-series.json",
+        terms: ["Ebola"],
+        geoList: ["world"],
+        copy: [
+          "Copy about Ebola Epidemic. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+        ],
+      },
+      {
         title: "Zika",
-        data: "./data/epidemics-zika.json",
+        mapData: "./data/epidemics-zika.json",
+        chartData: "./data/epidemics-zika-time-series.json",
         terms: ["Zika virus"],
         geoList: ["world"],
         copy: [
@@ -146,7 +159,8 @@ module.exports = {
       },
       {
         title: "MERS",
-        data: "./data/epidemics-mers.json",
+        mapData: "./data/epidemics-mers.json",
+        chartData: "./data/epidemics-mers-time-series.json",
         terms: ["MERS"],
         geoList: ["world"],
         copy: [
@@ -156,7 +170,8 @@ module.exports = {
       },
       {
         title: "Yellow Fever",
-        data: "./data/epidemics-yellow-fever.json",
+        mapData: "./data/epidemics-yellow-fever.json",
+        chartData: "./data/epidemics-yellow-fever-time-series.json",
         terms: ["Yellow fever"],
         geoList: ["world"],
         copy: [

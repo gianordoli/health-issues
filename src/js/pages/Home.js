@@ -6,6 +6,7 @@ import terms from '../data/terms';
 import countries from '../data/countries';
 import $ from 'jquery';
 import log from 'loglevel';
+import '../../sass/home.scss';
 
 export default class Home {
 
@@ -107,10 +108,11 @@ export default class Home {
     parentContainer.appendChild(elementsContainer);
 
     const titleContainer = document.createElement('div');
+    titleContainer.classList.add('title-container');
     elementsContainer.appendChild(titleContainer);
 
     const title = document.createElement('h1');
-    title.innerHTML = 'I\'m not feeling well';
+    title.innerHTML = 'I\'m not<br>feeling well';
     titleContainer.appendChild(title);
 
     const projectDescription = document.createElement('p');
@@ -121,7 +123,7 @@ export default class Home {
 
     const logosContainer = document.createElement('div');
     logosContainer.id = 'logos-container';
-    elementsContainer.appendChild(logosContainer);
+    titleContainer.appendChild(logosContainer);
 
     const gabriel = document.createElement('p');
     gabriel.innerHTML = 'Gabriel Gianordoli';
