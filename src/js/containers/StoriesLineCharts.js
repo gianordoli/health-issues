@@ -15,7 +15,7 @@ export default class StoriesLineCharts {
     currCase: number,
     geoIso: string,
     chartData: {
-      [key: string]: TrendsAPIGraph[],
+      [key: string]: Array<TrendsAPIGraph>,
     },
   };
   filtersMenu: HTMLElement;

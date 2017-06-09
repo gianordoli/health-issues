@@ -1,5 +1,6 @@
 // @flow weak
 
+import StoriesEpidemics from '../containers/StoriesEpidemics';
 import { map } from '../util/util';
 import type { TrendsAPIRegion } from '../util/types';
 import * as d3 from 'd3';
@@ -46,69 +47,75 @@ export default class WorldMap {
       .attr('class', 'chart-canvas');
 
     const worldMap = this.svg.append('g').attr('class', 'map');
-
-    this.updateElements();
   }
 
   updateElements() {
     const { data, width, height, svg, worldFeatures } = this;
+    log.info('MAP UPDATE');
+    if (!worldFeatures) {
+      log.info('NO FEATURES');
+      setTimeout(this.updateElements, 500);
 
-    // To Do:
-    // 1. change the projection
-    // 2. fix the black color, this is when the region is undefined in our dataset
-    const projection = d3
-      .geoMercator()
-      .scale((width - 3) / (2 * Math.PI))
-      .translate([width / 2, height / 2]);
-    const path = d3.geoPath().projection(projection);
+    } else {
+      log.info('FEATURES YEAH');
 
-    var color = d3
-      .scaleThreshold()
-      .domain([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
-      .range([
-        '#fff5eb',
-        '#fee6ce',
-        '#fdd0a2',
-        '#fdae6b',
-        '#fd8d3c',
-        '#f16913',
-        '#d94801',
-        '#a63603',
-        '#7f2704',
-      ]);
+      // To Do:
+      // 1. change the projection
+      // 2. fix the black color, this is when the region is undefined in our dataset
+      const projection = d3
+        .geoMercator()
+        .scale((width - 3) / (2 * Math.PI))
+        .translate([width / 2, height / 2]);
+      const path = d3.geoPath().projection(projection);
 
-      const valueByRegion = {};
-      data.forEach(d => {
-        valueByRegion[d.regionCode] = +d.value;
-      });
+      var color = d3
+        .scaleThreshold()
+        .domain([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
+        .range([
+          '#fff5eb',
+          '#fee6ce',
+          '#fdd0a2',
+          '#fdae6b',
+          '#fd8d3c',
+          '#f16913',
+          '#d94801',
+          '#a63603',
+          '#7f2704',
+        ]);
 
-      worldFeatures.forEach(d => {
-        valueByRegion[d.properties.countryCode]
-          ? (d.value = valueByRegion[d.properties.countryCode])
-          : (d.value = 0);
-      });
+        const valueByRegion = {};
+        data.forEach(d => {
+          valueByRegion[d.regionCode] = +d.value;
+        });
 
-      const worldMap = svg.select('.map');
+        worldFeatures.forEach(d => {
+          valueByRegion[d.properties.countryCode]
+            ? (d.value = valueByRegion[d.properties.countryCode])
+            : (d.value = 0);
+        });
 
-      const countries = worldMap.selectAll('.country')
-        .data(worldFeatures);
+        const worldMap = svg.select('.map');
 
-      const countriesEnterUpdate = countries
-        .enter()
-        .append('path')
-        .attr('class', 'country')
-        .merge(countries)
-        .attr('fill', d => {
-          const value = valueByRegion[d.properties.countryCode];
-          // const alpha = value === undefined ? 0 : value/100;
-          // let alpha;
-          // if (value === undefined || value ==) {
-          //   alpha = 0;
-          // }
-          const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
-          return `rgba(250, 130, 0, ${alpha})`
-          // return `rgba(68, 34, 179, ${alpha})`
-        })
-        .attr('d', path);
+        const countries = worldMap.selectAll('.country')
+          .data(worldFeatures);
+
+        const countriesEnterUpdate = countries
+          .enter()
+          .append('path')
+          .attr('class', 'country')
+          .merge(countries)
+          .attr('fill', d => {
+            const value = valueByRegion[d.properties.countryCode];
+            // const alpha = value === undefined ? 0 : value/100;
+            // let alpha;
+            // if (value === undefined || value ==) {
+            //   alpha = 0;
+            // }
+            const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
+            return `rgba(250, 130, 0, ${alpha})`
+            // return `rgba(68, 34, 179, ${alpha})`
+          })
+          .attr('d', path);
+    }
   }
 }

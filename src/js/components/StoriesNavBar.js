@@ -1,6 +1,7 @@
 // @flow weak
 
 import StoriesLineCharts from '../containers/StoriesLineCharts';
+import StoriesEpidemics from '../containers/StoriesEpidemics';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
 
@@ -8,10 +9,10 @@ export default class StoriesNavBar {
   constructor(
     parentContainer: HTMLElement,
     cases: string[],
-    self: StoriesLineCharts,
+    self: StoriesLineCharts | StoriesEpidemics,
     onChange: (
       event: Event,
-      self: StoriesLineCharts,
+      self: StoriesLineCharts | StoriesEpidemics,
       elementsContainer: HTMLElement,
       currCase: number
     ) => void
@@ -22,10 +23,10 @@ export default class StoriesNavBar {
   createElements(
     parentContainer: HTMLElement,
     cases: string[],
-    self: StoriesLineCharts,
+    self: StoriesLineCharts | StoriesEpidemics,
     onChange: (
       event: Event,
-      self: StoriesLineCharts,
+      self: StoriesLineCharts | StoriesEpidemics,
       elementsContainer: HTMLElement,
       currCase: number
     ) => void

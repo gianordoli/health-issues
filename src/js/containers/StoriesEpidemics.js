@@ -4,6 +4,7 @@ import stories from '../data/stories';
 import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import WorldMap from '../visualizations/WorldMap';
+import LineChart from '../visualizations/LineChart';
 import type { TrendsAPIRegionsList, TrendsAPIGraph  } from '../util/types';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -17,10 +18,13 @@ export default class StoriesEpidemics {
     geoIso: string,
     currMonth: number,
     mapData: Array<TrendsAPIRegionsList>,
-    chartData: Array<TrendsAPIGraph>,
+    chartData: {
+      [key: string]: Array<TrendsAPIGraph>,
+    },
   };
   filtersMenu: HTMLElement;
   worldMap: WorldMap;
+  lineChart: LineChart;
   slider: HTMLInputElement;
   copyContainer: HTMLElement;
 
@@ -35,11 +39,13 @@ export default class StoriesEpidemics {
     parentContainer.appendChild(elementsContainer);
 
     const mapDataPath = stories[storySection].cases[currCase].mapData;
+    const chartDataPath = stories[storySection].cases[currCase].chartData;
 
     d3.json(mapDataPath, function(mapData) {
-
-      self.data = { storySection, currCase, mapData, geoIso, currMonth };
-      self.createElements(elementsContainer);
+      d3.json(chartDataPath, function(chartData) {
+        self.data = { storySection, currCase, mapData, chartData, geoIso, currMonth };
+        self.createElements(elementsContainer);
+      });
     });
   }
 
@@ -59,6 +65,7 @@ export default class StoriesEpidemics {
       const currMonth = 0;
       self.slider.value = '0';
       self.slider.setAttribute('max', (mapData.length - 1).toString());
+
       self.updateData({ currCase, mapData, geoIso, currMonth });
     });
   }
@@ -76,7 +83,7 @@ export default class StoriesEpidemics {
   }
 
   createElements(elementsContainer: HTMLElement) {
-    const { storySection, currCase, mapData, geoIso, currMonth } = this.data;
+    const { storySection, currCase, mapData, chartData, geoIso, currMonth } = this.data;
     const { terms, geoList, copy } = stories[storySection].cases[
       currCase
     ];
@@ -119,11 +126,15 @@ export default class StoriesEpidemics {
     chartsContainer.classList.add('charts-container');
     row.appendChild(chartsContainer);
 
-    const chartItem = document.createElement('div');
+    let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-
     this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
+
+    chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.lineChart = new LineChart(chartItem, 'trend');
 
     this.slider = document.createElement('input');
     const { slider } = this;
@@ -144,15 +155,21 @@ export default class StoriesEpidemics {
       copyContainer.appendChild(p);
     }
     row.appendChild(copyContainer);
+
+    this.updateElements();
   }
 
-  updateElements() {
+  updateElements(self?: StoriesEpidemics) {
+    if (!self) self = this;
     let { filtersMenu } = this;
-    const { worldMap, copyContainer } = this;
-    const { storySection, currCase, mapData, geoIso, currMonth } = this.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[
-      currCase
-    ];
+    const { worldMap, lineChart, copyContainer } = self;
+    const { storySection, currCase, mapData, chartData, geoIso, currMonth } = self.data;
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+    log.info('EPIDEMIC');
+    log.info(currCase);
+    log.info(copy);
+    log.info(geoIso);
+    log.info(chartData);
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,
@@ -162,12 +179,13 @@ export default class StoriesEpidemics {
     );
 
     worldMap.updateData(mapData[currMonth].regions);
+    lineChart.updateData(chartData[geoIso]);
 
-    copyContainer.innerHTML = '';
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
+    // copyContainer.innerHTML = '';
+    // for (const c of copy) {
+    //   const p = document.createElement('p');
+    //   p.innerHTML = c;
+    //   copyContainer.appendChild(p);
+    // }
   }
 }
