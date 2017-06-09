@@ -5,6 +5,7 @@
 
   .story-section {
 
+    min-height: 100vh;
     &:not(:last-child) {
       margin-bottom: $col-gutter-large*2;
     }
@@ -40,17 +41,20 @@
       justify-content: flex-start;
       align-items: center;
 
-      a {
+      p {
         @include type-button;
         cursor: pointer;
         display: inline-block;
         padding: $elements-padding/2;
         color: $color-0;
-        margin-left: $elements-margin;
         transition-property: background-color, color;
         transition-duration: 0.25s;
 
-        &:hover, &:active, &.active {
+        &:not(:first-child) {
+          margin-left: $elements-margin;          
+        }
+
+        &:hover, &.active {
           background-color: $color-0;
           color: white;
         }

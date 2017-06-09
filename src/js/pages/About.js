@@ -16,12 +16,16 @@ export default class About {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const container = document.createElement('div');
+    container.classList.add('container');
+    elementsContainer.appendChild(container);
+
     const summary = document.createElement('div');
     summary.innerHTML = "SearchMD is a collaboration between the Google News Lab and Gabriel Gianordoli. It uses Google Search Trends to identify patterns in health-related searches.";
-    elementsContainer.appendChild(summary);
+    container.appendChild(summary);
 
     const aboutData = document.createElement('div');
-    elementsContainer.appendChild(aboutData);
+    container.appendChild(aboutData);
 
       let h4 = document.createElement('h4');
       h4.innerHTML = "Data";
@@ -36,7 +40,7 @@ export default class About {
       aboutData.appendChild(p);
 
       const aboutTeam = document.createElement('div');
-      elementsContainer.appendChild(aboutTeam);
+      container.appendChild(aboutTeam);
 
         h4 = document.createElement('h4');
         h4.innerHTML = "Team";

@@ -75,13 +75,17 @@ export default class StoriesLineCharts {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
+    let container = document.createElement('div');
+    container.classList.add('container');
+    sectionHeader.appendChild(container);
+
     const title = document.createElement('h3');
     title.innerHTML = stories[storySection].title;
-    sectionHeader.appendChild(title);
+    container.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = stories[storySection].intro;
-    sectionHeader.appendChild(intro);
+    container.appendChild(intro);
 
     const storiesNavBar = new StoriesNavBar(
       elementsContainer,
@@ -94,8 +98,12 @@ export default class StoriesLineCharts {
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
+    container = document.createElement('div');
+    container.classList.add('container');
+    sectionBody.appendChild(container);
+
     this.filtersMenu = new FiltersMenu(
-      sectionBody,
+      container,
       terms,
       geoList,
       geoIso,
@@ -105,26 +113,26 @@ export default class StoriesLineCharts {
 
     const row = document.createElement('div');
     row.classList.add('row');
-    sectionBody.appendChild(row);
+    container.appendChild(row);
 
-      const chartsContainer = document.createElement('div');
-      chartsContainer.classList.add('charts-container');
-      row.appendChild(chartsContainer);
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    row.appendChild(chartsContainer);
 
-        const chartItem = document.createElement('div');
-        chartItem.classList.add('chart-item');
-        chartsContainer.appendChild(chartItem);
-        this.chart = new LineChart(chartItem, chartType);
+    const chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.chart = new LineChart(chartItem, chartType);
 
-      this.copyContainer = document.createElement('div');
-      const { copyContainer } = this;
-      copyContainer.classList.add('case-copy');
-      for (const c of copy) {
-        const p = document.createElement('p');
-        p.innerHTML = c;
-        copyContainer.appendChild(p);
-      }
-      row.appendChild(copyContainer);
+    this.copyContainer = document.createElement('div');
+    const { copyContainer } = this;
+    copyContainer.classList.add('case-copy');
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+    row.appendChild(copyContainer);
 
     this.updateElements();
   }

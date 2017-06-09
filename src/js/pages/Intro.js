@@ -41,21 +41,29 @@ export default class Intro {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
+    let container = document.createElement('div');
+    container.classList.add('container');
+    sectionHeader.appendChild(container);
+
     const title = document.createElement('h3');
     title.innerHTML = 'Trends and Seasonality';
-    sectionHeader.appendChild(title);
+    container.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML =
       'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.';
-    sectionHeader.appendChild(intro);
+    container.appendChild(intro);
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
+    container = document.createElement('div');
+    container.classList.add('container');
+    sectionBody.appendChild(container);
+
     const filtersMenu = new FiltersMenu(
-      sectionBody,
+      container,
       ['Influenza'],
       ['world'],
       'world',
@@ -63,7 +71,7 @@ export default class Intro {
 
     const row = document.createElement('div');
     row.classList.add('row');
-    sectionBody.appendChild(row);
+    container.appendChild(row);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
@@ -115,7 +123,9 @@ export default class Intro {
     );
 
 
-    const containerD3 = d3.select('#intro.page .section-body .row');
+    // const thisPage = d3.select(elementsContainer);
+    // const containerD3 = thisPage.select('.row');
+    const containerD3 = d3.select('#intro.page .section-body .container .row');
     const chartsContainerD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');

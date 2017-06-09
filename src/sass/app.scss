@@ -224,14 +224,16 @@ b {
   text-align: center;
 
   .sticky-header, .section-header, .section-body {
-    max-width: $container-max-width;
-    margin: auto;
-    text-align: left;
+    text-align: center;
   }
-  
 }
 
-
+.container {
+  width: $container-max-width;
+  max-width: $container-max-width;
+  margin: auto;
+  text-align: left;
+}
 
 .sticky-header {
   width: 100%;
@@ -241,7 +243,6 @@ b {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left: $col-gutter-large;
   @include type-h5;
 
   @include for-phone-down {

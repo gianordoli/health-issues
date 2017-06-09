@@ -62,7 +62,7 @@ export default class StoriesEpidemics {
     elementsContainer.querySelectorAll('a').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
-    
+
     d3.json(mapDataPath, function(mapData) {
       const currMonth = 0;
       self.slider.value = '0';
@@ -96,13 +96,17 @@ export default class StoriesEpidemics {
     sectionHeader.classList.add('section-header');
     elementsContainer.appendChild(sectionHeader);
 
+    let container = document.createElement('div');
+    container.classList.add('container');
+    sectionHeader.appendChild(container);
+
     const title = document.createElement('h3');
     title.innerHTML = stories[storySection].title;
-    sectionHeader.appendChild(title);
+    container.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = stories[storySection].intro;
-    sectionHeader.appendChild(intro);
+    container.appendChild(intro);
 
     const storiesNavBar = new StoriesNavBar(
       elementsContainer,
@@ -115,8 +119,12 @@ export default class StoriesEpidemics {
     sectionBody.classList.add('section-body');
     elementsContainer.appendChild(sectionBody);
 
+    container = document.createElement('div');
+    container.classList.add('container');
+    sectionBody.appendChild(container);
+
     this.filtersMenu = new FiltersMenu(
-      sectionBody,
+      container,
       terms,
       geoList,
       geoIso
@@ -124,7 +132,7 @@ export default class StoriesEpidemics {
 
     const row = document.createElement('div');
     row.classList.add('row');
-    sectionBody.appendChild(row);
+    container.appendChild(row);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');

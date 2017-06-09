@@ -23,8 +23,15 @@ export default class Stories {
 
     const stickyHeader = document.createElement('div');
     stickyHeader.classList.add('sticky-header');
-    stickyHeader.innerHTML = "Stories";
     elementsContainer.appendChild(stickyHeader);
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    stickyHeader.appendChild(container);
+
+    const pageName = document.createElement('p');
+    pageName.innerHTML = "Stories";
+    container.appendChild(pageName);
 
     const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
     const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
