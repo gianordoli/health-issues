@@ -59,7 +59,7 @@ export default class StoriesEpidemics {
     const mapDataPath = stories[storySection].cases[currCase].mapData;
     const chartDataPath = stories[storySection].cases[currCase].chartData;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
-    elementsContainer.querySelectorAll('a').forEach((e, i) => {
+    elementsContainer.querySelectorAll('p').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
 

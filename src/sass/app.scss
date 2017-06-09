@@ -233,6 +233,10 @@ b {
   max-width: $container-max-width;
   margin: auto;
   text-align: left;
+
+  @include for-phone-down {
+    max-width: 100%;
+  };
 }
 
 .sticky-header {

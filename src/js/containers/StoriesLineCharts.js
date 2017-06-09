@@ -47,7 +47,7 @@ export default class StoriesLineCharts {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
-    elementsContainer.querySelectorAll('a').forEach((e, i) => {
+    elementsContainer.querySelectorAll('p').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
     d3.json(path, function(chartData) {

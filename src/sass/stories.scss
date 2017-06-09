@@ -30,16 +30,17 @@
       margin: 0 $col-gutter-large;
       background-color: white;
       border-bottom: 1px solid $color-0;
-
-      @include for-phone-down {
-        margin: 0 $col-gutter-small;
-      };
-
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
+      padding: $elements-padding 0 $elements-padding 0;
+
+      @include for-phone-down {
+        margin: 0 $col-gutter-small;
+        padding-left: $elements-padding
+      };
 
       p {
         @include type-button;
@@ -49,9 +50,8 @@
         color: $color-0;
         transition-property: background-color, color;
         transition-duration: 0.25s;
-
         &:not(:first-child) {
-          margin-left: $elements-margin;          
+          margin-left: $elements-margin;
         }
 
         &:hover, &.active {
