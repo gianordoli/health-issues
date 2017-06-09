@@ -92,39 +92,35 @@ export default class StoriesEpidemics {
       currCase
     ];
 
-    const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
-    elementsContainer.appendChild(sectionHeader);
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
 
-    let container = document.createElement('div');
-    container.classList.add('container');
-    sectionHeader.appendChild(container);
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = stories[storySection].title;
-    container.appendChild(title);
+    sectionHeader.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = stories[storySection].intro;
-    container.appendChild(intro);
+    sectionHeader.appendChild(intro);
 
     const storiesNavBar = new StoriesNavBar(
-      elementsContainer,
+      pageBody,
       stories[storySection].cases.map(c => c.title),
       this,
       this.loadNewCase
     );
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
-
-    container = document.createElement('div');
-    container.classList.add('container');
-    sectionBody.appendChild(container);
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
     this.filtersMenu = new FiltersMenu(
-      container,
+      sectionBody,
       terms,
       geoList,
       geoIso
@@ -132,7 +128,7 @@ export default class StoriesEpidemics {
 
     const row = document.createElement('div');
     row.classList.add('row');
-    container.appendChild(row);
+    sectionBody.appendChild(row);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');

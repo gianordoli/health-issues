@@ -32,12 +32,8 @@ export default class StoriesNavBar {
     ) => void
   ) {
     const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('stories-nav-bar');
+    elementsContainer.classList.add('stories-nav-bar', 'container');
     parentContainer.appendChild(elementsContainer);
-
-    const container = document.createElement('div');
-    container.classList.add('container');
-    elementsContainer.appendChild(container);
 
     for (let i = 0; i < cases.length; i++) {
       const tab = document.createElement('p');
@@ -45,7 +41,7 @@ export default class StoriesNavBar {
       tab.innerHTML = cases[i];
       const bindClick = evt => onChange(evt, self, elementsContainer, i);
       tab.addEventListener('click', bindClick);
-      container.appendChild(tab);
+      elementsContainer.appendChild(tab);
     }
   }
 }

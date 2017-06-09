@@ -279,37 +279,33 @@ export default class Explore {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const stickyHeader = document.createElement('div');
-    stickyHeader.classList.add('sticky-header');
-    elementsContainer.appendChild(stickyHeader);
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    elementsContainer.appendChild(pageHeader);
 
-    let container = document.createElement('div');
+    const container = document.createElement('div');
     container.classList.add('container');
-    stickyHeader.appendChild(container);
+    pageHeader.appendChild(container);
 
     const pageName = document.createElement('p');
     pageName.innerHTML = "Explore";
     container.appendChild(pageName);
 
-    const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
-    elementsContainer.appendChild(sectionHeader);
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
 
-    container = document.createElement('div');
-    container.classList.add('container');
-    sectionHeader.appendChild(container);
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
 
     const intro = document.createElement('p');
     intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
-    container.appendChild(intro);
+    sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
-
-    container = document.createElement('div');
-    container.classList.add('container');
-    sectionBody.appendChild(container);
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
     // Loader
     this.loaderContainer = document.createElement('div');
@@ -319,13 +315,13 @@ export default class Explore {
     const loader = document.createElement('span');
     loader.classList.add('loader');
     loaderContainer.appendChild(loader);
-    container.appendChild(loaderContainer);
+    sectionBody.appendChild(loaderContainer);
 
 
     // filtersMenu
     const filtersMenu = document.createElement('div');
     filtersMenu.classList.add('filters-menu');
-    container.appendChild(filtersMenu);
+    sectionBody.appendChild(filtersMenu);
 
     let text = document.createElement('span');
     text.innerHTML = 'Search interest from 2004 to today for ';
@@ -397,7 +393,7 @@ export default class Explore {
 
     const row = document.createElement('div');
     row.classList.add('row');
-    container.appendChild(row);
+    sectionBody.appendChild(row);
 
     // Charts section
     const chartsContainer = document.createElement('div');

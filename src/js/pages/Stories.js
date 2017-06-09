@@ -21,13 +21,13 @@ export default class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const stickyHeader = document.createElement('div');
-    stickyHeader.classList.add('sticky-header');
-    elementsContainer.appendChild(stickyHeader);
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    elementsContainer.appendChild(pageHeader);
 
     const container = document.createElement('div');
     container.classList.add('container');
-    stickyHeader.appendChild(container);
+    pageHeader.appendChild(container);
 
     const pageName = document.createElement('p');
     pageName.innerHTML = "Stories";

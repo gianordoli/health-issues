@@ -93,7 +93,7 @@ app.main = (function (){
     window.addEventListener('scroll', checkScroll);
 
     stickyfill.init();
-    var stickyElements = document.getElementsByClassName('sticky-header');
+    var stickyElements = document.getElementsByClassName('page-header');
     for (var i = stickyElements.length - 1; i >= 0; i--) {
         Stickyfill.add(stickyElements[i]);
     }

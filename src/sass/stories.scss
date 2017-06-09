@@ -3,22 +3,12 @@
 #stories.page {
   background-color: $color-0;
 
-  .sticky-header {
+  .page-header {
     background-color: $color-0;
     color: white;
   }
 
   .story-section {
-
-    &:not(:last-child) {
-      margin-bottom: $col-gutter-large*2;
-    }
-
-    @include for-phone-down {
-      &:not(:last-child) {
-        margin-bottom: $col-gutter-small*2;
-      }
-    }
 
     .section-header {
       color: white;
@@ -31,7 +21,7 @@
     .stories-nav-bar {
 
       min-height: $baseline-height * 4;
-      margin: 0 $col-gutter-large;
+      margin: 0 auto;
       background-color: white;
       border-bottom: 1px solid $color-0;
       display: flex;
@@ -39,10 +29,9 @@
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
-      padding: $elements-padding 0 $elements-padding 0;
+      padding: $elements-padding;
 
       @include for-phone-down {
-        margin: 0 $col-gutter-small;
         padding-left: $elements-padding
       };
 

@@ -66,7 +66,7 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 @mixin type-h3 {
-  font-size: 16px;
+  font-size: 21px;
   font-family: $font-sans;
   font-weight: 900;
   text-transform: uppercase;
@@ -91,6 +91,13 @@ $font-mono: 'Inconsolata', monospace;
   text-transform: uppercase;
   letter-spacing: 1px;
 
+}
+
+@mixin type-intro {
+  font-size: 16px;
+  line-height: $baseline-height*2;
+  font-family: $font-sans;
+  font-weight: 400;
 }
 
 @mixin type-body-1 {
@@ -220,60 +227,66 @@ b {
   border: 0;
   text-align: center;
 
-  .sticky-header, .section-header, .section-body {
+  .page-header {
+    width: 100%;
+    height: $baseline-height * 4;
+    padding: 0 $col-gutter-large;
     text-align: center;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.12);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    @include type-h5;
+
+    @include for-phone-down {
+      padding: 0 $col-gutter-small;
+    };
+  }
+
+  .page-body {
+    margin: 0 $col-gutter-large;
+
+    @include for-phone-down {
+      margin: 0 $col-gutter-small;
+    };
   }
 }
 
 .container {
   width: $container-max-width;
-  max-width: $container-max-width;
+  max-width: 100%;
   margin: auto;
   text-align: left;
-
-  @include for-phone-down {
-    max-width: 100%;
-  };
-}
-
-.sticky-header {
-  width: 100%;
-  height: $baseline-height * 4;
-  box-shadow: 0 4px rgba(0, 0, 0, 0.12);
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 1000;  
-
-  @include type-h5;
-
-  @include for-phone-down {
-    padding-left: $col-gutter-small;
-  };
 }
 
 .section-header {
-  margin: $col-gutter-large;
+  margin: $baseline-height*4 auto $col-gutter-large auto;
 
   @include for-phone-down {
-    margin: $col-gutter-small;
+    margin: $baseline-height*4 auto $col-gutter-small auto;
   };
+
+  p {
+      @include type-intro;
+  }
 }
 
 .section-body {
   background-color: white;
   color: $color-black;
   padding: $col-gutter-large;
-  margin: 0 $col-gutter-large $col-gutter-large $col-gutter-large;
+  margin: 0 auto $col-gutter-large auto;
 
   @include for-phone-down {
     padding: $col-gutter-small;
-    margin: 0 $col-gutter-small $col-gutter-small $col-gutter-small;
+    margin: 0 auto $col-gutter-small auto;
   };
 }
 

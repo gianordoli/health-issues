@@ -37,41 +37,37 @@ export default class Intro {
 
   createElements(elementsContainer: HTMLElement, chartData) {
 
-    const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
-    elementsContainer.appendChild(sectionHeader);
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
 
-    let container = document.createElement('div');
-    container.classList.add('container');
-    sectionHeader.appendChild(container);
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = 'Trends and Seasonality';
-    container.appendChild(title);
+    sectionHeader.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML =
       'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.';
-    container.appendChild(intro);
+    sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
-    container = document.createElement('div');
-    container.classList.add('container');
-    sectionBody.appendChild(container);
-
-    // const filtersMenu = new FiltersMenu(
-    //   container,
-    //   ['Influenza'],
-    //   ['world'],
-    //   'world',
-    // );
+    const filtersMenu = new FiltersMenu(
+      sectionBody,
+      ['Influenza'],
+      ['world'],
+      'world',
+    );
 
     const row = document.createElement('div');
     row.classList.add('row');
-    container.appendChild(row);
+    sectionBody.appendChild(row);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
@@ -124,7 +120,6 @@ export default class Intro {
 
     const thisPage = d3.select(elementsContainer);
     const containerD3 = thisPage.select('.row');
-    // const containerD3 = d3.select('#intro.page .section-body .container .row');
     const chartsContainerD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');

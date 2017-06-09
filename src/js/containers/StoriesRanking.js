@@ -15,25 +15,25 @@ export default class StoriesRanking {
     elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
-    const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
-    elementsContainer.appendChild(sectionHeader);
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
 
-    let container = document.createElement('div');
-    container.classList.add('container');
-    sectionHeader.appendChild(container);
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = 'Top 10';
-    container.appendChild(title);
+    sectionHeader.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = "These are the main health-related worries in the world, by year.";
-    container.appendChild(intro);
+    sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
     const rankingTable = document.createElement('div');
     rankingTable.classList.add('ranking-table');
