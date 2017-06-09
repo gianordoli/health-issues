@@ -97,7 +97,8 @@
 }
 
 input[type="range"] {
-  width: 100%;
+  width: calc(100% - 32px);
+  margin-left: 32px;
 }
 
 

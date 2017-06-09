@@ -16,9 +16,9 @@ export default class LineChart {
   margin: { top: number, left: number, bottom: number, right: number };
   svg: () => {};
 
-  constructor(parentContainer: HTMLElement, type: string) {
+  constructor(parentContainer: HTMLElement, type?: string) {
     this.data = [];
-    this.type = type;
+    if (type) this.type = type;
     this.margin = {top: 4, right: 4, bottom: 32, left: 32};
     this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
     this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
@@ -90,8 +90,6 @@ export default class LineChart {
       const maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
       yMin = maxRange > 20 ? -maxRange : -20;
       yMax = maxRange > 20 ? maxRange : 20;
-      // yMin = Math.abs(yMin) > Math.abs(yMax) ? yMin : -yMax;
-      // yMax = Math.abs(yMin) > Math.abs(yMax) ? -yMin : yMax;
 
     } else {
       yMin = 0;
@@ -104,8 +102,14 @@ export default class LineChart {
 
     const xAxis = d3.axisBottom(x)
       .tickSize(0)
-      .tickPadding(12)
-      .tickFormat(d3.timeFormat(type === 'seasonal' ? '%b' : '%Y'));
+      .tickPadding(12);
+    if (type === 'seasonal') {
+      xAxis.tickFormat(d3.timeFormat('%b'));
+    } else if (type === 'trend')  {
+      xAxis.tickFormat(d3.timeFormat('%Y'));
+    } else {
+      xAxis.tickFormat(d3.timeFormat('%b %Y'));
+    }
 
     const yAxis = d3.axisLeft(y)
       .tickSize(12);

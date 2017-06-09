@@ -57,16 +57,20 @@ export default class StoriesEpidemics {
   ) {
     const { storySection } = self.data;
     const mapDataPath = stories[storySection].cases[currCase].mapData;
+    const chartDataPath = stories[storySection].cases[currCase].chartData;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     elementsContainer.querySelectorAll('a').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
+    
     d3.json(mapDataPath, function(mapData) {
       const currMonth = 0;
       self.slider.value = '0';
       self.slider.setAttribute('max', (mapData.length - 1).toString());
 
-      self.updateData({ currCase, mapData, geoIso, currMonth });
+      d3.json(chartDataPath, function(chartData) {
+        self.updateData({ currCase, mapData, chartData, geoIso, currMonth });
+      });
     });
   }
 
@@ -134,7 +138,7 @@ export default class StoriesEpidemics {
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.lineChart = new LineChart(chartItem, 'trend');
+    this.lineChart = new LineChart(chartItem);
 
     this.slider = document.createElement('input');
     const { slider } = this;
@@ -178,7 +182,7 @@ export default class StoriesEpidemics {
       geoIso
     );
 
-    worldMap.updateData(mapData[currMonth].regions);
+    if (worldMap.worldFeatures) worldMap.updateData(mapData[currMonth].regions);
     lineChart.updateData(chartData[geoIso]);
 
     // copyContainer.innerHTML = '';
