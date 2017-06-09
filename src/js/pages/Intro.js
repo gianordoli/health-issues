@@ -62,12 +62,12 @@ export default class Intro {
     container.classList.add('container');
     sectionBody.appendChild(container);
 
-    const filtersMenu = new FiltersMenu(
-      container,
-      ['Influenza'],
-      ['world'],
-      'world',
-    );
+    // const filtersMenu = new FiltersMenu(
+    //   container,
+    //   ['Influenza'],
+    //   ['world'],
+    //   'world',
+    // );
 
     const row = document.createElement('div');
     row.classList.add('row');
@@ -122,10 +122,9 @@ export default class Intro {
       ])
     );
 
-
-    // const thisPage = d3.select(elementsContainer);
-    // const containerD3 = thisPage.select('.row');
-    const containerD3 = d3.select('#intro.page .section-body .container .row');
+    const thisPage = d3.select(elementsContainer);
+    const containerD3 = thisPage.select('.row');
+    // const containerD3 = d3.select('#intro.page .section-body .container .row');
     const chartsContainerD3 = containerD3.select('.charts-container');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');

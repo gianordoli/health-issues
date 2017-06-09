@@ -3,9 +3,13 @@
 #stories.page {
   background-color: $color-0;
 
+  .sticky-header {
+    background-color: $color-0;
+    color: white;
+  }
+
   .story-section {
 
-    min-height: 100vh;
     &:not(:last-child) {
       margin-bottom: $col-gutter-large*2;
     }

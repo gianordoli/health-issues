@@ -10,6 +10,8 @@ import TrendsAPI from './api/TrendsAPI';
 import terms from './data/terms';
 import countries from './data/countries';
 import log from 'loglevel';
+import Stickyfill from 'stickyfill';
+const stickyfill = Stickyfill();
 import '../sass/App.scss';
 
 import GetMapData from './scripts/GetMapData';
@@ -89,6 +91,12 @@ app.main = (function (){
       storiesOffsetTop = storiesDiv.offsetTop;
     }
     window.addEventListener('scroll', checkScroll);
+
+    stickyfill.init();
+    var stickyElements = document.getElementsByClassName('sticky-header');
+    for (var i = stickyElements.length - 1; i >= 0; i--) {
+        Stickyfill.add(stickyElements[i]);
+    }
 
     // const getMapData = new GetMapData(trendsAPI);
   }
