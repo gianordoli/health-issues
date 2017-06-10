@@ -380,6 +380,10 @@ svg.chart-canvas {
   margin-bottom: $baseline-height * 2;
   font-size: 16px;
 
+  span {
+    vertical-align: top;
+  }
+
   //
   // .confirm-nav {
   //   display: inline-block;
@@ -390,28 +394,28 @@ svg.chart-canvas {
 
   .selectize-control {
 
+    display: inline-block;
+    vertical-align: top;
     font-size: 16px;
     text-align: center;
-    height: 40px;
+    height: 34px;
 
-    &.multi {
-      .selectize-input.items {
-        font-weight: 700;
-        div.item {
-          background-color: transparent;
-          &:nth-child(1) { color: $color-1; }
-          &:nth-child(2) { color: $color-2; }
-          &:nth-child(3) { color: $color-3; }
-        }
-      }
+    &.multi .items .item {
+      background-color: transparent;
+      &:nth-child(1) { color: $color-1; }
+      &:nth-child(2) { color: $color-2; }
+      &:nth-child(3) { color: $color-3; }
     }
 
     .selectize-input {
+      height: 34px;
       border: 0;
       box-shadow: none;
       font-size: 16px;
+      font-weight: 700;
       border-bottom: 2px solid $color-0;
       border-radius: 0;
+      padding-right: $elements-margin * 3;
 
       &:after {
         border-color: $color-0 transparent transparent transparent;
@@ -423,12 +427,16 @@ svg.chart-canvas {
       .item {
         font-weight: 700;
         color: $color-0;
+        margin: 1px 3px 3px 0;
       }
     }
   }
 
   .selectize-dropdown {
+    min-width: 300px;
+    max-width: 100vh;
     @include type-body-1;
+    line-height: 16px;
     text-align: left;
     font-weight: 400;
     color: $color-0;
@@ -437,6 +445,7 @@ svg.chart-canvas {
     box-shadow: 0 4px rgba(0, 0, 0, 0.24);
 
     .option {
+      padding: $baseline-height;
       &.active {
         color: $color-0;
         background-color: lighten($color-0, 48%);
