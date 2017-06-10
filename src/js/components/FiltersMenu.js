@@ -85,7 +85,8 @@ export default class FiltersMenu {
         elementsContainer.appendChild(geoSelect);
         const geoSelectize = $(geoSelect).selectize({
           maxItems: 1,
-          onChange: bindHandleChange
+          onChange: bindHandleChange,
+          placeholder: 'Select'
         });
         geoSelectize[0].selectize.setValue(geoIso, true);
       }

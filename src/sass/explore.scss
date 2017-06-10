@@ -9,6 +9,43 @@
     color: $color-0;
   }
 
+  .confirm-nav {
+
+    &:not(.hidden) {
+      display: inline-block;
+    }
+    margin-left: $elements-margin;
+
+    button {
+      @include type-button;
+      border: 2px solid $color-0;
+      padding: $elements-padding * 0.5;
+      cursor: pointer;
+      transition-property: background-color;
+      transition-duration: 0.25s;
+      &:not(:first-child) {
+        margin-left: $elements-margin;
+      }
+      &.primary {
+        background-color: $color-0;
+        color: white;
+        &:hover {
+          background-color: lighten($color-0, 12%);
+        }
+        &:disabled {
+          opacity: 0.48;
+        }
+      }
+      &.secondary {
+        background-color: white;
+        color: $color-0;
+        &:hover {
+          background-color: lighten($color-0, 48%);
+        }
+      }
+    }
+  }
+
   .top-queries-container {
     @include columns(1);
 

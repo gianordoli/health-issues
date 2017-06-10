@@ -59,8 +59,8 @@ app.main = (function (){
     log.info('initializeExplore');
     const diseases = [
       terms.find(t => t.name === 'Sunburn'),
-      terms.find(t => t.name === 'Dehydration'),
-      terms.find(t => t.name === 'Lyme disease'),
+      // terms.find(t => t.name === 'Dehydration'),
+      // terms.find(t => t.name === 'Lyme disease'),
     ];
     const geo = countries[0];
     explore.updateData({ diseases, geo });
