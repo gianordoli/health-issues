@@ -374,20 +374,78 @@ svg.chart-canvas {
 .filters-menu {
 
   text-align: center;
-  line-height: 40px;
+  line-height: $baseline-height * 3;
   display: block;
   width: 100%;
   margin-bottom: $baseline-height * 2;
+  font-size: 16px;
 
-  .disease-select {
-    min-width: 50%;
+  //
+  // .confirm-nav {
+  //   display: inline-block;
+  //   &.hidden {
+  //     display: none;
+  //   }
+  // }
+
+  .selectize-control {
+
+    font-size: 16px;
+    text-align: center;
+    height: 40px;
+
+    &.multi {
+      .selectize-input.items {
+        font-weight: 700;
+        div.item {
+          background-color: transparent;
+          &:nth-child(1) { color: $color-1; }
+          &:nth-child(2) { color: $color-2; }
+          &:nth-child(3) { color: $color-3; }
+        }
+      }
+    }
+
     .selectize-input {
-      width: 50%;
+      border: 0;
+      box-shadow: none;
+      font-size: 16px;
+      border-bottom: 2px solid $color-0;
+      border-radius: 0;
+
+      &:after {
+        border-color: $color-0 transparent transparent transparent;
+      }
+      &.dropdown-active:after {
+        border-color: transparent transparent $color-0 transparent;
+      }
+
+      .item {
+        font-weight: 700;
+        color: $color-0;
+      }
+    }
+  }
+
+  .selectize-dropdown {
+    @include type-body-1;
+    text-align: left;
+    font-weight: 400;
+    color: $color-0;
+    border-radius: 0;
+    border: 1px solid #4422B3;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.24);
+
+    .option {
+      &.active {
+        color: $color-0;
+        background-color: lighten($color-0, 48%);
+      }
     }
   }
 
   .terms-list {
-    @include type-body-2;
+    font-weight: 700;
     span {
       padding: 0 $elements-padding/2;
       &:nth-child(1) { color: $color-1; }
@@ -396,20 +454,9 @@ svg.chart-canvas {
     }
   }
 
-  .geo-select {
-    width: 280px;
-    display: inline-block;
-    vertical-align: top;
-    .selectize-input {
-      text-align: left;
-    }
-  }
-
-  .confirm-nav {
-    display: inline-block;
-    &.hidden {
-      display: none;
-    }
+  .geo {
+    font-weight: 700;
+    color: $color-0;
   }
 }
 

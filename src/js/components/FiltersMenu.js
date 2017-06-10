@@ -11,11 +11,6 @@ import 'selectize/dist/css/selectize.css';
 
 export default class FiltersMenu {
 
-  // data: {
-  //   geo: Geo,
-  // };
-  // geoSelect?: selectize;
-
   constructor(
     parentContainer: ?Element,
     terms: string[],
@@ -68,6 +63,7 @@ export default class FiltersMenu {
 
     if (geoList.length === 1) {
       const geo = document.createElement('span');
+      geo.classList.add('geo');
       geo.innerHTML = countries.find(c => c.iso === geoList[0]).name;
       elementsContainer.appendChild(geo);
     } else {

@@ -1,35 +1,5 @@
 @import 'App';
 
-.selectize-input {
-  border: 0;
-  box-shadow: none;
-  @include type-body-2;
-
-  .item {
-    @include type-body-2;
-  }
-}
-
-.selectize-control.multi {
-
-  text-align: center;
-  height: 40px;
-
-  .selectize-input.items {
-    @include type-body-2;
-    div.item {
-      background-color: transparent;
-      &:nth-child(1) { color: $color-1; }
-      &:nth-child(2) { color: $color-2; }
-      &:nth-child(3) { color: $color-3; }
-    }
-  }
-}
-
-.selectize-dropdown {
-  text-align: left;
-}
-
 #explore.page {
 
   background-color: $color-gray;
