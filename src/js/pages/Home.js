@@ -5,6 +5,7 @@ import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import Icons from '../util/icons';
+import * as d3 from 'd3';
 import $ from 'jquery';
 import log from 'loglevel';
 import '../../sass/home.scss';
@@ -94,6 +95,25 @@ export default class Home {
     });
   }
 
+  randomTopicStyle(p: HTMLElement, i: number) {
+    const iX = d3.interpolateNumber(0, window.innerWidth*0.4);
+    const iY = d3.interpolateNumber(window.innerHeight*0.2, window.innerHeight*0.4);
+
+    const upOrDown = i % 2 == 0 ? 1 : -1;
+    const leftOrRight = (i % 3) == 0 ? 1 : -1;
+    log.info(iY(Math.random()));
+    const posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
+    const posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
+    log.info(upOrDown, leftOrRight);
+    p.style.left = posLeft;
+    p.style.top = posTop;
+
+    const iS = d3.interpolateNumber(window.innerWidth*0.01, window.innerWidth*0.05);
+    const size = iS(Math.random());
+    p.style.fontSize = Math.round(size).toString() + 'px';
+    p.style.filter = `blur(${size*0.02}px)`;
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -162,7 +182,7 @@ export default class Home {
       diseaseContainer.classList.add('disease-container');
       diseaseContainer.innerHTML = disease.name.toLowerCase();
       countryContainer.appendChild(diseaseContainer);
-      
+
       countryContainer.appendChild(document.createElement('br'));
 
       span = document.createElement('span');
@@ -174,11 +194,12 @@ export default class Home {
       country.innerHTML = geo.name;
       countryContainer.appendChild(country);
 
-      topTopics.forEach(t => {
+      topTopics.forEach((t, i) => {
         const p = document.createElement('p');
         p.innerHTML = t.title;
         topTopicsList.appendChild(p);
-      })
+        this.randomTopicStyle(p, i);
+      });
     }
   }
 }
