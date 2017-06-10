@@ -45,6 +45,7 @@ export default class Explore {
 
   loaderContainer: HTMLElement;
   confirmNav: HTMLElement;
+  confirmButton: HTMLInputElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
 
@@ -122,18 +123,21 @@ export default class Explore {
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
-    log.info('handleSelectDiseaseChange');
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases, isChanging: true});
     self.confirmNav.classList.remove('hidden');
   }
 
   handleSelectGeoChange(value: string, self: Explore) {
-    log.info('handleSelectGeoChange');
-    log.info(value);
-    const name = this.getCountryByIso(value).name;
-    this.updateData({geo: {iso: value, name: name, isChanging: true}});
-    self.confirmNav.classList.remove('hidden');
+    log.info('CHANGE');
+    const { prevGeo } = self.data;
+    if (value) {
+      const name = this.getCountryByIso(value).name;
+      this.updateData({geo: {iso: value, name: name}, isChanging: true});
+      self.confirmNav.classList.remove('hidden');
+    } else {
+      this.updateData({geo: '', isChanging: true});
+    }
   }
 
   getDiseaseByEntity(entity: string): Term {
@@ -382,8 +386,9 @@ export default class Explore {
     cancelButton.addEventListener('click', bindHandleChange);
     confirmNav.appendChild(cancelButton);
 
-    const doneButton = document.createElement('button');
-    doneButton.innerHTML = 'Done';
+    this.doneButton = document.createElement('button');
+    const { doneButton } = this;
+    doneButton.innerHTML = 'Go';
     bindHandleChange = evt => this.confirmFilters(evt, this);
     doneButton.addEventListener('click', bindHandleChange);
     confirmNav.appendChild(doneButton);
@@ -466,7 +471,7 @@ export default class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, diseaseSelect, geoSelect, doneButton, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
@@ -477,6 +482,8 @@ export default class Explore {
 
     diseaseSelect.setValue(diseases.map(d => d.entity), true);
     geoSelect.setValue(geo.iso, true);
+
+    doneButton.disabled = diseases.length === 0 || geo === '' ? true : false;
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
