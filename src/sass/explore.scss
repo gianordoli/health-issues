@@ -41,5 +41,22 @@
 
   .top-queries-container {
     @include columns(1);
+
+    h4 {
+      border-bottom: 2px solid $color-0;
+      margin-bottom: $baseline-height;
+      line-height: $baseline-height * 4;
+    }
+
+    .list-container {
+      p {
+        @include type-body-2;
+      }
+      ol {
+        padding-left: 0;
+        list-style-position: inside;
+        margin-top: 0;
+      }
+    }
   }
 }

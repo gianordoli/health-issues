@@ -500,7 +500,7 @@ export default class Explore {
             term.innerHTML = diseases[i].name;
             listContainer.appendChild(term);
 
-            const list = document.createElement('ul');
+            const list = document.createElement('ol');
             listContainer.appendChild(list);
 
             for(const q of topQueries[i].item) {
