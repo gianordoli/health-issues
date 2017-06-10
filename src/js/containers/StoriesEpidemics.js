@@ -173,11 +173,7 @@ export default class StoriesEpidemics {
     const { worldMap, lineChart, copyContainer } = self;
     const { storySection, currCase, mapData, chartData, geoIso, currMonth } = self.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
-    log.info('EPIDEMIC');
-    log.info(currCase);
-    log.info(copy);
-    log.info(geoIso);
-    log.info(chartData);
+
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,
@@ -189,11 +185,11 @@ export default class StoriesEpidemics {
     if (worldMap.worldFeatures) worldMap.updateData(mapData[currMonth].regions);
     lineChart.updateData(chartData[geoIso]);
 
-    // copyContainer.innerHTML = '';
-    // for (const c of copy) {
-    //   const p = document.createElement('p');
-    //   p.innerHTML = c;
-    //   copyContainer.appendChild(p);
-    // }
+    copyContainer.innerHTML = '';
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
   }
 }

@@ -138,25 +138,45 @@ export default class Explore {
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
-    const diseases = value.map(v => self.getDiseaseByEntity(v));
-    this.updateData({diseases: diseases, isChanging: true});
-    self.confirmNav.classList.remove('hidden');
-  }
-
-  handleSelectDiseaseType(value: string, self: Explore) {
-    log.info('TYPE');
-    log.info(value);
     // const diseases = value.map(v => self.getDiseaseByEntity(v));
     // this.updateData({diseases: diseases, isChanging: true});
     // self.confirmNav.classList.remove('hidden');
+    // self.confirmFilters('', self);
   }
+
+
+  handleSelectDiseaseItemAdd(value: string, self: Explore) {
+    log.info(value);
+    let { diseases } = self.data;
+    diseases = diseases.concat(self.getDiseaseByEntity(value));
+    self.updateData({ diseases });
+  }
+
+  // handleSelectDiseaseItemRemove(item: string, self: Explore) {
+  //   log.info('ITEM ADD');
+  //   let { diseases } = self.data;
+  //   const index = diseases.find((d, i) => {
+  //     if (d.entity === item) {
+  //       return i;
+  //     }
+  //   });
+  //   log.info(index);
+  //   if (index) diseases = diseases.slice(index, 1);
+  //   log.info(value);
+  //   log.info(self);
+  //   // const diseases = value.map(v => self.getDiseaseByEntity(v));
+  //   // this.updateData({diseases: diseases, isChanging: true});
+  //   // // self.confirmNav.classList.remove('hidden');
+  //   // self.confirmFilters('', self);
+  // }
 
   handleSelectGeoChange(value: string, self: Explore) {
     const { prevGeo } = self.data;
     if (value) {
       const name = this.getCountryByIso(value).name;
       this.updateData({geo: {iso: value, name: name}, isChanging: true});
-      self.confirmNav.classList.remove('hidden');
+      // self.confirmNav.classList.remove('hidden');
+      self.confirmFilters('', self);
     } else {
       this.updateData({geo: '', isChanging: true});
     }
@@ -365,8 +385,8 @@ export default class Explore {
       option.innerHTML = d.alias ? d.alias : d.name;
       diseaseSelect.appendChild(option);
     });
-    let bindHandleType = value => self.handleSelectDiseaseType(value, self);
     let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);
+    let bindHandleItemAdd = value => self.handleSelectDiseaseItemAdd(value, self);
     filtersMenu.appendChild(diseaseSelect);
     const diseaseSelectize = $(diseaseSelect).selectize({
       plugins: ['remove_button', 'enter_key_submit'],
@@ -378,8 +398,9 @@ export default class Explore {
       },
       maxItems: 3,
       onChange: bindHandleChange,
-      onType: bindHandleType,
+      onItemAdd: bindHandleItemAdd,
       openOnFocus: false,
+      closeAfterSelect: true,
       placeholder: 'Select'
     });
     self.diseaseSelect = diseaseSelectize[0].selectize;

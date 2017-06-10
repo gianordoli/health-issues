@@ -101,10 +101,8 @@ export default class Home {
 
     const upOrDown = i % 2 == 0 ? 1 : -1;
     const leftOrRight = (i % 3) == 0 ? 1 : -1;
-    log.info(iY(Math.random()));
     const posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
     const posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
-    log.info(upOrDown, leftOrRight);
     p.style.left = posLeft;
     p.style.top = posTop;
 
