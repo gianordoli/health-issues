@@ -95,7 +95,7 @@ app.main = (function (){
     stickyfill.init();
     var stickyElements = document.getElementsByClassName('page-header');
     for (var i = stickyElements.length - 1; i >= 0; i--) {
-        Stickyfill.add(stickyElements[i]);
+      stickyfill.add(stickyElements[i]);
     }
 
     // const getMapData = new GetMapData(trendsAPI);
