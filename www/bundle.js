@@ -184,7 +184,7 @@
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("STAGING"));
+	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
 	    loadShinyAPI();
 	  };
 
@@ -500,7 +500,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (false) {
+	          if (true) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -29702,13 +29702,14 @@
 	    var currCase = 0;
 	    var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
 	    var path = _stories2.default[storySection].cases[currCase].data;
+	    var isLoading = false;
 
 	    var elementsContainer = document.createElement('div');
 	    elementsContainer.classList.add('story-section');
 	    parentContainer.appendChild(elementsContainer);
 
 	    d3.json(path, function (chartData) {
-	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso };
+	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso, isLoading: isLoading };
 	      self.createElements(elementsContainer);
 	    });
 	  }
@@ -29720,11 +29721,14 @@
 
 	      var path = _stories2.default[storySection].cases[currCase].data;
 	      var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	      var isLoading = true;
+	      self.updateData({ isLoading: isLoading });
 	      elementsContainer.querySelectorAll('p').forEach(function (e, i) {
 	        i === currCase ? e.classList.add('active') : e.classList.remove('active');
 	      });
 	      d3.json(path, function (chartData) {
-	        self.updateData({ currCase: currCase, chartData: chartData, geoIso: geoIso });
+	        isLoading = false;
+	        self.updateData({ currCase: currCase, chartData: chartData, geoIso: geoIso, isLoading: isLoading });
 	      });
 	    }
 	  }, {
@@ -29778,6 +29782,15 @@
 	      var sectionBody = document.createElement('div');
 	      sectionBody.classList.add('section-body', 'container');
 	      pageBody.appendChild(sectionBody);
+
+	      this.loaderContainer = document.createElement('div');
+	      var loaderContainer = this.loaderContainer;
+
+	      loaderContainer.classList.add('loader-container');
+	      var loader = document.createElement('span');
+	      loader.classList.add('loader');
+	      loaderContainer.appendChild(loader);
+	      sectionBody.appendChild(loaderContainer);
 
 	      this.filtersMenu = new _FiltersMenu2.default(sectionBody, terms, geoList, geoIso, this, this.changeGeo);
 
@@ -29834,17 +29847,26 @@
 	    value: function updateElements() {
 	      var filtersMenu = this.filtersMenu;
 	      var chart = this.chart,
-	          copyContainer = this.copyContainer;
+	          copyContainer = this.copyContainer,
+	          loaderContainer = this.loaderContainer;
 	      var _data2 = this.data,
 	          storySection = _data2.storySection,
 	          currCase = _data2.currCase,
 	          chartData = _data2.chartData,
-	          geoIso = _data2.geoIso;
+	          geoIso = _data2.geoIso,
+	          isLoading = _data2.isLoading;
 	      var _stories$storySection2 = _stories2.default[storySection].cases[currCase],
 	          terms = _stories$storySection2.terms,
 	          geoList = _stories$storySection2.geoList,
 	          chartType = _stories$storySection2.chartType,
 	          copy = _stories$storySection2.copy;
+
+
+	      if (isLoading) {
+	        loaderContainer.classList.remove('hidden');
+	      } else {
+	        loaderContainer.classList.add('hidden');
+	      }
 
 	      var parent = filtersMenu.parentElement;
 	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, this, this.changeGeo);
@@ -31764,7 +31786,6 @@
 	          return d.entity;
 	        }), true);
 	      }
-	      // geoSelect.setValue(geo.iso, true);
 
 	      // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
