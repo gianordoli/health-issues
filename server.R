@@ -8,7 +8,7 @@ shinyServer(function(input, output, session) {
   observe({
     input$seasonal
     if (!is.null(input$seasonal)) {
-      print(input$seasonal)
+      # print(input$seasonal)
       myTS <- vectorToTS(input$seasonal)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
@@ -20,12 +20,12 @@ shinyServer(function(input, output, session) {
   observe({
     input$trend
     if (!is.null(input$trend)) {
-      print(input$trend)
+      # print(input$trend)
       myTS <- vectorToTS(input$trend)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
       response <-  paste('trend:', toString(mySTL.DF$trend))
-      print(response)
+      # print(response)
       session$sendCustomMessage(type = "trendCallback", response)
     }
   })

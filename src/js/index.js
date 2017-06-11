@@ -64,7 +64,7 @@ app.main = (function (){
     ];
     const geo = countries[0];
     explore.updateData({ diseases, geo });
-    explore.confirmFilters(null, explore);
+    explore.confirmFilters(explore);
   }
 
 

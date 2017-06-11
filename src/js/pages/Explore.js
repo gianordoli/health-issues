@@ -17,21 +17,6 @@ import { dummyData } from '../scripts/data';
 // Libraries
 import log from 'loglevel';
 import selectize from 'selectize';
-selectize.define('enter_key_submit', function (options) {
-  var self = this;
-  this.onKeyDown = (function (e) {
-    var original = self.onKeyDown;
-    return function (e) {
-      var initialSelection = this.items.length;
-      original.apply(this, arguments);
-      if (e.keyCode === 13
-        && initialSelection && initialSelection === this.items.length
-        && this.$control_input.val() === '') {
-        self.trigger('submit');
-      }
-    };
-  })();
-});
 import $ from 'jquery';
 
 //Styles
@@ -59,8 +44,6 @@ export default class Explore {
   geoSelect: selectize;
 
   loaderContainer: HTMLElement;
-  confirmNav: HTMLElement;
-  doneButton: HTMLButtonElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
 
@@ -70,12 +53,12 @@ export default class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI, filter?: Filter) {
+  constructor(parentContainer: HTMLElement, shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
     this.data = {
-      prevDiseases: filter ? filter.terms : [],
-      diseases: filter ? filter.terms : [],
-      prevGeo: filter ? filter.geo : countries[0],
-      geo: filter ? filter.geo : countries[0],
+      prevDiseases: [],
+      diseases: [],
+      prevGeo: countries[0],
+      geo: countries[0],
       seasonal: [],
       trend: [],
       total: [],
@@ -83,7 +66,7 @@ export default class Explore {
       topQueries: [],
       isMerged: false,
       isChanging: false,
-      isLoading: filter ? true : false,
+      isLoading: false,
     }
     const self = this;
     self.trendsAPI = trendsAPI;
@@ -131,35 +114,22 @@ export default class Explore {
     }
 
     self.createElements(parentContainer);
-
-    if (filter) {
-      self.getTrendsAPIGraph('trend');
-    }
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases, isChanging: true});
-    // self.confirmNav.classList.remove('hidden');
     if (diseases.length > 0) {
-      self.confirmFilters('', self);
+      self.confirmFilters(self);
     }
   }
-
-  // handleSelectDiseaseItemAdd(value: string, self: Explore) {
-  //   log.info(value);
-  //   let { diseases } = self.data;
-  //   diseases = diseases.concat(self.getDiseaseByEntity(value));
-  //   self.updateData({ diseases });
-  // }
 
   handleSelectGeoChange(value: string, self: Explore) {
     const { prevGeo } = self.data;
     if (value) {
       const name = this.getCountryByIso(value).name;
       this.updateData({geo: {iso: value, name: name}, isChanging: true});
-      // self.confirmNav.classList.remove('hidden');
-      self.confirmFilters('', self);
+      self.confirmFilters(self);
     } else {
       this.updateData({geo: '', isChanging: true});
     }
@@ -173,17 +143,9 @@ export default class Explore {
     return countries.find(c => c.iso === iso);
   }
 
-  cancelFilters(event, self) {
-    log.info('cancelFilters');
-    const { prevDiseases, prevGeo } = self.data;
-    self.confirmNav.classList.add('hidden');
-    self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
-  }
-
-  confirmFilters(event, self) {
+  confirmFilters(self) {
     log.info('confirmFilters');
     const { diseases, geo } = self.data;
-    self.confirmNav.classList.add('hidden');
     self.updateData({
       prevDiseases: diseases,
       prevGeo: geo,
@@ -371,17 +333,9 @@ export default class Explore {
     let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);
     filtersMenu.appendChild(diseaseSelect);
     const diseaseSelectize = $(diseaseSelect).selectize({
-      // plugins: ['remove_button', 'enter_key_submit'],
-      // onInitialize: function () {
-      //   log.info('SELECTIZE');
-      //   log.info(self);
-      //   let bindHandleChange = value => self.confirmFilters(value, self);
-      //   this.on('submit', bindHandleChange);
-      // },
-      plugins: ['remove_button'],      
+      plugins: ['remove_button'],
       maxItems: 3,
       onChange: bindHandleChange,
-      // onItemAdd: bindHandleItemAdd,
       openOnFocus: false,
       closeAfterSelect: true,
       placeholder: 'Select'
@@ -413,30 +367,6 @@ export default class Explore {
       placeholder: 'Select'
     });
     self.geoSelect = geoSelectize[0].selectize;
-
-
-    // Cancel / Done
-    self.confirmNav = document.createElement('div');
-    const { confirmNav } = self;
-    confirmNav.classList.add('confirm-nav');
-    confirmNav.classList.add('hidden');
-
-    // const cancelButton = document.createElement('button');
-    // cancelButton.classList.add('secondary');
-    // cancelButton.innerHTML = 'Cancel';
-    // bindHandleChange = evt => this.cancelFilters(evt, this);
-    // cancelButton.addEventListener('click', bindHandleChange);
-    // confirmNav.appendChild(cancelButton);
-
-    self.doneButton = document.createElement('button');
-    const { doneButton } = self;
-    doneButton.classList.add('primary');
-    doneButton.innerHTML = 'Go';
-    bindHandleChange = evt => self.confirmFilters(evt, self);
-    doneButton.addEventListener('click', bindHandleChange);
-    confirmNav.appendChild(doneButton);
-
-    filtersMenu.appendChild(confirmNav);
 
 
     const row = document.createElement('div');
@@ -480,21 +410,22 @@ export default class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, doneButton, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
+      diseaseSelect.disable();
+      geoSelect.disable();
     } else {
       loaderContainer.classList.add('hidden');
+      diseaseSelect.enable();
+      geoSelect.enable();
     }
 
     if (!arrayIsEqual(diseaseSelect.getValue(), diseases.map(d => d.entity))) {
       diseaseSelect.setValue(diseases.map(d => d.entity), true);
     }
-    geoSelect.setValue(geo.iso, true);
-
-    // doneButton.disabled = diseases.length === 0 || geo === '' ? true : false;
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 

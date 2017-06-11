@@ -17,23 +17,26 @@ export default class StoriesLineCharts {
     chartData: {
       [key: string]: Array<TrendsAPIGraph>,
     },
+    isLoading: boolean,
   };
   filtersMenu: HTMLElement;
   chart: LineChart;
   copyContainer: HTMLElement;
+  loaderContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     const path = stories[storySection].cases[currCase].data;
+    const isLoading = false;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
     d3.json(path, function(chartData) {
-      self.data = { storySection, currCase, chartData, geoIso };
+      self.data = { storySection, currCase, chartData, geoIso, isLoading };
       self.createElements(elementsContainer);
     });
   }
@@ -47,11 +50,14 @@ export default class StoriesLineCharts {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    let isLoading = true;
+    self.updateData({ isLoading });
     elementsContainer.querySelectorAll('p').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active')
     });
     d3.json(path, function(chartData) {
-      self.updateData({ currCase, chartData, geoIso });
+      isLoading = false;
+      self.updateData({ currCase, chartData, geoIso, isLoading });
     });
   }
 
@@ -98,6 +104,14 @@ export default class StoriesLineCharts {
     sectionBody.classList.add('section-body', 'container');
     pageBody.appendChild(sectionBody);
 
+    this.loaderContainer = document.createElement('div');
+    const { loaderContainer } = this;
+    loaderContainer.classList.add('loader-container');
+    const loader = document.createElement('span');
+    loader.classList.add('loader');
+    loaderContainer.appendChild(loader);
+    sectionBody.appendChild(loaderContainer);
+
     this.filtersMenu = new FiltersMenu(
       sectionBody,
       terms,
@@ -135,11 +149,18 @@ export default class StoriesLineCharts {
 
   updateElements() {
     let { filtersMenu } = this;
-    const { chart, copyContainer } = this;
-    const { storySection, currCase, chartData, geoIso } = this.data;
+    const { chart, copyContainer, loaderContainer } = this;
+    const { storySection, currCase, chartData, geoIso, isLoading } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[
       currCase
     ];
+
+    if (isLoading) {
+      loaderContainer.classList.remove('hidden');
+    } else {
+      loaderContainer.classList.add('hidden');
+    }
+
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,
