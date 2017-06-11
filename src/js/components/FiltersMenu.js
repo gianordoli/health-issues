@@ -44,7 +44,7 @@ export default class FiltersMenu {
     onGeoChange?: (geoIso: string, self: StoriesLineCharts) => void
   ) {
     let text = document.createElement('span');
-    text.innerHTML = 'Search interest from 2004 to 2016 for ';
+    text.innerHTML = 'Search interest from 2004 to 2016 for <br>';
     elementsContainer.appendChild(text);
 
     const termsList = document.createElement('span');

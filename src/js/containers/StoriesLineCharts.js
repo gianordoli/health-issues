@@ -52,8 +52,9 @@ export default class StoriesLineCharts {
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     let isLoading = true;
     self.updateData({ isLoading });
+
     elementsContainer.querySelectorAll('p').forEach((e, i) => {
-      i === currCase ? e.classList.add('active') : e.classList.remove('active')
+      i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
     d3.json(path, function(chartData) {
       isLoading = false;
@@ -112,15 +113,6 @@ export default class StoriesLineCharts {
     loaderContainer.appendChild(loader);
     sectionBody.appendChild(loaderContainer);
 
-    this.filtersMenu = new FiltersMenu(
-      sectionBody,
-      terms,
-      geoList,
-      geoIso,
-      this,
-      this.changeGeo
-    );
-
     const row = document.createElement('div');
     row.classList.add('row');
     sectionBody.appendChild(row);
@@ -128,6 +120,15 @@ export default class StoriesLineCharts {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     row.appendChild(chartsContainer);
+
+    this.filtersMenu = new FiltersMenu(
+      chartsContainer,
+      terms,
+      geoList,
+      geoIso,
+      this,
+      this.changeGeo
+    );
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');

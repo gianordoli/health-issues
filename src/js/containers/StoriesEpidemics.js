@@ -5,13 +5,12 @@ import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import WorldMap from '../visualizations/WorldMap';
 import LineChart from '../visualizations/LineChart';
-import type { TrendsAPIRegionsList, TrendsAPIGraph  } from '../util/types';
+import type { TrendsAPIRegionsList, TrendsAPIGraph } from '../util/types';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
 
 export default class StoriesEpidemics {
-
   data: {
     storySection: string,
     currCase: number,
@@ -21,18 +20,21 @@ export default class StoriesEpidemics {
     chartData: {
       [key: string]: Array<TrendsAPIGraph>,
     },
+    isLoading: boolean,
   };
   filtersMenu: HTMLElement;
   worldMap: WorldMap;
   lineChart: LineChart;
   slider: HTMLInputElement;
   copyContainer: HTMLElement;
+  loaderContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     const currMonth = 0;
+    const isLoading = false;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('story-section');
@@ -43,7 +45,15 @@ export default class StoriesEpidemics {
 
     d3.json(mapDataPath, function(mapData) {
       d3.json(chartDataPath, function(chartData) {
-        self.data = { storySection, currCase, mapData, chartData, geoIso, currMonth };
+        self.data = {
+          storySection,
+          currCase,
+          mapData,
+          chartData,
+          geoIso,
+          currMonth,
+          isLoading,
+        };
         self.createElements(elementsContainer);
       });
     });
@@ -59,8 +69,11 @@ export default class StoriesEpidemics {
     const mapDataPath = stories[storySection].cases[currCase].mapData;
     const chartDataPath = stories[storySection].cases[currCase].chartData;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    let isLoading = true;
+    self.updateData({ isLoading });
+
     elementsContainer.querySelectorAll('p').forEach((e, i) => {
-      i === currCase ? e.classList.add('active') : e.classList.remove('active')
+      i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
 
     d3.json(mapDataPath, function(mapData) {
@@ -69,7 +82,15 @@ export default class StoriesEpidemics {
       self.slider.setAttribute('max', (mapData.length - 1).toString());
 
       d3.json(chartDataPath, function(chartData) {
-        self.updateData({ currCase, mapData, chartData, geoIso, currMonth });
+        isLoading = false;
+        self.updateData({
+          currCase,
+          mapData,
+          chartData,
+          geoIso,
+          currMonth,
+          isLoading,
+        });
       });
     });
   }
@@ -87,10 +108,15 @@ export default class StoriesEpidemics {
   }
 
   createElements(elementsContainer: HTMLElement) {
-    const { storySection, currCase, mapData, chartData, geoIso, currMonth } = this.data;
-    const { terms, geoList, copy } = stories[storySection].cases[
-      currCase
-    ];
+    const {
+      storySection,
+      currCase,
+      mapData,
+      chartData,
+      geoIso,
+      currMonth,
+    } = this.data;
+    const { terms, geoList, copy } = stories[storySection].cases[currCase];
 
     const pageBody = document.createElement('div');
     pageBody.classList.add('page-body');
@@ -119,12 +145,13 @@ export default class StoriesEpidemics {
     sectionBody.classList.add('section-body', 'container');
     pageBody.appendChild(sectionBody);
 
-    this.filtersMenu = new FiltersMenu(
-      sectionBody,
-      terms,
-      geoList,
-      geoIso
-    );
+    this.loaderContainer = document.createElement('div');
+    const { loaderContainer } = this;
+    loaderContainer.classList.add('loader-container');
+    const loader = document.createElement('span');
+    loader.classList.add('loader');
+    loaderContainer.appendChild(loader);
+    sectionBody.appendChild(loaderContainer);
 
     const row = document.createElement('div');
     row.classList.add('row');
@@ -133,6 +160,8 @@ export default class StoriesEpidemics {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     row.appendChild(chartsContainer);
+
+    this.filtersMenu = new FiltersMenu(chartsContainer, terms, geoList, geoIso);
 
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -170,9 +199,25 @@ export default class StoriesEpidemics {
   updateElements(self?: StoriesEpidemics) {
     if (!self) self = this;
     let { filtersMenu } = this;
-    const { worldMap, lineChart, copyContainer } = self;
-    const { storySection, currCase, mapData, chartData, geoIso, currMonth } = self.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[currCase];
+    const { worldMap, lineChart, copyContainer, loaderContainer } = self;
+    const {
+      storySection,
+      currCase,
+      mapData,
+      chartData,
+      geoIso,
+      currMonth,
+      isLoading
+    } = self.data;
+    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+      currCase
+    ];
+
+    if (isLoading) {
+      loaderContainer.classList.remove('hidden');
+    } else {
+      loaderContainer.classList.add('hidden');
+    }
 
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(

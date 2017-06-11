@@ -58,13 +58,6 @@ export default class Intro {
     sectionBody.classList.add('section-body', 'container');
     pageBody.appendChild(sectionBody);
 
-    const filtersMenu = new FiltersMenu(
-      sectionBody,
-      ['Influenza'],
-      ['world'],
-      'world',
-    );
-
     const row = document.createElement('div');
     row.classList.add('row');
     sectionBody.appendChild(row);
@@ -72,6 +65,13 @@ export default class Intro {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     row.appendChild(chartsContainer);
+
+    const filtersMenu = new FiltersMenu(
+      chartsContainer,
+      ['Influenza'],
+      ['world'],
+      'world',
+    );
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');

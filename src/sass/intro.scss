@@ -14,11 +14,12 @@
       .charts-container {
         position: absolute;
         top: $col-gutter-large;
-        height: 100vh;
+        // height: 100vh;
+        @include columns(2);
 
         @include for-phone-down {
           top: $col-gutter-small;
-          width: calc(100% - #{$col-gutter-small}*2);
+          width: calc(100% - #{$col-gutter-large}*2);
         }
       }
 
@@ -33,8 +34,8 @@
       }
 
       .slides-container {
-        margin-left: calc((100% - 2*#{$col-gutter-small}) * 2/3 + 2*#{$col-gutter-small});
-        width: calc((100% - 2*#{$col-gutter-small}) * 1/3);
+        margin-left: calc((100% - 2*#{$col-gutter-large}) * 2/3 + 2*#{$col-gutter-large});
+        width: calc((100% - 2*#{$col-gutter-large}) * 1/3);
 
         @include for-phone-down {
           width: 100%;
