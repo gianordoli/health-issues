@@ -138,36 +138,19 @@ export default class Explore {
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
-    // const diseases = value.map(v => self.getDiseaseByEntity(v));
-    // this.updateData({diseases: diseases, isChanging: true});
+    const diseases = value.map(v => self.getDiseaseByEntity(v));
+    this.updateData({diseases: diseases, isChanging: true});
     // self.confirmNav.classList.remove('hidden');
-    // self.confirmFilters('', self);
+    if (diseases.length > 0) {
+      self.confirmFilters('', self);
+    }
   }
 
-
-  handleSelectDiseaseItemAdd(value: string, self: Explore) {
-    log.info(value);
-    let { diseases } = self.data;
-    diseases = diseases.concat(self.getDiseaseByEntity(value));
-    self.updateData({ diseases });
-  }
-
-  // handleSelectDiseaseItemRemove(item: string, self: Explore) {
-  //   log.info('ITEM ADD');
-  //   let { diseases } = self.data;
-  //   const index = diseases.find((d, i) => {
-  //     if (d.entity === item) {
-  //       return i;
-  //     }
-  //   });
-  //   log.info(index);
-  //   if (index) diseases = diseases.slice(index, 1);
+  // handleSelectDiseaseItemAdd(value: string, self: Explore) {
   //   log.info(value);
-  //   log.info(self);
-  //   // const diseases = value.map(v => self.getDiseaseByEntity(v));
-  //   // this.updateData({diseases: diseases, isChanging: true});
-  //   // // self.confirmNav.classList.remove('hidden');
-  //   // self.confirmFilters('', self);
+  //   let { diseases } = self.data;
+  //   diseases = diseases.concat(self.getDiseaseByEntity(value));
+  //   self.updateData({ diseases });
   // }
 
   handleSelectGeoChange(value: string, self: Explore) {
@@ -386,19 +369,19 @@ export default class Explore {
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);
-    let bindHandleItemAdd = value => self.handleSelectDiseaseItemAdd(value, self);
     filtersMenu.appendChild(diseaseSelect);
     const diseaseSelectize = $(diseaseSelect).selectize({
-      plugins: ['remove_button', 'enter_key_submit'],
-      onInitialize: function () {
-        log.info('SELECTIZE');
-        log.info(self);
-        let bindHandleChange = value => self.confirmFilters(value, self);
-        this.on('submit', bindHandleChange);
-      },
+      // plugins: ['remove_button', 'enter_key_submit'],
+      // onInitialize: function () {
+      //   log.info('SELECTIZE');
+      //   log.info(self);
+      //   let bindHandleChange = value => self.confirmFilters(value, self);
+      //   this.on('submit', bindHandleChange);
+      // },
+      plugins: ['remove_button'],      
       maxItems: 3,
       onChange: bindHandleChange,
-      onItemAdd: bindHandleItemAdd,
+      // onItemAdd: bindHandleItemAdd,
       openOnFocus: false,
       closeAfterSelect: true,
       placeholder: 'Select'
@@ -424,6 +407,9 @@ export default class Explore {
     const geoSelectize = $(geoSelect).selectize({
       maxItems: 1,
       onChange: bindHandleChange,
+      onFocus: function() {
+        this.setValue('');
+      },
       placeholder: 'Select'
     });
     self.geoSelect = geoSelectize[0].selectize;
@@ -503,10 +489,12 @@ export default class Explore {
       loaderContainer.classList.add('hidden');
     }
 
-    diseaseSelect.setValue(diseases.map(d => d.entity), true);
+    if (!arrayIsEqual(diseaseSelect.getValue(), diseases.map(d => d.entity))) {
+      diseaseSelect.setValue(diseases.map(d => d.entity), true);
+    }
     geoSelect.setValue(geo.iso, true);
 
-    doneButton.disabled = diseases.length === 0 || geo === '' ? true : false;
+    // doneButton.disabled = diseases.length === 0 || geo === '' ? true : false;
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
