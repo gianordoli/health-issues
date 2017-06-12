@@ -13,6 +13,7 @@ export default class WorldMap {
   height: number;
   worldFeatures;
   svg: () => {};
+  tooltip: () => {};
 
   constructor(parentContainer: HTMLElement, data: Array<TrendsAPIRegion>) {
     const self = this;
@@ -48,15 +49,17 @@ export default class WorldMap {
 
     const worldMap = this.svg.append('g').attr('class', 'map');
 
+    this.tooltip = parentContainerSelection
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
     this.updateElements();
   }
 
   updateElements() {
-    const { data, width, height, svg, worldFeatures } = this;
+    const { data, width, height, svg, tooltip, worldFeatures } = this;
 
-    // To Do:
-    // 1. change the projection
-    // 2. fix the black color, this is when the region is undefined in our dataset
     const projection = d3
       .geoMercator()
       .scale((width - 3) / (2 * Math.PI))
@@ -78,38 +81,57 @@ export default class WorldMap {
         '#7f2704',
       ]);
 
-      const valueByRegion = {};
-      data.forEach(d => {
-        valueByRegion[d.regionCode] = +d.value;
-      });
+    const valueByRegion = {};
+    data.forEach(d => {
+      valueByRegion[d.regionCode] = +d.value;
+    });
 
-      worldFeatures.forEach(d => {
-        valueByRegion[d.properties.countryCode]
-          ? (d.value = valueByRegion[d.properties.countryCode])
-          : (d.value = 0);
-      });
+    worldFeatures.forEach(d => {
+      valueByRegion[d.properties.countryCode]
+        ? (d.value = valueByRegion[d.properties.countryCode])
+        : (d.value = 0);
+    });
 
-      const worldMap = svg.select('.map');
+    const worldMap = svg.select('.map');
+    const countries = worldMap.selectAll('.country')
+      .data(worldFeatures);
 
-      const countries = worldMap.selectAll('.country')
-        .data(worldFeatures);
+    const countriesEnterUpdate = countries
+      .enter()
+      .append('path')
+      .attr('class', 'country')
+      .merge(countries)
+      .attr('fill', d => {
+        const value = valueByRegion[d.properties.countryCode];
+        // const alpha = value === undefined ? 0 : value/100;
+        // let alpha;
+        // if (value === undefined || value ==) {
+        //   alpha = 0;
+        // }
+        const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
+        return `rgba(250, 130, 0, ${alpha})`
+        // return `rgba(68, 34, 179, ${alpha})`
+      })
+      .attr('d', path)
+      .on("mouseover", function(d) {
+        d3.select(this)
+          .transition().duration(100)
+          .style("opacity", 0.8);
 
-      const countriesEnterUpdate = countries
-        .enter()
-        .append('path')
-        .attr('class', 'country')
-        .merge(countries)
-        .attr('fill', d => {
-          const value = valueByRegion[d.properties.countryCode];
-          // const alpha = value === undefined ? 0 : value/100;
-          // let alpha;
-          // if (value === undefined || value ==) {
-          //   alpha = 0;
-          // }
-          const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
-          return `rgba(250, 130, 0, ${alpha})`
-          // return `rgba(68, 34, 179, ${alpha})`
-        })
-        .attr('d', path);
+        (d.value !== 0) ? tooltip.transition().duration(100).style("opacity", 1) : tooltip.style("opacity", 0);
+        const tooltipHed = "<h4>" + d.properties.name + "</h4>"
+        const tooltipVal = "<span>" + valueByRegion[d.properties.countryCode] + "</span>"
+
+        tooltip.html(tooltipHed + tooltipVal)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY -30) + "px");
+      })
+      .on("mouseout", function() {
+        d3.select(this)
+          .transition().duration(100)
+          .style("opacity", 1);
+        tooltip.transition().duration(100)
+          .style("opacity", 0);
+      })
   }
 }
