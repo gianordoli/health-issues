@@ -68,7 +68,7 @@ export default class WorldMap {
 
     var color = d3
       .scaleThreshold()
-      .domain([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
+      .domain([10, 20, 30, 40, 50, 60, 70, 80, 90])
       .range([
         '#fff5eb',
         '#fee6ce',
@@ -96,6 +96,45 @@ export default class WorldMap {
     const countries = worldMap.selectAll('.country')
       .data(worldFeatures);
 
+    // Legend
+    const x = d3.scaleLinear()
+      .domain([10, 90])
+      .rangeRound([height, width]);
+
+    const legend = svg.append('g')
+      .attr('class', 'legend')
+      .attr("transform", "translate(" + -30 + "," + (height-30) + ")");
+
+    legend.selectAll("rect")
+      .data(color.range().map(function(d) {
+        d = color.invertExtent(d);
+        if (d[0] == null) d[0] = x.domain()[0];
+        if (d[1] == null) d[1] = x.domain()[1];
+        return d;
+      }))
+      .enter().append("rect")
+        .attr("height", 5)
+        .attr("x", function(d) { return x(d[0]); })
+        .attr("width", function(d) { log.info("legend width"+ d); return x(d[1]) - x(d[0]); })
+        .attr("fill", function(d) { return color(d[0]); });
+
+    legend.append("text")
+      .attr("class", "legend")
+      .attr("x", x.range()[0])
+      .attr("y", -6)
+      .attr("fill", "#000")
+      .attr("text-anchor", "start")
+      .attr("font-weight", "bold")
+      .text("Search amount:");
+
+    legend.call(d3.axisBottom(x)
+      .tickSize(9)
+      .tickFormat(function(x, i) { return x })
+      .tickValues(color.domain()))
+    .select(".domain")
+      .remove();
+
+    // update
     const countriesEnterUpdate = countries
       .enter()
       .append('path')
