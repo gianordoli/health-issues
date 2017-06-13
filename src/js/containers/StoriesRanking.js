@@ -9,10 +9,36 @@ export default class StoriesRanking {
     this.createElements(parentContainer);
   }
 
+  scroll(event: Event, target: HTMLElement, direction: string) {
+    let currPosPerc = parseInt(target.style.left.substring(0, target.style.left.indexOf('%')));
+    currPosPerc = isNaN(currPosPerc) ? 0 : currPosPerc;
+
+    const parent = target.parentElement;
+
+    if (parent) {
+      const parentWidth = parent.offsetWidth;
+      let nextPosAbs;
+
+      switch(direction) {
+        case 'forward':
+          if (parent.scrollWidth > target.offsetWidth) {
+            target.style.left = `${(currPosPerc - 100)}%`;
+          }
+          break;
+        case 'back':
+          nextPosAbs = target.offsetLeft + parentWidth;
+          if (nextPosAbs <= 0) {
+            target.style.left = `${(currPosPerc + 100)}%`;
+          }
+          break;
+      }
+    }
+  }
+
   createElements(parentContainer: HTMLElement) {
 
     const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('story-section');
+    elementsContainer.classList.add('story-section', 'ranking');
     parentContainer.appendChild(elementsContainer);
 
     const pageBody = document.createElement('div');
@@ -35,9 +61,23 @@ export default class StoriesRanking {
     sectionBody.classList.add('section-body', 'container');
     pageBody.appendChild(sectionBody);
 
+    const slideshow = document.createElement('div');
+    slideshow.classList.add('slideshow');
+    sectionBody.appendChild(slideshow);
+
+    const btBack = document.createElement('button');
+    btBack.classList.add('bt-arrow', 'back');
+    let bindClick = evt => this.scroll(evt, rankingTable, 'back');
+    btBack.addEventListener('click', bindClick);
+    slideshow.appendChild(btBack);
+
+    const rankingTableContainer = document.createElement('div');
+    rankingTableContainer.classList.add('ranking-table-container');
+    slideshow.appendChild(rankingTableContainer);
+
     const rankingTable = document.createElement('div');
     rankingTable.classList.add('ranking-table');
-    sectionBody.appendChild(rankingTable);
+    rankingTableContainer.appendChild(rankingTable);
 
     for(const r of ranking) {
       const rankingColumn = document.createElement('div');
@@ -59,5 +99,11 @@ export default class StoriesRanking {
         list.appendChild(item);
       }
     }
+
+    const btForward = document.createElement('button');
+    btForward.classList.add('bt-arrow', 'forward');
+    bindClick = evt => this.scroll(evt, rankingTable, 'forward');
+    btForward.addEventListener('click', bindClick);
+    slideshow.appendChild(btForward);
   }
 }

@@ -37,7 +37,7 @@ export default class StoriesEpidemics {
     const isLoading = false;
 
     const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('story-section');
+    elementsContainer.classList.add('story-section', 'epidemics');
     parentContainer.appendChild(elementsContainer);
 
     const mapDataPath = stories[storySection].cases[currCase].mapData;
