@@ -149,11 +149,14 @@ export default class Intro {
         const type = i < 3 ? 'trend' : 'seasonal';
         const index = i < 2 ? i : i - 1;
 
+        chartsContainer.classList.remove('step-2');
+
         if (i === 1) {
           yearlyLoop = setInterval(loopThroughYears, 1000);
         } else {
           clearInterval(yearlyLoop);
           if (i === 2) {
+            chartsContainer.classList.add('step-2');
             chart.updateData([chartData[0], chartData[index]], type);
           } else {
             clearInterval(yearlyLoop);

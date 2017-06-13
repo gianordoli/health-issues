@@ -19,6 +19,15 @@
         @include for-phone-down {
           top: $col-gutter-small;
         }
+
+        &.step-2 {
+          svg.chart-canvas .line-chart g.time-series {
+            path.line.disease {
+              &:nth-child(1) { stroke: $color-1; opacity: 0.48; }
+              &:nth-child(2) { stroke: $color-1; }
+            }
+          }          
+        }
       }
 
       &.graph-scroll-fixed .charts-container {
