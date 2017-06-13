@@ -3,6 +3,15 @@
 #stories.page {
   background-color: $color-0;
 
+  input[type="range"] {
+    width: calc(100% - 32px);
+    margin-left: 32px;
+  }
+
+  .selectize-input {
+    min-width: 180px;
+  }  
+
   .page-header {
     background-color: $color-0;
     color: white;
@@ -43,8 +52,8 @@
         color: $color-0;
         transition-property: background-color, color;
         transition-duration: 0.25s;
-        &:not(:first-child) {
-          margin-left: $elements-margin;
+        &:not(:last-child) {
+          margin-right: $elements-margin;
         }
 
         &:hover, &.active {
@@ -91,11 +100,6 @@
       }
     }
   }
-}
-
-input[type="range"] {
-  width: calc(100% - 32px);
-  margin-left: 32px;
 }
 
 

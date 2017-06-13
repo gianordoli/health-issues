@@ -14,17 +14,21 @@
       .charts-container {
         position: absolute;
         top: $col-gutter-large;
-        // height: 100vh;
         @include columns(2);
 
         @include for-phone-down {
           top: $col-gutter-small;
-          width: calc(100% - #{$col-gutter-large}*2);
         }
       }
 
       &.graph-scroll-fixed .charts-container {
         position: fixed;
+        width: calc((#{$container-max-width} - #{$col-gutter-large}*4) * 2/3 + #{$col-gutter-large});
+        max-width: 100%;
+
+        @include for-phone-down {
+          width: calc(100% - #{$col-gutter-small}*4);
+        }
       }
 
       &.graph-scroll-below .charts-container {
