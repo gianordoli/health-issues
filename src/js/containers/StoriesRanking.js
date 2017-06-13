@@ -93,7 +93,7 @@ export default class StoriesRanking {
     const btBack = document.createElement('button');
     btBack.classList.add('bt-arrow', 'back');
     // btBack.disabled = true;
-    let bindClick = evt => this.scroll(evt, rankingTable, 'back');
+    let bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, 'back');
     btBack.addEventListener('click', bindClick);
     slideshow.appendChild(btBack);
 
