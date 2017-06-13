@@ -10,28 +10,20 @@ export default class StoriesRanking {
   }
 
   scroll(event: Event, target: HTMLElement, direction: string) {
-    let currPosPerc = parseInt(target.style.left.substring(0, target.style.left.indexOf('%')));
-    currPosPerc = isNaN(currPosPerc) ? 0 : currPosPerc;
-
+    const currPos = target.offsetLeft;
     const parent = target.parentElement;
 
     if (parent) {
       const parentWidth = parent.offsetWidth;
-      let nextPosAbs;
-
-      switch(direction) {
-        case 'forward':
-          if (parent.scrollWidth > target.offsetWidth) {
-            target.style.left = `${(currPosPerc - 100)}%`;
-          }
-          break;
-        case 'back':
-          nextPosAbs = target.offsetLeft + parentWidth;
-          if (nextPosAbs <= 0) {
-            target.style.left = `${(currPosPerc + 100)}%`;
-          }
-          break;
+      const parentScroll = parent.scrollWidth;
+      let offset;
+      if (direction === 'forward') {
+        offset = (parentScroll - parentWidth) < parentWidth ? parentScroll - parentWidth : parentWidth;
+      } else {
+        offset = Math.abs(currPos) < parentWidth ? Math.abs(currPos) : parentWidth;
       }
+      const nextPos = direction === 'forward' ? currPos - offset : currPos + offset;
+      target.style.left = `${(nextPos)}px`;
     }
   }
 
