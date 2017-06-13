@@ -9,21 +9,54 @@ export default class StoriesRanking {
     this.createElements(parentContainer);
   }
 
-  scroll(event: Event, target: HTMLElement, direction: string) {
-    const currPos = target.offsetLeft;
-    const parent = target.parentElement;
+  itemClick(event: Event, className: string, parent: HTMLElement) {
+    const allItems = parent.querySelectorAll('li');
+    if (allItems) {
+      allItems.forEach(function(i) {
+        i.classList.remove('active');
+      });
+    }
+    const items = parent.querySelectorAll(`.${className}`);
+    if (items) {
+      items.forEach(function(i) {
+        i.classList.add('active');
+      });
+    }
+  }
+
+  itemMouseOut(event: Event, className: string, parent: HTMLElement) {
+    const items = parent.querySelectorAll(`.${className}`);
+    if (items) {
+      items.forEach(function(i) {
+        i.classList.remove('hover');
+      });
+    }
+  }
+
+  itemMouseOver(event: Event, className: string, parent: HTMLElement) {
+    const items = parent.querySelectorAll(`.${className}`);
+    if (items) {
+      items.forEach(function(i) {
+        i.classList.add('hover');
+      });
+    }
+  }
+
+  scroll(event: Event, element: HTMLElement, parent: HTMLElement, direction: string) {
+    const { target } = event;
+    const currPos = element.offsetLeft;
 
     if (parent) {
       const parentWidth = parent.offsetWidth;
       const parentScroll = parent.scrollWidth;
-      let offset;
+      let offset = 0;
       if (direction === 'forward') {
         offset = (parentScroll - parentWidth) < parentWidth ? parentScroll - parentWidth : parentWidth;
-      } else {
+      } else if (direction === 'back') {
         offset = Math.abs(currPos) < parentWidth ? Math.abs(currPos) : parentWidth;
       }
       const nextPos = direction === 'forward' ? currPos - offset : currPos + offset;
-      target.style.left = `${(nextPos)}px`;
+      element.style.left = `${(nextPos)}px`;
     }
   }
 
@@ -59,6 +92,7 @@ export default class StoriesRanking {
 
     const btBack = document.createElement('button');
     btBack.classList.add('bt-arrow', 'back');
+    // btBack.disabled = true;
     let bindClick = evt => this.scroll(evt, rankingTable, 'back');
     btBack.addEventListener('click', bindClick);
     slideshow.appendChild(btBack);
@@ -78,8 +112,11 @@ export default class StoriesRanking {
 
       const header = document.createElement('div');
       header.classList.add('header');
-      header.innerHTML = r.year;
       rankingColumn.appendChild(header);
+
+      let span = document.createElement('span');
+      span.innerHTML = r.year;
+      header.appendChild(span);
 
       const list = document.createElement('ul');
       list.classList.add('body');
@@ -87,14 +124,25 @@ export default class StoriesRanking {
 
       for(const d of r.diseases) {
         const item = document.createElement('li');
-        item.innerHTML = d;
+        const className = d.toLowerCase().replace('/', '-');
+        item.classList.add(className);
+        const bindClick = evt => this.itemClick(evt, className, rankingTable);
+        const bindMouseOver = evt => this.itemMouseOver(evt, className, rankingTable);
+        const bindMouseOut = evt => this.itemMouseOut(evt, className, rankingTable);
+        item.addEventListener('click', bindClick);
+        item.addEventListener('mouseover', bindMouseOver);
+        item.addEventListener('mouseout', bindMouseOut);
         list.appendChild(item);
+
+        span = document.createElement('span');
+        span.innerHTML = d;
+        item.appendChild(span);
       }
     }
 
     const btForward = document.createElement('button');
     btForward.classList.add('bt-arrow', 'forward');
-    bindClick = evt => this.scroll(evt, rankingTable, 'forward');
+    bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, 'forward');
     btForward.addEventListener('click', bindClick);
     slideshow.appendChild(btForward);
   }
