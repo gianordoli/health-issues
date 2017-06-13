@@ -46,14 +46,22 @@ export default class StoriesRanking {
     const { target } = event;
     const currPos = element.offsetLeft;
 
+    const btBack = document.querySelector('.bt-arrow.back');
+    const btForward = document.querySelector('.bt-arrow.forward');
+    if (btBack) btBack.disabled = false;
+    if (btForward) btForward.disabled = false;
+
     if (parent) {
       const parentWidth = parent.offsetWidth;
       const parentScroll = parent.scrollWidth;
-      let offset = 0;
-      if (direction === 'forward') {
-        offset = (parentScroll - parentWidth) < parentWidth ? parentScroll - parentWidth : parentWidth;
-      } else if (direction === 'back') {
-        offset = Math.abs(currPos) < parentWidth ? Math.abs(currPos) : parentWidth;
+      let offset = parentWidth;
+
+      if (direction === 'forward' && (parentScroll - parentWidth) < parentWidth) {
+        offset = parentScroll - parentWidth;
+        btForward.disabled = true;
+      } else if (direction === 'back' && Math.abs(currPos) < parentWidth) {
+        offset = Math.abs(currPos);
+        btBack.disabled = true;
       }
       const nextPos = direction === 'forward' ? currPos - offset : currPos + offset;
       element.style.left = `${(nextPos)}px`;
@@ -92,7 +100,7 @@ export default class StoriesRanking {
 
     const btBack = document.createElement('button');
     btBack.classList.add('bt-arrow', 'back');
-    // btBack.disabled = true;
+    btBack.disabled = true;
     let bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, 'back');
     btBack.addEventListener('click', bindClick);
     slideshow.appendChild(btBack);

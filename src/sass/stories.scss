@@ -40,8 +40,9 @@
         .bt-arrow {
           width: $baseline-height * 2;
           height: $baseline-height * 2;
-          background-color: $color-0;
           border: none;
+          background-color: white;
+          cursor: pointer;
           flex-shrink: 0;
 
           @include for-phone-down {
@@ -49,15 +50,33 @@
           };
 
           &:disabled {
-            background-color: lighten($color-0, 24%);
+            opacity: 0.24;
+          }
+
+          &:after {
+              content: '';
+              display: block;
+              border-width: 2px 2px 0 0;
+              border-style: solid;
+              border-color: $color-0;
+              width: $baseline-height;
+              height: $baseline-height;
           }
 
           &.back {
             margin-right: $elements-margin;
+
+            &:after {
+              transform: rotate(-135deg);
+            }
           }
 
           &.forward {
             margin-left: $elements-margin;
+
+            &:after {
+              transform: rotate(45deg);
+            }
           }
         }
 
@@ -111,6 +130,7 @@
                 padding-left: 0;
 
                 li {
+                  cursor: pointer;
 
                   &.hover {
                     background-color: lighten($color-1, 24%);

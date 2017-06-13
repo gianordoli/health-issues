@@ -80,8 +80,8 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    const home = new Home(elementsContainer, trendsAPI);
-    const intro = new Intro(elementsContainer);
+    // const home = new Home(elementsContainer, trendsAPI);
+    // const intro = new Intro(elementsContainer);
     const stories = new Stories(elementsContainer);
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);
