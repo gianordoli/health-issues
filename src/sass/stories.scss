@@ -44,6 +44,10 @@
           border: none;
           flex-shrink: 0;
 
+          @include for-phone-down {
+            display: none;
+          };
+
           &.back {
             margin-right: $elements-margin;
           }
@@ -58,11 +62,19 @@
           overflow-x: hidden;
           position: relative;
 
+          @include for-phone-down {
+            overflow-x: auto;
+          };
+
           .ranking-table {
             position: relative;
             left: 0;
             white-space: nowrap;
             transition: left 0.5s ease-out;
+
+            @include for-phone-down {
+              white-space: normal;
+            };
 
             .ranking-column {
               display: inline-block;
@@ -74,7 +86,7 @@
               }
 
               @include for-phone-down {
-                width: 25%;
+                width: 50%;
               };
 
               .header {
