@@ -1,7 +1,6 @@
 @import 'App';
 
 #stories.page {
-  background-color: $color-0;
 
   input[type="range"] {
     width: calc(100% - 32px);
@@ -10,6 +9,10 @@
 
   .selectize-input {
     min-width: 180px;
+  }
+
+  .page-body {
+    background-color: darken($color-0, 10%);    
   }
 
   .story-section {

@@ -78,13 +78,9 @@ export default class StoriesLineCharts {
       currCase
     ];
 
-    const pageBody = document.createElement('div');
-    pageBody.classList.add('page-body');
-    elementsContainer.appendChild(pageBody);
-
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header', 'container');
-    pageBody.appendChild(sectionHeader);
+    elementsContainer.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = stories[storySection].title;
@@ -95,7 +91,7 @@ export default class StoriesLineCharts {
     sectionHeader.appendChild(intro);
 
     const storiesNavBar = new StoriesNavBar(
-      pageBody,
+      elementsContainer,
       stories[storySection].cases.map(c => c.title),
       this,
       this.loadNewCase
@@ -103,7 +99,7 @@ export default class StoriesLineCharts {
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body', 'container');
-    pageBody.appendChild(sectionBody);
+    elementsContainer.appendChild(sectionBody);
 
     this.loaderContainer = document.createElement('div');
     const { loaderContainer } = this;

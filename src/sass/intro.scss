@@ -2,7 +2,10 @@
 
 #intro.page {
 
-  background-color: $color-gray;
+  .page-body {
+    padding-top: $baseline-height*8;
+    background-color: $color-gray;    
+  }
 
   .section-body {
 

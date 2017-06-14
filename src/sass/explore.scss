@@ -2,7 +2,13 @@
 
 #explore.page {
 
-  background-color: $color-gray;
+  .page-body {
+    background-color: darken($color-0, 10%);
+  }
+
+  .section-header {
+    color: white;
+  }
 
   .top-queries-container {
     @include columns(1);

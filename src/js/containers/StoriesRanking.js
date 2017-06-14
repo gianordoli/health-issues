@@ -74,13 +74,9 @@ export default class StoriesRanking {
     elementsContainer.classList.add('story-section', 'ranking');
     parentContainer.appendChild(elementsContainer);
 
-    const pageBody = document.createElement('div');
-    pageBody.classList.add('page-body');
-    elementsContainer.appendChild(pageBody);
-
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header', 'container');
-    pageBody.appendChild(sectionHeader);
+    elementsContainer.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = 'Top 10';
@@ -92,7 +88,7 @@ export default class StoriesRanking {
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body', 'container');
-    pageBody.appendChild(sectionBody);
+    elementsContainer.appendChild(sectionBody);
 
     const slideshow = document.createElement('div');
     slideshow.classList.add('slideshow');

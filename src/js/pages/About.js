@@ -17,7 +17,7 @@ export default class About {
     parentContainer.appendChild(elementsContainer);
 
     const pageHeader = document.createElement('div');
-    pageHeader.classList.add('page-header', 'sticky');
+    pageHeader.classList.add('page-header');
     elementsContainer.appendChild(pageHeader);
 
     const container = document.createElement('div');

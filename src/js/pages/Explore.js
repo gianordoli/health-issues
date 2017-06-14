@@ -271,9 +271,13 @@ export default class Explore {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const sticky = document.createElement('div');
+    sticky.classList.add('sticky');
+    elementsContainer.appendChild(sticky);
+
     const pageHeader = document.createElement('div');
-    pageHeader.classList.add('page-header', 'sticky');
-    elementsContainer.appendChild(pageHeader);
+    pageHeader.classList.add('page-header');
+    sticky.appendChild(pageHeader);
 
     const container = document.createElement('div');
     container.classList.add('container');

@@ -95,7 +95,7 @@ app.main = (function (){
     stickyfill.init();
     var stickyElements = document.getElementsByClassName('sticky');
     for (let i = stickyElements.length - 1; i >= 0  ; i--) {
-      stickyElements[i].style.zIndex = (10 * (i + 1000)).toString();
+      // stickyElements[i].style.zIndex = (10 * (i + 1000)).toString();
       stickyfill.add(stickyElements[i]);
     }
 

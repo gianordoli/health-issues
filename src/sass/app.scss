@@ -12,7 +12,7 @@ $color-3: #009DF7;
 //---------------------- LAYOUT ----------------------//
 $container-max-width: 960px;
 $col-gutter-small: 12px;
-$col-gutter-large: 24px;
+$col-gutter-large: 36px;
 
 $baseline-height: 12px;
 
@@ -208,6 +208,11 @@ html {
   box-sizing: inherit;
 }
 
+#shiny-disconnected-overlay {
+  width: 0;
+  height: 0;
+}
+
 html, body {
   width: 100%;
   min-height: 100%;
@@ -266,27 +271,28 @@ a {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
+  z-index: 100;
 }
 
 .page {
   width: 100%;
-  // min-height: 100vh;
   margin: 0;
   border: 0;
   text-align: center;
 
   .page-header {
 
-    background-color: lighten($color-3, 36%);
-    color: $color-0;
+    background-color: $color-0;
+    color: white;
 
     width: 100%;
-    height: $baseline-height * 4;
+    height: $baseline-height * 3;
     padding: 0 $col-gutter-large;
     text-align: center;
-    border: 1px solid lighten($color-3, 28%);
     border-width: 1px 0;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.24);
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.24);
+    box-shadow: 0 4px rgba(0, 0, 0, 0.18);
 
     display: flex;
     flex-direction: row;
@@ -306,10 +312,9 @@ a {
   }
 
   .page-body {
-    margin: $baseline-height*8 $col-gutter-large;
-
+    padding: $baseline-height*4 $col-gutter-large $baseline-height*8 $col-gutter-large;
     @include for-phone-down {
-      margin: $baseline-height*4 $col-gutter-small;
+      padding: $baseline-height*2 $col-gutter-small $baseline-height*4 $col-gutter-small;
     };
   }
 }
@@ -322,22 +327,10 @@ a {
 }
 
 .section-header {
-  margin: 0 auto $col-gutter-large auto;
-
-  &:not(:first-child) {
-    margin-top: $baseline-height*8;
-  }
-
-  @include for-phone-down {
-    margin: 0 auto $col-gutter-small auto;
-
-    &:not(:first-child) {
-      margin-top: $baseline-height*4;
-    }
-  };
+  margin: $baseline-height*2 auto;
 
   p {
-      @include type-intro;
+    @include type-intro;
   }
 }
 
@@ -345,13 +338,12 @@ a {
   background-color: white;
   color: $color-black;
   padding: $col-gutter-large;
-  margin: 0 auto;
+  margin: 0 auto $baseline-height*10 auto;
   position: relative;
-  z-index: 0;
 
   @include for-phone-down {
     padding: $col-gutter-small;
-    margin: 0 auto;
+    margin: 0 auto $baseline-height*4 auto;
   };
 }
 
@@ -388,6 +380,9 @@ svg.chart-canvas {
           stroke: $color-0;
           stroke-opacity: 0.24;
         }
+        text {
+          text-transform: uppercase;
+        }
       }
 
       &.y {
@@ -396,7 +391,7 @@ svg.chart-canvas {
         }
 
         text.title {
-            text-transform: uppercase;
+          text-transform: uppercase;
         }
       }
     }
@@ -592,11 +587,11 @@ svg.chart-canvas {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 100;
   visibility: visible;
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.24);
   transition: visibility 0.5s, opacity 0.5s linear;
+  z-index: 10;
 
   &.hidden {
     display: block;
