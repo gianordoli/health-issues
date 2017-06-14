@@ -130,12 +130,12 @@ export default class Intro {
 
     let yearlyLoop;
     let yearlyLoopIndex = 0;
-    function loopThroughYears() {
+    function loopThroughYears(type: string, title: string) {
       const data = {
         term: chartData[0].term,
         points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12),
       }
-      chart.updateData([data], 'trend');
+      chart.updateData([data], type, title);
       if (yearlyLoopIndex < 12) {
         yearlyLoopIndex ++;
       } else {
@@ -175,7 +175,9 @@ export default class Intro {
         chartsContainer.classList.remove('step-2');
 
         if (i === 1) {
-          yearlyLoop = setInterval(loopThroughYears, 1000);
+          yearlyLoop = setInterval(function(){
+            loopThroughYears(type, title);
+          }, 1000);
         } else {
           clearInterval(yearlyLoop);
           if (i === 2) {
