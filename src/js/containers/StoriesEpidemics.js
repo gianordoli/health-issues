@@ -171,7 +171,7 @@ export default class StoriesEpidemics {
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.lineChart = new LineChart(chartItem);
+    this.lineChart = new LineChart(chartItem, 'mixed');
 
     this.slider = document.createElement('input');
     const { slider } = this;

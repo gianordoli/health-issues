@@ -156,6 +156,7 @@ export default class Intro {
             type = 'total';
             break;
           case 1:
+            type = 'mixed';
             title = 'Trend per year';
             break;
           case 2:

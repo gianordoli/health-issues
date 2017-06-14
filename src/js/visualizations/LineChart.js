@@ -125,16 +125,22 @@ export default class LineChart {
     const xAxis = d3.axisBottom(x)
       .tickSize(0)
       .tickPadding(12);
+
     if (type === 'seasonal') {
       xAxis.tickFormat(d3.timeFormat('%b'));
+
     } else if (type === 'trend' || type === 'total')  {
-      xAxis.tickFormat(d3.timeFormat('%Y'));
-    } else {
-      xAxis.tickFormat(d3.timeFormat('%b %Y'));
+      xAxis.tickFormat(d3.timeFormat('%Y'))
+        .ticks(d3.timeYear.every(2));
+
+    } else if (type === 'mixed') {
+      xAxis.tickFormat(d3.timeFormat('%b %Y'))
+      .ticks(d3.timeMonth.every(2));
     }
 
     const yAxis = d3.axisLeft(y)
-      .tickSize(12);
+      .tickSize(12)
+      .ticks(type === 'seasonal' ? 5 : 3);
 
     const line = d3.line()
       .x(function(d) { return x(d.date); })
@@ -145,16 +151,16 @@ export default class LineChart {
     chart.select('g.y')
       .transition()
       .duration(transitionDuration)
-      .call(yAxis)
+      .call(yAxis);
 
     chart.select('g.y .title')
       .text(title);
 
     chart.select('g.y')
-      .selectAll('.tick text')
-      .each(function(d, i){
-        d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
-      });
+      .selectAll('.tick text');
+      // .each(function(d, i){
+      //   d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
+      // });
 
     chart.select('g.x')
       .transition()
@@ -172,11 +178,11 @@ export default class LineChart {
       .duration(transitionDuration)
       .style('transform', 'none');
 
-      chart.select('g.x')
-        .selectAll('.tick text')
-        .each(function(d,i){
-          d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
-        });
+      // chart.select('g.x')
+      //   .selectAll('.tick text')
+      //   .each(function(d,i){
+      //     d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
+      //   });
     }
 
     const timeSeries = chart.selectAll('.time-series');

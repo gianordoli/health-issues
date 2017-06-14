@@ -22,6 +22,7 @@ app.main = (function (){
 
   let explore;
   let ticking = false;
+  let introMounted = false;
   let storiesOffsetTop;
 
   function loadShinyAPI() {
@@ -45,8 +46,16 @@ app.main = (function (){
   function checkScroll(e) {
     if (!ticking) {
       window.requestAnimationFrame(function() {
+
         ticking = false;
-        if (window.scrollY > storiesOffsetTop) {
+
+        if (!introMounted) {
+          introMounted = document.querySelector('#intro.page').getBoundingClientRect().height === 0 ? false : true;
+        } else {
+          storiesOffsetTop = document.querySelector('#stories.page').offsetTop;
+        }
+
+        if (storiesOffsetTop && window.scrollY > storiesOffsetTop) {
           window.removeEventListener('scroll', checkScroll);
           initializeExplore();
         }
@@ -86,20 +95,13 @@ app.main = (function (){
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);
 
-    const storiesDiv = document.querySelector('#stories.page');
-    if (storiesDiv) {
-      storiesOffsetTop = storiesDiv.offsetTop;
-    }
     window.addEventListener('scroll', checkScroll);
 
     stickyfill.init();
     var stickyElements = document.getElementsByClassName('sticky');
     for (let i = stickyElements.length - 1; i >= 0  ; i--) {
-      // stickyElements[i].style.zIndex = (10 * (i + 1000)).toString();
       stickyfill.add(stickyElements[i]);
     }
-
-    // const getMapData = new GetMapData(trendsAPI);
   }
 
   const init = function(){
