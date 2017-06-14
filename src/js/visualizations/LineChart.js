@@ -23,7 +23,8 @@ export default class LineChart {
     this.title = this.getTitle(this.type);
     this.margin = {top: 36, right: 4, bottom: 36, left: 36};
     this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
-    this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
+    const baseHeight = type !== 'seasonal' ? this.width/2 : this.width;
+    this.height = baseHeight - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }
 

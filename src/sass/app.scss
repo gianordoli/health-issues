@@ -356,7 +356,7 @@ svg.chart-canvas {
     letter-spacing: 1px;
   }
 
-  &:first-child {
+  &:not(:last-child) {
     margin-bottom: 30px;
   }
 
@@ -414,16 +414,9 @@ svg.chart-canvas {
   @include columns(2);
   display: inline-block;
 
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: flex-start;
-
   .chart-item {
-    // width: calc((100% - #{$col-gutter-large}*5)/2);
     display: inline-block;
     width: 100%;
-    height: 40vh;
-    // height: 100%;
   }
 }
 
