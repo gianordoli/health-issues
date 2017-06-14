@@ -382,10 +382,14 @@ export default class Explore {
     row.classList.add('row');
     sectionBody.appendChild(row);
 
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
+
     // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
+    colLeft.appendChild(chartsContainer);
 
     // Seasonal Chart
     let chartItem = document.createElement('div');

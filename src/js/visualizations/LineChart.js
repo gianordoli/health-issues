@@ -21,9 +21,11 @@ export default class LineChart {
     this.data = [];
     if (type) this.type = type;
     this.title = this.getTitle(this.type);
-    this.margin = {top: 36, right: 4, bottom: 36, left: 36};
+    this.margin = {top: 36, right: 4, bottom: 24, left: 36};
     this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
-    const baseHeight = type !== 'seasonal' ? this.width * 0.5 : this.width * 0.75;
+    const seasonalRatio = window.innerWidth < 600 ? 1 : 0.75;
+    const trendRatio = window.innerWidth < 600 ? 0.6 : 0.4;
+    const baseHeight = type !== 'seasonal' ? this.width * trendRatio : this.width * seasonalRatio;
     this.height = baseHeight - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }

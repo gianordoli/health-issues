@@ -62,16 +62,20 @@ export default class Intro {
     row.classList.add('row');
     sectionBody.appendChild(row);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
 
     const filtersMenu = new FiltersMenu(
-      chartsContainer,
+      colLeft,
       ['Influenza'],
       ['world'],
       'world',
     );
+
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    colLeft.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -120,7 +124,7 @@ export default class Intro {
 
     const thisPage = d3.select(elementsContainer);
     const containerD3 = thisPage.select('.row');
-    const chartsContainerD3 = containerD3.select('.charts-container');
+    const colLeftD3 = containerD3.select('.col-left');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');
 
@@ -141,7 +145,7 @@ export default class Intro {
     }
 
     graphScroll()
-      .graph(chartsContainerD3)
+      .graph(colLeftD3)
       .container(containerD3)
       .sections(slidesD3)
       .offset(window.innerHeight / 2)

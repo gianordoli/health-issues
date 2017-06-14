@@ -419,7 +419,7 @@ svg.chart-canvas {
     width: 100%;
 
     &:not(:last-child) {
-      margin-bottom: $baseline-height*3;
+      margin-bottom: $baseline-height*2;
     }
   }
 }

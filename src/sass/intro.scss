@@ -4,26 +4,29 @@
 
   .page-body {
     padding-top: $baseline-height*8;
-    background-color: $color-gray;    
+    background-color: $color-gray;
   }
 
   .section-body {
+
+    padding-top: 0;
 
     .row {
 
       position: relative;
       max-width: 100%;
 
-      .charts-container {
+      .col-left {
         position: absolute;
-        top: $col-gutter-large;
+        top: 0;
+        padding-top: $col-gutter-large;
         @include columns(2);
 
         @include for-phone-down {
           top: $col-gutter-small;
         }
 
-        &.step-2 {
+        .charts-container.step-2 {
           svg.chart-canvas .line-chart g.time-series {
             path.line.disease {
               &:nth-child(1) { stroke: $color-1; opacity: 0.48; }
@@ -33,7 +36,7 @@
         }
       }
 
-      &.graph-scroll-fixed .charts-container {
+      &.graph-scroll-fixed .col-left {
         position: fixed;
         width: calc((#{$container-max-width} - #{$col-gutter-large}*4) * 2/3 + #{$col-gutter-large});
         max-width: 100%;
@@ -43,13 +46,14 @@
         }
       }
 
-      &.graph-scroll-below .charts-container {
+      &.graph-scroll-below .col-left {
         position: absolute;
         top: auto;
         bottom: 0px;
       }
 
       .slides-container {
+        padding-top: $col-gutter-large;
         margin-left: calc((100% - 2*#{$col-gutter-large}) * 2/3 + 2*#{$col-gutter-large});
         width: calc((100% - 2*#{$col-gutter-large}) * 1/3);
 
