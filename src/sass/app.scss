@@ -10,7 +10,7 @@ $color-2: #FF91E6;
 $color-3: #009DF7;
 
 //---------------------- LAYOUT ----------------------//
-$container-max-width: 960px;
+$container-max-width: 1200px;
 $col-gutter-small: 12px;
 $col-gutter-large: 36px;
 
@@ -337,7 +337,7 @@ a {
 .section-body {
   background-color: white;
   color: $color-black;
-  padding: $col-gutter-large;
+  padding: $col-gutter-large*2 $col-gutter-large*4;
   margin: 0 auto $baseline-height*10 auto;
   position: relative;
 

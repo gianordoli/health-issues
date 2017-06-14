@@ -1,6 +1,7 @@
 // @flow weak
 
 import type { TrendsAPIGraph } from '../util/types';
+import { seasonalRatio, trendRatio } from '../util/constants';
 import * as d3 from 'd3';
 import log from 'loglevel';
 
@@ -10,7 +11,8 @@ export default class LineChart {
     term: string,
     points: {date: Date, value: number}[]
   }[];
-  title: string
+  parentContainer: HTMLElement;
+  title: string;
   type: string;
   width: number;
   height: number;
@@ -19,23 +21,42 @@ export default class LineChart {
 
   constructor(parentContainer: HTMLElement, type?: string) {
     this.data = [];
+    this.parentContainer = parentContainer;
     if (type) this.type = type;
     this.title = this.getTitle(this.type);
-    this.margin = {top: 36, right: 4, bottom: 24, left: 36};
-    this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
-    const seasonalRatio = window.innerWidth < 600 ? 1 : 0.75;
-    const trendRatio = window.innerWidth < 600 ? 0.6 : 0.4;
-    const baseHeight = type !== 'seasonal' ? this.width * trendRatio : this.width * seasonalRatio;
-    this.height = baseHeight - (this.margin.top + this.margin.bottom);
+    this.margin = { top: 36, right: 4, bottom: 24, left: 36 };
+    const size = this.getSize();
+    this.width = size.width;
+    this.height = size.height;
     this.createElements(parentContainer);
+  }
+
+  getSize() {
+    const { parentContainer, margin, type } = this;
+    const width = parentContainer.offsetWidth - (margin.left + margin.right);
+    const baseHeight = type !== 'seasonal' ? width * trendRatio : width * seasonalRatio;
+    const height = baseHeight - (margin.top + margin.bottom);
+    return { width, height };
+  }
+
+  resizeChart() {
+    const { margin, parentContainer } = this;
+    const size = this.getSize();
+    const { width, height } = size;
+    this.width = width;
+    this.height = height;
+    this.svg
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom);
   }
 
   updateData(data: TrendsAPIGraph[], type?: string, title? : string) {
     this.data = this.parseDates(data);
-    if (type) this.type = type;
+    if (type && type !== this.type) {
+      this.type = type;
+      this.resizeChart();
+    }
     this.title = title ? title : this.getTitle(this.type);
-    // console.log('D3 ->', this.data);
-    log.info(this.type);
     this.updateElements();
   }
 
@@ -71,9 +92,9 @@ export default class LineChart {
     const { data, width, height, margin } = this;
 
     this.svg = parentContainerSelection.append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
       .attr('class', 'chart-canvas');
+
+    this.resizeChart();
 
     const chart = this.svg
       .append('g')
@@ -81,8 +102,7 @@ export default class LineChart {
       .attr('class', 'line-chart');
 
     chart.append('g')
-      .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')');
+      .attr('class', 'x axis');
 
     chart.append('g')
       .attr('class', 'y axis')
@@ -158,13 +178,11 @@ export default class LineChart {
 
     chart.select('g.y')
       .selectAll('.tick text');
-      // .each(function(d, i){
-      //   d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
-      // });
 
     chart.select('g.x')
       .transition()
       .duration(transitionDuration)
+      .attr('transform', 'translate(0,' + height + ')')
       .call(xAxis);
 
     if (type === 'seasonal') {
@@ -177,12 +195,6 @@ export default class LineChart {
       .transition()
       .duration(transitionDuration)
       .style('transform', 'none');
-
-      // chart.select('g.x')
-      //   .selectAll('.tick text')
-      //   .each(function(d,i){
-      //     d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
-      //   });
     }
 
     const timeSeries = chart.selectAll('.time-series');

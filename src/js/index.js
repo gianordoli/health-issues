@@ -48,11 +48,12 @@ app.main = (function (){
       window.requestAnimationFrame(function() {
 
         ticking = false;
-
         if (!introMounted) {
-          introMounted = document.querySelector('#intro.page').getBoundingClientRect().height === 0 ? false : true;
+          const introPage = document.querySelector('#intro.page');
+          if (introPage) introMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
         } else {
-          storiesOffsetTop = document.querySelector('#stories.page').offsetTop;
+          const storiesPage = document.querySelector('#intro.page');
+          if (storiesPage) storiesOffsetTop = storiesPage.offsetTop;
         }
 
         if (storiesOffsetTop && window.scrollY > storiesOffsetTop) {

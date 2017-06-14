@@ -2,6 +2,7 @@
 
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
+import { seasonalRatio } from '../util/constants';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
 import log from 'loglevel';
@@ -76,6 +77,7 @@ export default class Intro {
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
     colLeft.appendChild(chartsContainer);
+    chartsContainer.style.height = (chartsContainer.offsetWidth * seasonalRatio).toString() + 'px';
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');

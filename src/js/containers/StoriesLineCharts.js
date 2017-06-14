@@ -5,6 +5,7 @@ import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
+import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
