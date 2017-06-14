@@ -1,7 +1,7 @@
 // @flow weak
 
-// Libraries
 import log from 'loglevel';
+import '../../sass/about.scss';
 
 export default class About {
 

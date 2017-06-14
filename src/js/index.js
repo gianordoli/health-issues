@@ -80,8 +80,8 @@ app.main = (function (){
       body.appendChild(elementsContainer);
     }
 
-    // const home = new Home(elementsContainer, trendsAPI);
-    // const intro = new Intro(elementsContainer);
+    const home = new Home(elementsContainer, trendsAPI);
+    const intro = new Intro(elementsContainer);
     const stories = new Stories(elementsContainer);
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);
@@ -94,8 +94,8 @@ app.main = (function (){
 
     stickyfill.init();
     var stickyElements = document.getElementsByClassName('page-header');
-    for (var i = stickyElements.length - 1; i >= 0; i--) {
-      stickyfill.add(stickyElements[i]);
+    for (const s of stickyElements) {
+      stickyfill.add(s);
     }
 
     // const getMapData = new GetMapData(trendsAPI);

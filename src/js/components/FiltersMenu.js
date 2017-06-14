@@ -44,6 +44,7 @@ export default class FiltersMenu {
     onGeoChange?: (geoIso: string, self: StoriesLineCharts) => void
   ) {
     let text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = 'Search interest from 2004 to 2016 for <br>';
     elementsContainer.appendChild(text);
 
@@ -53,17 +54,19 @@ export default class FiltersMenu {
 
     for (const t of terms) {
       const s = document.createElement('span');
+      s.classList.add('sentence');
       s.innerHTML = t;
       termsList.appendChild(s);
     }
 
     text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = ' in ';
     elementsContainer.appendChild(text);
 
     if (geoList.length === 1) {
       const geo = document.createElement('span');
-      geo.classList.add('geo');
+      geo.classList.add('geo', 'sentence');
       geo.innerHTML = countries.find(c => c.iso === geoList[0]).name;
       elementsContainer.appendChild(geo);
     } else {

@@ -192,7 +192,7 @@
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
-      padding: $elements-padding;
+      padding: $elements-padding/2 $elements-padding;
 
       @include for-phone-down {
         padding-left: $elements-padding
@@ -203,6 +203,7 @@
         cursor: pointer;
         display: inline-block;
         padding: $elements-padding/2;
+        margin: $elements-margin/4 0;
         color: $color-0;
         transition-property: background-color, color;
         transition-duration: 0.25s;

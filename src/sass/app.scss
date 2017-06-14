@@ -227,7 +227,7 @@ b {
 
 .page {
   width: 100%;
-  min-height: 100vh;
+  // min-height: 100vh;
   margin: 0;
   border: 0;
   text-align: center;
@@ -246,7 +246,7 @@ b {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1100;
 
     @include type-h5;
 
@@ -256,10 +256,10 @@ b {
   }
 
   .page-body {
-    margin: 0 $col-gutter-large;
+    margin: $baseline-height*8 $col-gutter-large;
 
     @include for-phone-down {
-      margin: 0 $col-gutter-small;
+      margin: $baseline-height*4 $col-gutter-small;
     };
   }
 }
@@ -272,10 +272,18 @@ b {
 }
 
 .section-header {
-  margin: $baseline-height*4 auto $col-gutter-large auto;
+  margin: 0 auto $col-gutter-large auto;
+
+  &:not(:first-child) {
+    margin-top: $baseline-height*8;
+  }
 
   @include for-phone-down {
-    margin: $baseline-height*4 auto $col-gutter-small auto;
+    margin: 0 auto $col-gutter-small auto;
+
+    &:not(:first-child) {
+      margin-top: $baseline-height*4;
+    }
   };
 
   p {
@@ -287,12 +295,12 @@ b {
   background-color: white;
   color: $color-black;
   padding: $col-gutter-large;
-  margin: 0 auto $col-gutter-large auto;
+  margin: 0 auto;
   position: relative;
 
   @include for-phone-down {
     padding: $col-gutter-small;
-    margin: 0 auto $col-gutter-small auto;
+    margin: 0 auto;
   };
 }
 
@@ -382,8 +390,9 @@ svg.chart-canvas {
     line-height: $baseline-height*2;
   };
 
-  span {
+  span.sentence {
     vertical-align: top;
+    line-height: 24px;
   }
 
   //
@@ -400,7 +409,7 @@ svg.chart-canvas {
     vertical-align: top;
     font-size: 16px;
     text-align: center;
-    min-height: 34px;
+    min-height: 28px;
 
     @include for-phone-down {
       font-size: 14px;
@@ -411,6 +420,7 @@ svg.chart-canvas {
     &.multi {
 
       .selectize-input {
+        padding: 0 $elements-padding*3 0 $elements-padding;
         @include for-phone-down {
           padding-top: 0;
           padding-bottom: 1px;
@@ -439,9 +449,9 @@ svg.chart-canvas {
       font-weight: 700;
       border-bottom: 2px solid $color-0;
       border-radius: 0;
-      padding-right: $elements-margin * 3;
+      padding: 2px $elements-padding*3 0 $elements-padding;
       font-size: 16px;
-      min-height: 34px;
+      min-height: 28px;
 
       @include for-phone-down {
         font-size: 14px;

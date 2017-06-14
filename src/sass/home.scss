@@ -5,6 +5,7 @@
   text-align: left;
   padding: $col-gutter-large;
   color: $color-0;
+  height: 100vh;  
 
   @include for-phone-down {
     padding: $col-gutter-small;

@@ -292,6 +292,10 @@ export default class Explore {
     sectionHeader.classList.add('section-header', 'container');
     pageBody.appendChild(sectionHeader);
 
+    const title = document.createElement('h3');
+    title.innerHTML = 'Lorem Ipsum dolor';
+    sectionHeader.appendChild(title);
+
     const intro = document.createElement('p');
     intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
     sectionHeader.appendChild(intro);
@@ -316,6 +320,7 @@ export default class Explore {
     sectionBody.appendChild(filtersMenu);
 
     let text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = 'Search interest from 2004 to today for<br/>';
     filtersMenu.appendChild(text);
 
@@ -343,6 +348,7 @@ export default class Explore {
     self.diseaseSelect = diseaseSelectize[0].selectize;
 
     text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = ' in ';
     filtersMenu.appendChild(text);
 
