@@ -8,6 +8,11 @@
   .page-body {
     .section-body {
 
+      h3 {
+        padding-bottom: $baseline-height;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.24);
+      }
+
       .col-body {
         padding-top: $baseline-height;
       }

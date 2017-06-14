@@ -8,7 +8,7 @@
     @include columns(1);
 
     h4 {
-      border-bottom: 2px solid $color-0;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.24);
       margin-bottom: $baseline-height;
       line-height: $baseline-height * 4;
     }
