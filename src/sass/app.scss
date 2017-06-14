@@ -356,10 +356,6 @@ svg.chart-canvas {
     letter-spacing: 1px;
   }
 
-  &:not(:last-child) {
-    margin-bottom: 30px;
-  }
-
   .line-chart {
     path {
       fill: none;
@@ -417,6 +413,10 @@ svg.chart-canvas {
   .chart-item {
     display: inline-block;
     width: 100%;
+
+    &:not(:last-child) {
+      margin-bottom: $baseline-height*3;
+    }
   }
 }
 
