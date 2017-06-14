@@ -262,6 +262,12 @@ a {
   margin: auto;
 }
 
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
 .page {
   width: 100%;
   // min-height: 100vh;
@@ -278,21 +284,25 @@ a {
     height: $baseline-height * 4;
     padding: 0 $col-gutter-large;
     text-align: center;
+    border: 1px solid lighten($color-3, 28%);
+    border-width: 1px 0;
     box-shadow: 0 4px rgba(0, 0, 0, 0.24);
 
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-
     @include type-h5;
 
     @include for-phone-down {
       padding: 0 $col-gutter-small;
     };
+
+    &:before,
+    &:after {
+      content: '';
+      display: table;
+    }
   }
 
   .page-body {
@@ -346,15 +356,16 @@ a {
 }
 
 svg.chart-canvas {
-  transition: opacity 0.5s ease-out, height 0.5s ease-out;
+
+  text {
+    font-family: $font-mono;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
 
   &:first-child {
     margin-bottom: 30px;
-  }
-
-  &.hidden-canvas {
-    opacity: 0;
-    height: 0;
   }
 
   .line-chart {
@@ -382,6 +393,10 @@ svg.chart-canvas {
       &.y {
         path {
           stroke-opacity: 0;
+        }
+
+        text.title {
+            text-transform: uppercase;
         }
       }
     }

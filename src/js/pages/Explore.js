@@ -161,8 +161,7 @@ export default class Explore {
   toggleChartMerge(event, self) {
     let { isMerged } = self.data;
     isMerged = isMerged ? false : true;
-    this.seasonalChart.hide();
-    this.updateData({ isMerged: isMerged });
+    this.updateData({ isMerged, type: 'total' });
   }
 
   getTrendsAPIGraph(type: string){
@@ -273,7 +272,7 @@ export default class Explore {
     parentContainer.appendChild(elementsContainer);
 
     const pageHeader = document.createElement('div');
-    pageHeader.classList.add('page-header');
+    pageHeader.classList.add('page-header', 'sticky');
     elementsContainer.appendChild(pageHeader);
 
     const container = document.createElement('div');

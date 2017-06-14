@@ -76,7 +76,7 @@ export default class Intro {
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, 'trend');
+    this.chart = new LineChart(chartItem, 'total');
     const { chart } = this;
 
     const slidesContainer = document.createElement('div');
@@ -146,7 +146,25 @@ export default class Intro {
       .sections(slidesD3)
       .offset(window.innerHeight / 2)
       .on('active', function(i) {
-        const type = i < 3 ? 'trend' : 'seasonal';
+        let title, type;
+        switch (i) {
+          case 0:
+            type = 'total';
+            break;
+          case 1:
+            title = 'Trend per year';
+            break;
+          case 2:
+            type = 'trend';
+            break;
+          case 3:
+            type = 'seasonal';
+            title = 'Seasonal over time';
+            break;
+          default:
+            type = 'seasonal';
+        }
+
         const index = i < 2 ? i : i - 1;
 
         chartsContainer.classList.remove('step-2');
@@ -157,10 +175,10 @@ export default class Intro {
           clearInterval(yearlyLoop);
           if (i === 2) {
             chartsContainer.classList.add('step-2');
-            chart.updateData([chartData[0], chartData[index]], type);
+            chart.updateData([chartData[0], chartData[index]], type, title);
           } else {
             clearInterval(yearlyLoop);
-            chart.updateData([chartData[index]], type);
+            chart.updateData([chartData[index]], type, title);
           }
         }
       });

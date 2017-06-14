@@ -22,7 +22,7 @@ export default class Stories {
     parentContainer.appendChild(elementsContainer);
 
     const pageHeader = document.createElement('div');
-    pageHeader.classList.add('page-header');
+    pageHeader.classList.add('page-header', 'sticky');
     elementsContainer.appendChild(pageHeader);
 
     const container = document.createElement('div');

@@ -10,6 +10,7 @@ export default class LineChart {
     term: string,
     points: {date: Date, value: number}[]
   }[];
+  title: string
   type: string;
   width: number;
   height: number;
@@ -19,22 +20,35 @@ export default class LineChart {
   constructor(parentContainer: HTMLElement, type?: string) {
     this.data = [];
     if (type) this.type = type;
-    this.margin = {top: 4, right: 4, bottom: 32, left: 32};
+    this.title = this.getTitle(this.type);
+    this.margin = {top: 36, right: 4, bottom: 36, left: 36};
     this.width  = parentContainer.offsetWidth - (this.margin.left + this.margin.right);
     this.height = parentContainer.offsetHeight - (this.margin.top + this.margin.bottom);
     this.createElements(parentContainer);
   }
 
-  hide() {
-    this.svg.classed('hidden-canvas', !this.svg.classed('hidden-canvas'));
-  }
-
-  updateData(data: TrendsAPIGraph[], type?: string) {
+  updateData(data: TrendsAPIGraph[], type?: string, title? : string) {
     this.data = this.parseDates(data);
     if (type) this.type = type;
+    this.title = title ? title : this.getTitle(this.type);
     // console.log('D3 ->', this.data);
     log.info(this.type);
     this.updateElements();
+  }
+
+  getTitle(type) {
+    let title;
+    switch (type) {
+      case 'seasonal':
+        title = 'Seasonal per year';
+        break;
+      case 'trend':
+        title = 'Trend over time';
+        break;
+      default:
+        title = 'Interest over time';
+    }
+    return title;
   }
 
   parseDates(data: TrendsAPIGraph[]) {
@@ -68,14 +82,19 @@ export default class LineChart {
       .attr('transform', 'translate(0,' + height + ')');
 
     chart.append('g')
-      .attr('class', 'y axis');
+      .attr('class', 'y axis')
+      .append('text')
+      .attr('class', 'title')
+      .attr('text-anchor', 'start')
+      .attr('x', -margin.left)
+      .attr('y', -margin.top/2);
 
     chart.append('g')
       .attr('class', 'time-series');
   }
 
   updateElements() {
-    const { data, width, height, margin, svg, type } = this;
+    const { data, width, height, margin, svg, title, type } = this;
     const transitionDuration = 500;
 
     const x = d3.scaleTime()
@@ -105,7 +124,7 @@ export default class LineChart {
       .tickPadding(12);
     if (type === 'seasonal') {
       xAxis.tickFormat(d3.timeFormat('%b'));
-    } else if (type === 'trend')  {
+    } else if (type === 'trend' || type === 'total')  {
       xAxis.tickFormat(d3.timeFormat('%Y'));
     } else {
       xAxis.tickFormat(d3.timeFormat('%b %Y'));
@@ -115,7 +134,6 @@ export default class LineChart {
       .tickSize(12);
 
     const line = d3.line()
-      // .curve(d3.curveBasis)
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.value); });
 
@@ -124,10 +142,13 @@ export default class LineChart {
     chart.select('g.y')
       .transition()
       .duration(transitionDuration)
-      .call(yAxis);
+      .call(yAxis)
+
+    chart.select('g.y .title')
+      .text(title);
 
     chart.select('g.y')
-      .selectAll(".tick text")
+      .selectAll('.tick text')
       .each(function(d, i){
         d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
       });
@@ -149,7 +170,7 @@ export default class LineChart {
       .style('transform', 'none');
 
       chart.select('g.x')
-        .selectAll(".tick text")
+        .selectAll('.tick text')
         .each(function(d,i){
           d3.select(this).classed('hidden', i%2 !== 0 ? true : false);
         });
