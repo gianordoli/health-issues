@@ -153,11 +153,15 @@ export default class StoriesEpidemics {
     row.classList.add('row');
     sectionBody.appendChild(row);
 
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
+
+    this.filtersMenu = new FiltersMenu(colLeft, terms, geoList, geoIso);
+
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
-
-    this.filtersMenu = new FiltersMenu(chartsContainer, terms, geoList, geoIso);
+    colLeft.appendChild(chartsContainer);
 
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
@@ -177,7 +181,7 @@ export default class StoriesEpidemics {
     slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
-    chartsContainer.appendChild(slider);
+    colLeft.appendChild(slider);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;

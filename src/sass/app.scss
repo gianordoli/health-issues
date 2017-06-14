@@ -406,8 +406,12 @@ svg.chart-canvas {
   }
 }
 
-.charts-container {
+.col-left {
   @include columns(2);
+}
+
+.charts-container {
+  width: 100%;
   display: inline-block;
 
   .chart-item {

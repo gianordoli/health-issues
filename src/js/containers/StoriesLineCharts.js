@@ -113,18 +113,22 @@ export default class StoriesLineCharts {
     row.classList.add('row');
     sectionBody.appendChild(row);
 
-    const chartsContainer = document.createElement('div');
-    chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
 
     this.filtersMenu = new FiltersMenu(
-      chartsContainer,
+      colLeft,
       terms,
       geoList,
       geoIso,
       this,
       this.changeGeo
     );
+
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    colLeft.appendChild(chartsContainer);
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
