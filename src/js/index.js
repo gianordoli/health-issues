@@ -94,8 +94,12 @@ app.main = (function (){
 
     stickyfill.init();
     var stickyElements = document.getElementsByClassName('page-header');
-    for (const s of stickyElements) {
-      stickyfill.add(s);
+    // for (let i = stickyElements.length - 1; i >= 0 ; i--) {
+      // stickyElements[i].style.zIndex = (2000 + (1000 * i)).toString();
+      // stickyElements[i].style.zIndex = (100 * (i + 1)).toString();
+    for (let i = 0; i < stickyElements.length ; i++) {
+      stickyElements[i].style.zIndex = (10 * (i + 1000)).toString();
+      stickyfill.add(stickyElements[i]);
     }
 
     // const getMapData = new GetMapData(trendsAPI);

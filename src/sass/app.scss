@@ -12,7 +12,7 @@ $color-3: #009DF7;
 //---------------------- LAYOUT ----------------------//
 $container-max-width: 960px;
 $col-gutter-small: 12px;
-$col-gutter-large: 20px;
+$col-gutter-large: 24px;
 
 $baseline-height: 12px;
 
@@ -50,6 +50,7 @@ $icon-size: 32px;
     width: 100%;
     &:not(:first-child) {
       margin-left: 0;
+      margin-top: $baseline-height * 2;
     }
   };
 }
@@ -92,10 +93,26 @@ $font-mono: 'Inconsolata', monospace;
 
 @mixin type-h5 {
   font-size: 12px;
+  // line-height: $baseline-height*1.5;
   font-family: $font-sans;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
 
+}
+
+@mixin type-summary {
+  font-size: 21px;
+  line-height: $baseline-height*3;
+  font-family: $font-sans;
+  font-weight: 400;
+}
+
+@mixin type-intro {
+  font-size: 16px;
+  line-height: $baseline-height*2;
+  font-family: $font-sans;
+  font-weight: 400;
 }
 
 @mixin type-intro {
@@ -133,15 +150,15 @@ $font-mono: 'Inconsolata', monospace;
 }
 
 //-------------------- BUTTONS --------------------//
-
-a {
-  &.icon {
-    width: $icon-size;
-    height: $icon-size;
-    border-radius: $icon-size/2;
-    background-color: $color-black;
-  }
-}
+//
+// a {
+//   &.icon {
+//     width: $icon-size;
+//     height: $icon-size;
+//     border-radius: $icon-size/2;
+//     background-color: $color-black;
+//   }
+// }
 
 
 
@@ -213,6 +230,26 @@ b {
   outline: none;
 }
 
+a {
+
+  text-decoration: none;
+  transition-property: color, background-color;
+  transition-duration: 0.25s;
+  padding: 0 1px;
+
+  &:link, &:visited {
+    color: $color-0;
+  }
+
+  &:hover {
+    background-color: lighten($color-0, 48%);
+  }
+
+  &:active {
+    background-color: lighten($color-0, 36%);
+  }
+}
+
 .hidden {
   display: none;
 }
@@ -233,6 +270,10 @@ b {
   text-align: center;
 
   .page-header {
+
+    background-color: lighten($color-3, 36%);
+    color: $color-0;
+
     width: 100%;
     height: $baseline-height * 4;
     padding: 0 $col-gutter-large;
@@ -246,7 +287,6 @@ b {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-    z-index: 1100;
 
     @include type-h5;
 
@@ -297,6 +337,7 @@ b {
   padding: $col-gutter-large;
   margin: 0 auto;
   position: relative;
+  z-index: 0;
 
   @include for-phone-down {
     padding: $col-gutter-small;

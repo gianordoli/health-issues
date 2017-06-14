@@ -12,10 +12,11 @@
     min-width: 180px;
   }
 
-  .page-header {
-    background-color: $color-0;
-    color: white;
-  }
+  // .page-header {
+    // background-color: $color-0;
+    // color: white;
+    // z-index: 1000;
+  // }
 
   .story-section {
 
@@ -211,7 +212,11 @@
           margin-right: $elements-margin;
         }
 
-        &:hover, &.active {
+        &:hover {
+          background-color: lighten($color-0, 48%);
+        }
+
+        &.active {
           background-color: $color-0;
           color: white;
         }

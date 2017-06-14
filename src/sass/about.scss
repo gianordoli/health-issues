@@ -4,4 +4,33 @@
 
   background-color: $color-gray;
   height: 100vh;
+
+  .page-body {
+    .section-body {
+
+      .col-body {
+        padding-top: $baseline-height;
+      }
+
+      .summary {
+        @include type-summary;
+        @include columns(1);
+      }
+
+      .about-data {
+        @include columns(1);
+      }
+
+      .about-team {
+        @include columns(1);
+
+        .subtitle {
+          @include type-h5;
+          &:not(:first-child) {
+            margin-top: $baseline-height;
+          }
+        }
+      }
+    }
+  }
 }
