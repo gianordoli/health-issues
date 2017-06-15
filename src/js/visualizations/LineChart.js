@@ -155,7 +155,7 @@ export default class LineChart {
 
     } else if (type === 'mixed') {
       xAxis.tickFormat(d3.timeFormat('%b %Y'))
-      .ticks(d3.timeMonth.every(2));
+      .ticks(d3.timeMonth.every(3));
     }
 
     const yAxis = d3.axisLeft(y)

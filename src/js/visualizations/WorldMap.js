@@ -40,13 +40,7 @@ export default class WorldMap {
   createElements(parentContainer: HTMLElement) {
     log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
-    const { width, height } = this;
-
-    this.tip = d3tip()
-      .attr('class', 'd3-tip')
-      .html(function(content: string) {
-        return content;
-      });
+    const { width, height, worldFeatures } = this;
 
     this.svg = parentContainerSelection
       .append('svg')
@@ -55,10 +49,29 @@ export default class WorldMap {
       .attr('class', 'chart-canvas');
     const { svg } = this;
 
+    this.tip = d3tip()
+      .attr('class', 'd3-tip')
+      .html(function(content: string) {
+        return content;
+      });
+
     svg.call(this.tip);
+
+    const projection = d3.geoEquirectangular()
+      .scale((width - 3) / (2 * Math.PI))
+      .translate([width * 0.5, height * 0.5]);
+
+    const path = d3.geoPath().projection(projection);
 
     const worldMap = svg.append('g')
       .attr('class', 'map');
+
+    const countries = worldMap.selectAll('.country')
+      .data(worldFeatures)
+      .enter()
+      .append('path')
+      .attr('class', 'country')
+      .attr('d', path);
 
     var color = d3
       .scaleThreshold()
@@ -117,11 +130,6 @@ export default class WorldMap {
   updateElements() {
     const { data, width, height, svg, tip, worldFeatures } = this;
 
-    const projection = d3.geoEquirectangular()
-      .scale((width - 3) / (2 * Math.PI))
-      .translate([width * 0.5, height * 0.5]);
-    const path = d3.geoPath().projection(projection);
-
     const valueByRegion = {};
     data.forEach(d => {
       valueByRegion[d.regionCode] = +d.value;
@@ -134,21 +142,12 @@ export default class WorldMap {
     });
 
     const worldMap = svg.select('.map');
-    const countries = worldMap.selectAll('.country')
-      .data(worldFeatures);
-
-    // update
-    const countriesEnterUpdate = countries
-      .enter()
-      .append('path')
-      .attr('class', 'country')
-      .merge(countries)
+    worldMap.selectAll('.country')
       .attr('fill', d => {
         const value = valueByRegion[d.properties.countryCode];
         const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
         return `rgba(250, 130, 0, ${alpha})`
       })
-      .attr('d', path)
       .style('cursor', d => valueByRegion[d.properties.countryCode] ? 'pointer' : 'auto')
       .on('mouseover', function(d) {
         const val = valueByRegion[d.properties.countryCode];
