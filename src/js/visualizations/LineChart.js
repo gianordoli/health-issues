@@ -14,15 +14,17 @@ export default class LineChart {
   parentContainer: HTMLElement;
   title: string;
   type: string;
+  range: number;
   width: number;
   height: number;
   margin: { top: number, left: number, bottom: number, right: number };
   svg: () => {};
 
-  constructor(parentContainer: HTMLElement, type?: string) {
+  constructor(parentContainer: HTMLElement, type?: string, range?: number) {
     this.data = [];
     this.parentContainer = parentContainer;
     if (type) this.type = type;
+    if (range) this.range = range;
     this.title = this.getTitle(this.type);
     this.margin = { top: 36, right: 4, bottom: 30, left: 36 };
     const size = this.getSize();
@@ -50,8 +52,9 @@ export default class LineChart {
       .attr('height', height + margin.top + margin.bottom);
   }
 
-  updateData(data: TrendsAPIGraph[], type?: string, title? : string) {
+  updateData(data: TrendsAPIGraph[], type?: string, title? : string, range?: number) {
     this.data = this.parseDates(data);
+    if (range) this.range = range;
     if (type && type !== this.type) {
       this.type = type;
       this.resizeChart();
@@ -117,7 +120,7 @@ export default class LineChart {
   }
 
   updateElements() {
-    const { data, width, height, margin, svg, title, type } = this;
+    const { data, width, height, margin, svg, title, type, range } = this;
     const transitionDuration = 500;
 
     const x = d3.scaleTime()
@@ -127,11 +130,18 @@ export default class LineChart {
     let yMin, yMax;
 
     if (type === 'seasonal') {
-      yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
-      yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
-      const maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
-      yMin = maxRange > 20 ? -maxRange : -20;
-      yMax = maxRange > 20 ? maxRange : 20;
+
+      if (range) {
+        yMin = -range;
+        yMax = range;
+        
+      } else {
+        yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
+        yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
+        const maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
+        yMin = maxRange > 20 ? -maxRange : -20;
+        yMax = maxRange > 20 ? maxRange : 20;
+      }
 
     } else {
       yMin = 0;

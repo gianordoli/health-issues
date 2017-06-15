@@ -1,4 +1,4 @@
-export function arrayIsEqual(array1, array2) {
+export function arrayIsEqual (array1, array2) {
   if (!array1 || !array2)
     return false;
 
@@ -20,6 +20,13 @@ export function arrayIsEqual(array1, array2) {
   return true;
 }
 
-export function map(val, in_min, in_max, out_min, out_max){
+export function map (val, in_min, in_max, out_min, out_max){
   return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+export function encodedStr (rawStr: string) {
+  const encoded = rawStr.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+    return '&#'+i.charCodeAt(0)+';';
+  });
+  return encoded;
 }

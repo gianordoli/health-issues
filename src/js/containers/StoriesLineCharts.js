@@ -134,7 +134,7 @@ export default class StoriesLineCharts {
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, chartType);
+    this.chart = new LineChart(chartItem, chartType, 15);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;
