@@ -167,21 +167,25 @@ export default class Intro {
             break;
 
           case 4:
-            // type = 'seasonal';
-            // range = 20;
+            type = 'seasonal';
+            range = 20;
+            timeSeries = chartData.filter(d => d.data === 'seasonal');
+            chart.updateData(timeSeries, type, title, range);
             // const remainder = chartData.find(d => d.data === 'remainder');
             // const seasonal = chartData.find(d => d.data === 'seasonal');
-            // for (let i = 0; i < remainder.points.length - 12; i += 12) {
+            // log.info(remainder, seasonal);
+            // for (let i = 0; i < remainder.points.length - 13; i += 12) {
             //   const thisYear = {
             //     term: 'Influenza',
-            //     points: remainder.points.slice(i, i + 12)
+            //     points: remainder.points.slice(i, i + 13)
             //   }
             //   for (let j = 0; j < thisYear.points.length; j++) {
-            //     thisYear.points[j].date = seasonal.points.date;
+            //     thisYear.points[j].date = seasonal.points[j%12].date;
             //   }
             //   timeSeries.push(thisYear);
             // }
             // timeSeries.push(seasonal);
+            // log.info(timeSeries);
             // chart.updateData(timeSeries, type, title, range);
         }
       });

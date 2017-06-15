@@ -2,7 +2,7 @@ module.exports = [
   {
     title: 'Search Interest',
     content: [
-      'This is your usual <a href="https://trends.google.com/trends/explore?date=2004-01-01%202016-12-31&q=%2Fm%2F0cycc" target="_blank">Google Trends chart</span>. <span class="highlight">Search interest</span> is measured from 0 (no interest) to 100 (popularity peak) for a given term.',
+      'This is your usual <a href="https://trends.google.com/trends/explore?date=2004-01-01%202016-12-31&q=%2Fm%2F0cycc" target="_blank">Google Trends chart</a>. <span class="highlight">Search interest</span> is measured from 0 (no interest) to 100 (popularity peak) for a given term.',
       'We can see the Swine Flu epidemics spikes in 2009, but it’s hard to tell from this view whether there’s any seasonality in the data',
     ]
   },
@@ -31,7 +31,7 @@ module.exports = [
   {
     title: 'Seasonal Interest',
     content: [
-      'To take that out, we combine all years into a single cycle, leaving what doesn’t seem to represent a seasonal pattern out. This gives us <b>seasonal interest per year</b> for influenza.',
+      'Combine all this data from multiple years into a single cycle, we can determine the <span class="highlight">seasonal interest per year</span> for the flu.',
     ]
   },
 ];
