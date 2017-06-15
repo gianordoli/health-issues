@@ -414,8 +414,8 @@ svg.chart-canvas {
     display: inline-block;
     width: 100%;
 
-    &:not(:last-child) {
-      margin-bottom: $baseline-height*2;
+    &:not(:first-child) {
+      margin-top: $baseline-height*2;
     }
   }
 }

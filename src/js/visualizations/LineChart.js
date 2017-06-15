@@ -24,7 +24,7 @@ export default class LineChart {
     this.parentContainer = parentContainer;
     if (type) this.type = type;
     this.title = this.getTitle(this.type);
-    this.margin = { top: 36, right: 4, bottom: 24, left: 36 };
+    this.margin = { top: 36, right: 4, bottom: 30, left: 36 };
     const size = this.getSize();
     this.width = size.width;
     this.height = size.height;
@@ -144,7 +144,7 @@ export default class LineChart {
 
     const xAxis = d3.axisBottom(x)
       .tickSize(0)
-      .tickPadding(12);
+      .tickPadding(18);
 
     if (type === 'seasonal') {
       xAxis.tickFormat(d3.timeFormat('%b'));

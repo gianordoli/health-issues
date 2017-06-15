@@ -4,8 +4,9 @@ import StoriesEpidemics from '../containers/StoriesEpidemics';
 import { map } from '../util/util';
 import type { TrendsAPIRegion } from '../util/types';
 import * as d3 from 'd3';
+import d3tip from 'd3-tip';
 import * as topojson from 'topojson-client';
-import log from 'loglevel'; // Pretty handy log tool. Use log.info(something), instead of console.log()!
+import log from 'loglevel';
 
 export default class WorldMap {
   data: Array<TrendsAPIRegion>;
@@ -13,7 +14,7 @@ export default class WorldMap {
   height: number;
   worldFeatures;
   svg: () => {};
-  tooltip: () => {};
+  tip: () => {};
 
   constructor(parentContainer: HTMLElement, data: Array<TrendsAPIRegion>) {
     const self = this;
@@ -41,6 +42,12 @@ export default class WorldMap {
     const parentContainerSelection = d3.select(parentContainer);
     const { width, height } = this;
 
+    this.tip = d3tip()
+      .attr('class', 'd3-tip')
+      .html(function(content: string) {
+        return content;
+      });
+
     this.svg = parentContainerSelection
       .append('svg')
       .attr('width', width)
@@ -48,13 +55,10 @@ export default class WorldMap {
       .attr('class', 'chart-canvas');
     const { svg } = this;
 
+    svg.call(this.tip);
+
     const worldMap = svg.append('g')
       .attr('class', 'map');
-
-    this.tooltip = parentContainerSelection
-      .append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0);
 
     var color = d3
       .scaleThreshold()
@@ -89,9 +93,9 @@ export default class WorldMap {
       }))
       .enter().append('rect')
         .attr('height', 5)
-        .attr('x', function(d) { return x(d[0]); })
-        .attr('width', function(d) { log.info('legend width'+ d); return x(d[1]) - x(d[0]); })
-        .attr('fill', function(d) { return color(d[0]); });
+        .attr('x', d => x(d[0]))
+        .attr('width', d => x(d[1]) - x(d[0]))
+        .attr('fill', d => color(d[0]));
 
     legend.append('text')
       .attr('class', 'legend')
@@ -111,12 +115,11 @@ export default class WorldMap {
   }
 
   updateElements() {
-    const { data, width, height, svg, tooltip, worldFeatures } = this;
+    const { data, width, height, svg, tip, worldFeatures } = this;
 
-    const projection = d3
-      .geoMercator()
+    const projection = d3.geoEquirectangular()
       .scale((width - 3) / (2 * Math.PI))
-      .translate([width * 0.5, height * 0.6]);
+      .translate([width * 0.5, height * 0.5]);
     const path = d3.geoPath().projection(projection);
 
     const valueByRegion = {};
@@ -142,40 +145,19 @@ export default class WorldMap {
       .merge(countries)
       .attr('fill', d => {
         const value = valueByRegion[d.properties.countryCode];
-        // const alpha = value === undefined ? 0 : value/100;
-        // let alpha;
-        // if (value === undefined || value ==) {
-        //   alpha = 0;
-        // }
         const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
         return `rgba(250, 130, 0, ${alpha})`
-        // return `rgba(68, 34, 179, ${alpha})`
       })
       .attr('d', path)
+      .style('cursor', d => valueByRegion[d.properties.countryCode] ? 'pointer' : 'auto')
       .on('mouseover', function(d) {
-
-        tooltip.transition()
-          .duration(100)
-          .style('opacity', d.value !== 0 ? 1 : 0);
-
-        const tooltipHed = `<span class="country">${d.properties.name}</span>`;
-        const tooltipVal = `<span class="value">${valueByRegion[d.properties.countryCode]}</span>`;
-        const x = d3.mouse(this.parentNode)[0];
-        const y = d3.mouse(this.parentNode)[1] + height * 0.6;
-        const parentRect = this.parentNode.getBoundingClientRect();
-        const middle = (parentRect.left + parentRect.width)/2;
-        log.info(x, middle);
-        // const translateX = (x < middle) ? '-100%' : '0';
-
-        tooltip.html(tooltipHed + tooltipVal)
-          .style('left', `${x}px`)
-          .style('top', `${y}px`)
-          // .attr('transform', `translate(${translateX}, -150%)`);
+        const val = valueByRegion[d.properties.countryCode];
+        if (val) {
+          const tooltipHed = `<span class="country">${d.properties.name}:</span>`;
+          const tooltipVal = `<span class="value">${valueByRegion[d.properties.countryCode]}</span>`;
+          tip.show(tooltipHed + tooltipVal);
+        }
       })
-      .on('mouseout', function() {
-        // tooltip.transition()
-        //   .duration(100)
-        //   .style('opacity', 0);
-      })
+      .on('mouseout', tip.hide);
   }
 }

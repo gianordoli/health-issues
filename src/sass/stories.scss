@@ -205,33 +205,47 @@
   }
 }
 
-// Tooltip
-div.tooltip {
-  position: absolute;
+/* Tooltip */
+.d3-tip {
   max-width: 200px;
   padding: $elements-padding;
-  line-height: $baseline-height * 3;
+  line-height: $baseline-height*1.5;
   background: white;
   border: 1px solid $color-0;
   box-shadow: 0 4px rgba(0, 0, 0, 0.18);
-  pointer-events: none;
-  text-align: right;
-  // transform: translate(0, -150%);
+  transform: translate(0, -10%);
 
   .country {
     @include type-body-1;
-    line-height: $baseline-height;
+    line-height: $baseline-height*1.5;
   }
 
   .value {
     @include type-body-2;
-    line-height: $baseline-height;
+    line-height: $baseline-height*1.5;
     padding-left: $elements-padding;
     color: $color-0;
   }
+
+  // /* Creates a small triangle extender for the tooltip */
+  // &:after {
+  //   display: inline;
+  //   width: 100%;
+  //   line-height: 17px;
+  //   color: $color-0;
+  //   content: "\25BC";
+  //   position: absolute;
+  //   text-align: center;
+  // }
+  //
+  // /* Style northward tooltips differently */
+  // &:after {
+  //   margin: -1px 0 0 0;
+  //   top: 100%;
+  //   left: 0;
+  // }
 }
 
-// legend
 .legend {
   text {
     @include type-chart-legend;
