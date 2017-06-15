@@ -42,12 +42,10 @@ export default class StoriesRanking {
     }
   }
 
-  scroll(event: Event, element: HTMLElement, parent: HTMLElement, direction: string) {
+  scroll(event: Event, element: HTMLElement, parent: HTMLElement, btBack: HTMLButtonElement, btForward: HTMLButtonElement, direction: string) {
     const { target } = event;
     const currPos = element.offsetLeft;
 
-    const btBack = document.querySelector('.bt-arrow.back');
-    const btForward = document.querySelector('.bt-arrow.forward');
     if (btBack) btBack.disabled = false;
     if (btForward) btForward.disabled = false;
 
@@ -97,7 +95,7 @@ export default class StoriesRanking {
     const btBack = document.createElement('button');
     btBack.classList.add('bt-arrow', 'back');
     btBack.disabled = true;
-    let bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, 'back');
+    let bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, btBack, btForward, 'back');
     btBack.addEventListener('click', bindClick);
     slideshow.appendChild(btBack);
 
@@ -146,7 +144,7 @@ export default class StoriesRanking {
 
     const btForward = document.createElement('button');
     btForward.classList.add('bt-arrow', 'forward');
-    bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, 'forward');
+    bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, btBack, btForward, 'forward');
     btForward.addEventListener('click', bindClick);
     slideshow.appendChild(btForward);
   }
