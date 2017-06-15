@@ -474,7 +474,7 @@ svg.chart-canvas {
 
       .items {
         .item {
-          font-weight: 400;
+          font-weight: 700;
           color: white;
           &:nth-child(1) { background-color: $color-1; }
           &:nth-child(2) { background-color: $color-2; }
@@ -553,7 +553,6 @@ svg.chart-canvas {
   }
 
   .terms-list {
-    font-weight: 400;
     span {
       color: white;
       padding: 2px 6px;
@@ -582,7 +581,7 @@ svg.chart-canvas {
   height: 100%;
   visibility: visible;
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.24);
+  background-color: rgba($color-0, 0.24);
   transition: visibility 0.5s, opacity 0.5s linear;
   z-index: 10;
 
