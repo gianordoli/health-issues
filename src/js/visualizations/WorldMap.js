@@ -154,24 +154,28 @@ export default class WorldMap {
       .attr('d', path)
       .on('mouseover', function(d) {
 
-        d3.select(this)
-          .transition().duration(100)
-          .style('opacity', 0.8);
+        tooltip.transition()
+          .duration(100)
+          .style('opacity', d.value !== 0 ? 1 : 0);
 
-        (d.value !== 0) ? tooltip.transition().duration(100).style('opacity', 1) : tooltip.style('opacity', 0);
         const tooltipHed = `<span class="country">${d.properties.name}</span>`;
         const tooltipVal = `<span class="value">${valueByRegion[d.properties.countryCode]}</span>`;
+        const x = d3.mouse(this.parentNode)[0];
+        const y = d3.mouse(this.parentNode)[1] + height * 0.6;
+        const parentRect = this.parentNode.getBoundingClientRect();
+        const middle = (parentRect.left + parentRect.width)/2;
+        log.info(x, middle);
+        // const translateX = (x < middle) ? '-100%' : '0';
 
         tooltip.html(tooltipHed + tooltipVal)
-          .style('left', (d3.mouse(this.parentNode)[0]) + 'px')
-          .style('top', (d3.mouse(this.parentNode)[1] + height * 0.6) + 'px');
+          .style('left', `${x}px`)
+          .style('top', `${y}px`)
+          // .attr('transform', `translate(${translateX}, -150%)`);
       })
       .on('mouseout', function() {
-        d3.select(this)
-          .transition().duration(100)
-          .style('opacity', 1);
-        tooltip.transition().duration(100)
-          .style('opacity', 0);
+        // tooltip.transition()
+        //   .duration(100)
+        //   .style('opacity', 0);
       })
   }
 }

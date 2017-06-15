@@ -208,25 +208,25 @@
 // Tooltip
 div.tooltip {
   position: absolute;
-  text-align: center;
-  width: 140px;
-  height: 42px;
-  padding: 3px 5px;
+  max-width: 200px;
+  padding: $elements-padding;
+  line-height: $baseline-height * 3;
   background: white;
   border: 1px solid $color-0;
   box-shadow: 0 4px rgba(0, 0, 0, 0.18);
   pointer-events: none;
-  transform: translate(100%, -150%);
+  text-align: right;
+  // transform: translate(0, -150%);
 
   .country {
     @include type-body-1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: $baseline-height;
   }
 
   .value {
     @include type-body-2;
+    line-height: $baseline-height;
+    padding-left: $elements-padding;
     color: $color-0;
   }
 }
