@@ -212,31 +212,33 @@ div.tooltip {
   width: 140px;
   height: 42px;
   padding: 3px 5px;
-  background: rgba(68, 34, 179, 0.85);
+  background: white;
+  border: 1px solid $color-0;
+  box-shadow: 0 4px rgba(0, 0, 0, 0.18);
   pointer-events: none;
-  color: #fff;
+  transform: translate(100%, -150%);
 
-  h4 {
-    font-size: 11px;
-    line-height: 16px;
-    font-weight: 200;
-    margin: 0;
+  .country {
+    @include type-body-1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  span {
-    font-size: 18px;
-    color: orange;
-    font-weight: bold;
-    line-height: 18px;
+  .value {
+    @include type-body-2;
+    color: $color-0;
   }
 }
 
 // legend
 .legend {
   text {
-    font-family: $font-mono;
+    @include type-chart-legend;
+    fill: $color-0;
+  }
+
+  line {
+    stroke: $color-0;
   }
 }

@@ -149,6 +149,15 @@ $font-mono: 'Inconsolata', monospace;
   letter-spacing: 1px;
 }
 
+@mixin type-chart-legend {
+  font-family: $font-mono;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  fill: $color-0;
+  text-transform: uppercase;
+}
+
 //-------------------- BUTTONS --------------------//
 //
 // a {
@@ -349,13 +358,6 @@ a {
 
 svg.chart-canvas {
 
-  text {
-    font-family: $font-mono;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-
   .line-chart {
     path {
       fill: none;
@@ -367,6 +369,11 @@ svg.chart-canvas {
 
     g.axis {
 
+      text {
+        @include type-chart-legend;
+        fill: $color-0;
+      }
+
       line {
         stroke: $color-0;
       }
@@ -376,18 +383,11 @@ svg.chart-canvas {
           stroke: $color-0;
           stroke-opacity: 0.24;
         }
-        text {
-          text-transform: uppercase;
-        }
       }
 
       &.y {
         path {
           stroke-opacity: 0;
-        }
-
-        text.title {
-          text-transform: uppercase;
         }
       }
     }
@@ -398,10 +398,6 @@ svg.chart-canvas {
         &:nth-child(2) { stroke: $color-2; }
         &:nth-child(3) { stroke: $color-3; }
       }
-    }
-
-    text {
-      fill: $color-0;
     }
   }
 }

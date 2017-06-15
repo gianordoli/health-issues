@@ -46,25 +46,15 @@ export default class WorldMap {
       .attr('width', width)
       .attr('height', height)
       .attr('class', 'chart-canvas');
+    const { svg } = this;
 
-    const worldMap = this.svg.append('g').attr('class', 'map');
+    const worldMap = svg.append('g')
+      .attr('class', 'map');
 
     this.tooltip = parentContainerSelection
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
-    this.updateElements();
-  }
-
-  updateElements() {
-    const { data, width, height, svg, tooltip, worldFeatures } = this;
-
-    const projection = d3
-      .geoMercator()
-      .scale((width - 3) / (2 * Math.PI))
-      .translate([width / 2, height / 2]);
-    const path = d3.geoPath().projection(projection);
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
 
     var color = d3
       .scaleThreshold()
@@ -81,6 +71,54 @@ export default class WorldMap {
         '#7f2704',
       ]);
 
+    // Legend
+    const x = d3.scaleLinear()
+      .domain([10, 90])
+      .rangeRound([height, width]);
+
+    const legend = svg.append('g')
+      .attr('class', 'legend')
+      .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
+
+    legend.selectAll('rect')
+      .data(color.range().map(function(d) {
+        d = color.invertExtent(d);
+        if (d[0] == null) d[0] = x.domain()[0];
+        if (d[1] == null) d[1] = x.domain()[1];
+        return d;
+      }))
+      .enter().append('rect')
+        .attr('height', 5)
+        .attr('x', function(d) { return x(d[0]); })
+        .attr('width', function(d) { log.info('legend width'+ d); return x(d[1]) - x(d[0]); })
+        .attr('fill', function(d) { return color(d[0]); });
+
+    legend.append('text')
+      .attr('class', 'legend')
+      .attr('x', x.range()[0])
+      .attr('y', -6)
+      .attr('text-anchor', 'start')
+      .text('Search amount:');
+
+    legend.call(d3.axisBottom(x)
+      .tickSize(9)
+      .tickFormat(function(x, i) { return x })
+      .tickValues(color.domain()))
+      .select('.domain')
+      .remove();
+
+    this.updateElements();
+  }
+
+  updateElements() {
+    const { data, width, height, svg, tooltip, worldFeatures } = this;
+
+    const projection = d3
+      .geoMercator()
+      .scale((width - 3) / (2 * Math.PI))
+      .translate([width * 0.5, height * 0.6]);
+    const path = d3.geoPath().projection(projection);
+
     const valueByRegion = {};
     data.forEach(d => {
       valueByRegion[d.regionCode] = +d.value;
@@ -95,44 +133,6 @@ export default class WorldMap {
     const worldMap = svg.select('.map');
     const countries = worldMap.selectAll('.country')
       .data(worldFeatures);
-
-    // Legend
-    const x = d3.scaleLinear()
-      .domain([10, 90])
-      .rangeRound([height, width]);
-
-    const legend = svg.append('g')
-      .attr('class', 'legend')
-      .attr("transform", "translate(" + -30 + "," + (height-30) + ")");
-
-    legend.selectAll("rect")
-      .data(color.range().map(function(d) {
-        d = color.invertExtent(d);
-        if (d[0] == null) d[0] = x.domain()[0];
-        if (d[1] == null) d[1] = x.domain()[1];
-        return d;
-      }))
-      .enter().append("rect")
-        .attr("height", 5)
-        .attr("x", function(d) { return x(d[0]); })
-        .attr("width", function(d) { log.info("legend width"+ d); return x(d[1]) - x(d[0]); })
-        .attr("fill", function(d) { return color(d[0]); });
-
-    legend.append("text")
-      .attr("class", "legend")
-      .attr("x", x.range()[0])
-      .attr("y", -6)
-      .attr("fill", "#000")
-      .attr("text-anchor", "start")
-      .attr("font-weight", "bold")
-      .text("Search amount:");
-
-    legend.call(d3.axisBottom(x)
-      .tickSize(9)
-      .tickFormat(function(x, i) { return x })
-      .tickValues(color.domain()))
-    .select(".domain")
-      .remove();
 
     // update
     const countriesEnterUpdate = countries
@@ -152,25 +152,26 @@ export default class WorldMap {
         // return `rgba(68, 34, 179, ${alpha})`
       })
       .attr('d', path)
-      .on("mouseover", function(d) {
+      .on('mouseover', function(d) {
+
         d3.select(this)
           .transition().duration(100)
-          .style("opacity", 0.8);
+          .style('opacity', 0.8);
 
-        (d.value !== 0) ? tooltip.transition().duration(100).style("opacity", 1) : tooltip.style("opacity", 0);
-        const tooltipHed = "<h4>" + d.properties.name + "</h4>"
-        const tooltipVal = "<span>" + valueByRegion[d.properties.countryCode] + "</span>"
+        (d.value !== 0) ? tooltip.transition().duration(100).style('opacity', 1) : tooltip.style('opacity', 0);
+        const tooltipHed = `<span class="country">${d.properties.name}</span>`;
+        const tooltipVal = `<span class="value">${valueByRegion[d.properties.countryCode]}</span>`;
 
         tooltip.html(tooltipHed + tooltipVal)
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY -30) + "px");
+          .style('left', (d3.mouse(this.parentNode)[0]) + 'px')
+          .style('top', (d3.mouse(this.parentNode)[1] + height * 0.6) + 'px');
       })
-      .on("mouseout", function() {
+      .on('mouseout', function() {
         d3.select(this)
           .transition().duration(100)
-          .style("opacity", 1);
+          .style('opacity', 1);
         tooltip.transition().duration(100)
-          .style("opacity", 0);
+          .style('opacity', 0);
       })
   }
 }
