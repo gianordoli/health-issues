@@ -2,9 +2,80 @@
 
 #stories.page {
 
-  input[type="range"] {
-    width: calc(100% - 32px);
-    margin-left: 32px;
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin-left: 0px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    box-shadow: 1px 1px 1.3px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+    background: rgba(215, 220, 223, 0.7);
+    border-radius: 25px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    height: 15px;
+    width: 15px;
+    border-radius: 50px;
+    background: #4422b5;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4px;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: rgba(215, 220, 223, 0.7);
+  }
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    box-shadow: 1px 1px 1.3px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+    background: rgba(215, 220, 223, 0.7);
+    border-radius: 25px;
+  }
+  input[type=range]::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+    border-radius: 50px;
+    background: #4422b5;
+    cursor: pointer;
+  }
+  input[type=range]::-ms-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: rgba(215, 220, 223, 0.7);
+    border-radius: 50px;
+    box-shadow: 1px 1px 1.3px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  }
+  input[type=range]::-ms-fill-upper {
+    background: rgba(215, 220, 223, 0.7);
+    border-radius: 50px;
+    box-shadow: 1px 1px 1.3px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  }
+  input[type=range]::-ms-thumb {
+    height: 15px;
+    width: 15px;
+    border-radius: 50px;
+    background: #4422b5;
+    cursor: pointer;
+    height: 7px;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: rgba(215, 220, 223, 0.7);
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: rgba(215, 220, 223, 0.7);
   }
 
   .selectize-input {
