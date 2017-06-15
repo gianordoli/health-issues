@@ -41,6 +41,14 @@
         width: calc((#{$container-max-width} - #{$col-gutter-large}*10) * 2/3 + #{$col-gutter-large});
         max-width: 100%;
 
+        @include for-tablet-landscape-down {
+          width: calc((100% - #{$col-gutter-large}*8) * 2/3 + #{$col-gutter-large});
+        }
+
+        @include for-tablet-portrait-down {
+          width: calc((100% - #{$col-gutter-large}*6) * 2/3 + #{$col-gutter-large});
+        }
+
         @include for-phone-down {
           width: calc(100% - #{$col-gutter-small}*4);
         }
@@ -69,6 +77,10 @@
           padding-bottom: 50vh;
           opacity: 0.3;
 
+          @include for-phone-down {
+            opacity: 0.15;
+          }
+
           &.graph-scroll-active{
             opacity: 1;
           }
@@ -80,7 +92,8 @@
 
           @include for-phone-down {
             width: 100%;
-            p {
+
+            .content {
               padding: $col-gutter-small;
               border: 1px solid black;
               background-color: white;

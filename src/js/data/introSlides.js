@@ -1,14 +1,14 @@
 module.exports = [
   {
     title: 'Search Interest',
-    content: [
+    copy: [
       'This is your usual <a href="https://trends.google.com/trends/explore?date=2004-01-01%202016-12-31&q=%2Fm%2F0cycc" target="_blank">Google Trends chart</a>. <span class="highlight">Search interest</span> is measured from 0 (no interest) to 100 (popularity peak) for a given term.',
       'We can see the Swine Flu epidemics spikes in 2009, but it’s hard to tell from this view whether there’s any seasonality in the data',
     ]
   },
   {
     title: 'A Yearly Pattern',
-    content: [
+    copy: [
       'Zooming into each year, we can see that the interest is low during Spring and Summer, and starts rising as we approach the Fall.',
       'However, the values vary a lot from one year to another — with 2009 being an obvious outlier.',
       'How can we find the <span class="highlight">“typical” yearly cycle</span> for the flu? Let’s step back to our 12-year period chart.',
@@ -16,21 +16,21 @@ module.exports = [
   },
   {
     title: 'Trend versus Total',
-    content: [
+    copy: [
       'First, let’s draw what seems to be the <span class="highlight">variation independent of the spikes.</span> This gives us the trend over time.',
       'The difference between these 2 lines is what we’ll use to determine the yearly cycle.',
     ]
   },
   {
     title: 'Total Minus Trend',
-    content: [
+    copy: [
       'This is what we get by plotting the difference between trend and total.',
       'We’re still using a 100-point range scale, but some of our values are negative because they are <span class="highlight">relative to the trend line,</span> not to the actual search interest.',
     ]
   },
   {
     title: 'Seasonal Interest',
-    content: [
+    copy: [
       'Combine all this data from multiple years into a single cycle, we can determine the <span class="highlight">seasonal interest per year</span> for the flu.',
     ]
   },

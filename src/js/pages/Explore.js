@@ -296,11 +296,11 @@ export default class Explore {
     pageBody.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
-    title.innerHTML = 'Lorem Ipsum dolor';
+    title.innerHTML = 'Your Turn';
     sectionHeader.appendChild(title);
 
     const intro = document.createElement('p');
-    intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+    intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Maybe something specific to your country? Pick up to 3 options from the list below and choose a location to start exploring.";
     sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');

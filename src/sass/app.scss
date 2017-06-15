@@ -127,11 +127,18 @@ $font-mono: 'Inconsolata', monospace;
   line-height: $baseline-height*2;
   font-family: $font-mono;
   font-weight: 400;
+
+  @include for-phone-down {
+    line-height: $baseline-height * 1.7;
+  };
 }
 
 @mixin type-body-2 {
   @include type-body-1;
   font-weight: 700;
+  @include for-phone-down {
+    line-height: $baseline-height * 1.7;
+  };  
 }
 
 @mixin type-small {
@@ -353,6 +360,14 @@ a {
   padding: $col-gutter-large*2 $col-gutter-large*4;
   margin: 0 auto $baseline-height*10 auto;
   position: relative;
+
+  @include for-tablet-landscape-down {
+    padding: $col-gutter-large*2;
+  }
+
+  @include for-tablet-portrait-down {
+    padding: $col-gutter-large;
+  }
 
   @include for-phone-down {
     padding: $col-gutter-small;

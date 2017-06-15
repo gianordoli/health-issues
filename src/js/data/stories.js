@@ -1,7 +1,7 @@
 module.exports = {
   seasonal: {
     title: "Seasons",
-    intro: "See how environmental conditions affect your health. Switch between the US and Australia to see how North and Southern hemisphere experience opposite cycles.",
+    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite throughout the year. Compare the data from US and Australia below to see how.",
     cases: [
       {
         title: "Spring",
@@ -49,7 +49,7 @@ module.exports = {
   },
   holidays: {
     title: "Holidays",
-    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+    intro: "Not only the environment can affect your health. Major events help spread diseases by bringing too many people together — or simply by exposing your body to things it is not used to. Take a look into how these parties can threat your physical condition.",
     cases: [
       {
         title: "Diwali Festival",
@@ -86,7 +86,7 @@ module.exports = {
   },
   media: {
     title: "Media",
-    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+    intro: "A growing interest in a particular disease doesn't mean more people are getting sick. Advertisement, celebrities, and the news can boost searches for a term as well. See how the media can raise awareness — or concern — around health.",
     cases: [
       {
         title: "Campaigns",

@@ -83,18 +83,21 @@ export default class Intro {
       log.info(i);
       const slide = document.createElement('div');
       slide.classList.add('slide');
+      slidesContainer.appendChild(slide);
+
+      const content = document.createElement('div');
+      content.classList.add('content');
+      slide.appendChild(content);
 
       const title = document.createElement('h5');
       title.innerHTML = i.title;
-      slide.appendChild(title);
+      content.appendChild(title);
 
-      for (const c of i.content) {
+      for (const c of i.copy) {
         const paragraph = document.createElement('p');
         paragraph.innerHTML = c;
-        slide.appendChild(paragraph);
+        content.appendChild(paragraph);
       }
-
-      slidesContainer.appendChild(slide);
     }
 
     const thisPage = d3.select(elementsContainer);
@@ -126,8 +129,6 @@ export default class Intro {
       .sections(slidesD3)
       .offset(window.innerHeight / 2)
       .on('active', function(i) {
-
-        log.info(i);
 
         clearInterval(yearlyLoop);
         chartsContainer.classList.remove('step-2');
