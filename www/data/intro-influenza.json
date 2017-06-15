@@ -1,5 +1,6 @@
 [
   {
+    "data": "total",
     "term":"Influenza",
     "points":[
       {"date":"2003-12-31","value":31},
@@ -162,6 +163,7 @@
     ]
   },
   {
+    "data": "trend",
     "term":"Influenza",
     "points": [
       {"date":"2003-12-31","value":14.08},
@@ -324,6 +326,7 @@
     ]
   },
   {
+    "data": "remainder",
     "term":"Influenza",
     "points": [
       {"date":"2003-12-31","value":7.73},
@@ -486,6 +489,7 @@
     ]
   },
   {
+    "data": "seasonal",
     "term":"Influenza",
     "points":[
       {"date":"2003-12-31","value":7.77},

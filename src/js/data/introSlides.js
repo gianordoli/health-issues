@@ -29,7 +29,7 @@ module.exports = [
     ]
   },
   {
-    title: '',
+    title: 'Seasonal Interest',
     content: [
       'To take that out, we combine all years into a single cycle, leaving what doesn’t seem to represent a seasonal pattern out. This gives us <b>seasonal interest per year</b> for influenza.',
     ]

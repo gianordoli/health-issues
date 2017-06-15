@@ -110,6 +110,7 @@ export default class Intro {
         term: chartData[0].term,
         points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12),
       }
+      log.info(data);
       chart.updateData([data], type, title);
       if (yearlyLoopIndex < 12) {
         yearlyLoopIndex ++;
@@ -126,45 +127,62 @@ export default class Intro {
       .offset(window.innerHeight / 2)
       .on('active', function(i) {
 
+        log.info(i);
+
+        clearInterval(yearlyLoop);
+        chartsContainer.classList.remove('step-2');
+
         let title, type, range;
+        let timeSeries = [];
+
         switch (i) {
+
           case 0:
             type = 'total';
+            timeSeries = chartData.filter(d => d.data === 'total');
+            chart.updateData(timeSeries, type, title, range);
             break;
+
           case 1:
             type = 'mixed';
             title = 'Trend per year';
+            yearlyLoop = setInterval(function(){
+              loopThroughYears(type, title, range);
+            }, 1000);
             break;
+
           case 2:
             type = 'trend';
+            chartsContainer.classList.add('step-2');
+            timeSeries = chartData.filter(d => d.data === 'total' || d.data === 'trend');
+            chart.updateData(timeSeries, type, title, range);
             break;
+
           case 3:
             type = 'seasonal';
             title = 'Seasonal over time';
             range = 100;
+            timeSeries = chartData.filter(d => d.data === 'remainder');
+            chart.updateData(timeSeries, type, title, range);
             break;
-          default:
-            type = 'seasonal';
-            range = 20;
-        }
 
-        const index = i < 2 ? i : i - 1;
-
-        chartsContainer.classList.remove('step-2');
-
-        if (i === 1) {
-          yearlyLoop = setInterval(function(){
-            loopThroughYears(type, title, range);
-          }, 1000);
-        } else {
-          clearInterval(yearlyLoop);
-          if (i === 2) {
-            chartsContainer.classList.add('step-2');
-            chart.updateData([chartData[0], chartData[index]], type, title, range);
-          } else {
-            clearInterval(yearlyLoop);
-            chart.updateData([chartData[index]], type, title, range);
-          }
+          case 4:
+            // type = 'seasonal';
+            // range = 20;
+            // const remainder = chartData.find(d => d.data === 'remainder');
+            // const seasonal = chartData.find(d => d.data === 'seasonal');
+            // for (let i = 0; i < remainder.points.length - 12; i += 12) {
+            //   const thisYear = {
+            //     term: 'Influenza',
+            //     points: remainder.points.slice(i, i + 12)
+            //   }
+            //   for (let j = 0; j < thisYear.points.length; j++) {
+            //     thisYear.points[j].date = seasonal.points.date;
+            //   }
+            //   timeSeries.push(thisYear);
+            // }
+            // timeSeries.push(seasonal);
+            // chart.updateData(timeSeries, type, title, range);
         }
       });
   }
