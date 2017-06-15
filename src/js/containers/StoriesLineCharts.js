@@ -18,6 +18,7 @@ export default class StoriesLineCharts {
     chartData: {
       [key: string]: Array<TrendsAPIGraph>,
     },
+    range?: number,
     isLoading: boolean,
   };
   filtersMenu: HTMLElement;
@@ -25,7 +26,7 @@ export default class StoriesLineCharts {
   copyContainer: HTMLElement;
   loaderContainer: HTMLElement;
 
-  constructor(parentContainer: HTMLElement, storySection: string) {
+  constructor(parentContainer: HTMLElement, storySection: string, range?: number) {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
@@ -37,7 +38,7 @@ export default class StoriesLineCharts {
     parentContainer.appendChild(elementsContainer);
 
     d3.json(path, function(chartData) {
-      self.data = { storySection, currCase, chartData, geoIso, isLoading };
+      self.data = { storySection, currCase, chartData, geoIso, range, isLoading };
       self.createElements(elementsContainer);
     });
   }
@@ -67,6 +68,18 @@ export default class StoriesLineCharts {
     self.updateData({ geoIso });
   }
 
+  newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
+    const copyTitleContainer = document.createElement('h5');
+    copyTitleContainer.innerHTML = copyTitle;
+    copyContainer.appendChild(copyTitleContainer);
+
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -74,8 +87,8 @@ export default class StoriesLineCharts {
   }
 
   createElements(elementsContainer: HTMLElement) {
-    const { storySection, currCase, chartData, geoIso } = this.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+    const { storySection, currCase, chartData, geoIso, range } = this.data;
+    const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
     ];
 
@@ -134,17 +147,14 @@ export default class StoriesLineCharts {
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, chartType, 15);
+    this.chart = new LineChart(chartItem, chartType, range);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;
     copyContainer.classList.add('case-copy');
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
     row.appendChild(copyContainer);
+
+    this.newCopy(copyContainer, copyTitle, copy);
 
     this.updateElements();
   }
@@ -153,7 +163,7 @@ export default class StoriesLineCharts {
     let { filtersMenu } = this;
     const { chart, copyContainer, loaderContainer } = this;
     const { storySection, currCase, chartData, geoIso, isLoading } = this.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+    const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
     ];
 
@@ -176,10 +186,6 @@ export default class StoriesLineCharts {
     chart.updateData(chartData[geoIso], chartType);
 
     copyContainer.innerHTML = '';
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
+    this.newCopy(copyContainer, copyTitle, copy);
   }
 }

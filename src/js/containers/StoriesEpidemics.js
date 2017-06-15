@@ -101,6 +101,18 @@ export default class StoriesEpidemics {
     self.updateData({ currMonth });
   }
 
+  newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
+    const copyTitleContainer = document.createElement('h5');
+    copyTitleContainer.innerHTML = copyTitle;
+    copyContainer.appendChild(copyTitleContainer);
+
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -116,7 +128,7 @@ export default class StoriesEpidemics {
       geoIso,
       currMonth,
     } = this.data;
-    const { terms, geoList, copy } = stories[storySection].cases[currCase];
+    const { terms, geoList, copyTitle, copy } = stories[storySection].cases[currCase];
 
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header', 'container');
@@ -181,17 +193,14 @@ export default class StoriesEpidemics {
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);    
+    this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;
     copyContainer.classList.add('case-copy');
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
     row.appendChild(copyContainer);
+
+    this.newCopy(copyContainer, copyTitle, copy);
 
     this.updateElements();
   }
@@ -209,7 +218,7 @@ export default class StoriesEpidemics {
       currMonth,
       isLoading
     } = self.data;
-    const { terms, geoList, chartType, copy } = stories[storySection].cases[
+    const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
     ];
 
@@ -231,10 +240,6 @@ export default class StoriesEpidemics {
     lineChart.updateData(chartData[geoIso]);
 
     copyContainer.innerHTML = '';
-    for (const c of copy) {
-      const p = document.createElement('p');
-      p.innerHTML = c;
-      copyContainer.appendChild(p);
-    }
+    this.newCopy(copyContainer, copyTitle, copy);
   }
 }

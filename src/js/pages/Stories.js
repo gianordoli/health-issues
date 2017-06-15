@@ -42,7 +42,7 @@ export default class Stories {
     elementsContainer.appendChild(pageBody);
 
     const storiesSeasonal = new StoriesLineCharts(pageBody, 'seasonal');
-    const storiesHolidays = new StoriesLineCharts(pageBody, 'holidays');
+    const storiesHolidays = new StoriesLineCharts(pageBody, 'holidays', 15);
     const storiesMedia = new StoriesLineCharts(pageBody, 'media');
     const storiesEpidemics = new StoriesEpidemics(pageBody, 'epidemics');
     const storiesRanking = new StoriesRanking(pageBody);
