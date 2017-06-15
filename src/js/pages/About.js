@@ -1,7 +1,7 @@
 // @flow weak
 
-// Libraries
 import log from 'loglevel';
+import '../../sass/about.scss';
 
 export default class About {
 
@@ -16,84 +16,130 @@ export default class About {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    elementsContainer.appendChild(pageHeader);
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    pageHeader.appendChild(container);
+
+    const pageName = document.createElement('p');
+    pageName.innerHTML = "About";
+    container.appendChild(pageName);
+
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
+
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
+
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
+
     const summary = document.createElement('div');
-    summary.innerHTML = "SearchMD is a collaboration between the Google News Lab and Gabriel Gianordoli. It uses Google Search Trends to identify patterns in health-related searches.";
-    elementsContainer.appendChild(summary);
+    summary.classList.add('summary');
+    summary.innerHTML = "SearchMD is a collaboration between <a href='https://newslab.withgoogle.com/' target='_blank'>Google News Lab</a> and <a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a>. It uses Google Search Trends to identify patterns in health-related searches.";
+    row.appendChild(summary);
 
     const aboutData = document.createElement('div');
-    elementsContainer.appendChild(aboutData);
+    aboutData.classList.add('about-data');
+    row.appendChild(aboutData);
 
-      let h4 = document.createElement('h4');
-      h4.innerHTML = "Data";
-      aboutData.appendChild(h4);
+      let title, colBody, subtitle, content;
 
-      let p = document.createElement('p');
-      p.innerHTML = "All data in this project comes from Google Trends, and the search terms are <a href='https://www.google.com/intl/es419/insidesearch/features/search/knowledge.html' target='_blank'>Google Knowledge Graph</a> topics — which provides language-agnostic results and prevents “shingles” from returning searches for “roof shingles,” for example.";
-      aboutData.appendChild(p);
+      title = document.createElement('h3');
+      title.innerHTML = "Data";
+      aboutData.appendChild(title);
 
-      p = document.createElement('p');
-      p.innerHTML = "The seasonal and trend are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='' target='_blank'>Medium post</a> for more information.";
-      aboutData.appendChild(p);
+      colBody = document.createElement('div');
+      colBody.classList.add('col-body');
+      aboutData.appendChild(colBody);
 
-      const aboutTeam = document.createElement('div');
-      elementsContainer.appendChild(aboutTeam);
+        content = document.createElement('p');
+        content.innerHTML = "All data in this project comes from Google Trends, and the search terms are <a href='https://www.google.com/intl/es419/insidesearch/features/search/knowledge.html' target='_blank'>Google Knowledge Graph</a> topics — which provides language-agnostic results and prevents “shingles” from returning searches for “roof shingles,” for example.";
+        colBody.appendChild(content);
 
-        h4 = document.createElement('h4');
-        h4.innerHTML = "Team";
-        aboutTeam.appendChild(h4);
+        content = document.createElement('p');
+        content.innerHTML = "The seasonal and trend values are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='' target='_blank'>Medium post</a> for more information.";
+        colBody.appendChild(content);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Consultancy";
-        aboutTeam.appendChild(p);
+    const aboutTeam = document.createElement('div');
+    aboutTeam.classList.add('about-team');
+    row.appendChild(aboutTeam);
 
-        p = document.createElement('p');
-        p.innerHTML = "Simon Rogers (Google News Lab) and Alberto Cairo";
-        aboutTeam.appendChild(p);
+      title = document.createElement('h3');
+      title.innerHTML = "Team";
+      aboutTeam.appendChild(title);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Data Support";
-        aboutTeam.appendChild(p);
+      colBody = document.createElement('div');
+      colBody.classList.add('col-body');
+      aboutTeam.appendChild(colBody);
 
-        p = document.createElement('p');
-        p.innerHTML = "Sabrina Elfarra and Jennifer Lee (Google News Lab)";
-        aboutTeam.appendChild(p);
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Consultancy";
+        colBody.appendChild(subtitle);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Concept";
-        aboutTeam.appendChild(p);
+        content = document.createElement('p');
+        content.innerHTML = "<a href='https://simonrogers.net/' target='_blank'>Simon Rogers</a> (Google News Lab) and <a href='http://www.thefunctionalart.com/' target='_blank'>Alberto Cairo</a>";
+        colBody.appendChild(content);
 
-        p = document.createElement('p');
-        p.innerHTML = "<a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a> and <a href='http://laurasalaberry.com' target='_blank'>Laura Salaberry</a>";
-        aboutTeam.appendChild(p);
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Data Support";
+        colBody.appendChild(subtitle);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Data Visualization, Design and Development";
-        aboutTeam.appendChild(p);
+        content = document.createElement('p');
+        content.innerHTML = "Sabrina Elfarra and Jennifer Lee (Google News Lab)";
+        colBody.appendChild(content);
 
-        p = document.createElement('p');
-        p.innerHTML = "Gabriel Gianordoli";
-        aboutTeam.appendChild(p);
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Concept";
+        colBody.appendChild(subtitle);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Art Direction and Illustration";
-        aboutTeam.appendChild(p);
+        content = document.createElement('p');
+        content.innerHTML = "<a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a> and <a href='http://laurasalaberry.com' target='_blank'>Laura Salaberry</a>";
+        colBody.appendChild(content);
 
-        p = document.createElement('p');
-        p.innerHTML = "Laura Salaberry";
-        aboutTeam.appendChild(p);
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Data Visualization, Design and Development";
+        colBody.appendChild(subtitle);
 
-        p = document.createElement('p');
-        p.classList.add('type-body-2');
-        p.innerHTML = "Research";
-        aboutTeam.appendChild(p);
+        content = document.createElement('p');
+        content.innerHTML = "<a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a>";
+        colBody.appendChild(content);
 
-        p = document.createElement('p');
-        p.innerHTML = "André Biernath";
-        aboutTeam.appendChild(p);
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Art Direction and Illustration";
+        colBody.appendChild(subtitle);
+
+        content = document.createElement('p');
+        content.innerHTML = "<a href='http://laurasalaberry.com' target='_blank'>Laura Salaberry</a>";
+        colBody.appendChild(content);
+
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Research";
+        colBody.appendChild(subtitle);
+
+        content = document.createElement('p');
+        content.innerHTML = "<a href='https://twitter.com/andrebiernath' target='_blank'>André Biernath</a>";
+        colBody.appendChild(content);
+
+        subtitle = document.createElement('p');
+        subtitle.classList.add('subtitle');
+        subtitle.innerHTML = "Additional Development";
+        colBody.appendChild(subtitle);
+
+        content = document.createElement('p');
+        content.innerHTML = "<a href='http://umisyam.com' target='_blank'>Umi Syam</a>";
+        colBody.appendChild(content);
   }
 }

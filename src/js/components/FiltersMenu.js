@@ -11,11 +11,6 @@ import 'selectize/dist/css/selectize.css';
 
 export default class FiltersMenu {
 
-  // data: {
-  //   geo: Geo,
-  // };
-  // geoSelect?: selectize;
-
   constructor(
     parentContainer: ?Element,
     terms: string[],
@@ -49,7 +44,8 @@ export default class FiltersMenu {
     onGeoChange?: (geoIso: string, self: StoriesLineCharts) => void
   ) {
     let text = document.createElement('span');
-    text.innerHTML = 'Search interest from 2004 to 2016 for ';
+    text.classList.add('sentence');
+    text.innerHTML = 'Search interest from 2004 to 2016 for <br>';
     elementsContainer.appendChild(text);
 
     const termsList = document.createElement('span');
@@ -58,16 +54,19 @@ export default class FiltersMenu {
 
     for (const t of terms) {
       const s = document.createElement('span');
+      s.classList.add('sentence');
       s.innerHTML = t;
       termsList.appendChild(s);
     }
 
     text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = ' in ';
     elementsContainer.appendChild(text);
 
     if (geoList.length === 1) {
       const geo = document.createElement('span');
+      geo.classList.add('geo', 'sentence');
       geo.innerHTML = countries.find(c => c.iso === geoList[0]).name;
       elementsContainer.appendChild(geo);
     } else {
@@ -89,7 +88,8 @@ export default class FiltersMenu {
         elementsContainer.appendChild(geoSelect);
         const geoSelectize = $(geoSelect).selectize({
           maxItems: 1,
-          onChange: bindHandleChange
+          onChange: bindHandleChange,
+          placeholder: 'Select'
         });
         geoSelectize[0].selectize.setValue(geoIso, true);
       }

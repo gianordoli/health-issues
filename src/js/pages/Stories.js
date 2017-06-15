@@ -21,15 +21,30 @@ export default class Stories {
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-    const stickyHeader = document.createElement('div');
-    stickyHeader.classList.add('sticky-header');
-    stickyHeader.innerHTML = "Stories";
-    elementsContainer.appendChild(stickyHeader);
+    const sticky = document.createElement('div');
+    sticky.classList.add('sticky');
+    elementsContainer.appendChild(sticky);
 
-    const storiesSeasonal = new StoriesLineCharts(elementsContainer, 'seasonal');
-    const storiesHolidays = new StoriesLineCharts(elementsContainer, 'holidays');
-    const storiesMedia = new StoriesLineCharts(elementsContainer, 'media');
-    const storiesEpidemics = new StoriesEpidemics(elementsContainer, 'epidemics');
-    const storiesRanking = new StoriesRanking(elementsContainer);
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    sticky.appendChild(pageHeader);
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    pageHeader.appendChild(container);
+
+    const pageName = document.createElement('p');
+    pageName.innerHTML = "Stories";
+    container.appendChild(pageName);
+
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
+
+    const storiesSeasonal = new StoriesLineCharts(pageBody, 'seasonal');
+    const storiesHolidays = new StoriesLineCharts(pageBody, 'holidays');
+    const storiesMedia = new StoriesLineCharts(pageBody, 'media');
+    const storiesEpidemics = new StoriesEpidemics(pageBody, 'epidemics');
+    const storiesRanking = new StoriesRanking(pageBody);
   }
 }

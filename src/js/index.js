@@ -10,6 +10,8 @@ import TrendsAPI from './api/TrendsAPI';
 import terms from './data/terms';
 import countries from './data/countries';
 import log from 'loglevel';
+import Stickyfill from 'stickyfill';
+const stickyfill = Stickyfill();
 import '../sass/App.scss';
 
 import GetMapData from './scripts/GetMapData';
@@ -20,6 +22,7 @@ app.main = (function (){
 
   let explore;
   let ticking = false;
+  let introMounted = false;
   let storiesOffsetTop;
 
   function loadShinyAPI() {
@@ -43,8 +46,17 @@ app.main = (function (){
   function checkScroll(e) {
     if (!ticking) {
       window.requestAnimationFrame(function() {
+
         ticking = false;
-        if (window.scrollY > storiesOffsetTop) {
+        if (!introMounted) {
+          const introPage = document.querySelector('#intro.page');
+          if (introPage) introMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
+        } else {
+          const storiesPage = document.querySelector('#intro.page');
+          if (storiesPage) storiesOffsetTop = storiesPage.offsetTop;
+        }
+
+        if (storiesOffsetTop && window.scrollY > storiesOffsetTop) {
           window.removeEventListener('scroll', checkScroll);
           initializeExplore();
         }
@@ -57,12 +69,12 @@ app.main = (function (){
     log.info('initializeExplore');
     const diseases = [
       terms.find(t => t.name === 'Sunburn'),
-      terms.find(t => t.name === 'Dehydration'),
-      terms.find(t => t.name === 'Lyme disease'),
+      // terms.find(t => t.name === 'Dehydration'),
+      // terms.find(t => t.name === 'Lyme disease'),
     ];
     const geo = countries[0];
     explore.updateData({ diseases, geo });
-    explore.confirmFilters(null, explore);
+    explore.confirmFilters(explore);
   }
 
 
@@ -84,13 +96,13 @@ app.main = (function (){
     explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
     const about = new About(elementsContainer);
 
-    const storiesDiv = document.querySelector('#stories.page');
-    if (storiesDiv) {
-      storiesOffsetTop = storiesDiv.offsetTop;
-    }
     window.addEventListener('scroll', checkScroll);
 
-    // const getMapData = new GetMapData(trendsAPI);
+    stickyfill.init();
+    var stickyElements = document.getElementsByClassName('sticky');
+    for (let i = stickyElements.length - 1; i >= 0  ; i--) {
+      stickyfill.add(stickyElements[i]);
+    }
   }
 
   const init = function(){

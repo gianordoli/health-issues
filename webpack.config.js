@@ -11,7 +11,7 @@ module.exports = {
 		contentBase: './www',
 		port: 3000
 	},
-  plugins: [ 
+  plugins: [
       new webpack.DefinePlugin({
           ENV: JSON.stringify(process.env.NODE_ENV),
       }),
@@ -29,16 +29,15 @@ module.exports = {
 			{
 				test: /\.(scss|css)$/,
 				loader: 'style-loader!css-loader!sass-loader'
-			}, 
+			},
 			{
 		    test: /\.(png|jpg)$/,
 		    loader: 'url-loader?limit=10000'
-			}				
+			},
+			{
+				test: /\.svg$/,
+				loader: 'svg-inline-loader?classPrefix'
+	    }
 		]
 	}
 };
-
-
-
-
-

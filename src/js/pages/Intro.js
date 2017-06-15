@@ -2,6 +2,7 @@
 
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
+import { seasonalRatio } from '../util/constants';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
 import log from 'loglevel';
@@ -37,9 +38,13 @@ export default class Intro {
 
   createElements(elementsContainer: HTMLElement, chartData) {
 
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
+
     const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
-    elementsContainer.appendChild(sectionHeader);
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
     title.innerHTML = 'Trends and Seasonality';
@@ -51,28 +56,33 @@ export default class Intro {
     sectionHeader.appendChild(intro);
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
-    elementsContainer.appendChild(sectionBody);
-
-    const filtersMenu = new FiltersMenu(
-      sectionBody,
-      ['Influenza'],
-      ['world'],
-      'world',
-    );
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
     const row = document.createElement('div');
     row.classList.add('row');
     sectionBody.appendChild(row);
 
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
+
+    const filtersMenu = new FiltersMenu(
+      colLeft,
+      ['Influenza'],
+      ['world'],
+      'world',
+    );
+
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
+    colLeft.appendChild(chartsContainer);
+    chartsContainer.style.height = (chartsContainer.offsetWidth * seasonalRatio).toString() + 'px';
 
     const chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.chart = new LineChart(chartItem, 'trend');
+    this.chart = new LineChart(chartItem, 'total');
     const { chart } = this;
 
     const slidesContainer = document.createElement('div');
@@ -114,20 +124,20 @@ export default class Intro {
       ])
     );
 
-
-    const containerD3 = d3.select('#intro.page .section-body .row');
-    const chartsContainerD3 = containerD3.select('.charts-container');
+    const thisPage = d3.select(elementsContainer);
+    const containerD3 = thisPage.select('.row');
+    const colLeftD3 = containerD3.select('.col-left');
     const slidesContainerD3 = containerD3.selectAll('.slides-container');
     const slidesD3 = slidesContainerD3.selectAll('.slide');
 
     let yearlyLoop;
     let yearlyLoopIndex = 0;
-    function loopThroughYears() {
+    function loopThroughYears(type: string, title: string) {
       const data = {
         term: chartData[0].term,
         points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12),
       }
-      chart.updateData([data], 'trend');
+      chart.updateData([data], type, title);
       if (yearlyLoopIndex < 12) {
         yearlyLoopIndex ++;
       } else {
@@ -137,23 +147,47 @@ export default class Intro {
     }
 
     graphScroll()
-      .graph(chartsContainerD3)
+      .graph(colLeftD3)
       .container(containerD3)
       .sections(slidesD3)
       .offset(window.innerHeight / 2)
       .on('active', function(i) {
-        const type = i < 3 ? 'trend' : 'seasonal';
+        let title, type;
+        switch (i) {
+          case 0:
+            type = 'total';
+            break;
+          case 1:
+            type = 'mixed';
+            title = 'Trend per year';
+            break;
+          case 2:
+            type = 'trend';
+            break;
+          case 3:
+            type = 'seasonal';
+            title = 'Seasonal over time';
+            break;
+          default:
+            type = 'seasonal';
+        }
+
         const index = i < 2 ? i : i - 1;
 
+        chartsContainer.classList.remove('step-2');
+
         if (i === 1) {
-          yearlyLoop = setInterval(loopThroughYears, 1000);
+          yearlyLoop = setInterval(function(){
+            loopThroughYears(type, title);
+          }, 1000);
         } else {
           clearInterval(yearlyLoop);
           if (i === 2) {
-            chart.updateData([chartData[0], chartData[index]], type);
+            chartsContainer.classList.add('step-2');
+            chart.updateData([chartData[0], chartData[index]], type, title);
           } else {
             clearInterval(yearlyLoop);
-            chart.updateData([chartData[index]], type);
+            chart.updateData([chartData[index]], type, title);
           }
         }
       });

@@ -1,113 +1,207 @@
 @import 'App';
 
 #stories.page {
-  background-color: $color-0;
+
+  input[type="range"] {
+    width: calc(100% - 32px);
+    margin-left: 32px;
+  }
+
+  .selectize-input {
+    min-width: 180px;
+  }
+
+  .page-body {
+    background-color: darken($color-0, 10%);
+  }
 
   .story-section {
-
-    &:not(:last-child) {
-      margin-bottom: $col-gutter-large*2;
-    }
-
-    @include for-phone-down {
-      &:not(:last-child) {
-        margin-bottom: $col-gutter-small*2;
-      }
-    }
 
     .section-header {
       color: white;
     }
 
-    .case-copy {
-      @include columns(1);
+    .section-body {
+      .case-copy {
+        @include columns(1);
+      }
+    }
+
+    &.ranking {
+
+      .slideshow {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        .bt-arrow {
+          width: $baseline-height * 2;
+          height: $baseline-height * 2;
+          border: none;
+          background-color: white;
+          cursor: pointer;
+          flex-shrink: 0;
+
+          @include for-phone-down {
+            display: none;
+          };
+
+          &:disabled {
+            opacity: 0.24;
+          }
+
+          &:after {
+              content: '';
+              display: block;
+              border-width: 2px 2px 0 0;
+              border-style: solid;
+              border-color: $color-0;
+              width: $baseline-height;
+              height: $baseline-height;
+          }
+
+          &.back {
+            margin-right: $elements-margin;
+
+            &:after {
+              transform: rotate(-135deg);
+            }
+          }
+
+          &.forward {
+            margin-left: $elements-margin;
+
+            &:after {
+              transform: rotate(45deg);
+            }
+          }
+        }
+
+        .ranking-table-container {
+
+          overflow-x: hidden;
+          position: relative;
+
+          @include for-phone-down {
+            overflow-x: auto;
+          };
+
+          .ranking-table {
+            position: relative;
+            left: 0;
+            white-space: nowrap;
+            transition: left 0.5s ease-out;
+
+            @include for-phone-down {
+              white-space: normal;
+            };
+
+            .ranking-column {
+              display: inline-block;
+              width: 12.5%;
+              // padding: 0 $elements-margin 0 0;
+              padding-bottom: $baseline-height * 2;
+
+              @include for-tablet-portrait-down {
+                width: 20%;
+              }
+
+              @include for-phone-down {
+                width: 33%;
+              }
+
+              .header {
+                color: $color-0;
+                @include type-body-2;
+
+                span {
+                  display: inline-block;
+                  width: 100%;
+                  padding: 0 $elements-padding/2;
+                  border-bottom: 2px solid $color-0;
+                }
+              }
+
+              ul {
+                list-style: none;
+                padding-left: 0;
+
+                li {
+                  cursor: pointer;
+
+                  &.hover {
+                    background-color: lighten($color-1, 24%);
+                  }
+
+                  &.active {
+                    background-color: $color-1;
+                  }
+
+                  span {
+                    display: inline-block;
+                    width: 100%;
+                    padding: 0 $elements-padding/2;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.epidemics {
+      .map {
+
+        .country {
+          stroke: #A696DB;
+          stroke-width: 1px;
+        }
+      }
     }
 
     .stories-nav-bar {
 
       min-height: $baseline-height * 4;
-      margin: 0 $col-gutter-large;
+      margin: 0 auto;
       background-color: white;
-      border-bottom: 1px solid $color-0;
-
-      @include for-phone-down {
-        margin: 0 $col-gutter-small;
-      };
-
+      border-bottom: 2px solid $color-0;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
+      padding: $elements-padding/2 $elements-padding;
 
-      a {
+      @include for-phone-down {
+        padding-left: $elements-padding
+      };
+
+      p {
         @include type-button;
         cursor: pointer;
         display: inline-block;
         padding: $elements-padding/2;
+        margin: $elements-margin/4 0;
         color: $color-0;
-        margin-left: $elements-margin;
         transition-property: background-color, color;
         transition-duration: 0.25s;
+        &:not(:last-child) {
+          margin-right: $elements-margin;
+        }
 
-        &:hover, &:active, &.active {
+        &:hover {
+          background-color: lighten($color-0, 48%);
+        }
+
+        &.active {
           background-color: $color-0;
           color: white;
         }
       }
     }
-
-    .ranking-table {
-      overflow-x: auto;
-      width: 100%;
-      white-space: nowrap;
-      // display: flex;
-      // flex-direction: row;
-      // flex-wrap: wrap;
-      // justify-content: flex-start;
-
-      .ranking-column {
-        display: inline-block;
-        width: 10%;
-        margin: 0 $elements-margin $elements-margin*2 0;
-
-        @include for-phone-down {
-          width: 30%;
-        };
-
-        .header {
-          color: $color-0;
-          border-bottom: 2px solid $color-0;
-          padding-left: $elements-padding;
-          @include type-body-2;
-        }
-
-        ul {
-          list-style: none;
-          padding-left: 0;
-
-          li {
-            border-bottom: 1px solid $color-gray;
-            padding-left: $elements-padding;
-          }
-        }
-      }
-    }
-  }
-}
-
-input[type="range"] {
-  width: calc(100% - 32px);
-  margin-left: 32px;
-}
-
-
-.map {
-  .country {
-    // fill: white;
-    // stroke: rgba(250, 130, 0, 0.5);
-    stroke: #A696DB;
-    stroke-width: 1px;
   }
 }
 

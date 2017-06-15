@@ -32,11 +32,11 @@ export default class StoriesNavBar {
     ) => void
   ) {
     const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('stories-nav-bar');
+    elementsContainer.classList.add('stories-nav-bar', 'container');
     parentContainer.appendChild(elementsContainer);
 
     for (let i = 0; i < cases.length; i++) {
-      const tab = document.createElement('a');
+      const tab = document.createElement('p');
       if (i === 0) tab.classList.add('active');
       tab.innerHTML = cases[i];
       const bindClick = evt => onChange(evt, self, elementsContainer, i);

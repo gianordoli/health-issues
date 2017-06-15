@@ -18,12 +18,9 @@ import { dummyData } from '../scripts/data';
 import log from 'loglevel';
 import selectize from 'selectize';
 import $ from 'jquery';
-import Stickyfill from 'stickyfill';
-const stickyfill = Stickyfill();
 
 //Styles
 import 'selectize/dist/css/selectize.css';
-import '../../sass/sticky.scss';
 import '../../sass/explore.scss';
 
 export default class Explore {
@@ -47,7 +44,6 @@ export default class Explore {
   geoSelect: selectize;
 
   loaderContainer: HTMLElement;
-  confirmNav: HTMLElement;
   mergeButton: HTMLElement;
   topQueriesList: HTMLElement;
 
@@ -57,12 +53,12 @@ export default class Explore {
   trendsAPI: TrendsAPI;
   shinyAPI: ShinyAPI;
 
-  constructor(parentContainer: HTMLElement, shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI, filter?: Filter) {
+  constructor(parentContainer: HTMLElement, shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
     this.data = {
-      prevDiseases: filter ? filter.terms : [],
-      diseases: filter ? filter.terms : [],
-      prevGeo: filter ? filter.geo : countries[0],
-      geo: filter ? filter.geo : countries[0],
+      prevDiseases: [],
+      diseases: [],
+      prevGeo: countries[0],
+      geo: countries[0],
       seasonal: [],
       trend: [],
       total: [],
@@ -70,7 +66,7 @@ export default class Explore {
       topQueries: [],
       isMerged: false,
       isChanging: false,
-      isLoading: filter ? true : false,
+      isLoading: false,
     }
     const self = this;
     self.trendsAPI = trendsAPI;
@@ -118,25 +114,25 @@ export default class Explore {
     }
 
     self.createElements(parentContainer);
-
-    if (filter) {
-      self.getTrendsAPIGraph('trend');
-    }
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {
-    log.info('handleSelectDiseaseChange');
     const diseases = value.map(v => self.getDiseaseByEntity(v));
     this.updateData({diseases: diseases, isChanging: true});
-    self.confirmNav.classList.remove('hidden');
+    if (diseases.length > 0) {
+      self.confirmFilters(self);
+    }
   }
 
   handleSelectGeoChange(value: string, self: Explore) {
-    log.info('handleSelectGeoChange');
-    log.info(value);
-    const name = this.getCountryByIso(value).name;
-    this.updateData({geo: {iso: value, name: name, isChanging: true}});
-    self.confirmNav.classList.remove('hidden');
+    const { prevGeo } = self.data;
+    if (value) {
+      const name = this.getCountryByIso(value).name;
+      this.updateData({geo: {iso: value, name: name}, isChanging: true});
+      self.confirmFilters(self);
+    } else {
+      this.updateData({geo: '', isChanging: true});
+    }
   }
 
   getDiseaseByEntity(entity: string): Term {
@@ -147,17 +143,9 @@ export default class Explore {
     return countries.find(c => c.iso === iso);
   }
 
-  cancelFilters(event, self) {
-    log.info('cancelFilters');
-    const { prevDiseases, prevGeo } = self.data;
-    self.confirmNav.classList.add('hidden');
-    self.updateData({ diseases: prevDiseases, geo: prevGeo, isChanging: false });
-  }
-
-  confirmFilters(event, self) {
+  confirmFilters(self) {
     log.info('confirmFilters');
     const { diseases, geo } = self.data;
-    self.confirmNav.classList.add('hidden');
     self.updateData({
       prevDiseases: diseases,
       prevGeo: geo,
@@ -173,8 +161,7 @@ export default class Explore {
   toggleChartMerge(event, self) {
     let { isMerged } = self.data;
     isMerged = isMerged ? false : true;
-    this.seasonalChart.hide();
-    this.updateData({ isMerged: isMerged });
+    this.updateData({ isMerged, type: 'total' });
   }
 
   getTrendsAPIGraph(type: string){
@@ -277,34 +264,53 @@ export default class Explore {
 
   createElements(parentContainer: HTMLElement) {
 
+    const self = this;
+
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'explore';
     elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
 
-      const stickyHeader = document.createElement('div');
-      stickyHeader.classList.add('sticky-header');
-      stickyHeader.innerHTML = "Explore";
-      elementsContainer.appendChild(stickyHeader);
+    const sticky = document.createElement('div');
+    sticky.classList.add('sticky');
+    elementsContainer.appendChild(sticky);
 
-      const sectionHeader = document.createElement('div');
-      sectionHeader.classList.add('section-header');
-      elementsContainer.appendChild(sectionHeader);
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    sticky.appendChild(pageHeader);
 
-        const intro = document.createElement('p');
-        intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
-        sectionHeader.appendChild(intro);
+    const container = document.createElement('div');
+    container.classList.add('container');
+    pageHeader.appendChild(container);
 
-      const sectionBody = document.createElement('div');
-      sectionBody.classList.add('section-body');
-      elementsContainer.appendChild(sectionBody);
+    const pageName = document.createElement('p');
+    pageName.innerHTML = "Explore";
+    container.appendChild(pageName);
 
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
+
+    const sectionHeader = document.createElement('div');
+    sectionHeader.classList.add('section-header', 'container');
+    pageBody.appendChild(sectionHeader);
+
+    const title = document.createElement('h3');
+    title.innerHTML = 'Lorem Ipsum dolor';
+    sectionHeader.appendChild(title);
+
+    const intro = document.createElement('p');
+    intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+    sectionHeader.appendChild(intro);
+
+    const sectionBody = document.createElement('div');
+    sectionBody.classList.add('section-body', 'container');
+    pageBody.appendChild(sectionBody);
 
     // Loader
-    this.loaderContainer = document.createElement('div');
-    const { loaderContainer } = this;
+    self.loaderContainer = document.createElement('div');
+    const { loaderContainer } = self;
     loaderContainer.classList.add('loader-container');
-    loaderContainer.style.top = elementsContainer.offsetTop + 'px';
     const loader = document.createElement('span');
     loader.classList.add('loader');
     loaderContainer.appendChild(loader);
@@ -317,7 +323,8 @@ export default class Explore {
     sectionBody.appendChild(filtersMenu);
 
     let text = document.createElement('span');
-    text.innerHTML = 'Search interest from 2004 to today for ';
+    text.classList.add('sentence');
+    text.innerHTML = 'Search interest from 2004 to today for<br/>';
     filtersMenu.appendChild(text);
 
 
@@ -331,16 +338,20 @@ export default class Explore {
       option.innerHTML = d.alias ? d.alias : d.name;
       diseaseSelect.appendChild(option);
     });
-    let bindHandleChange = value => this.handleSelectDiseaseChange(value, this);
+    let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);
     filtersMenu.appendChild(diseaseSelect);
     const diseaseSelectize = $(diseaseSelect).selectize({
+      plugins: ['remove_button'],
       maxItems: 3,
       onChange: bindHandleChange,
+      openOnFocus: false,
+      closeAfterSelect: true,
       placeholder: 'Select'
     });
-    this.diseaseSelect = diseaseSelectize[0].selectize;
+    self.diseaseSelect = diseaseSelectize[0].selectize;
 
     text = document.createElement('span');
+    text.classList.add('sentence');
     text.innerHTML = ' in ';
     filtersMenu.appendChild(text);
 
@@ -354,91 +365,44 @@ export default class Explore {
       option.innerHTML = c.name;
       geoSelect.appendChild(option);
     });
-    bindHandleChange = value => this.handleSelectGeoChange(value, this);
+    bindHandleChange = value => self.handleSelectGeoChange(value, self);
     filtersMenu.appendChild(geoSelect);
     const geoSelectize = $(geoSelect).selectize({
       maxItems: 1,
-      onChange: bindHandleChange
+      onChange: bindHandleChange,
+      onFocus: function() {
+        this.setValue('');
+      },
+      placeholder: 'Select'
     });
-    this.geoSelect = geoSelectize[0].selectize;
-
-
-    // Cancel / Done
-    this.confirmNav = document.createElement('div');
-    const { confirmNav } = this;
-    confirmNav.classList.add('confirm-nav');
-    confirmNav.classList.add('hidden');
-
-    const cancelButton = document.createElement('button');
-    cancelButton.innerHTML = 'Cancel';
-    bindHandleChange = evt => this.cancelFilters(evt, this);
-    cancelButton.addEventListener('click', bindHandleChange);
-    confirmNav.appendChild(cancelButton);
-
-    const doneButton = document.createElement('button');
-    doneButton.innerHTML = 'Done';
-    bindHandleChange = evt => this.confirmFilters(evt, this);
-    doneButton.addEventListener('click', bindHandleChange);
-    confirmNav.appendChild(doneButton);
-
-    filtersMenu.appendChild(confirmNav);
+    self.geoSelect = geoSelectize[0].selectize;
 
 
     const row = document.createElement('div');
     row.classList.add('row');
     sectionBody.appendChild(row);
 
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
+
     // Charts section
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
-    row.appendChild(chartsContainer);
+    colLeft.appendChild(chartsContainer);
 
     // Seasonal Chart
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.seasonalChart = new LineChart(chartItem, 'seasonal');
-
-    // const toggleBar = document.createElement('div');
-    // toggleBar.classList.add('toggle-bar');
-    // sectionBody.appendChild(toggleBar);
-    //
-    // const buttonContainer = document.createElement('div');
-    // buttonContainer.classList.add('button-container');
-    // toggleBar.appendChild(buttonContainer);
-    //
-    // this.mergeButton = document.createElement('a');
-    // const { mergeButton } = this;
-    // mergeButton.classList.add('icon');
-    // bindHandleChange = evt => this.toggleChartMerge(evt, this);
-    // mergeButton.addEventListener('click', bindHandleChange);
-    // buttonContainer.appendChild(mergeButton);
-    //
-    // const titlesContainer = document.createElement('div');
-    // titlesContainer.classList.add('titles-container');
-    // toggleBar.appendChild(titlesContainer);
-    //
-    // let title = document.createElement('p');
-    // title.classList.add('title');
-    // title.innerHTML = 'Seasonal';
-    // titlesContainer.appendChild(title);
-    //
-    // title = document.createElement('p');
-    // title.classList.add('title');
-    // title.innerHTML = 'Trend';
-    // titlesContainer.appendChild(title);
-
+    self.seasonalChart = new LineChart(chartItem, 'seasonal');
 
     // Trend chart
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
-    this.trendChart = new LineChart(chartItem, 'trend');
+    self.trendChart = new LineChart(chartItem, 'trend');
 
-
-    // const bottomContainer = document.createElement('div');
-    // bottomContainer.classList.add('bottom-container');
-    // sectionBody.appendChild(bottomContainer);
 
     // Top Queries
     const topQueriesContainer = document.createElement('div');
@@ -454,7 +418,7 @@ export default class Explore {
     topQueriesList.classList.add('top-queries-list');
     topQueriesContainer.appendChild(topQueriesList);
 
-    this.updateElements();
+    self.updateElements();
   }
 
   updateElements() {
@@ -464,12 +428,17 @@ export default class Explore {
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
+      diseaseSelect.disable();
+      geoSelect.disable();
     } else {
       loaderContainer.classList.add('hidden');
+      diseaseSelect.enable();
+      geoSelect.enable();
     }
 
-    diseaseSelect.setValue(diseases.map(d => d.entity), true);
-    geoSelect.setValue(geo.iso, true);
+    if (!arrayIsEqual(diseaseSelect.getValue(), diseases.map(d => d.entity))) {
+      diseaseSelect.setValue(diseases.map(d => d.entity), true);
+    }
 
     // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
 
@@ -493,7 +462,7 @@ export default class Explore {
             term.innerHTML = diseases[i].name;
             listContainer.appendChild(term);
 
-            const list = document.createElement('ul');
+            const list = document.createElement('ol');
             listContainer.appendChild(list);
 
             for(const q of topQueries[i].item) {

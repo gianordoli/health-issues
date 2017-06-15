@@ -5,6 +5,7 @@ import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
+import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
 // import '../../sass/stories.scss';
@@ -17,23 +18,26 @@ export default class StoriesLineCharts {
     chartData: {
       [key: string]: Array<TrendsAPIGraph>,
     },
+    isLoading: boolean,
   };
   filtersMenu: HTMLElement;
   chart: LineChart;
   copyContainer: HTMLElement;
+  loaderContainer: HTMLElement;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     const path = stories[storySection].cases[currCase].data;
+    const isLoading = false;
 
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('story-section');
     parentContainer.appendChild(elementsContainer);
 
     d3.json(path, function(chartData) {
-      self.data = { storySection, currCase, chartData, geoIso };
+      self.data = { storySection, currCase, chartData, geoIso, isLoading };
       self.createElements(elementsContainer);
     });
   }
@@ -47,11 +51,15 @@ export default class StoriesLineCharts {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
-    elementsContainer.querySelectorAll('a').forEach((e, i) => {
-      i === currCase ? e.classList.add('active') : e.classList.remove('active')
+    let isLoading = true;
+    self.updateData({ isLoading });
+
+    elementsContainer.querySelectorAll('p').forEach((e, i) => {
+      i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
     d3.json(path, function(chartData) {
-      self.updateData({ currCase, chartData, geoIso });
+      isLoading = false;
+      self.updateData({ currCase, chartData, geoIso, isLoading });
     });
   }
 
@@ -72,7 +80,7 @@ export default class StoriesLineCharts {
     ];
 
     const sectionHeader = document.createElement('div');
-    sectionHeader.classList.add('section-header');
+    sectionHeader.classList.add('section-header', 'container');
     elementsContainer.appendChild(sectionHeader);
 
     const title = document.createElement('h3');
@@ -91,11 +99,27 @@ export default class StoriesLineCharts {
     );
 
     const sectionBody = document.createElement('div');
-    sectionBody.classList.add('section-body');
+    sectionBody.classList.add('section-body', 'container');
     elementsContainer.appendChild(sectionBody);
 
+    this.loaderContainer = document.createElement('div');
+    const { loaderContainer } = this;
+    loaderContainer.classList.add('loader-container');
+    const loader = document.createElement('span');
+    loader.classList.add('loader');
+    loaderContainer.appendChild(loader);
+    sectionBody.appendChild(loaderContainer);
+
+    const row = document.createElement('div');
+    row.classList.add('row');
+    sectionBody.appendChild(row);
+
+    const colLeft = document.createElement('div');
+    colLeft.classList.add('col-left');
+    row.appendChild(colLeft);
+
     this.filtersMenu = new FiltersMenu(
-      sectionBody,
+      colLeft,
       terms,
       geoList,
       geoIso,
@@ -103,39 +127,42 @@ export default class StoriesLineCharts {
       this.changeGeo
     );
 
-    const row = document.createElement('div');
-    row.classList.add('row');
-    sectionBody.appendChild(row);
+    const chartsContainer = document.createElement('div');
+    chartsContainer.classList.add('charts-container');
+    colLeft.appendChild(chartsContainer);
 
-      const chartsContainer = document.createElement('div');
-      chartsContainer.classList.add('charts-container');
-      row.appendChild(chartsContainer);
+    const chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
+    this.chart = new LineChart(chartItem, chartType);
 
-        const chartItem = document.createElement('div');
-        chartItem.classList.add('chart-item');
-        chartsContainer.appendChild(chartItem);
-        this.chart = new LineChart(chartItem, chartType);
-
-      this.copyContainer = document.createElement('div');
-      const { copyContainer } = this;
-      copyContainer.classList.add('case-copy');
-      for (const c of copy) {
-        const p = document.createElement('p');
-        p.innerHTML = c;
-        copyContainer.appendChild(p);
-      }
-      row.appendChild(copyContainer);
+    this.copyContainer = document.createElement('div');
+    const { copyContainer } = this;
+    copyContainer.classList.add('case-copy');
+    for (const c of copy) {
+      const p = document.createElement('p');
+      p.innerHTML = c;
+      copyContainer.appendChild(p);
+    }
+    row.appendChild(copyContainer);
 
     this.updateElements();
   }
 
   updateElements() {
     let { filtersMenu } = this;
-    const { chart, copyContainer } = this;
-    const { storySection, currCase, chartData, geoIso } = this.data;
+    const { chart, copyContainer, loaderContainer } = this;
+    const { storySection, currCase, chartData, geoIso, isLoading } = this.data;
     const { terms, geoList, chartType, copy } = stories[storySection].cases[
       currCase
     ];
+
+    if (isLoading) {
+      loaderContainer.classList.remove('hidden');
+    } else {
+      loaderContainer.classList.add('hidden');
+    }
+
     const parent = filtersMenu.parentElement;
     filtersMenu = new FiltersMenu(
       filtersMenu.parentElement,

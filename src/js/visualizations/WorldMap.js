@@ -19,7 +19,7 @@ export default class WorldMap {
     const self = this;
     self.data = data;
     self.width = parentContainer.offsetWidth;
-    self.height = parentContainer.offsetHeight;
+    self.height = self.width * 0.5;
     d3.json(
       './data/world-topo.json',
       function(error, world) {

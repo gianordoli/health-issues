@@ -4,6 +4,8 @@ import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
+import Icons from '../util/icons';
+import * as d3 from 'd3';
 import $ from 'jquery';
 import log from 'loglevel';
 import '../../sass/home.scss';
@@ -93,6 +95,23 @@ export default class Home {
     });
   }
 
+  randomTopicStyle(p: HTMLElement, i: number) {
+    const iX = d3.interpolateNumber(0, window.innerWidth*0.4);
+    const iY = d3.interpolateNumber(window.innerHeight*0.2, window.innerHeight*0.4);
+
+    const upOrDown = i % 2 == 0 ? 1 : -1;
+    const leftOrRight = (i % 3) == 0 ? 1 : -1;
+    const posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
+    const posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
+    p.style.left = posLeft;
+    p.style.top = posTop;
+
+    const iS = d3.interpolateNumber(window.innerWidth*0.01, window.innerWidth*0.05);
+    const size = iS(Math.random());
+    p.style.fontSize = Math.round(size).toString() + 'px';
+    p.style.filter = `blur(${size*0.02}px)`;
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -122,20 +141,22 @@ export default class Home {
 
 
     const logosContainer = document.createElement('div');
-    logosContainer.id = 'logos-container';
+    logosContainer.classList.add('logos-container');
     titleContainer.appendChild(logosContainer);
 
     const gabriel = document.createElement('p');
+    gabriel.classList.add('gabriel');
     gabriel.innerHTML = 'Gabriel Gianordoli';
     logosContainer.appendChild(gabriel);
 
-    const forP = document.createElement('p');
-    forP.innerHTML = 'for';
-    logosContainer.appendChild(forP);
+    const forSpan = document.createElement('span');
+    forSpan.innerHTML = 'for';
+    logosContainer.appendChild(forSpan);
 
-    const newsLabLogo = document.createElement('p');
-    newsLabLogo.innerHTML = 'Google News Lab';
-    logosContainer.appendChild(newsLabLogo);
+    const gnl = document.createElement('div');
+    gnl.classList.add('google-news-lab-logo');
+    gnl.innerHTML = Icons.googleNewsLabLogo;
+    logosContainer.appendChild(gnl);
 
     this.countryContainer = document.createElement('div');
     this.countryContainer.classList.add('country-container');
@@ -150,14 +171,33 @@ export default class Home {
     const { geo, disease, topTopics } = this.data;
     const { countryContainer, topTopicsList } = this;
     if (topTopics.length > 0) {
-      countryContainer.innerHTML =
-        `Searches for ${disease.name.toLowerCase()} in ${geo.article ? 'the' : ''} ${geo.name}:`;
 
-      topTopics.forEach(t => {
+      let span = document.createElement('span');
+      span.innerHTML = 'Searches for ';
+      countryContainer.append(span);
+
+      const diseaseContainer = document.createElement('span');
+      diseaseContainer.classList.add('disease-container');
+      diseaseContainer.innerHTML = disease.name.toLowerCase();
+      countryContainer.appendChild(diseaseContainer);
+
+      countryContainer.appendChild(document.createElement('br'));
+
+      span = document.createElement('span');
+      span.innerHTML = 'in ';
+      countryContainer.appendChild(span);
+
+      const country = document.createElement('span');
+      country.classList.add('country');
+      country.innerHTML = geo.name;
+      countryContainer.appendChild(country);
+
+      topTopics.forEach((t, i) => {
         const p = document.createElement('p');
         p.innerHTML = t.title;
         topTopicsList.appendChild(p);
-      })
+        this.randomTopicStyle(p, i);
+      });
     }
   }
 }
