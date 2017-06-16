@@ -128,6 +128,7 @@ module.exports = {
         chartData: "./data/epidemics-ebola-time-series.json",
         terms: ["Ebola"],
         geoList: ["world"],
+        years: [2014, 2015],
         copyTitle: 'Lorem Ipsum',
         copy: [
           "Copy about Ebola Epidemic. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
@@ -140,6 +141,7 @@ module.exports = {
         chartData: "./data/epidemics-zika-time-series.json",
         terms: ["Zika virus"],
         geoList: ["world"],
+        years: [2015, 2016],
         copyTitle: 'Lorem Ipsum',
         copy: [
           "Copy about Zika virus. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
@@ -152,6 +154,7 @@ module.exports = {
         chartData: "./data/epidemics-mers-time-series.json",
         terms: ["MERS"],
         geoList: ["world"],
+        years: [2013, 2015],
         copyTitle: 'Lorem Ipsum',
         copy: [
           "Copy about MERS. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
@@ -164,6 +167,7 @@ module.exports = {
         chartData: "./data/epidemics-yellow-fever-time-series.json",
         terms: ["Yellow fever"],
         geoList: ["world"],
+        years: [2016, 2017],
         copyTitle: 'Lorem Ipsum',
         copy: [
           "Copy about Yellow Fever. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",

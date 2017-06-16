@@ -15,6 +15,7 @@ export default class StoriesEpidemics {
     storySection: string,
     currCase: number,
     geoIso: string,
+    years: [number, number],
     currMonth: number,
     mapData: Array<TrendsAPIRegionsList>,
     chartData: {
@@ -33,6 +34,7 @@ export default class StoriesEpidemics {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const { years } = stories[storySection].cases[currCase];
     const currMonth = 0;
     const isLoading = false;
 
@@ -51,6 +53,7 @@ export default class StoriesEpidemics {
           mapData,
           chartData,
           geoIso,
+          years,
           currMonth,
           isLoading,
         };
@@ -69,6 +72,7 @@ export default class StoriesEpidemics {
     const mapDataPath = stories[storySection].cases[currCase].mapData;
     const chartDataPath = stories[storySection].cases[currCase].chartData;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const { years } = stories[storySection].cases[currCase];
     let isLoading = true;
     self.updateData({ isLoading });
 
@@ -88,6 +92,7 @@ export default class StoriesEpidemics {
           mapData,
           chartData,
           geoIso,
+          years,
           currMonth,
           isLoading,
         });
@@ -126,6 +131,7 @@ export default class StoriesEpidemics {
       mapData,
       chartData,
       geoIso,
+      years,
       currMonth,
     } = this.data;
     const { terms, geoList, copyTitle, copy } = stories[storySection].cases[currCase];
@@ -169,7 +175,7 @@ export default class StoriesEpidemics {
     colLeft.classList.add('col-left');
     row.appendChild(colLeft);
 
-    this.filtersMenu = new FiltersMenu(colLeft, terms, geoList, geoIso);
+    this.filtersMenu = new FiltersMenu(colLeft, terms, geoList, geoIso, years);
 
     const chartsContainer = document.createElement('div');
     chartsContainer.classList.add('charts-container');
@@ -215,6 +221,7 @@ export default class StoriesEpidemics {
       mapData,
       chartData,
       geoIso,
+      years,
       currMonth,
       isLoading
     } = self.data;
@@ -233,7 +240,8 @@ export default class StoriesEpidemics {
       filtersMenu.parentElement,
       terms,
       geoList,
-      geoIso
+      geoIso,
+      years
     );
 
     if (worldMap.worldFeatures) worldMap.updateData(mapData[currMonth].regions);
