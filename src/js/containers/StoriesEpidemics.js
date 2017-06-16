@@ -184,6 +184,11 @@ export default class StoriesEpidemics {
     let chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
+    this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
+
+    chartItem = document.createElement('div');
+    chartItem.classList.add('chart-item');
+    chartsContainer.appendChild(chartItem);
     this.lineChart = new LineChart(chartItem, 'mixed');
 
     this.slider = document.createElement('input');
@@ -194,12 +199,7 @@ export default class StoriesEpidemics {
     slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
-    chartsContainer.appendChild(slider);
-
-    chartItem = document.createElement('div');
-    chartItem.classList.add('chart-item');
-    chartsContainer.appendChild(chartItem);
-    this.worldMap = new WorldMap(chartItem, mapData[currMonth].regions);
+    chartsContainer.appendChild(slider);    
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;
