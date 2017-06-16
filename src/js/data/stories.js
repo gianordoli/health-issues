@@ -108,8 +108,8 @@ module.exports = {
       {
         title: "Anti-vaccine",
         data: "./data/media-anti-vaccine.json",
-        terms: ["Vaccine", "Measles"],
-        geoList: ["world"],
+        terms: ["Measles"],
+        geoList: ["US"],
         chartType: "trend",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -126,18 +126,6 @@ module.exports = {
         title: "Ebola",
         mapData: "./data/epidemics-ebola.json",
         chartData: "./data/epidemics-ebola-time-series.json",
-        terms: ["Ebola"],
-        geoList: ["world"],
-        copyTitle: 'Lorem Ipsum',
-        copy: [
-          "Copy about Ebola. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-          "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
-        ],
-      },
-      {
-        title: "Ebola epidemic",
-        mapData: "./data/epidemics-ebola-epidemic.json",
-        chartData: "./data/epidemics-ebola-epidemic-time-series.json",
         terms: ["Ebola"],
         geoList: ["world"],
         copyTitle: 'Lorem Ipsum',
