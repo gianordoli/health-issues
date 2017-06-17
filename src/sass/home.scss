@@ -24,36 +24,19 @@
   .top-queries-list {
     position: fixed;
     z-index: 1;
-    // top: -$col-gutter-large;
-    // left: -$col-gutter-large;
-    // width: calc(100% + #{$col-gutter-large}*2);
-    // height: calc(100% + #{$col-gutter-large}*2);
-    // display: flex;
-    // flex-direction: row;
-    // flex-wrap: wrap;
     top: 0;
-    height: 0;
+    left: 0;
 
     .icon {
       position: absolute;
-      width: 70px;
-      height: 70px;
-    }
+      width: 80px;
+      height: 80px;
 
-    // .icon {
-    //   width: 5vw;
-    //   height: 5vw;
-    //   margin-top: 5vw;
-    //   margin-left: 4.5vw;
-    //   opacity: 0.84;
-    //   &:nth-child(22n + 1){
-    //     margin-left: 0;
-    //     // background-color: red;
-    //   }
-    //   &:nth-child(1), &:nth-child(2){
-    //     visibility: hidden;
-    //   }
-    // }
+      @include for-phone-down {
+        width: 35px;
+        height: 35px;
+      };
+    }
   }
 
   .title-container {

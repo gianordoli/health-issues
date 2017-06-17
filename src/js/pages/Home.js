@@ -5,6 +5,7 @@ import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import Icons from '../util/icons';
+import { map } from '../util/util';
 import homeIconsList from '../data/homeIconsList';
 import * as d3 from 'd3';
 import $ from 'jquery';
@@ -224,19 +225,25 @@ export default class Home {
 
 
       const diseaseIconsList = homeIconsList[disease.name];
-      const spacing = 140;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const spacing = width < 600 ? 70 : 140;
       let i = 0;
       let line = 0;
-      for (let y=0; y < window.innerHeight; y += spacing) {
-        for (let x = (line % 2 === 0) ? 0 : -spacing/2 ; x < window.innerWidth; x += spacing) {
+      for (let y=0; y < height; y += spacing) {
+        for (let x = (line % 2 === 0) ? 0 : -spacing/2 ; x < width; x += spacing) {
           const iconContainer = document.createElement('div');
-          iconContainer.classList.add('icon');
-          topTopicsList.appendChild(iconContainer);
           const n = i % diseaseIconsList.length;
           const iconName = diseaseIconsList[n];
+          const distToCenter = Math.abs(height/2 - y);
+          const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
+          log.info(distToCenter, opacity);
+          iconContainer.classList.add('icon');
           iconContainer.innerHTML = Icons[iconName];
           iconContainer.style.top = `${y}px`;
           iconContainer.style.left = `${x}px`;
+          iconContainer.style.opacity = opacity;
+          topTopicsList.appendChild(iconContainer);
 
           i++;
         }
