@@ -11,7 +11,7 @@ $color-3: #009DF7;
 
 //---------------------- LAYOUT ----------------------//
 $container-max-width: 1200px;
-$col-gutter-small: 12px;
+$col-gutter-small: 18px;
 $col-gutter-large: 36px;
 
 $baseline-height: 12px;
@@ -165,18 +165,6 @@ $font-mono: 'Inconsolata', monospace;
   text-transform: uppercase;
 }
 
-//-------------------- BUTTONS --------------------//
-//
-// a {
-//   &.icon {
-//     width: $icon-size;
-//     height: $icon-size;
-//     border-radius: $icon-size/2;
-//     background-color: $color-black;
-//   }
-// }
-
-
 
 //-------------------- RESPONSIVE --------------------//
 
@@ -277,6 +265,95 @@ a {
 
 .hidden {
   display: none;
+}
+
+.main-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+
+  .hamburger {
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    float: right;
+    position: absolute;
+    top: $col-gutter-large;
+    right: $col-gutter-large;
+
+    @include for-phone-down {
+      top: $col-gutter-small;
+      right: ($col-gutter-small*2 - 22px)/2;
+    };
+
+    g {
+      transition: stroke 0.25s, top 0.25s ease-out;
+    }
+
+    &.negative {
+      top: 7px;
+      g {
+        stroke: white;
+      }
+    }
+  }
+
+  nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 100vh;
+    transform: translateX(100%);
+    padding: $col-gutter-large;
+    padding-right: $col-gutter-large - $elements-padding;
+    text-align: right;
+    background-color: $color-0;
+    transition: transform 0.25s ease-out;
+
+    @include for-phone-down {
+      padding: $col-gutter-small;
+    };
+
+    &.open {
+      transform: translateX(0);
+      box-shadow: -4px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    .close {
+      width: 100%;
+      margin-right: $elements-padding;
+      margin-bottom: $elements-padding*2;
+      float: right;
+
+      svg {
+        cursor: pointer;
+        width: 22px;
+        height: 22px;
+        float: right
+      }
+    }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+
+      a {
+
+        @include type-h4;
+        cursor: pointer;
+        display: inline-block;
+        padding: $elements-padding/2  $elements-padding;
+        margin: $elements-margin/4 0;
+        color: white;
+
+        &:hover {
+          background-color: lighten($color-0, 12%);
+        }
+      }
+    }
+  }
 }
 
 .main-container {
@@ -459,14 +536,6 @@ svg.chart-canvas {
     font-weight: 700;
   }
 
-  //
-  // .confirm-nav {
-  //   display: inline-block;
-  //   &.hidden {
-  //     display: none;
-  //   }
-  // }
-
   .selectize-control {
 
     display: inline-block;
@@ -477,8 +546,6 @@ svg.chart-canvas {
 
     @include for-phone-down {
       font-size: 14px;
-      // padding-top: 3px;
-      // padding-bottom: 1px;
     };
 
     &.multi {

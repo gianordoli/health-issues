@@ -9,9 +9,9 @@ module.exports = [
   {
     title: 'A Yearly Pattern',
     copy: [
-      'Zooming into each year, we can see that the interest is low during Spring and Summer, and starts rising as we approach the Fall.',
-      'However, the values vary a lot from one year to another — with 2009 being an obvious outlier.',
-      'How can we find the <span class="highlight">“typical” yearly cycle</span> for the flu? Let’s step back to our 12-year period chart.',
+      'Zooming into each year, we can see that the interest is in general lower in the middle of the year than it is in the final and first months.',
+      'The values vary a lot from one year to another though — with 2009 being an obvious outlier.',
+      'How can we find the <span class="highlight">“typical” yearly cycle</span> for the flu? Let’s step back to our 12-year chart.',
     ]
   },
   {
@@ -25,13 +25,13 @@ module.exports = [
     title: 'Total Minus Trend',
     copy: [
       'This is what we get by plotting the difference between trend and total.',
-      'We’re still using a 100-point range scale, but some of our values are negative because they are <span class="highlight">relative to the trend line,</span> not to the actual search interest.',
+      'Notice that some of the values in our scale are negative. That is because they are <span class="highlight">relative to the trend line,</span> not to the actual search interest.',
     ]
   },
   {
     title: 'Seasonal Interest',
     copy: [
-      'Combine all this data from multiple years into a single cycle, we can determine the <span class="highlight">seasonal interest per year</span> for the flu.',
+      'Combining all the seasonal data from multiple years into a single cycle, we can determine the <span class="highlight">seasonal interest per year</span> for the flu.',
     ]
   },
 ];

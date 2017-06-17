@@ -1,5 +1,6 @@
 // @flow weak
 
+import MainNav from './components/MainNav';
 import Home from './pages/Home';
 import Intro from './pages/Intro';
 import Stories from './pages/Stories';
@@ -21,9 +22,6 @@ var app = app || {};
 app.main = (function (){
 
   let explore;
-  let ticking = false;
-  let introMounted = false;
-  let storiesOffsetTop;
 
   function loadShinyAPI() {
     const shinyAPI = new ShinyAPI();
@@ -43,28 +41,6 @@ app.main = (function (){
     });
   }
 
-  function checkScroll(e) {
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-
-        ticking = false;
-        if (!introMounted) {
-          const introPage = document.querySelector('#intro.page');
-          if (introPage) introMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
-        } else {
-          const storiesPage = document.querySelector('#intro.page');
-          if (storiesPage) storiesOffsetTop = storiesPage.offsetTop;
-        }
-
-        if (storiesOffsetTop && window.scrollY > storiesOffsetTop) {
-          window.removeEventListener('scroll', checkScroll);
-          initializeExplore();
-        }
-      });
-    }
-    ticking = true;
-  }
-
   function initializeExplore() {
     log.info('initializeExplore');
     const diseases = [
@@ -82,26 +58,27 @@ app.main = (function (){
   function render(shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
 
     log.info('render');
-
-    const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('main-container');
     const body = document.querySelector('body');
+
     if (body) {
-      body.appendChild(elementsContainer);
-    }
 
-    const home = new Home(elementsContainer, trendsAPI);
-    const intro = new Intro(elementsContainer);
-    const stories = new Stories(elementsContainer);
-    explore = new Explore(elementsContainer, shinyAPI, trendsAPI);
-    const about = new About(elementsContainer);
+      const mainNav = new MainNav(body);
 
-    window.addEventListener('scroll', checkScroll);
+      const mainContainer = document.createElement('div');
+      mainContainer.classList.add('main-container');
+      body.appendChild(mainContainer);
 
-    stickyfill.init();
-    var stickyElements = document.getElementsByClassName('sticky');
-    for (let i = stickyElements.length - 1; i >= 0  ; i--) {
-      stickyfill.add(stickyElements[i]);
+      const home = new Home(mainContainer, trendsAPI);
+      const intro = new Intro(mainContainer);
+      const stories = new Stories(mainContainer);
+      explore = new Explore(mainContainer, shinyAPI, trendsAPI);
+      const about = new About(mainContainer);
+
+      stickyfill.init();
+      var stickyElements = document.getElementsByClassName('sticky');
+      for (let i = stickyElements.length - 1; i >= 0  ; i--) {
+        stickyfill.add(stickyElements[i]);
+      }
     }
   }
 

@@ -3,11 +3,7 @@
 #explore.page {
 
   .page-body {
-    background-color: darken($color-0, 10%);
-  }
-
-  .section-header {
-    color: white;
+    background-color: $color-gray;
   }
 
   .top-queries-container {

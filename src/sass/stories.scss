@@ -180,8 +180,8 @@
       };
 
       p {
-        @include type-button;
         cursor: pointer;
+        @include type-button;
         display: inline-block;
         padding: $elements-padding/2;
         margin: $elements-margin/4 0;
@@ -226,24 +226,6 @@
     padding-left: $elements-padding;
     color: $color-0;
   }
-
-  // /* Creates a small triangle extender for the tooltip */
-  // &:after {
-  //   display: inline;
-  //   width: 100%;
-  //   line-height: 17px;
-  //   color: $color-0;
-  //   content: "\25BC";
-  //   position: absolute;
-  //   text-align: center;
-  // }
-  //
-  // /* Style northward tooltips differently */
-  // &:after {
-  //   margin: -1px 0 0 0;
-  //   top: 100%;
-  //   left: 0;
-  // }
 }
 
 .legend {

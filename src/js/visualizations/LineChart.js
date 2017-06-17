@@ -26,7 +26,7 @@ export default class LineChart {
     if (type) this.type = type;
     if (range) this.range = range;
     this.title = this.getTitle(this.type);
-    this.margin = { top: 36, right: 4, bottom: 30, left: 36 };
+    this.margin = { top: 36, right: 4, bottom: 30, left: 42 };
     const size = this.getSize();
     this.width = size.width;
     this.height = size.height;
@@ -134,7 +134,7 @@ export default class LineChart {
       if (range) {
         yMin = -range;
         yMax = range;
-        
+
       } else {
         yMin = d3.min(data, function(d, i) { return d3.min(d.points, function(p) { return p.value; }); });
         yMax = d3.max(data, function(d, i) { return d3.max(d.points, function(p) { return p.value; }); });
