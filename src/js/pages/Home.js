@@ -5,6 +5,7 @@ import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import Icons from '../util/icons';
+import homeIconsList from '../data/homeIconsList';
 import * as d3 from 'd3';
 import $ from 'jquery';
 import log from 'loglevel';
@@ -28,7 +29,7 @@ export default class Home {
       disease: { name: '', entity: '', alias: ''},
       topTopics: [],
     }
-    self.trendsAPI = trendsAPI;
+    self.trendsAPI = trendsAPI;``
     const disease = self.getRandomDisease();
     const country = self.getUserCountry(function(geo) {
       self.updateData({ disease, geo });
@@ -38,7 +39,7 @@ export default class Home {
   }
 
   getRandomDisease(ignore?: string) {
-    let topTerms = ['Pain', 'Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
+    let topTerms = ['Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
     if (ignore) {
       topTerms = topTerms.filter(t => t !== ignore);
     }
@@ -95,7 +96,8 @@ export default class Home {
     });
   }
 
-  randomTopicStyle(p: HTMLElement, i: number) {
+  randomTopicStyle(el: HTMLElement, i: number, type: string) {
+
     const iX = d3.interpolateNumber(0, window.innerWidth*0.4);
     const iY = d3.interpolateNumber(window.innerHeight*0.2, window.innerHeight*0.4);
 
@@ -103,13 +105,28 @@ export default class Home {
     const leftOrRight = (i % 3) == 0 ? 1 : -1;
     const posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
     const posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
-    p.style.left = posLeft;
-    p.style.top = posTop;
+    el.style.left = posLeft;
+    el.style.top = posTop;
 
-    const iS = d3.interpolateNumber(window.innerWidth*0.01, window.innerWidth*0.05);
-    const size = iS(Math.random());
-    p.style.fontSize = Math.round(size).toString() + 'px';
-    p.style.filter = `blur(${size*0.02}px)`;
+    const random = Math.random();
+
+    const opacity = random + 0.2;
+    el.style.opacity = opacity.toString();
+
+    const blur = random;
+    el.style.filter = `blur(${blur}px)`;
+
+    const min = type === 'text' ? 0.01 : 0.05;
+    const max = type === 'text' ? 0.03 : 0.1;
+    const iS = d3.interpolateNumber(window.innerWidth*min, window.innerWidth*max);
+    const size = Math.round(iS(random));
+
+    if (type === 'text') {
+      el.style.fontSize = `${size}px`;
+    } else if (type === 'icon') {
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+    }
   }
 
   updateData(obj) {
@@ -196,8 +213,17 @@ export default class Home {
         const p = document.createElement('p');
         p.innerHTML = t.title;
         topTopicsList.appendChild(p);
-        this.randomTopicStyle(p, i);
+        this.randomTopicStyle(p, i, 'text');
       });
+
+      for (let i=0; i < 6; i++) {
+        const iconContainer = document.createElement('div');
+        iconContainer.classList.add('icon');
+        const iconName = homeIconsList[disease.name][i % 6];
+        iconContainer.innerHTML = Icons[iconName];
+        topTopicsList.appendChild(iconContainer);
+        this.randomTopicStyle(iconContainer, i, 'icon');
+      }
     }
   }
 }
