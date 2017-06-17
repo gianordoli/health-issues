@@ -209,21 +209,50 @@ export default class Home {
       country.innerHTML = geo.name;
       countryContainer.appendChild(country);
 
-      topTopics.forEach((t, i) => {
-        const p = document.createElement('p');
-        p.innerHTML = t.title;
-        topTopicsList.appendChild(p);
-        this.randomTopicStyle(p, i, 'text');
-      });
-
-      for (let i=0; i < 6; i++) {
+      const diseaseIconsList = homeIconsList[disease.name];
+      for (let i = 0; i < 200; i++) {
         const iconContainer = document.createElement('div');
         iconContainer.classList.add('icon');
-        const iconName = homeIconsList[disease.name][i % 6];
+        // const n = Math.floor(Math.random()*diseaseIconsList.length);
+        const n = i % diseaseIconsList.length;
+        const iconName = diseaseIconsList[n];
+        log.info(iconName);
         iconContainer.innerHTML = Icons[iconName];
+        iconContainer.style.top
         topTopicsList.appendChild(iconContainer);
-        this.randomTopicStyle(iconContainer, i, 'icon');
       }
+
+
+      // const diseaseIconsList = homeIconsList[disease.name];
+      // const spacing = 80;
+      // let i = 0;
+      // for (let x=0; x < window.innerWidth; x += spacing) {
+      //   for (let y=0; y < window.innerHeight; y += spacing) {
+      //     const iconContainer = document.createElement('div');
+      //     iconContainer.classList.add('icon');
+      //     const iconName = diseaseIconsList[i % diseaseIconsList.length];
+      //     iconContainer.innerHTML = Icons[iconName];
+      //     iconContainer.style.top
+      //     topTopicsList.appendChild(iconContainer);
+      //     i++;
+      //   }
+      // }
+
+      // topTopics.forEach((t, i) => {
+      //   const p = document.createElement('p');
+      //   p.innerHTML = t.title;
+      //   topTopicsList.appendChild(p);
+      //   this.randomTopicStyle(p, i, 'text');
+      // });
+      //
+      // for (let i=0; i < 6; i++) {
+      //   const iconContainer = document.createElement('div');
+      //   iconContainer.classList.add('icon');
+      //   const iconName = homeIconsList[disease.name][i % 6];
+      //   iconContainer.innerHTML = Icons[iconName];
+      //   topTopicsList.appendChild(iconContainer);
+      //   this.randomTopicStyle(iconContainer, i, 'icon');
+      // }
     }
   }
 }
