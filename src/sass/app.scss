@@ -489,6 +489,13 @@ svg.chart-canvas {
     }
 
     g.time-series {
+
+      &.empty {
+        path.line.disease {
+          opacity: 0;
+        }
+      }
+
       path.line.disease {
         &:nth-child(1) { stroke: $color-1; }
         &:nth-child(2) { stroke: $color-2; }

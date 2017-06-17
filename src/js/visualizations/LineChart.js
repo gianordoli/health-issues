@@ -21,7 +21,6 @@ export default class LineChart {
   svg: () => {};
 
   constructor(parentContainer: HTMLElement, type?: string, range?: number) {
-    this.data = [];
     this.parentContainer = parentContainer;
     if (type) this.type = type;
     if (range) this.range = range;
@@ -30,6 +29,7 @@ export default class LineChart {
     const size = this.getSize();
     this.width = size.width;
     this.height = size.height;
+    this.data = this.createEmptyChart(this.type);
     this.createElements(parentContainer);
   }
 
@@ -52,15 +52,30 @@ export default class LineChart {
       .attr('height', height + margin.top + margin.bottom);
   }
 
-  updateData(data: TrendsAPIGraph[], type?: string, title? : string, range?: number) {
-    this.data = this.parseDates(data);
-    if (range) this.range = range;
-    if (type && type !== this.type) {
-      this.type = type;
-      this.resizeChart();
+  createEmptyChart(type: string) {
+    let data;
+    if (type === 'seasonal') {
+      data = [
+        {
+          term:"",
+          points:[
+            {"date":"2003-12-31","value":0},
+            {"date":"2004-12-31","value":0}
+          ]
+        }
+      ]
+    } else {
+      data = [
+        {
+            term:"",
+            points:[
+            {"date":"2003-12-31","value":0},
+            {"date":"2017-05-31","value":100},
+          ]
+        }
+      ]
     }
-    this.title = title ? title : this.getTitle(this.type);
-    this.updateElements();
+    return this.parseDates(data);
   }
 
   getTitle(type) {
@@ -90,6 +105,21 @@ export default class LineChart {
     });
   }
 
+  updateData(data: TrendsAPIGraph[], type?: string, title? : string, range?: number) {
+    const { svg } = this;
+    svg.select('.line-chart .time-series')
+      .classed('empty', false);
+
+    this.data = this.parseDates(data);
+    if (range) this.range = range;
+    if (type && type !== this.type) {
+      this.type = type;
+      this.resizeChart();
+    }
+    this.title = title ? title : this.getTitle(this.type);
+    this.updateElements();
+  }
+
   createElements(parentContainer: HTMLElement) {
     const parentContainerSelection = d3.select(parentContainer);
     const { data, width, height, margin } = this;
@@ -116,7 +146,9 @@ export default class LineChart {
       .attr('y', -margin.top/2);
 
     chart.append('g')
-      .attr('class', 'time-series');
+      .attr('class', 'time-series empty');
+
+    this.updateElements();
   }
 
   updateElements() {
