@@ -95,7 +95,9 @@ export default class Explore {
 
           // Seasonal? Go get more data from Google Trends
           } else if (type === 'seasonal') {
-            self.getTrendsAPIGraph('seasonal');
+            setTimeout(function() {
+              self.getTrendsAPIGraph('seasonal');
+            }, 500);
           }
 
         // I'm done with this type!
@@ -106,7 +108,9 @@ export default class Explore {
           // Seasonal? Move on to load top queries
           } else if (type === 'seasonal') {
             self.updateData({ topQueries: [], isLoading: false });
-            self.getTrendsAPITopQueries();
+            setTimeout(function() {
+              self.getTrendsAPITopQueries();
+            }, 500);
           }
         }
 
@@ -221,7 +225,9 @@ export default class Explore {
       topQueries = topQueries.concat(val);
       self.updateData({topQueries});
       if (topQueries.length < diseases.length) {
-        self.getTrendsAPITopQueries();
+        setTimeout(function() {
+          self.getTrendsAPITopQueries();
+        }, 500);
       }
     });
   }

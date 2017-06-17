@@ -46,68 +46,72 @@
 
 	'use strict';
 
-	var _Home = __webpack_require__(1);
+	var _MainNav = __webpack_require__(1);
+
+	var _MainNav2 = _interopRequireDefault(_MainNav);
+
+	var _Home = __webpack_require__(7);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Intro = __webpack_require__(26);
+	var _Intro = __webpack_require__(29);
 
 	var _Intro2 = _interopRequireDefault(_Intro);
 
-	var _Stories = __webpack_require__(53);
+	var _Stories = __webpack_require__(57);
 
 	var _Stories2 = _interopRequireDefault(_Stories);
 
-	var _Explore = __webpack_require__(40);
+	var _Explore = __webpack_require__(43);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
-	var _About = __webpack_require__(56);
+	var _About = __webpack_require__(60);
 
 	var _About2 = _interopRequireDefault(_About);
 
-	var _ShinyAPI = __webpack_require__(41);
+	var _ShinyAPI = __webpack_require__(44);
 
 	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
 
-	var _TrendsAPI = __webpack_require__(2);
+	var _TrendsAPI = __webpack_require__(8);
 
 	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
 
-	var _terms = __webpack_require__(16);
+	var _terms = __webpack_require__(21);
 
 	var _terms2 = _interopRequireDefault(_terms);
 
-	var _countries = __webpack_require__(17);
+	var _countries = __webpack_require__(22);
 
 	var _countries2 = _interopRequireDefault(_countries);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _stickyfill = __webpack_require__(59);
+	var _stickyfill = __webpack_require__(63);
 
 	var _stickyfill2 = _interopRequireDefault(_stickyfill);
 
-	__webpack_require__(60);
+	__webpack_require__(64);
 
-	var _GetMapData = __webpack_require__(62);
+	var _GetMapData = __webpack_require__(66);
 
 	var _GetMapData2 = _interopRequireDefault(_GetMapData);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var stickyfill = (0, _stickyfill2.default)(); //  weak
+	//  weak
+
+	var stickyfill = (0, _stickyfill2.default)();
+
 
 	var app = app || {};
 
 	app.main = function () {
 
 	  var explore = void 0;
-	  var ticking = false;
-	  var introMounted = false;
-	  var storiesOffsetTop = void 0;
 
 	  function loadShinyAPI() {
 	    var shinyAPI = new _ShinyAPI2.default();
@@ -127,28 +131,6 @@
 	    });
 	  }
 
-	  function checkScroll(e) {
-	    if (!ticking) {
-	      window.requestAnimationFrame(function () {
-
-	        ticking = false;
-	        if (!introMounted) {
-	          var introPage = document.querySelector('#intro.page');
-	          if (introPage) introMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
-	        } else {
-	          var storiesPage = document.querySelector('#intro.page');
-	          if (storiesPage) storiesOffsetTop = storiesPage.offsetTop;
-	        }
-
-	        if (storiesOffsetTop && window.scrollY > storiesOffsetTop) {
-	          window.removeEventListener('scroll', checkScroll);
-	          initializeExplore();
-	        }
-	      });
-	    }
-	    ticking = true;
-	  }
-
 	  function initializeExplore() {
 	    _loglevel2.default.info('initializeExplore');
 	    var diseases = [_terms2.default.find(function (t) {
@@ -162,33 +144,34 @@
 	  function render(shinyAPI, trendsAPI) {
 
 	    _loglevel2.default.info('render');
-
-	    var elementsContainer = document.createElement('div');
-	    elementsContainer.classList.add('main-container');
 	    var body = document.querySelector('body');
+
 	    if (body) {
-	      body.appendChild(elementsContainer);
-	    }
 
-	    var home = new _Home2.default(elementsContainer, trendsAPI);
-	    var intro = new _Intro2.default(elementsContainer);
-	    var stories = new _Stories2.default(elementsContainer);
-	    explore = new _Explore2.default(elementsContainer, shinyAPI, trendsAPI);
-	    var about = new _About2.default(elementsContainer);
+	      var mainNav = new _MainNav2.default(body);
 
-	    window.addEventListener('scroll', checkScroll);
+	      var mainContainer = document.createElement('div');
+	      mainContainer.classList.add('main-container');
+	      body.appendChild(mainContainer);
 
-	    stickyfill.init();
-	    var stickyElements = document.getElementsByClassName('sticky');
-	    for (var i = stickyElements.length - 1; i >= 0; i--) {
-	      stickyfill.add(stickyElements[i]);
+	      var home = new _Home2.default(mainContainer, trendsAPI);
+	      var intro = new _Intro2.default(mainContainer);
+	      var stories = new _Stories2.default(mainContainer);
+	      explore = new _Explore2.default(mainContainer, shinyAPI, trendsAPI);
+	      var about = new _About2.default(mainContainer);
+
+	      stickyfill.init();
+	      var stickyElements = document.getElementsByClassName('sticky');
+	      for (var i = stickyElements.length - 1; i >= 0; i--) {
+	        stickyfill.add(stickyElements[i]);
+	      }
 	    }
 	  }
 
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
+	    _loglevel2.default.info('ENV: ' + ("STAGING"));
 	    loadShinyAPI();
 	  };
 
@@ -211,152 +194,88 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _TrendsAPI = __webpack_require__(2);
-
-	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
-
-	var _terms = __webpack_require__(16);
-
-	var _terms2 = _interopRequireDefault(_terms);
-
-	var _countries = __webpack_require__(17);
-
-	var _countries2 = _interopRequireDefault(_countries);
-
-	var _icons = __webpack_require__(18);
+	var _icons = __webpack_require__(2);
 
 	var _icons2 = _interopRequireDefault(_icons);
 
-	var _d = __webpack_require__(20);
-
-	var d3 = _interopRequireWildcard(_d);
-
-	var _jquery = __webpack_require__(21);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	__webpack_require__(22);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Home = function () {
-	  function Home(parentContainer, trendsAPI) {
-	    _classCallCheck(this, Home);
+	var MainNav = function () {
+	  function MainNav(parentContainer) {
+	    var _this = this;
 
-	    var self = this;
-	    self.data = {
-	      geo: { iso: '', name: '' },
-	      disease: { name: '', entity: '', alias: '' },
-	      topTopics: []
+	    _classCallCheck(this, MainNav);
+
+	    this.data = {
+	      ticking: false,
+	      introIsMounted: false,
+	      storiesOffsetTop: 0
 	    };
-	    self.trendsAPI = trendsAPI;
-	    var disease = self.getRandomDisease();
-	    var country = self.getUserCountry(function (geo) {
-	      self.updateData({ disease: disease, geo: geo });
-	      self.getTrendsAPITopTopics();
-	    });
+	    var bindScrollListener = function bindScrollListener(evt) {
+	      return _this.checkScroll(evt, _this);
+	    };
+	    window.addEventListener('scroll', bindScrollListener);
 	    this.createElements(parentContainer);
 	  }
 
-	  _createClass(Home, [{
-	    key: 'getRandomDisease',
-	    value: function getRandomDisease(ignore) {
-	      var topTerms = ['Pain', 'Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
-	      if (ignore) {
-	        topTerms = topTerms.filter(function (t) {
-	          return t !== ignore;
+	  _createClass(MainNav, [{
+	    key: 'checkScroll',
+	    value: function checkScroll(evt, self) {
+	      var _self$data = self.data,
+	          ticking = _self$data.ticking,
+	          introIsMounted = _self$data.introIsMounted,
+	          storiesOffsetTop = _self$data.storiesOffsetTop;
+	      var hamburger = self.hamburger;
+
+
+	      if (!ticking) {
+	        window.requestAnimationFrame(function () {
+	          ticking = false;
+
+	          if (!introIsMounted) {
+	            var introPage = document.querySelector('#intro.page');
+	            if (introPage) introIsMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
+	            self.updateData({ introIsMounted: introIsMounted });
+	          } else if (storiesOffsetTop === 0) {
+	            var storiesPage = document.querySelector('#stories.page');
+	            if (storiesPage) storiesOffsetTop = storiesPage.getBoundingClientRect().top;
+	            self.updateData({ storiesOffsetTop: storiesOffsetTop });
+	          } else if (window.scrollY > storiesOffsetTop) {
+
+	            hamburger.classList.add('negative');
+	          } else {
+	            hamburger.classList.remove('negative');
+	          }
 	        });
 	      }
-	      var i = Math.floor(Math.random() * topTerms.length);
-	      var disease = _terms2.default.find(function (t) {
-	        return t.name === topTerms[i];
-	      });
-	      return disease;
+	      ticking = true;
 	    }
 	  }, {
-	    key: 'countryToGeo',
-	    value: function countryToGeo(country) {
-	      return _countries2.default.find(function (c) {
-	        return c.iso === country;
-	      });
+	    key: 'hamburgerClick',
+	    value: function hamburgerClick(evt, self) {
+	      var nav = self.nav;
+
+	      nav.classList.add('open');
 	    }
 	  }, {
-	    key: 'getPrevMonth',
-	    value: function getPrevMonth() {
-	      var prevMonthDate = new Date();
-	      prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
-	      var year = prevMonthDate.getFullYear();
-	      var month = new Date().getMonth();
-	      month = month < 10 ? '0' + month : month;
-	      return year + '-' + month;
+	    key: 'closeClick',
+	    value: function closeClick(evt, self) {
+	      var nav = self.nav;
+
+	      nav.classList.remove('open');
 	    }
 	  }, {
-	    key: 'getUserCountry',
-	    value: function getUserCountry(callback) {
-	      _loglevel2.default.info('getUserCountry');
-	      var self = this;
-	      _jquery2.default.get("https://ipinfo.io", function (response) {
-	        var country = response.country;
+	    key: 'navMouseLeave',
+	    value: function navMouseLeave(evt, self) {
+	      var nav = self.nav;
 
-	        var geo = self.countryToGeo(country);
-	        callback(geo);
-	      }, 'jsonp');
-	    }
-	  }, {
-	    key: 'getTrendsAPITopTopics',
-	    value: function getTrendsAPITopTopics() {
-	      _loglevel2.default.info('getTrendsAPITopTopics');
-	      var _data = this.data,
-	          geo = _data.geo,
-	          disease = _data.disease;
-
-	      var self = this;
-	      var filter = {
-	        terms: [disease],
-	        geo: geo,
-	        startDate: self.getPrevMonth()
-	      };
-	      self.trendsAPI.getTopTopics(filter, function (val) {
-	        _loglevel2.default.info('From Google Trends: ', val);
-	        var item = val.item;
-
-	        if (item && item.length > 0) {
-	          self.updateData({ topTopics: item });
-	        } else if (geo && geo.iso !== 'US') {
-	          var defaultGeo = self.countryToGeo('US');
-	          self.updateData({ geo: defaultGeo });
-	          self.getTrendsAPITopTopics();
-	        } else if (disease) {
-	          self.updateData({ disease: self.getRandomDisease(disease.name) });
-	          self.getTrendsAPITopTopics();
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'randomTopicStyle',
-	    value: function randomTopicStyle(p, i) {
-	      var iX = d3.interpolateNumber(0, window.innerWidth * 0.4);
-	      var iY = d3.interpolateNumber(window.innerHeight * 0.2, window.innerHeight * 0.4);
-
-	      var upOrDown = i % 2 == 0 ? 1 : -1;
-	      var leftOrRight = i % 3 == 0 ? 1 : -1;
-	      var posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
-	      var posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
-	      p.style.left = posLeft;
-	      p.style.top = posTop;
-
-	      var iS = d3.interpolateNumber(window.innerWidth * 0.01, window.innerWidth * 0.05);
-	      var size = iS(Math.random());
-	      p.style.fontSize = Math.round(size).toString() + 'px';
-	      p.style.filter = 'blur(' + size * 0.02 + 'px)';
+	      nav.classList.remove('open');
 	    }
 	  }, {
 	    key: 'updateData',
@@ -364,213 +283,64 @@
 	      var data = this.data;
 
 	      Object.assign(data, obj);
-	      _loglevel2.default.info(this.data);
-	      this.updateElements();
 	    }
 	  }, {
 	    key: 'createElements',
 	    value: function createElements(parentContainer) {
+	      var _this2 = this;
 
-	      var elementsContainer = document.createElement('div');
-	      elementsContainer.id = 'home';
-	      elementsContainer.classList.add('page');
-	      parentContainer.appendChild(elementsContainer);
+	      var mainNavContainer = document.createElement('div');
+	      mainNavContainer.classList.add('main-nav');
+	      parentContainer.appendChild(mainNavContainer);
 
-	      var titleContainer = document.createElement('div');
-	      titleContainer.classList.add('title-container');
-	      elementsContainer.appendChild(titleContainer);
+	      this.hamburger = document.createElement('div');
+	      var hamburger = this.hamburger;
 
-	      var title = document.createElement('h1');
-	      title.innerHTML = 'I\'m not<br>feeling well';
-	      titleContainer.appendChild(title);
+	      hamburger.classList.add('hamburger');
+	      hamburger.innerHTML = _icons2.default.hamburgerMenu;
+	      var bindHamburgerClick = function bindHamburgerClick(evt) {
+	        return _this2.hamburgerClick(evt, _this2);
+	      };
+	      hamburger.addEventListener('click', bindHamburgerClick);
+	      mainNavContainer.appendChild(hamburger);
 
-	      var projectDescription = document.createElement('p');
-	      projectDescription.id = 'project-description';
-	      projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.';
-	      titleContainer.appendChild(projectDescription);
+	      this.nav = document.createElement('nav');
+	      var nav = this.nav;
 
-	      var logosContainer = document.createElement('div');
-	      logosContainer.classList.add('logos-container');
-	      titleContainer.appendChild(logosContainer);
+	      var bindNavMouseLeave = function bindNavMouseLeave(evt) {
+	        return _this2.navMouseLeave(evt, _this2);
+	      };
+	      nav.addEventListener('mouseleave', bindNavMouseLeave);
+	      mainNavContainer.appendChild(nav);
 
-	      var gabriel = document.createElement('p');
-	      gabriel.classList.add('gabriel');
-	      gabriel.innerHTML = 'Gabriel Gianordoli';
-	      logosContainer.appendChild(gabriel);
+	      var close = document.createElement('div');
+	      close.classList.add('close');
+	      close.innerHTML = _icons2.default.close;
+	      var bindCloseClick = function bindCloseClick(evt) {
+	        return _this2.closeClick(evt, _this2);
+	      };
+	      close.addEventListener('click', bindCloseClick);
+	      nav.appendChild(close);
 
-	      var forSpan = document.createElement('span');
-	      forSpan.innerHTML = 'for';
-	      logosContainer.appendChild(forSpan);
+	      var linksContainer = document.createElement('ul');
+	      nav.appendChild(linksContainer);
 
-	      var gnl = document.createElement('div');
-	      gnl.classList.add('google-news-lab-logo');
-	      gnl.innerHTML = _icons2.default.googleNewsLabLogo;
-	      logosContainer.appendChild(gnl);
-
-	      this.countryContainer = document.createElement('div');
-	      this.countryContainer.classList.add('country-container');
-	      elementsContainer.appendChild(this.countryContainer);
-
-	      this.topTopicsList = document.createElement('div');
-	      this.topTopicsList.classList.add('top-queries-list');
-	      elementsContainer.appendChild(this.topTopicsList);
-	    }
-	  }, {
-	    key: 'updateElements',
-	    value: function updateElements() {
-	      var _this = this;
-
-	      var _data2 = this.data,
-	          geo = _data2.geo,
-	          disease = _data2.disease,
-	          topTopics = _data2.topTopics;
-	      var countryContainer = this.countryContainer,
-	          topTopicsList = this.topTopicsList;
-
-	      if (topTopics.length > 0) {
-
-	        var span = document.createElement('span');
-	        span.innerHTML = 'Searches for ';
-	        countryContainer.append(span);
-
-	        var diseaseContainer = document.createElement('span');
-	        diseaseContainer.classList.add('disease-container');
-	        diseaseContainer.innerHTML = disease.name.toLowerCase();
-	        countryContainer.appendChild(diseaseContainer);
-
-	        countryContainer.appendChild(document.createElement('br'));
-
-	        span = document.createElement('span');
-	        span.innerHTML = 'in ';
-	        countryContainer.appendChild(span);
-
-	        var country = document.createElement('span');
-	        country.classList.add('country');
-	        country.innerHTML = geo.name;
-	        countryContainer.appendChild(country);
-
-	        topTopics.forEach(function (t, i) {
-	          var p = document.createElement('p');
-	          p.innerHTML = t.title;
-	          topTopicsList.appendChild(p);
-	          _this.randomTopicStyle(p, i);
-	        });
-	      }
-	    }
-	  }]);
-
-	  return Home;
-	}();
-
-	exports.default = Home;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
-
-	var _Keys = __webpack_require__(3);
-
-	var _loglevel = __webpack_require__(4);
-
-	var _loglevel2 = _interopRequireDefault(_loglevel);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var TrendsAPI = function () {
-	  function TrendsAPI() {
-	    _classCallCheck(this, TrendsAPI);
-
-	    _loglevel2.default.info('TrendsAPI');
-	  }
-
-	  _createClass(TrendsAPI, [{
-	    key: 'setup',
-	    value: function setup(callback) {
-	      var self = this;
-	      __webpack_require__(5)().then(function (gapi) {
-	        _loglevel2.default.info('GoogleAPI library loaded');
-	        gapi.load('client', start);
-
-	        function start() {
-	          var apiKey = void 0,
-	              id = void 0;
-	          if (true) {
-	            apiKey = _Keys.Keys['PRODUCTION'];
-	            id = 'diseases-production';
-	          } else {
-	            apiKey = _Keys.Keys['DEVELOPMENT'];
-	            id = 'diseases';
-	          }
-
-	          gapi.client.init({
-	            'apiKey': apiKey,
-	            'clientId': 'diseases.apps.googleusercontent.com'
-	          }).then(function () {
-	            _loglevel2.default.info('GoogleAPI client initialized');
-	            self.gapi = gapi;
-	            if (callback) {
-	              callback();
-	            }
-	          });
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'executeCall',
-	    value: function executeCall(path, callback) {
-	      this.gapi.client.request({
-	        'path': path
-	      }).then(function (response) {
-	        callback(response.result);
-	      }, function (reason) {
-	        _loglevel2.default.info('Error: ' + reason.result.error.message);
-	      });
-	    }
-	  }, {
-	    key: 'appendRestrictions',
-	    value: function appendRestrictions(filter, path) {
-	      var geo = filter.geo,
-	          startDate = filter.startDate,
-	          endDate = filter.endDate;
-
-	      if (geo && geo.iso !== 'world') {
-	        path += '&restrictions.geo=' + geo.iso;
-	      }
-	      if (filter.startDate) {
-	        path += '&restrictions.startDate=' + filter.startDate;
-	      }
-	      if (filter.endDate) {
-	        path += '&restrictions.endDate=' + filter.endDate;
-	      }
-	      return path;
-	    }
-	  }, {
-	    key: 'getGraph',
-	    value: function getGraph(filter, callback) {
-	      _loglevel2.default.info('getGraph for:', filter);
-	      var geo = filter.geo,
-	          terms = filter.terms;
-
-	      var path = 'https://www.googleapis.com/trends/v1beta/graph?';
+	      var links = ['home', 'intro', 'explore', 'about'];
 	      var _iteratorNormalCompletion = true;
 	      var _didIteratorError = false;
 	      var _iteratorError = undefined;
 
 	      try {
-	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var t = _step.value;
+	        for (var _iterator = links[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var l = _step.value;
 
-	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
+	          var li = document.createElement('li');
+	          linksContainer.appendChild(li);
+
+	          var button = document.createElement('a');
+	          button.innerHTML = l;
+	          button.setAttribute('href', '#' + l);
+	          li.appendChild(button);
 	        }
 	      } catch (err) {
 	        _didIteratorError = true;
@@ -586,104 +356,49 @@
 	          }
 	        }
 	      }
-
-	      path = this.appendRestrictions(filter, path);
-	      this.executeCall(path, callback);
-	    }
-	  }, {
-	    key: 'getGraphAverages',
-	    value: function getGraphAverages(filter, callback) {
-	      // log.info('getGraphAverages for:', filter);
-	      var terms = filter.terms;
-
-	      var path = 'https://www.googleapis.com/trends/v1beta/graphAverages?';
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
-
-	      try {
-	        for (var _iterator2 = terms[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var t = _step2.value;
-
-	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
-	          }
-	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
-	          }
-	        }
-	      }
-
-	      path = this.appendRestrictions(filter, path);
-	      this.executeCall(path, callback);
-	    }
-	  }, {
-	    key: 'getTopQueries',
-	    value: function getTopQueries(filter, callback) {
-	      _loglevel2.default.info('getTopQueries for:', filter);
-	      var geo = filter.geo,
-	          terms = filter.terms;
-
-	      var term = terms[0];
-	      var path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity);
-	      path = this.appendRestrictions(filter, path);
-	      this.executeCall(path, callback);
-	    }
-	  }, {
-	    key: 'getTopTopics',
-	    value: function getTopTopics(filter, callback) {
-	      _loglevel2.default.info('getTopQueries for:', filter);
-	      var geo = filter.geo,
-	          terms = filter.terms;
-
-	      var term = terms[0];
-	      var path = 'https://www.googleapis.com/trends/v1beta/topTopics?term=' + encodeURIComponent(term.entity);
-	      path = this.appendRestrictions(filter, path);
-	      this.executeCall(path, callback);
-	    }
-	  }, {
-	    key: 'getRegionsList',
-	    value: function getRegionsList(filter, callback) {
-	      _loglevel2.default.info('getRegionsList for:', filter);
-	      var geo = filter.geo,
-	          terms = filter.terms;
-
-	      var term = terms[0];
-	      var path = 'https://www.googleapis.com/trends/v1beta/regions?term=' + encodeURIComponent(term.entity);
-	      path = this.appendRestrictions(filter, path);
-	      this.executeCall(path, callback);
 	    }
 	  }]);
 
-	  return TrendsAPI;
+	  return MainNav;
 	}();
 
-	exports.default = TrendsAPI;
+	exports.default = MainNav;
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var Keys = exports.Keys = {
-	  'PRODUCTION': 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ',
-	  'DEVELOPMENT': 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk'
+	exports.default = {
+	  googleNewsLabLogo: __webpack_require__(3),
+	  hamburgerMenu: __webpack_require__(4),
+	  close: __webpack_require__(5)
 	};
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+	module.exports = "<svg viewBox=\"0 0 579 74.5\"><path d=\"M57.1 31.8c0 7.8-2.4 14.2-7 18.9C44.9 56.2 37.9 59 29.3 59c-8.2 0-15.2-2.9-20.8-8.5C2.9 44.8 0 37.8 0 29.5c0-8.3 2.9-15.3 8.5-21C14.2 2.9 21.2 0 29.3 0c4.1 0 8.1 0.7 11.7 2.2 3.7 1.5 6.7 3.6 9.1 6.2l0.1 0.2 -5.5 5.5 -0.2-0.2c-1.7-2-3.9-3.7-6.6-4.8 -2.7-1.2-5.6-1.7-8.7-1.7 -6 0-11.2 2.1-15.3 6.3 -4.1 4.2-6.2 9.5-6.2 15.8 0 6.3 2.1 11.7 6.2 15.8 4.1 4.2 9.3 6.3 15.3 6.3 5.5 0 10.1-1.6 13.8-4.6 3.6-3 5.7-7.2 6.3-12.5H29.1v-7.2h27.6l0 0.2C57 29 57.1 30.4 57.1 31.8z\"></path><path d=\"M92.4 26.3c-3.4-3.6-7.9-5.4-13.1-5.4 -5.3 0-9.7 1.8-13.2 5.4 -3.4 3.6-5.2 8.2-5.2 13.6 0 5.5 1.7 10 5.2 13.6C69.6 57.2 74 59 79.3 59s9.7-1.8 13.1-5.4c3.5-3.5 5.3-8.1 5.3-13.6C97.7 34.5 95.9 29.9 92.4 26.3zM79.3 52.4c-3.2 0-5.9-1.2-8-3.5 -2.2-2.3-3.2-5.3-3.2-9 0-3.7 1.1-6.7 3.2-9 2.2-2.3 4.9-3.5 8-3.5 3.1 0 5.8 1.2 8 3.5 2.2 2.3 3.2 5.3 3.2 9 0 3.7-1.1 6.8-3.2 9C85.2 51.3 82.5 52.4 79.3 52.4z\"></path><path d=\"M134.5 26.3c-3.4-3.6-7.9-5.4-13.1-5.4 -5.3 0-9.7 1.8-13.2 5.4 -3.4 3.6-5.2 8.2-5.2 13.6 0 5.5 1.7 10 5.2 13.6 3.5 3.6 7.9 5.4 13.2 5.4 5.3 0 9.7-1.8 13.1-5.4 3.5-3.5 5.3-8.1 5.3-13.6C139.7 34.5 137.9 29.9 134.5 26.3zM129.3 49c-2.2 2.3-4.9 3.5-8 3.5 -3.2 0-5.9-1.2-8-3.5 -2.2-2.3-3.2-5.3-3.2-9 0-3.7 1.1-6.7 3.2-9 2.2-2.3 4.9-3.5 8-3.5s5.8 1.2 8 3.5c2.1 2.3 3.2 5.3 3.2 9C132.6 43.7 131.5 46.7 129.3 49z\"></path><path d=\"M173.1 22.1v4.8c-1.2-1.8-2.9-3.2-5-4.3 -2.2-1.1-4.5-1.6-7.1-1.6 -4.7 0-8.7 1.9-12.1 5.6 -3.3 3.7-5 8.2-5 13.5 0 5.3 1.7 9.8 5 13.6 3.3 3.6 7.4 5.5 12.1 5.5 2.5 0 4.9-0.5 7.1-1.7 2.1-1 3.8-2.5 5-4.3v3c0 3.7-1 6.6-3 8.8 -2 2.1-4.7 3.2-8.2 3.2 -2.3 0-4.3-0.6-6.1-1.8 -1.7-1.2-2.9-2.8-3.6-4.8l-0.1-0.2 -6.7 2.8 0.1 0.2c0.5 1.5 1.3 3 2.3 4.2 1 1.3 2.3 2.4 3.7 3.3 1.4 0.9 3 1.7 4.8 2.2 1.7 0.5 3.6 0.8 5.6 0.8 5.4 0 9.8-1.7 13.1-5 3.2-3.2 4.9-7.8 4.9-13.5v-34H173.1zM154.3 31c2.1-2.3 4.7-3.5 7.8-3.5 3.1 0 5.8 1.2 7.8 3.5 2.1 2.3 3.2 5.4 3.2 9 0 3.7-1.1 6.8-3.2 9 -2 2.3-4.6 3.4-7.8 3.4 -3.1 0-5.7-1.2-7.8-3.5 -2.1-2.3-3.2-5.3-3.2-9C151.1 36.3 152.2 33.3 154.3 31z\"></path><rect x=\"186.5\" y=\"1.5\" width=\"7.1\" height=\"56.3\"></rect><path d=\"M227.6 46.2c-1.1 2.3-3 4-5.5 5 -2.8 1.1-5.6 1.1-8.4 0 -2.7-1.1-4.7-3.2-6-6.1l25.8-10.2 -0.3-0.9c-2.2-5.7-5.5-9.6-9.7-11.6 -4.2-2-8.8-2.1-13.7-0.2 -4.8 1.9-8.1 5.2-9.8 9.7 -1.7 4.6-1.6 9.4 0.4 14.5 2 5.1 5.3 8.7 9.8 10.8 2.3 1.1 4.7 1.6 7.2 1.6 2.2 0 4.6-0.5 6.9-1.4 3.3-1.3 6-3.3 8.1-5.9 0.4-0.5 0.7-1 1.1-1.5l0.1-0.2 -5.8-3.8L227.6 46.2zM224.3 32.1l-18.3 7.2c-0.3-2.4 0-4.7 1.1-6.6 1.1-2 2.8-3.5 5-4.4 2.7-1.1 5.2-1.2 7.4-0.4C221.7 28.7 223.3 30.1 224.3 32.1z\"></path><path d=\"M271.2 57.6h-6.6V6h8.1l25.1 40.1h0.3l-0.3-9.9V6h6.6v51.6h-6.9l-26.2-42h-0.3l0.3 9.9V57.6z\"></path><path d=\"M331.4 58.7c-5.2 0-9.5-1.8-12.8-5.3 -3.4-3.6-5-8-5-13.5 0-5.4 1.6-9.9 4.9-13.4 3.3-3.6 7.4-5.4 12.5-5.4 5.2 0 9.4 1.7 12.5 5.1 3.1 3.4 4.6 8.1 4.6 14.2l-0.1 0.7h-27.7c0.1 3.5 1.2 6.2 3.5 8.4 2.2 2.1 4.8 3.2 7.9 3.2 4.2 0 7.5-2.1 9.9-6.3l5.9 2.9c-1.6 3-3.8 5.3-6.6 7C338.1 57.9 334.9 58.7 331.4 58.7zM320.8 35.7H341c-0.2-2.4-1.2-4.5-3-6.1 -1.8-1.6-4.2-2.4-7.2-2.4 -2.5 0-4.6 0.8-6.4 2.3C322.5 31 321.3 33.1 320.8 35.7z\"></path><path d=\"M406.1 22.3l-11.4 35.3h-6.8l-8.8-27.1 -8.7 27.1h-6.7l-11.4-35.3h6.9l7.8 26.6h0.1l8.7-26.6h6.8l8.7 26.6h0.1l7.8-26.6H406.1z\"></path><path d=\"M439.7 47.8c0 3.1-1.3 5.7-4 7.8 -2.7 2.1-6.1 3.2-10.2 3.2 -3.6 0-6.7-0.9-9.4-2.8 -2.7-1.8-4.6-4.3-5.8-7.3l5.9-2.5c0.9 2.1 2.1 3.8 3.8 4.9 1.7 1.2 3.5 1.8 5.4 1.8 2.1 0 3.9-0.5 5.3-1.4 1.4-0.9 2.1-2 2.1-3.2 0-2.3-1.7-3.9-5.2-5l-6-1.5c-6.9-1.7-10.3-5-10.3-9.9 0-3.2 1.3-5.8 3.9-7.7 2.6-1.9 6-2.9 10-2.9 3.1 0 5.9 0.7 8.5 2.2 2.5 1.5 4.3 3.5 5.3 6l-5.9 2.4c-0.7-1.5-1.8-2.7-3.3-3.5 -1.5-0.8-3.2-1.3-5.1-1.3 -1.7 0-3.3 0.4-4.6 1.3 -1.4 0.9-2.1 1.9-2.1 3.2 0 2 1.9 3.5 5.7 4.3l5.3 1.4C436.2 38.9 439.7 42.5 439.7 47.8z\"></path><path d=\"M494.1 57.6h-28.9V6h6.6v45.2h22.3V57.6z\"></path><path d=\"M516.7 21.2c4.9 0 8.8 1.3 11.6 3.9 2.8 2.6 4.2 6.2 4.2 10.8v21.7h-6.3v-4.9H526c-2.7 4-6.4 6-10.9 6 -3.9 0-7.1-1.2-9.8-3.5 -2.6-2.3-3.9-5.2-3.9-8.6 0-3.6 1.4-6.6 4.1-8.7 2.8-2.2 6.4-3.2 11.1-3.2 3.9 0 7.2 0.7 9.7 2.2v-1.5c0-2.3-0.9-4.3-2.7-5.9 -1.8-1.6-4-2.4-6.4-2.4 -3.7 0-6.6 1.6-8.8 4.7l-5.8-3.7C505.7 23.5 510.5 21.2 516.7 21.2zM508.2 46.8c0 1.7 0.7 3.2 2.2 4.3 1.5 1.2 3.2 1.7 5.1 1.7 2.8 0 5.3-1 7.5-3.1 2.2-2.1 3.3-4.5 3.3-7.3 -2.1-1.6-4.9-2.4-8.6-2.4 -2.7 0-4.9 0.6-6.7 1.9C509.1 43.3 508.2 44.9 508.2 46.8z\"></path><path d=\"M562.2 58.7c-2.6 0-5-0.6-7.1-1.7 -2.1-1.1-3.8-2.6-4.9-4.4h-0.3v4.9h-6.3V6h6.6v16.3l-0.3 4.9h0.3c1.2-1.8 2.8-3.3 4.9-4.4 2.1-1.1 4.5-1.7 7.1-1.7 4.7 0 8.6 1.8 11.8 5.5 3.3 3.7 5 8.1 5 13.3 0 5.2-1.7 9.7-5 13.3C570.8 56.9 566.8 58.7 562.2 58.7zM561.1 52.7c3.2 0 5.8-1.2 8-3.6 2.2-2.4 3.2-5.4 3.2-9.1 0-3.7-1.1-6.7-3.2-9.1 -2.2-2.4-4.8-3.6-8-3.6 -3.2 0-5.9 1.2-8.1 3.6 -2.1 2.4-3.2 5.4-3.2 9.1 0 3.7 1.1 6.8 3.2 9.2C555.2 51.5 557.9 52.7 561.1 52.7z\"></path></svg>"
+
+/***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+	module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 22 22\"><title> diseases/hamburger</title><g fill=\"none\" stroke=\"#4422B3\"><rect x=\"0.5\" y=\"0.5\" width=\"21\" height=\"21\"></rect><rect x=\"5.5\" y=\"6.5\" width=\"11\" height=\"1\"></rect><rect x=\"5.5\" y=\"10.5\" width=\"11\" height=\"1\"></rect><rect x=\"5.5\" y=\"14.5\" width=\"11\" height=\"1\"></rect></g></svg>"
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+	module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 22 22\"><style>.__1wlwRUl__a{fill:#FFF;}</style><title>close</title><g fill=\"none\"><rect width=\"22\" height=\"22\" fill=\"#4422B3\"></rect><rect transform=\"translate(11 11)rotate(-45)\" x=\"-7\" y=\"-1\" width=\"14\" height=\"2\" class=\"__1wlwRUl__a\"></rect><rect transform=\"translate(11 11)scale(-1 1)rotate(-45)\" x=\"-7\" y=\"-1\" width=\"14\" height=\"2\" class=\"__1wlwRUl__a\"></rect></g></svg>"
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -912,13 +627,496 @@
 
 
 /***/ }),
-/* 5 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _TrendsAPI = __webpack_require__(8);
+
+	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
+
+	var _terms = __webpack_require__(21);
+
+	var _terms2 = _interopRequireDefault(_terms);
+
+	var _countries = __webpack_require__(22);
+
+	var _countries2 = _interopRequireDefault(_countries);
+
+	var _icons = __webpack_require__(2);
+
+	var _icons2 = _interopRequireDefault(_icons);
+
+	var _d = __webpack_require__(23);
+
+	var d3 = _interopRequireWildcard(_d);
+
+	var _jquery = __webpack_require__(24);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _loglevel = __webpack_require__(6);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	__webpack_require__(25);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Home = function () {
+	  function Home(parentContainer, trendsAPI) {
+	    _classCallCheck(this, Home);
+
+	    var self = this;
+	    self.data = {
+	      geo: { iso: '', name: '' },
+	      disease: { name: '', entity: '', alias: '' },
+	      topTopics: []
+	    };
+	    self.trendsAPI = trendsAPI;
+	    var disease = self.getRandomDisease();
+	    var country = self.getUserCountry(function (geo) {
+	      self.updateData({ disease: disease, geo: geo });
+	      self.getTrendsAPITopTopics();
+	    });
+	    this.createElements(parentContainer);
+	  }
+
+	  _createClass(Home, [{
+	    key: 'getRandomDisease',
+	    value: function getRandomDisease(ignore) {
+	      var topTerms = ['Pain', 'Acne', 'Allergy', 'Infection', 'Headache', 'Fever', 'Influenza'];
+	      if (ignore) {
+	        topTerms = topTerms.filter(function (t) {
+	          return t !== ignore;
+	        });
+	      }
+	      var i = Math.floor(Math.random() * topTerms.length);
+	      var disease = _terms2.default.find(function (t) {
+	        return t.name === topTerms[i];
+	      });
+	      return disease;
+	    }
+	  }, {
+	    key: 'countryToGeo',
+	    value: function countryToGeo(country) {
+	      return _countries2.default.find(function (c) {
+	        return c.iso === country;
+	      });
+	    }
+	  }, {
+	    key: 'getPrevMonth',
+	    value: function getPrevMonth() {
+	      var prevMonthDate = new Date();
+	      prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+	      var year = prevMonthDate.getFullYear();
+	      var month = new Date().getMonth();
+	      month = month < 10 ? '0' + month : month;
+	      return year + '-' + month;
+	    }
+	  }, {
+	    key: 'getUserCountry',
+	    value: function getUserCountry(callback) {
+	      _loglevel2.default.info('getUserCountry');
+	      var self = this;
+	      _jquery2.default.get("https://ipinfo.io", function (response) {
+	        var country = response.country;
+
+	        var geo = self.countryToGeo(country);
+	        callback(geo);
+	      }, 'jsonp');
+	    }
+	  }, {
+	    key: 'getTrendsAPITopTopics',
+	    value: function getTrendsAPITopTopics() {
+	      _loglevel2.default.info('getTrendsAPITopTopics');
+	      var _data = this.data,
+	          geo = _data.geo,
+	          disease = _data.disease;
+
+	      var self = this;
+	      var filter = {
+	        terms: [disease],
+	        geo: geo,
+	        startDate: self.getPrevMonth()
+	      };
+	      self.trendsAPI.getTopTopics(filter, function (val) {
+	        _loglevel2.default.info('From Google Trends: ', val);
+	        var item = val.item;
+
+	        if (item && item.length > 0) {
+	          self.updateData({ topTopics: item });
+	        } else if (geo && geo.iso !== 'US') {
+	          var defaultGeo = self.countryToGeo('US');
+	          self.updateData({ geo: defaultGeo });
+	          self.getTrendsAPITopTopics();
+	        } else if (disease) {
+	          self.updateData({ disease: self.getRandomDisease(disease.name) });
+	          self.getTrendsAPITopTopics();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'randomTopicStyle',
+	    value: function randomTopicStyle(p, i) {
+	      var iX = d3.interpolateNumber(0, window.innerWidth * 0.4);
+	      var iY = d3.interpolateNumber(window.innerHeight * 0.2, window.innerHeight * 0.4);
+
+	      var upOrDown = i % 2 == 0 ? 1 : -1;
+	      var leftOrRight = i % 3 == 0 ? 1 : -1;
+	      var posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
+	      var posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
+	      p.style.left = posLeft;
+	      p.style.top = posTop;
+
+	      var iS = d3.interpolateNumber(window.innerWidth * 0.01, window.innerWidth * 0.05);
+	      var size = iS(Math.random());
+	      p.style.fontSize = Math.round(size).toString() + 'px';
+	      p.style.filter = 'blur(' + size * 0.02 + 'px)';
+	    }
+	  }, {
+	    key: 'updateData',
+	    value: function updateData(obj) {
+	      var data = this.data;
+
+	      Object.assign(data, obj);
+	      _loglevel2.default.info(this.data);
+	      this.updateElements();
+	    }
+	  }, {
+	    key: 'createElements',
+	    value: function createElements(parentContainer) {
+
+	      var elementsContainer = document.createElement('div');
+	      elementsContainer.id = 'home';
+	      elementsContainer.classList.add('page');
+	      parentContainer.appendChild(elementsContainer);
+
+	      var titleContainer = document.createElement('div');
+	      titleContainer.classList.add('title-container');
+	      elementsContainer.appendChild(titleContainer);
+
+	      var title = document.createElement('h1');
+	      title.innerHTML = 'I\'m not<br>feeling well';
+	      titleContainer.appendChild(title);
+
+	      var projectDescription = document.createElement('p');
+	      projectDescription.id = 'project-description';
+	      projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.';
+	      titleContainer.appendChild(projectDescription);
+
+	      var logosContainer = document.createElement('div');
+	      logosContainer.classList.add('logos-container');
+	      titleContainer.appendChild(logosContainer);
+
+	      var gabriel = document.createElement('p');
+	      gabriel.classList.add('gabriel');
+	      gabriel.innerHTML = 'Gabriel Gianordoli';
+	      logosContainer.appendChild(gabriel);
+
+	      var forSpan = document.createElement('span');
+	      forSpan.innerHTML = 'for';
+	      logosContainer.appendChild(forSpan);
+
+	      var gnl = document.createElement('div');
+	      gnl.classList.add('google-news-lab-logo');
+	      gnl.innerHTML = _icons2.default.googleNewsLabLogo;
+	      logosContainer.appendChild(gnl);
+
+	      this.countryContainer = document.createElement('div');
+	      this.countryContainer.classList.add('country-container');
+	      elementsContainer.appendChild(this.countryContainer);
+
+	      this.topTopicsList = document.createElement('div');
+	      this.topTopicsList.classList.add('top-queries-list');
+	      elementsContainer.appendChild(this.topTopicsList);
+	    }
+	  }, {
+	    key: 'updateElements',
+	    value: function updateElements() {
+	      var _this = this;
+
+	      var _data2 = this.data,
+	          geo = _data2.geo,
+	          disease = _data2.disease,
+	          topTopics = _data2.topTopics;
+	      var countryContainer = this.countryContainer,
+	          topTopicsList = this.topTopicsList;
+
+	      if (topTopics.length > 0) {
+
+	        var span = document.createElement('span');
+	        span.innerHTML = 'Searches for ';
+	        countryContainer.append(span);
+
+	        var diseaseContainer = document.createElement('span');
+	        diseaseContainer.classList.add('disease-container');
+	        diseaseContainer.innerHTML = disease.name.toLowerCase();
+	        countryContainer.appendChild(diseaseContainer);
+
+	        countryContainer.appendChild(document.createElement('br'));
+
+	        span = document.createElement('span');
+	        span.innerHTML = 'in ';
+	        countryContainer.appendChild(span);
+
+	        var country = document.createElement('span');
+	        country.classList.add('country');
+	        country.innerHTML = geo.name;
+	        countryContainer.appendChild(country);
+
+	        topTopics.forEach(function (t, i) {
+	          var p = document.createElement('p');
+	          p.innerHTML = t.title;
+	          topTopicsList.appendChild(p);
+	          _this.randomTopicStyle(p, i);
+	        });
+	      }
+	    }
+	  }]);
+
+	  return Home;
+	}();
+
+	exports.default = Home;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
+
+	var _Keys = __webpack_require__(9);
+
+	var _loglevel = __webpack_require__(6);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TrendsAPI = function () {
+	  function TrendsAPI() {
+	    _classCallCheck(this, TrendsAPI);
+
+	    _loglevel2.default.info('TrendsAPI');
+	  }
+
+	  _createClass(TrendsAPI, [{
+	    key: 'setup',
+	    value: function setup(callback) {
+	      var self = this;
+	      __webpack_require__(10)().then(function (gapi) {
+	        _loglevel2.default.info('GoogleAPI library loaded');
+	        gapi.load('client', start);
+
+	        function start() {
+	          var apiKey = void 0,
+	              id = void 0;
+	          if (false) {
+	            apiKey = _Keys.Keys['PRODUCTION'];
+	            id = 'diseases-production';
+	          } else {
+	            apiKey = _Keys.Keys['DEVELOPMENT'];
+	            id = 'diseases';
+	          }
+
+	          gapi.client.init({
+	            'apiKey': apiKey,
+	            'clientId': 'diseases.apps.googleusercontent.com'
+	          }).then(function () {
+	            _loglevel2.default.info('GoogleAPI client initialized');
+	            self.gapi = gapi;
+	            if (callback) {
+	              callback();
+	            }
+	          });
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'executeCall',
+	    value: function executeCall(path, callback) {
+	      this.gapi.client.request({
+	        'path': path
+	      }).then(function (response) {
+	        callback(response.result);
+	      }, function (reason) {
+	        _loglevel2.default.info('Error: ' + reason.result.error.message);
+	      });
+	    }
+	  }, {
+	    key: 'appendRestrictions',
+	    value: function appendRestrictions(filter, path) {
+	      var geo = filter.geo,
+	          startDate = filter.startDate,
+	          endDate = filter.endDate;
+
+	      if (geo && geo.iso !== 'world') {
+	        path += '&restrictions.geo=' + geo.iso;
+	      }
+	      if (filter.startDate) {
+	        path += '&restrictions.startDate=' + filter.startDate;
+	      }
+	      if (filter.endDate) {
+	        path += '&restrictions.endDate=' + filter.endDate;
+	      }
+	      return path;
+	    }
+	  }, {
+	    key: 'getGraph',
+	    value: function getGraph(filter, callback) {
+	      _loglevel2.default.info('getGraph for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var path = 'https://www.googleapis.com/trends/v1beta/graph?';
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = terms[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var t = _step.value;
+
+	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getGraphAverages',
+	    value: function getGraphAverages(filter, callback) {
+	      // log.info('getGraphAverages for:', filter);
+	      var terms = filter.terms;
+
+	      var path = 'https://www.googleapis.com/trends/v1beta/graphAverages?';
+	      var _iteratorNormalCompletion2 = true;
+	      var _didIteratorError2 = false;
+	      var _iteratorError2 = undefined;
+
+	      try {
+	        for (var _iterator2 = terms[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	          var t = _step2.value;
+
+	          path += 'terms=' + encodeURIComponent(t.entity) + '&';
+	        }
+	      } catch (err) {
+	        _didIteratorError2 = true;
+	        _iteratorError2 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	            _iterator2.return();
+	          }
+	        } finally {
+	          if (_didIteratorError2) {
+	            throw _iteratorError2;
+	          }
+	        }
+	      }
+
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getTopQueries',
+	    value: function getTopQueries(filter, callback) {
+	      _loglevel2.default.info('getTopQueries for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var term = terms[0];
+	      var path = 'https://www.googleapis.com/trends/v1beta/topQueries?term=' + encodeURIComponent(term.entity);
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getTopTopics',
+	    value: function getTopTopics(filter, callback) {
+	      _loglevel2.default.info('getTopQueries for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var term = terms[0];
+	      var path = 'https://www.googleapis.com/trends/v1beta/topTopics?term=' + encodeURIComponent(term.entity);
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }, {
+	    key: 'getRegionsList',
+	    value: function getRegionsList(filter, callback) {
+	      _loglevel2.default.info('getRegionsList for:', filter);
+	      var geo = filter.geo,
+	          terms = filter.terms;
+
+	      var term = terms[0];
+	      var path = 'https://www.googleapis.com/trends/v1beta/regions?term=' + encodeURIComponent(term.entity);
+	      path = this.appendRestrictions(filter, path);
+	      this.executeCall(path, callback);
+	    }
+	  }]);
+
+	  return TrendsAPI;
+	}();
+
+	exports.default = TrendsAPI;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var Keys = exports.Keys = {
+	  'PRODUCTION': 'AIzaSyD9J3-0wCoLJMOqPImLupmXTSocYydvNTQ',
+	  'DEVELOPMENT': 'AIzaSyAGzlgd2FAXWWaq10kSmTZ-y6SE15Xx3Hk'
+	};
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @module google-client-api */
 
-	var scriptjs = __webpack_require__( 6 ),
-		promise = __webpack_require__( 7 );
+	var scriptjs = __webpack_require__( 11 ),
+		promise = __webpack_require__( 12 );
 
 	var callbacks = [];
 
@@ -982,7 +1180,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 6 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1111,23 +1309,23 @@
 
 
 /***/ }),
-/* 7 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(8)
-	__webpack_require__(13)
-	__webpack_require__(14)
-	__webpack_require__(15)
+	module.exports = __webpack_require__(13)
+	__webpack_require__(18)
+	__webpack_require__(19)
+	__webpack_require__(20)
 
 /***/ }),
-/* 8 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var asap = __webpack_require__(9)
+	var asap = __webpack_require__(14)
 
 	module.exports = Promise;
 	function Promise(fn) {
@@ -1233,7 +1431,7 @@
 
 
 /***/ }),
-/* 9 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {
@@ -1350,10 +1548,10 @@
 	module.exports = asap;
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10), __webpack_require__(11).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(16).setImmediate))
 
 /***/ }),
-/* 10 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	// shim for using process in browser
@@ -1543,7 +1741,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -1596,13 +1794,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(12);
+	__webpack_require__(17);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 12 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1792,16 +1990,16 @@
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(15)))
 
 /***/ }),
-/* 13 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Promise = __webpack_require__(8)
-	var asap = __webpack_require__(9)
+	var Promise = __webpack_require__(13)
+	var asap = __webpack_require__(14)
 
 	module.exports = Promise
 	Promise.prototype.done = function (onFulfilled, onRejected) {
@@ -1814,15 +2012,15 @@
 	}
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	//This file contains the ES6 extensions to the core Promises/A+ API
 
-	var Promise = __webpack_require__(8)
-	var asap = __webpack_require__(9)
+	var Promise = __webpack_require__(13)
+	var asap = __webpack_require__(14)
 
 	module.exports = Promise
 
@@ -1928,15 +2126,15 @@
 
 
 /***/ }),
-/* 15 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	//This file contains then/promise specific extensions that are only useful for node.js interop
 
-	var Promise = __webpack_require__(8)
-	var asap = __webpack_require__(9)
+	var Promise = __webpack_require__(13)
+	var asap = __webpack_require__(14)
 
 	module.exports = Promise
 
@@ -1997,7 +2195,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -2007,7 +2205,7 @@
 	{ name: "Abdominal distension", entity: "/m/09d7vk", alias: null }, { name: "Abdominal obesity", entity: "/m/0f8fc", alias: null }, { name: "Abdominal pain", entity: "/m/02tfl8", alias: null }, { name: "Abnormal posturing", entity: "/m/08hpp7", alias: null }, { name: "Abscess", entity: "/m/0lxt", alias: null }, { name: "Absent-mindedness", entity: "/m/026__2h", alias: null }, { name: "Acanthosis nigricans", entity: "/m/036b82", alias: null }, { name: "Achilles tendon rupture", entity: "/m/06tbxm", alias: null }, { name: "Acid erosion", entity: "/m/065tzg", alias: null }, { name: "Acidosis", entity: "/m/02gwty", alias: null }, { name: "Acne", entity: "/m/0jwqt", alias: null }, { name: "Actinic keratosis", entity: "/m/04r3p5", alias: null }, { name: "Acute Bronchitis", entity: "/m/01s2xh", alias: null }, { name: "Acute kidney injury", entity: "/m/03545w", alias: null }, { name: "Acute myeloid leukemia", entity: "/m/0bx3n7", alias: null }, { name: "Adenomyosis", entity: "/m/054xgp", alias: null }, { name: "Afterimage", entity: "/m/02h98q", alias: null }, { name: "Ageusia", entity: "/m/05sfr2", alias: null }, { name: "Agnosia", entity: "/m/016q5d", alias: null }, { name: "Agonal respiration", entity: "/m/07gylr", alias: null }, { name: "Akathisia", entity: "/m/01dzyw", alias: null }, { name: "Albinism", entity: "/m/0122t", alias: null }, { name: "Alcohol flush reaction", entity: "/m/05nn1b", alias: null }, { name: "Alcoholism", entity: "/m/012jc", alias: null }, { name: "Alice in Wonderland syndrome", entity: "/m/019szr", alias: null }, { name: "Alkalosis", entity: "/m/02gwvb", alias: null }, { name: "Allergic bronchopulmonary aspergillosis", entity: "/m/0cvcl5", alias: null }, { name: "Allergic conjunctivitis", entity: "/m/04v6d0", alias: null }, { name: "Allergy", entity: "/m/0fd23", alias: null }, { name: "Allodynia", entity: "/m/096m74", alias: null }, { name: "Alogia", entity: "/m/01r718", alias: null }, { name: "Alopecia areata", entity: "/m/016q32", alias: null }, { name: "Alpha 1-antitrypsin deficiency", entity: "/m/01t4q6", alias: null }, { name: "Alzheimer's disease", entity: "/m/0dcsx", alias: null }, { name: "Amaurosis", entity: "/m/05wt36", alias: null }, { name: "Amaurosis fugax", entity: "/m/036bqx", alias: null }, { name: "Amblyopia", entity: "/m/02s64_", alias: null }, { name: "Amenorrhoea", entity: "/m/01j62y", alias: null }, { name: "Amnesia", entity: "/m/01j4hd", alias: null }, { name: "Amyotrophic lateral sclerosis", entity: "/m/017s1k", alias: null }, { name: "Anal fissure", entity: "/m/02gscl", alias: null }, { name: "Anaphylaxis", entity: "/m/0jtyb", alias: null }, { name: "Anasarca", entity: "/m/036br7", alias: null }, { name: "Androgen replacement therapy", entity: "/m/026bcwh", alias: null }, { name: "Anemia", entity: "/m/0lcdk", alias: null }, { name: "Anencephaly", entity: "/m/01hr6t", alias: null }, { name: "Angina pectoris", entity: "/m/0hg45", alias: null }, { name: "Angioedema", entity: "/m/03tlvj", alias: null }, { name: "Angular cheilitis", entity: "/m/099686", alias: null }, { name: "Anhedonia", entity: "/m/01nvfh", alias: null }, { name: "Aniridia", entity: "/m/03gxt1", alias: null }, { name: "Anisocoria", entity: "/m/08mh71", alias: null }, { name: "Anorexia nervosa", entity: "/m/098lw", alias: "Anorexia" }, { name: "Anosmia", entity: "/m/0m7pl", alias: null }, { name: "Antepartum haemorrhage", entity: "/m/056x7r", alias: null }, { name: "Anterograde amnesia", entity: "/m/02m3p2", alias: null }, { name: "Anti-social behaviour", entity: "/m/02l4fy", alias: null }, { name: "Antisocial personality disorder", entity: "/m/01c88f", alias: null }, { name: "Anuria", entity: "/m/04f74cm", alias: null }, { name: "Anxiety", entity: "/m/0k_9", alias: null }, { name: "Apathy", entity: "/m/01y4zk", alias: null }, { name: "Aphakia", entity: "/m/0831jw", alias: null }, { name: "Aphasia", entity: "/m/0wnw", alias: null }, { name: "Aphonia", entity: "/m/025s02j", alias: null }, { name: "Apnea", entity: "/m/01mr85", alias: null }, { name: "Apraxia", entity: "/m/0flz_", alias: null }, { name: "Arcus senilis", entity: "/m/06stpj", alias: null }, { name: "Arthritis", entity: "/m/0t1t", alias: null }, { name: "Arthrogryposis", entity: "/m/0nrd_", alias: null }, { name: "Arthropathy", entity: "/m/07nsp9", alias: null }, { name: "Ascites", entity: "/m/01c24r", alias: null }, { name: "Asperger syndrome", entity: "/m/09cds", alias: null }, { name: "Asphyxia", entity: "/m/0p7w5", alias: null }, { name: "Asterixis", entity: "/m/077dxt", alias: null }, { name: "Asthma", entity: "/m/0c78m", alias: null }, { name: "Astigmatism", entity: "/m/0chf1d", alias: null }, { name: "Ataxia", entity: "/m/0l95", alias: null }, { name: "Athetosis", entity: "/m/03hrw8", alias: null }, { name: "Atony", entity: "/m/08bp0k", alias: null }, { name: "Atopic dermatitis", entity: "/m/06xb9t", alias: null }, { name: "Atrophy", entity: "/m/034y_l", alias: null }, { name: "Attention deficit hyperactivity disorder", entity: "/m/0h99n", alias: null }, { name: "Auditory hallucination", entity: "/m/03hfxpg", alias: null }, { name: "Aura", entity: "/m/07ms80", alias: null }, { name: "Autism", entity: "/m/0gwj", alias: null }, { name: "Autoimmune disease", entity: "/m/04dx3qn", alias: null }, { name: "Autoimmune hemolytic anemia", entity: "/m/0b1p89", alias: null }, { name: "AV nodal reentrant tachycardia", entity: "/m/03rsgd", alias: null }, { name: "Avoidant personality disorder", entity: "/m/01_4_n", alias: null }, { name: "Avolition", entity: "/m/01sbgb", alias: null }, { name: "Azotemia", entity: "/m/0dn4_", alias: null }, { name: "Back pain", entity: "/m/0142ky", alias: null }, { name: "Bacterial arthritis", entity: "/m/02nrsk", alias: null }, { name: "Bacterial vaginosis", entity: "/m/01glh", alias: null }, { name: "Bad breath", entity: "/m/025hzf", alias: null }, { name: "Balance disorder", entity: "/m/0180jb", alias: null }, { name: "Behçet's disease", entity: "/m/025t67z", alias: null }, { name: "Bell's palsy", entity: "/m/0dxdd", alias: null }, { name: "Bigeminy", entity: "/m/099t0f", alias: null }, { name: "Biliary colic", entity: "/m/026stnc", alias: null }, { name: "Biliary dyskinesia", entity: "/m/04cy_nk", alias: null }, { name: "Binge eating", entity: "/m/01t96l", alias: null }, { name: "Bipolar disorder", entity: "/m/01g2q", alias: null }, { name: "Birthmark", entity: "/m/01ljf2", alias: null }, { name: "Black eye", entity: "/m/065wv1", alias: null }, { name: "Blackout", entity: "/m/02pnflk", alias: null }, { name: "Bladder cancer", entity: "/m/01bcp7", alias: null }, { name: "Bleeding", entity: "/m/012n6x", alias: null }, { name: "Bleeding diathesis", entity: "/m/037mv0", alias: null }, { name: "Bleeding on probing", entity: "/m/02rtqbt", alias: null }, { name: "Blepharospasm", entity: "/m/08k14_", alias: null }, { name: "Blindness", entity: "/m/064kj9p", alias: null }, { name: "Blister", entity: "/m/01k1jq", alias: null }, { name: "Bloating", entity: "/m/011dzgb6", alias: null }, { name: "Blood blister", entity: "/m/05zy6c", alias: null }, { name: "Blood in stool", entity: "/m/08cmfm", alias: null }, { name: "Bloody show", entity: "/m/05q5s6", alias: null }, { name: "Blurred vision", entity: "/m/03g_gxj", alias: null }, { name: "Blushing", entity: "/m/01jyxg", alias: null }, { name: "Body odor", entity: "/m/037ywk", alias: null }, { name: "Boil", entity: "/m/03xp5n", alias: null }, { name: "Bone fracture", entity: "/m/03fz1q", alias: null }, { name: "Bone tumor", entity: "/m/01t125", alias: null }, { name: "Borderline personality disorder", entity: "/m/0134rc", alias: null }, { name: "Bowel infarction", entity: "/m/02r0rdw", alias: null }, { name: "Bowel obstruction", entity: "/m/01vzqb", alias: null }, { name: "Brachycephaly", entity: "/m/01hrdy", alias: null }, { name: "Bradycardia", entity: "/m/01r__", alias: null }, { name: "Brain damage", entity: "/m/01sbk1", alias: null }, { name: "Brain death", entity: "/m/019m0c", alias: null }, { name: "Braxton Hicks contractions", entity: "/m/03_81f", alias: null }, { name: "Breakthrough bleeding", entity: "/m/04fjyf", alias: null }, { name: "Breast cancer", entity: "/m/0j8hd", alias: null }, { name: "Breast hypertrophy", entity: "/m/025t7qd", alias: null }, { name: "Breast lump", entity: "/m/080fvq7", alias: null }, { name: "Breast pain", entity: "/m/06pp7p", alias: null }, { name: "Bronchiectasis", entity: "/m/01w_2w", alias: null }, { name: "Bronchitis", entity: "/m/047gmsk", alias: null }, { name: "Bronchospasm", entity: "/m/02_5n7", alias: null }, { name: "Brown-Séquard's ", entity: "/m/03vwc5", alias: null }, { name: "Brucellosis", entity: "/m/0270q1", alias: null }, { name: "Bruise", entity: "/m/02zpsl", alias: null }, { name: "Bruit", entity: "/m/07qwnz", alias: null }, { name: "Bruxism", entity: "/m/0149nm", alias: null }, { name: "Bubo", entity: "/m/02777pt", alias: null }, { name: "Bulbar palsy", entity: "/m/02qb7yy", alias: null }, { name: "Bullying", entity: "/m/027vd9", alias: null }, { name: "Bunion", entity: "/m/01l2ky", alias: null }, { name: "Burn", entity: "/m/01hwqk", alias: null }, { name: "Burning mouth syndrome", entity: "/m/03_3c6", alias: null }, { name: "Bursitis", entity: "/m/034z18", alias: null }, { name: "Cachexia", entity: "/m/01wxhm", alias: null }, { name: "Calcaneal spur", entity: "/m/025t1sl", alias: null }, { name: "Callus", entity: "/m/01l2l9", alias: null }, { name: "Cancer", entity: "/m/0qcr0", alias: null }, { name: "Candidiasis", entity: "/m/020gv", alias: null }, { name: "Canker sore", entity: "/m/05frfm", alias: null }, { name: "Cardiac arrest", entity: "/m/0gg4h", alias: null }, { name: "Cardiac arrhythmia", entity: "/m/01pf6", alias: null }, { name: "Cardiomegaly", entity: "/m/08_51g", alias: null }, { name: "Cardiovascular disease", entity: "/m/02k6hp", alias: null }, { name: "Carpal tunnel syndrome", entity: "/m/0fl_v", alias: null }, { name: "Cataplexy", entity: "/m/07f_8c", alias: null }, { name: "Cataract", entity: "/m/0m7h6", alias: null }, { name: "Catatonia", entity: "/m/01lxx", alias: null }, { name: "Cauda equina syndrome", entity: "/m/04yb5z", alias: null }, { name: "Celiac disease", entity: "/m/0h1pq", alias: null }, { name: "Cerebellar ataxia", entity: "/m/02vkcrn", alias: null }, { name: "Cerebral edema", entity: "/m/0219bz", alias: null }, { name: "Cervical cancer", entity: "/m/0d_bk", alias: null }, { name: "Cervicitis", entity: "/m/020v3l", alias: null }, { name: "Chagas disease", entity: "/m/0208m", alias: null }, { name: "Chalazion", entity: "/m/03gf8g", alias: null }, { name: "Chancre", entity: "/m/01ny_v", alias: null }, { name: "Cheilitis", entity: "/m/0gj51x", alias: null }, { name: "Chemosis", entity: "/m/04jr5f", alias: null }, { name: "Chest pain", entity: "/m/02np4v", alias: null }, { name: "Cheyne-Stokes respiration", entity: "/m/036k30", alias: null }, { name: "Chickenpox", entity: "/m/01r6j", alias: null }, { name: "Chikungunya virus infection", entity: "/m/01__7l", alias: "Chikungunya" }, { name: "Chills", entity: "/m/02mdc7", alias: null }, { name: "Choking", entity: "/m/0168pw", alias: null }, { name: "Cholera", entity: "/m/024c2", alias: null }, { name: "Cholestasis", entity: "/m/07t2pp", alias: null }, { name: "Chorea", entity: "/m/03d70n", alias: null }, { name: "Chronic Obstructive Pulmonary Disease", entity: "/m/0gzv0", alias: null }, { name: "Chronic pain", entity: "/m/012clh", alias: null }, { name: "Chronic prostatitis/chronic pelvic pain syndrome", entity: "/m/043jxv5", alias: null }, { name: "Cirrhosis", entity: "/m/097ns", alias: null }, { name: "Claudication", entity: "/m/05c1gt", alias: null }, { name: "Cleft lip and cleft palate", entity: "/m/07y4w6s", alias: null }, { name: "Clitoromegaly", entity: "/m/04jpnx", alias: null }, { name: "Clonus", entity: "/m/02zdnj", alias: null }, { name: "Clostridium difficile infection", entity: "/m/02cxr0", alias: null }, { name: "Coagulopathy", entity: "/m/065b00", alias: null }, { name: "Coccydynia", entity: "/m/031c9y", alias: null }, { name: "Coffee ground vomiting", entity: "/m/02n2zp", alias: null }, { name: "Cognitive deficit", entity: "/m/02py0vt", alias: null }, { name: "Colitis", entity: "/m/043hy3", alias: null }, { name: "Collapse", entity: "/m/026gdg4", alias: null }, { name: "Color blindness", entity: "/m/022xh", alias: null }, { name: "Coma", entity: "/m/01qw1", alias: null }, { name: "Comedo", entity: "/m/02ry9q", alias: null }, { name: "Common cold", entity: "/m/0n073", alias: "Cold" }, { name: "Compartment syndrome", entity: "/m/01j0hs", alias: null }, { name: "Compulsive behavior", entity: "/m/0281lfw", alias: null }, { name: "Compulsive hoarding", entity: "/m/0240_y", alias: null }, { name: "Concussion", entity: "/m/023ndx", alias: null }, { name: "Conductive hearing loss", entity: "/m/04fmtx", alias: null }, { name: "Confabulation", entity: "/m/0371d4", alias: null }, { name: "Congenital heart defect", entity: "/m/03k22s", alias: null }, { name: "Congenital syphilis", entity: "/m/0411f2", alias: null }, { name: "Conjunctivitis", entity: "/m/0c36_", alias: "Pink eye" }, { name: "Constipation", entity: "/m/016kf9", alias: null }, { name: "Contracture", entity: "/m/04f49cb", alias: null }, { name: "Convulsion", entity: "/m/04lcpr5", alias: null }, { name: "Coprolalia", entity: "/m/02gp9x", alias: null }, { name: "Corneal abrasion", entity: "/m/07ldcz", alias: null }, { name: "Coryza", entity: "/m/0c532h", alias: "Stuffy nose" }, { name: "Cough", entity: "/m/01b_21", alias: null }, { name: "Crackles", entity: "/m/023rn8", alias: null }, { name: "Cramp", entity: "/m/024_yy", alias: null }, { name: "Crepitus", entity: "/m/05bws4", alias: null }, { name: "Crohn's disease", entity: "/m/0h1n9", alias: null }, { name: "Cryptorchidism", entity: "/m/025nm6", alias: null }, { name: "Cushing's syndrome", entity: "/m/0mzm2", alias: null }, { name: "Cutaneous condition", entity: "/m/08cqsh", alias: null }, { name: "Cyanosis", entity: "/m/021fq9", alias: null }, { name: "Cyst", entity: "/m/019rnl", alias: null }, { name: "Cysticercosis", entity: "/m/0394df", alias: null }, { name: "Dandruff", entity: "/m/022y19", alias: null }, { name: "Death rattle", entity: "/m/0660m0", alias: null }, { name: "Deep vein thrombosis", entity: "/m/02r3jk", alias: null }, { name: "Deformity", entity: "/m/0383j_", alias: null }, { name: "Dehydration", entity: "/m/014961", alias: null }, { name: "Delayed onset muscle soreness", entity: "/m/03dcyh", alias: null }, { name: "Delirium", entity: "/m/014qfd", alias: null }, { name: "Delirium tremens", entity: "/m/0fpnjr", alias: null }, { name: "Delusional disorder", entity: "/m/01l7xz", alias: null }, { name: "Dementia", entity: "/m/09klv", alias: null }, { name: "Dengue fever", entity: "/m/09wsg", alias: null }, { name: "Dengue virus", entity: "/m/0g58pft", alias: null }, { name: "Dental plaque", entity: "/m/073t8x", alias: null }, { name: "Dentin hypersensitivity", entity: "/m/0d7gj3", alias: null }, { name: "Dependent personality disorder", entity: "/m/01sydv", alias: null }, { name: "Depersonalization", entity: "/m/01zn1_", alias: null }, { name: "Depigmentation", entity: "/m/027cv8v", alias: null }, { name: "Depression", entity: "/m/03f_cb", alias: null }, { name: "Derealization", entity: "/m/02wv6r8", alias: null }, { name: "Dermatitis", entity: "/m/06x09g", alias: null }, { name: "Dermatographic urticaria", entity: "/m/06djbj", alias: null }, { name: "Desquamation", entity: "/m/05pbx5", alias: null }, { name: "Developmental disability", entity: "/m/06xd3t", alias: null }, { name: "Diabetes insipidus", entity: "/m/0c5s4", alias: null }, { name: "Diabetes mellitus", entity: "/m/0c58k", alias: "Diabetes" }, { name: "Diaphoresis", entity: "/m/01q1s3", alias: null }, { name: "Diarrhea", entity: "/m/0f3kl", alias: null }, { name: "Diastolic heart failure", entity: "/m/02pv6ym", alias: null }, { name: "Diathesis", entity: "/m/0sghsdb", alias: null }, { name: "Diplopia", entity: "/m/03x17h", alias: null }, { name: "Disseminated intravascular coagulation", entity: "/m/01jjrv", alias: null }, { name: "Dissociation", entity: "/m/02l_0n", alias: null }, { name: "Dissociative disorder", entity: "/m/07bc25", alias: null }, { name: "Dizziness", entity: "/m/033mg5", alias: null }, { name: "Down's syndrome", entity: "/m/029s1", alias: null }, { name: "Drooling", entity: "/m/019bfk", alias: null }, { name: "Dry eye syndrome", entity: "/m/03ckn0", alias: null }, { name: "Dryness", entity: "/m/0g9_00t", alias: null }, { name: "Dupuytren's contracture", entity: "/m/036l18", alias: null }, { name: "Dwarfism", entity: "/m/010vmq", alias: null }, { name: "Dysarthria", entity: "/m/03ygz2", alias: null }, { name: "Dysautonomia", entity: "/m/02510j", alias: null }, { name: "Dysentery", entity: "/m/0h3bn", alias: null }, { name: "Dysesthesia", entity: "/m/0264gx3", alias: null }, { name: "Dysfunctional uterine bleeding", entity: "/m/04cslz", alias: null }, { name: "Dysgeusia", entity: "/m/01d3gn", alias: null }, { name: "Dyskinesia", entity: "/m/03_xjz", alias: null }, { name: "Dysmenorrhea", entity: "/m/0255t_", alias: null }, { name: "Dyspareunia", entity: "/m/01qqq7", alias: null }, { name: "Dysphagia", entity: "/m/01bztl", alias: null }, { name: "Dysphonia", entity: "/m/07_7w6", alias: null }, { name: "Dysphoria", entity: "/m/055f85", alias: null }, { name: "Dystonia", entity: "/m/02_x8m", alias: null }, { name: "Dysuria", entity: "/m/03wblc", alias: null }, { name: "Ear pain", entity: "/m/05vywy", alias: null }, { name: "EBOV", entity: "/m/0117wrtj", alias: "Ebola" }, { name: "Ecchymosis", entity: "/m/05b6rk9", alias: null }, { name: "Echolalia", entity: "/m/03y0cn", alias: null }, { name: "Edema", entity: "/m/0j80c", alias: null }, { name: "Electrolyte imbalance", entity: "/m/03nkmb", alias: null }, { name: "Elevated alkaline phosphatase", entity: "/m/063ykc9", alias: null }, { name: "Emaciation", entity: "/m/070kyz", alias: null }, { name: "Emotional detachment", entity: "/m/092b1g", alias: null }, { name: "Emotional dysregulation", entity: "/m/0b3n_k", alias: null }, { name: "Encephalitis", entity: "/m/09c_t", alias: null }, { name: "Encephalopathy", entity: "/m/022tc0", alias: null }, { name: "Encopresis", entity: "/m/0298jv", alias: null }, { name: "Endometrial cancer", entity: "/m/0259rv", alias: null }, { name: "Endometrial hyperplasia", entity: "/m/02rc7qj", alias: null }, { name: "Endometriosis", entity: "/m/0d_9n", alias: null }, { name: "Endometriosis of ovary", entity: "/m/05q45f7", alias: null }, { name: "Enlarged uterus", entity: "/m/075k1p8", alias: null }, { name: "Enterocolitis", entity: "/m/07y4wgq", alias: null }, { name: "Enthesitis", entity: "/m/0gs1mr", alias: null }, { name: "Enthesopathy", entity: "/m/08bvg8", alias: null }, { name: "Enuresis", entity: "/m/03gq2nq", alias: null }, { name: "Eosinophilia", entity: "/m/01jmy5", alias: null }, { name: "Epicanthic fold", entity: "/m/014x2z", alias: null }, { name: "Epidermoid cyst", entity: "/m/04mw9m", alias: null }, { name: "Epilepsy", entity: "/m/02vrr", alias: null }, { name: "Epileptic seizure", entity: "/m/06rhk", alias: null }, { name: "Epiphora", entity: "/m/02r3mv3", alias: null }, { name: "Erectile dysfunction", entity: "/m/03tkm", alias: null }, { name: "Eructation", entity: "/m/03q5_w", alias: null }, { name: "Erythema", entity: "/m/02mcv2", alias: null }, { name: "Erythema chronicum migrans", entity: "/m/0bzv6k", alias: null }, { name: "Erythema multiforme", entity: "/m/03s352", alias: null }, { name: "Erythema nodosum", entity: "/m/08fm2f", alias: null }, { name: "Eschar", entity: "/m/03_m2p", alias: null }, { name: "Esophageal varices", entity: "/m/0340vp", alias: null }, { name: "Esophagitis", entity: "/m/01b_b2", alias: null }, { name: "Esotropia", entity: "/m/0184pc", alias: null }, { name: "Euphoria", entity: "/m/02rj8by", alias: null }, { name: "Exanthem", entity: "/m/07bblt", alias: null }, { name: "Excessive daytime sleepiness", entity: "/m/02y_82q", alias: null }, { name: "Exophthalmos", entity: "/m/05mjhy", alias: null }, { name: "Exotropia", entity: "/m/099x_8", alias: null }, { name: "Extrapyramidal symptoms", entity: "/m/09gkmws", alias: null }, { name: "Exudate", entity: "/m/02yj5k", alias: null }, { name: "Eye pain", entity: "/m/05fs77x", alias: null }, { name: "Eye strain", entity: "/m/07v7rh", alias: null }, { name: "Facial nerve paralysis", entity: "/m/04mpk9", alias: null }, { name: "Far-sightedness", entity: "/m/0248jp", alias: null }, { name: "Fasciculation", entity: "/m/062phb", alias: null }, { name: "Fatigue", entity: "/m/01j6t0", alias: null }, { name: "Fatty liver", entity: "/m/03s7fs", alias: null }, { name: "Febrile neutrophilic dermatosis", entity: "/m/09jw9n", alias: null }, { name: "Febrile seizure", entity: "/m/013q86", alias: null }, { name: "Fecal incontinence", entity: "/m/018h28", alias: null }, { name: "Female infertility", entity: "/m/03bx9gs", alias: null }, { name: "Fetal distress", entity: "/m/02sj16", alias: null }, { name: "Fever", entity: "/m/0cjf0", alias: null }, { name: "Fibrillation", entity: "/m/0118lbwm", alias: null }, { name: "Fibromyalgia", entity: "/m/01v3ks", alias: null }, { name: "Fibrosis", entity: "/m/03nq4p", alias: null }, { name: "Fidgeting", entity: "/m/04y6tl1", alias: null }, { name: "Flaccid paralysis", entity: "/m/02qkp38", alias: null }, { name: "Flatulence", entity: "/m/06vg9d", alias: null }, { name: "Floater", entity: "/m/018j1l", alias: null }, { name: "Flushing", entity: "/m/028n_3", alias: null }, { name: "Folate deficiency", entity: "/m/0dt6ml", alias: null }, { name: "Folie à deux", entity: "/m/03281", alias: null }, { name: "Food addiction", entity: "/m/04sws8", alias: null }, { name: "Food poisoning", entity: "/m/02m76d", alias: null }, { name: "Foot drop", entity: "/m/0bcwy3", alias: null }, { name: "Formication", entity: "/m/02p4g5n", alias: null }, { name: "Freckle", entity: "/m/0fyd3", alias: null }, { name: "Frequent urination", entity: "/m/0c3_wg5", alias: null }, { name: "Frostbite", entity: "/m/0213yl", alias: null }, { name: "Fuchs' dystrophy", entity: "/m/05pb2q", alias: null }, { name: "Fugue state", entity: "/m/02ybr", alias: null }, { name: "Gait abnormality", entity: "/m/06h94m", alias: null }, { name: "Galactorrhea", entity: "/m/03xmsb", alias: null }, { name: "Gallstone", entity: "/m/01q6mh", alias: null }, { name: "Gangrene", entity: "/m/01jj75", alias: null }, { name: "Gastritis", entity: "/m/03y91v", alias: null }, { name: "Gastroesophageal reflux disease", entity: "/m/01b_5g", alias: "Acid reflux" }, { name: "Gastrointestinal bleeding", entity: "/m/03njtl", alias: null }, { name: "Gastroparesis", entity: "/m/02w1n2", alias: null }, { name: "Generalised tonic-clonic seizure", entity: "/m/02r6d3v", alias: null }, { name: "Generalized anxiety disorder", entity: "/m/02zr3h", alias: null }, { name: "Genital herpes", entity: "/m/05m_zpz", alias: null }, { name: "Genital wart", entity: "/m/019thv", alias: null }, { name: "Genu varum", entity: "/m/03pk5z", alias: null }, { name: "Gestational hypertension", entity: "/m/03p2br", alias: null }, { name: "Giant-cell arteritis", entity: "/m/07s7n", alias: null }, { name: "Gigantism", entity: "/m/01jmvq", alias: null }, { name: "Gingival recession", entity: "/m/0dr8s9", alias: null }, { name: "Gingivitis", entity: "/m/01d20w", alias: null }, { name: "Glaucoma", entity: "/m/0jy0d", alias: null }, { name: "Glabrousness", entity: "/m/05__9r", alias: null }, { name: "Gliosis", entity: "/m/0chqj1", alias: null }, { name: "Globus pharyngis", entity: "/m/0czdw5", alias: null }, { name: "Glomerulonephritis", entity: "/m/04gfv_", alias: null }, { name: "Glossitis", entity: "/m/07ckc_", alias: null }, { name: "Glucose-6-phosphate dehydrogenase deficiency", entity: "/m/021tw2", alias: null }, { name: "Glycosuria", entity: "/m/05pcqg", alias: null }, { name: "Goitre", entity: "/m/036zm", alias: null }, { name: "Gonorrhea", entity: "/m/0mh4s", alias: null }, { name: "Goose bumps", entity: "/m/03ck2w", alias: null }, { name: "Gout", entity: "/m/0ffxt", alias: null }, { name: "Grandiosity", entity: "/m/041cwm", alias: null }, { name: "Granuloma", entity: "/m/029fv3", alias: null }, { name: "Granuloma annulare", entity: "/m/0cvpr9", alias: null }, { name: "Graves' ophthalmopathy", entity: "/m/0fl3qm", alias: null }, { name: "Greasy hair", entity: "/m/0nbv1vz", alias: null }, { name: "Ground-glass opacity", entity: "/m/0j26_bj", alias: null }, { name: "Growth hormone deficiency", entity: "/m/02xh6k", alias: null }, { name: "Guttate psoriasis", entity: "/m/05c3rty", alias: null }, { name: "Gynecomastia", entity: "/m/07cszr", alias: null }, { name: "Haemophilia", entity: "/m/03myr", alias: null }, { name: "Hair loss", entity: "/m/03bwzh1", alias: null }, { name: "Hallucination", entity: "/m/0d3gy", alias: null }, { name: "Hammer toe", entity: "/m/03vwp3", alias: null }, { name: "Headache", entity: "/m/0j5fv", alias: null }, { name: "Hearing loss", entity: "/m/014wq_", alias: null }, { name: "Heart block", entity: "/m/031q2c", alias: null }, { name: "Heart failure", entity: "/m/01l2m3", alias: null }, { name: "Heart murmur", entity: "/m/01jg1z", alias: null }, { name: "Heartburn", entity: "/m/01bfsv", alias: null }, { name: "Heat intolerance", entity: "/m/0rpj80_", alias: null }, { name: "Heavy legs", entity: "/m/051ynwt", alias: null }, { name: "Heberden's node", entity: "/m/054s8y", alias: null }, { name: "Hemangioma", entity: "/m/03jcdy", alias: null }, { name: "Hematemesis", entity: "/m/02n2t1", alias: null }, { name: "Hematochezia", entity: "/m/02n2gk", alias: null }, { name: "Hematoma", entity: "/m/032ssz", alias: null }, { name: "Hematospermia", entity: "/m/0bblkc", alias: null }, { name: "Hematuria", entity: "/m/02sc7d", alias: null }, { name: "Hemiparesis", entity: "/m/03j3s", alias: null }, { name: "Hemiplegia", entity: "/m/04n8p1", alias: null }, { name: "Hemispatial neglect", entity: "/m/03ttjj", alias: null }, { name: "Hemolysis", entity: "/m/0j8q4", alias: null }, { name: "Hemolytic anemia", entity: "/m/02skgx", alias: null }, { name: "Hemoptysis", entity: "/m/01g920", alias: null }, { name: "Hemorrhoids", entity: "/m/017f7c", alias: null }, { name: "Hemothorax", entity: "/m/06rt3n", alias: null }, { name: "Hepatic encephalopathy", entity: "/m/046cxb", alias: null }, { name: "Hepatitis", entity: "/m/09jg8", alias: null }, { name: "Hepatomegaly", entity: "/m/055_gj", alias: null }, { name: "Hepatorenal syndrome", entity: "/m/06vqzq", alias: null }, { name: "Hepatosplenomegaly", entity: "/m/03zr21", alias: null }, { name: "Hepatotoxicity", entity: "/m/02clhl", alias: null }, { name: "Herpes simplex", entity: "/m/0gxbfm", alias: null }, { name: "Heterochromia", entity: "/m/02w_rc", alias: null }, { name: "Hiccup", entity: "/m/02p3nc", alias: null }, { name: "Hickey", entity: "/m/02497k", alias: null }, { name: "High Blood Pressure", entity: "/m/0k95h", alias: null }, { name: "Hirsutism", entity: "/m/0ps0b", alias: null }, { name: "Histoplasmosis", entity: "/m/022tb8", alias: null }, { name: "HIV/AIDS", entity: "/m/0d19y2", alias: null }, { name: "Hives", entity: "/m/03nky3", alias: null }, { name: "Homans sign", entity: "/m/08ytrd", alias: null }, { name: "Horner's syndrome", entity: "/m/04v0fj", alias: null }, { name: "Hostility", entity: "/m/02p74_2", alias: null }, { name: "Hot flash", entity: "/m/033488", alias: null }, { name: "Hydrocele", entity: "/m/04vy02", alias: null }, { name: "Hydrocephalus", entity: "/m/01cw5r", alias: null }, { name: "Hyperactivity", entity: "/m/04txf7", alias: null }, { name: "Hyperacusis", entity: "/m/04xpzs", alias: null }, { name: "Hyperaemia", entity: "/m/08859_", alias: null }, { name: "Hyperalgesia", entity: "/m/03z_m7", alias: null }, { name: "Hypercalcaemia", entity: "/m/02k540", alias: null }, { name: "Hypercapnia", entity: "/m/02hlph", alias: null }, { name: "Hypercholesterolemia", entity: "/m/02k7pj", alias: null }, { name: "Hyperemesis gravidarum", entity: "/m/06t7dc", alias: null }, { name: "Hyperesthesia", entity: "/m/0btccj", alias: null }, { name: "Hyperglycemia", entity: "/m/0kfqw", alias: null }, { name: "Hyperhidrosis", entity: "/m/03jbly", alias: null }, { name: "Hyperkalemia", entity: "/m/037h0g", alias: null }, { name: "Hyperkeratosis", entity: "/m/05qymp", alias: null }, { name: "Hyperlipidemia", entity: "/m/05f45h", alias: null }, { name: "Hypermobility", entity: "/m/0b9f_5", alias: null }, { name: "Hypernatremia", entity: "/m/03xr5j", alias: null }, { name: "Hyperpigmentation", entity: "/m/046z7d", alias: null }, { name: "Hyperreflexia", entity: "/m/04bl90", alias: null }, { name: "Hypersalivation", entity: "/m/0fpjgc1", alias: null }, { name: "Hypersexuality", entity: "/m/01g5ln", alias: null }, { name: "Hypersomnia", entity: "/m/03cfcn", alias: null }, { name: "Hypertelorism", entity: "/m/08wwvw", alias: null }, { name: "Hyperthermia", entity: "/m/0k10t", alias: null }, { name: "Hyperthyroidism", entity: "/m/03hz0", alias: null }, { name: "Hypertonia", entity: "/m/092xnv", alias: null }, { name: "Hypertrichosis", entity: "/m/04lj5j", alias: null }, { name: "Hypertriglyceridemia", entity: "/m/02_sbz", alias: null }, { name: "Hypertrophy", entity: "/m/02vrdn", alias: null }, { name: "Hyperuricemia", entity: "/m/02hl8g", alias: null }, { name: "Hyperventilation", entity: "/m/021m_f", alias: null }, { name: "Hyphema", entity: "/m/08dkq0", alias: null }, { name: "Hypoactive sexual desire disorder", entity: "/m/0255l5", alias: null }, { name: "Hypoalbuminemia", entity: "/m/09bl05", alias: null }, { name: "Hypocalcaemia", entity: "/m/02k53m", alias: null }, { name: "Hypoesthesia", entity: "/m/027q6ds", alias: null }, { name: "Hypoglycemia", entity: "/m/03gwt", alias: null }, { name: "Hypogonadism", entity: "/m/038k4x", alias: null }, { name: "Hypohidrosis", entity: "/m/04yfs7", alias: null }, { name: "Hypokalemia", entity: "/m/03vmt0", alias: null }, { name: "Hypokinesia", entity: "/m/06_8j3", alias: null }, { name: "Hypomania", entity: "/m/0bk6q", alias: null }, { name: "Hypomenorrhea", entity: "/m/0412nq4", alias: null }, { name: "Hypoparathyroidism", entity: "/m/0340yl", alias: null }, { name: "Hypopigmentation", entity: "/m/048hpn", alias: null }, { name: "Hypotension", entity: "/m/02hvph", alias: null }, { name: "Hypothermia", entity: "/m/012rps", alias: null }, { name: "Hypothyroidism", entity: "/m/0hg11", alias: null }, { name: "Hypotonia", entity: "/m/03wbww", alias: null }, { name: "Hypoventilation", entity: "/m/02fwvl", alias: null }, { name: "Hypovolemia", entity: "/m/02hwb2", alias: null }, { name: "Hypoxemia", entity: "/m/025sd3c", alias: null }, { name: "Hypoxia", entity: "/m/03gns", alias: null }, { name: "Ichthyosis", entity: "/m/02wgfv", alias: null }, { name: "Ileus", entity: "/m/0443mq", alias: null }, { name: "Immunodeficiency", entity: "/m/02yg4w", alias: null }, { name: "Immunosuppression", entity: "/m/016mlj", alias: null }, { name: "Impetigo", entity: "/m/0mzty", alias: null }, { name: "Implantation bleeding", entity: "/m/013027b9", alias: null }, { name: "Indigestion", entity: "/m/04kl78", alias: null }, { name: "Infarction", entity: "/m/02vnfx", alias: null }, { name: "Infection", entity: "/m/098s1", alias: null }, { name: "Infectious mononucleosis", entity: "/m/0qjk8", alias: "Mononucleosis" }, { name: "Inferiority complex", entity: "/m/03c9vn", alias: null }, { name: "Infertility", entity: "/m/018g78", alias: null }, { name: "Inflammation", entity: "/m/0j7_w", alias: null }, { name: "Inflammatory bowel disease", entity: "/m/02x0yg", alias: null }, { name: "Influenza", entity: "/m/0cycc", alias: null }, { name: "Ingrown hair", entity: "/m/0cmmcy", alias: null }, { name: "Insomnia", entity: "/m/0ddwt", alias: null }, { name: "Intellectual disability", entity: "/m/09fz4", alias: null }, { name: "Intermittent claudication", entity: "/m/04qydt", alias: null }, { name: "Internal bleeding", entity: "/m/02xb32", alias: null }, { name: "Intertrigo", entity: "/m/05l4gz", alias: null }, { name: "Intracerebral hemorrhage", entity: "/m/08g5q7", alias: null }, { name: "Intracranial aneurysm", entity: "/m/01g45j", alias: null }, { name: "Intrauterine growth restriction", entity: "/m/05pdffb", alias: null }, { name: "Inverted nipple", entity: "/m/071nxk", alias: null }, { name: "Iron deficiency", entity: "/m/014x04", alias: null }, { name: "Iron overload", entity: "/m/02n_ct", alias: null }, { name: "Irregular menstruation", entity: "/m/05bm66n", alias: null }, { name: "Irritability", entity: "/m/083h_x", alias: null }, { name: "Irritant diaper dermatitis", entity: "/m/025r6w", alias: null }, { name: "Ischemia", entity: "/m/02gr6s", alias: null }, { name: "Itch", entity: "/m/04kllm9", alias: null }, { name: "Jaundice", entity: "/m/0hgxh", alias: null }, { name: "Joint effusion", entity: "/m/0b74b60", alias: null }, { name: "Joint pain", entity: "/m/021hck", alias: null }, { name: "Joint stiffness", entity: "/m/088b11", alias: null }, { name: "Jugular venous pressure", entity: "/m/03f3w1", alias: null }, { name: "Kaposi's sarcoma", entity: "/m/0bqpg", alias: null }, { name: "Kawasaki disease", entity: "/m/040k6g", alias: null }, { name: "Keratitis", entity: "/m/02dfr6", alias: null }, { name: "Ketoacidosis", entity: "/m/02mwg6", alias: null }, { name: "Ketonuria", entity: "/m/095xr2", alias: null }, { name: "Kidney failure", entity: "/m/01psyx", alias: null }, { name: "Kidney stone", entity: "/m/09hbx", alias: null }, { name: "Knee effusion", entity: "/m/03bxmbn", alias: null }, { name: "Knee pain", entity: "/m/09v868h", alias: null }, { name: "Koilonychia", entity: "/m/0gj4qx", alias: null }, { name: "Kussmaul breathing", entity: "/m/036mkm", alias: null }, { name: "Kyphosis", entity: "/m/02jrl1", alias: null }, { name: "Labored breathing", entity: "/m/09k6f04", alias: null }, { name: "Labyrinthitis", entity: "/m/03m31g", alias: null }, { name: "Lactose intolerance", entity: "/m/0fp3b", alias: null }, { name: "Lanugo", entity: "/m/04g22n", alias: null }, { name: "Laryngitis", entity: "/m/02l37c", alias: null }, { name: "Laryngopharyngeal reflux", entity: "/m/047bx2y", alias: null }, { name: "Laryngospasm", entity: "/m/08zhxx", alias: null }, { name: "Learning disability", entity: "/m/02qwpq0", alias: null }, { name: "Left Bundle Branch Block", entity: "/m/09k76g", alias: null }, { name: "Left ventricular hypertrophy", entity: "/m/04dxph", alias: null }, { name: "Leishmaniasis", entity: "/m/01c5s1", alias: null }, { name: "Leprosy", entity: "/m/0c5f7", alias: null }, { name: "Leptospirosis", entity: "/m/02_j9l", alias: null }, { name: "Lethargy", entity: "/m/012815pn", alias: null }, { name: "Leukemia", entity: "/m/04psf", alias: null }, { name: "Leukocytosis", entity: "/m/03btw1", alias: null }, { name: "Leukopenia", entity: "/m/03zrfj", alias: null }, { name: "Leukoplakia", entity: "/m/03l365", alias: null }, { name: "Leukorrhea", entity: "/m/06kjt9", alias: null }, { name: "Lhermitte's sign", entity: "/m/064n9x", alias: null }, { name: "Lightheadedness", entity: "/m/079p0q", alias: null }, { name: "Limp", entity: "/m/04plrq", alias: null }, { name: "Lipodystrophy", entity: "/m/01l2st", alias: null }, { name: "Livedo reticularis", entity: "/m/08wrk9", alias: null }, { name: "Liver failure", entity: "/m/02psvcf", alias: null }, { name: "Locked-in syndrome", entity: "/m/014mtn", alias: null }, { name: "Logorrhea", entity: "/m/09v4pxz", alias: null }, { name: "Lordosis", entity: "/m/03_039", alias: null }, { name: "Low back pain", entity: "/m/020hwm", alias: null }, { name: "Low birth weight", entity: "/m/0dl9s49", alias: null }, { name: "Lower respiratory tract infection", entity: "/m/03txkl", alias: null }, { name: "Lung cancer", entity: "/m/04p3w", alias: null }, { name: "Lupus nephritis", entity: "/m/05fq5c", alias: null }, { name: "Lyme disease", entity: "/m/01kcry", alias: null }, { name: "Lymphedema", entity: "/m/04r36", alias: null }, { name: "Lymphocytopenia", entity: "/m/08z6j9", alias: null }, { name: "Lymphocytosis", entity: "/m/01jn3l", alias: null }, { name: "Macrocephaly", entity: "/m/07b8s3", alias: null }, { name: "Maculopapular rash", entity: "/m/05lrqf", alias: null }, { name: "Major depressive disorder", entity: "/m/02bft", alias: null }, { name: "Malabsorption", entity: "/m/03f07j", alias: null }, { name: "Malaise", entity: "/m/0418s3", alias: null }, { name: "Malar rash", entity: "/m/04t_81", alias: null }, { name: "Malaria", entity: "/m/0542n", alias: null }, { name: "Male infertility", entity: "/m/03bx917", alias: null }, { name: "Malnutrition", entity: "/m/01m4w4", alias: null }, { name: "Malocclusion", entity: "/m/06r0ps", alias: null }, { name: "Mania", entity: "/m/05417", alias: null }, { name: "Measles", entity: "/m/0g2gb", alias: null }, { name: "Mechanism of action", entity: "/m/0d2x17", alias: null }, { name: "Medulloblastoma", entity: "/m/0bbl62", alias: null }, { name: "Megacolon", entity: "/m/07qctz", alias: null }, { name: "Melancholia", entity: "/m/057vp", alias: null }, { name: "Melanocytic nevus", entity: "/m/0dc28", alias: null }, { name: "Melanoma", entity: "/m/035b2g", alias: null }, { name: "Melasma", entity: "/m/04z9bf", alias: null }, { name: "Melena", entity: "/m/02n2tg", alias: null }, { name: "Meningism", entity: "/m/04v_ml", alias: null }, { name: "Meningitis", entity: "/m/09d11", alias: null }, { name: "Menorrhagia", entity: "/m/031c33", alias: null }, { name: "Menstrual disorder", entity: "/m/0b5pfn", alias: null }, { name: "Mental disorder", entity: "/m/04x4r", alias: null }, { name: "Metabolic acidosis", entity: "/m/04tksh", alias: null }, { name: "Metabolic alkalosis", entity: "/m/025sktj", alias: null }, { name: "Metaplasia", entity: "/m/059h7h", alias: null }, { name: "Metastatic liver disease", entity: "/m/047cg9y", alias: null }, { name: "Methemoglobinemia", entity: "/m/01npzs", alias: null }, { name: "Metrorrhagia", entity: "/m/08_6kp", alias: null }, { name: "Microalbuminuria", entity: "/m/07y7r4", alias: null }, { name: "Microcalcification", entity: "/m/095qsg", alias: null }, { name: "Microcephaly", entity: "/m/01hrbm", alias: null }, { name: "Micromastia", entity: "/m/09pv41", alias: null }, { name: "Middle back pain", entity: "/m/09rlb3", alias: null }, { name: "Middle East respiratory syndrome", entity: "/m/0n46w_1", alias: "MERS" }, { name: "Migraine", entity: "/m/05904", alias: null }, { name: "Milium", entity: "/m/0527by", alias: null }, { name: "Miosis", entity: "/m/03smvc", alias: null }, { name: "Mitral valve prolapse", entity: "/m/02np4g", alias: null }, { name: "Mood disorder", entity: "/m/0drn8", alias: null }, { name: "Mood swing", entity: "/m/022y3k", alias: null }, { name: "Moon face", entity: "/m/02prmbk", alias: null }, { name: "Morning sickness", entity: "/m/01j9hg", alias: null }, { name: "Morphea", entity: "/m/09lkp9", alias: null }, { name: "Motion sickness", entity: "/m/0gxcc", alias: null }, { name: "Mouth breathing", entity: "/m/08gzn6", alias: null }, { name: "Movement disorders", entity: "/m/03whtc", alias: null }, { name: "Multiple organ dysfunction syndrome", entity: "/m/03hnn3", alias: null }, { name: "Multiple sclerosis", entity: "/m/0dcqh", alias: null }, { name: "Murphy's sign", entity: "/m/071ttc", alias: null }, { name: "Muscle atrophy", entity: "/m/0dds0h", alias: null }, { name: "Muscle contraction", entity: "/m/046xb9", alias: null }, { name: "Muscle pain", entity: "/m/013677", alias: null }, { name: "Muscle weakness", entity: "/m/0927l7", alias: null }, { name: "Muteness", entity: "/m/0287zzh", alias: null }, { name: "Mydriasis", entity: "/m/01dhgh", alias: null }, { name: "Myelodysplastic syndrome", entity: "/m/019gky", alias: null }, { name: "Myelopathy", entity: "/m/04_1ntx", alias: null }, { name: "Myocardial infarction", entity: "/m/0gk4g", alias: "Heart attack" }, { name: "Myoclonus", entity: "/m/02_mfs", alias: null }, { name: "Myopathy", entity: "/m/058k0k", alias: null }, { name: "Myxedema", entity: "/m/02wp6c", alias: null }, { name: "Nail clubbing", entity: "/m/02qbnn", alias: null }, { name: "Narcissistic personality disorder", entity: "/m/019jq7", alias: null }, { name: "Nasal congestion", entity: "/m/05s5v6", alias: null }, { name: "Nasal polyp", entity: "/m/034hsj", alias: null }, { name: "Nasal septum deviation", entity: "/m/05cz29", alias: null }, { name: "Nausea", entity: "/m/0gxb2", alias: null }, { name: "Near-sightedness", entity: "/m/0m2w3", alias: null }, { name: "Neck mass", entity: "/m/0crhp0y", alias: null }, { name: "Neck pain", entity: "/m/02r3cvb", alias: null }, { name: "Neck spasm", entity: "/m/043s7zg", alias: null }, { name: "Neck stiffness", entity: "/m/0bmgh43", alias: null }, { name: "Necrosis", entity: "/m/09yql", alias: null }, { name: "Necrotizing fasciitis", entity: "/m/01q6nb", alias: null }, { name: "Neonatal jaundice", entity: "/m/074hph", alias: null }, { name: "Nephritic syndrome", entity: "/m/06yg6t", alias: null }, { name: "Nephrotic syndrome", entity: "/m/01n597", alias: null }, { name: "Nerve injury", entity: "/m/02pm604", alias: null }, { name: "Neuralgia", entity: "/m/05kzxm", alias: null }, { name: "Neurofibroma", entity: "/m/08gljx", alias: null }, { name: "Neuropathic Pain", entity: "/m/09gnhp2", alias: null }, { name: "Neutrophilia", entity: "/m/01jjvn", alias: null }, { name: "Night sweats", entity: "/m/04klgqw", alias: null }, { name: "Night terror", entity: "/m/0272zb", alias: null }, { name: "Nightmare", entity: "/m/0cjgc", alias: null }, { name: "Nipple discharge", entity: "/m/04696g", alias: null }, { name: "Nocturia", entity: "/m/0868jh", alias: null }, { name: "Nocturnal enuresis", entity: "/m/01wy8y", alias: null }, { name: "Nodule", entity: "/m/0905_p", alias: null }, { name: "Nosebleed", entity: "/m/02zbth", alias: null }, { name: "Nyctalopia", entity: "/m/04970l", alias: null }, { name: "Nystagmus", entity: "/m/01skrq", alias: null }, { name: "Obesity", entity: "/m/0fltx", alias: null }, { name: "Obtundation", entity: "/m/0b0kl9", alias: null }, { name: "Odynophagia", entity: "/m/0997hp", alias: null }, { name: "Oligomenorrhea", entity: "/m/04yyq8", alias: null }, { name: "Oligospermia", entity: "/m/06z9sn", alias: null }, { name: "Oliguria", entity: "/m/04b1kq", alias: null }, { name: "Onychocryptosis", entity: "/m/0476hh", alias: null }, { name: "Onychorrhexis", entity: "/m/090ryn", alias: null }, { name: "Opisthotonus", entity: "/m/04bm26", alias: null }, { name: "Optic neuritis", entity: "/m/05pzb", alias: null }, { name: "Oral candidiasis", entity: "/g/122zk0qz", alias: null }, { name: "Orthopnea", entity: "/m/02lmp9", alias: null }, { name: "Orthostatic hypotension", entity: "/m/0pv4d", alias: null }, { name: "Ossification", entity: "/m/050qm0", alias: null }, { name: "Osteoarthritis", entity: "/m/02jf6f", alias: null }, { name: "Osteomalacia", entity: "/m/02npcz", alias: null }, { name: "Osteopenia", entity: "/m/04zh7_m", alias: null }, { name: "Osteophyte", entity: "/m/03kb14", alias: null }, { name: "Osteoporosis", entity: "/m/05mdx", alias: null }, { name: "Otitis", entity: "/m/0743mf", alias: null }, { name: "Otitis externa", entity: "/m/04w68t", alias: null }, { name: "Ovarian cancer", entity: "/m/025hl8", alias: null }, { name: "Ovarian cyst", entity: "/m/01xyfj", alias: null }, { name: "Overweight", entity: "/m/01t6qr", alias: null }, { name: "Pain", entity: "/m/062t2", alias: null }, { name: "Pallor", entity: "/m/03skrx", alias: null }, { name: "Palpitations", entity: "/m/029ggh", alias: null }, { name: "Pancreatitis", entity: "/m/0h1wz", alias: null }, { name: "Pancytopenia", entity: "/m/063jn6", alias: null }, { name: "Panic", entity: "/m/01t09s", alias: null }, { name: "Panic attack", entity: "/m/0g88b", alias: null }, { name: "Papilledema", entity: "/m/01c9lj", alias: null }, { name: "Papule", entity: "/m/04xgtj", alias: null }, { name: "Paralysis", entity: "/m/05sj8", alias: null }, { name: "Paranoia", entity: "/m/063zb", alias: null }, { name: "Paraplegia", entity: "/m/0251gx", alias: null }, { name: "Paresis", entity: "/m/01ny_g", alias: null }, { name: "Paresthesia", entity: "/m/023m3v", alias: null }, { name: "Parkinsonism", entity: "/m/0dcs4", alias: null }, { name: "Paroxysmal nocturnal dyspnea", entity: "/m/0gttzbm", alias: null }, { name: "Pathological lying", entity: "/m/089sp6", alias: null }, { name: "Peanut allergy", entity: "/m/085pjw", alias: null }, { name: "Pectus carinatum", entity: "/m/05l8yp", alias: null }, { name: "Pectus excavatum", entity: "/m/03750f", alias: null }, { name: "Pelvic inflammatory disease", entity: "/m/064fq", alias: null }, { name: "Pelvic organ prolapse", entity: "/m/07kyr1", alias: null }, { name: "Peptic ulcer", entity: "/m/0h3h4", alias: null }, { name: "Pericardial effusion", entity: "/m/08z994", alias: null }, { name: "Pericarditis", entity: "/m/032snl", alias: null }, { name: "Periorbital dark circles", entity: "/m/04cbz5", alias: null }, { name: "Periorbital puffiness", entity: "/m/027pqtp", alias: null }, { name: "Peripheral edema", entity: "/m/06v6kk", alias: null }, { name: "Peripheral neuropathy", entity: "/m/02w1fx", alias: null }, { name: "Peritonsillar abscess", entity: "/m/04b586", alias: null }, { name: "Persecutory delusion", entity: "/m/09g6vr0", alias: null }, { name: "Persistent truncus arteriosus", entity: "/m/07dlyv", alias: null }, { name: "Persistent vegetative state", entity: "/m/01rvjp", alias: null }, { name: "Perspiration", entity: "/m/0k9qw", alias: null }, { name: "Pertussis", entity: "/m/016ygs", alias: "Whooping cough" }, { name: "Petechia", entity: "/m/04c2n0", alias: null }, { name: "Pharyngitis", entity: "/m/01gkcc", alias: null }, { name: "Phlebitis", entity: "/m/03rwrr", alias: null }, { name: "Phlegm", entity: "/m/01s3l8", alias: null }, { name: "Phobia", entity: "/m/05tf3", alias: null }, { name: "Phocomelia", entity: "/m/0jzx0", alias: null }, { name: "Phosphene", entity: "/m/038s2d", alias: null }, { name: "Photodermatitis", entity: "/m/03c2dk", alias: null }, { name: "Photophobia", entity: "/m/02lv8g", alias: null }, { name: "Photopsia", entity: "/m/09p809", alias: null }, { name: "Phyllodes tumor", entity: "/m/07mvcp", alias: null }, { name: "Pica", entity: "/m/01b8zz", alias: null }, { name: "Placental abruption", entity: "/m/0508hk", alias: null }, { name: "Pneumonia", entity: "/m/0dq9p", alias: null }, { name: "Pneumothorax", entity: "/m/01q1sz", alias: null }, { name: "Poliomyelitis", entity: "/m/068p_", alias: null }, { name: "Polyarthritis", entity: "/m/06hxx0", alias: null }, { name: "Polycythemia", entity: "/m/02k88f", alias: null }, { name: "Polydipsia", entity: "/m/02v6kp", alias: null }, { name: "Polyneuropathy", entity: "/m/03cx49", alias: null }, { name: "Polyphagia", entity: "/m/03gncj", alias: null }, { name: "Polyuria", entity: "/m/01m3h8", alias: null }, { name: "Portal hypertension", entity: "/m/034h9r", alias: null }, { name: "Post herniorraphy pain syndrome", entity: "/m/0ggb_w", alias: null }, { name: "Post-concussion syndrome", entity: "/m/09qljf", alias: null }, { name: "Post-nasal drip", entity: "/m/0615kf", alias: null }, { name: "Postictal state", entity: "/m/0ctw0q", alias: null }, { name: "Postorgasmic illness syndrome", entity: "/m/05p5_7y", alias: null }, { name: "Posttraumatic stress disorder", entity: "/m/0l8bg", alias: null }, { name: "Postural orthostatic tachycardia syndrome", entity: "/m/04l6qx", alias: null }, { name: "Pre-eclampsia", entity: "/m/025lwc", alias: null }, { name: "Precocious puberty", entity: "/m/02_nx2", alias: null }, { name: "Prehypertension", entity: "/m/03cz_hv", alias: null }, { name: "Premature atrial contraction", entity: "/m/04kgzqg", alias: null }, { name: "Premature ejaculation", entity: "/m/01qqp1", alias: null }, { name: "Premature ventricular contraction", entity: "/m/01hjkt", alias: null }, { name: "Premenstrual syndrome", entity: "/m/01fxrj", alias: null }, { name: "Pressure ulcer", entity: "/m/03ncwn", alias: null }, { name: "Priapism", entity: "/m/0ldwy", alias: null }, { name: "Proctitis", entity: "/m/06rf7m", alias: null }, { name: "Prodrome", entity: "/m/01k7nc", alias: null }, { name: "Prognathism", entity: "/m/06g3nz", alias: null }, { name: "Prolapse", entity: "/m/01jcd6", alias: null }, { name: "Prostate cancer", entity: "/m/0m32h", alias: null }, { name: "Proteinuria", entity: "/m/012zf3", alias: null }, { name: "Prurigo", entity: "/m/0gk2pb", alias: null }, { name: "Pruritus ani", entity: "/m/02pq2mj", alias: null }, { name: "Pseudarthrosis", entity: "/m/05_3zr", alias: null }, { name: "Pseudobulbar affect", entity: "/m/04lg5mq", alias: null }, { name: "Psoriasis", entity: "/m/0pv62", alias: null }, { name: "Psychomotor agitation", entity: "/m/05p8sj", alias: null }, { name: "Psychosis", entity: "/m/063yv", alias: null }, { name: "Psychotic break", entity: "/m/03l9p5", alias: null }, { name: "Ptosis", entity: "/m/0gdsn5", alias: null }, { name: "Pulmonary edema", entity: "/m/0260ph", alias: null }, { name: "Pulmonary embolism", entity: "/m/01ddth", alias: null }, { name: "Pulmonary Hypertension", entity: "/m/031wv7", alias: null }, { name: "Pulsus paradoxus", entity: "/m/087c0d", alias: null }, { name: "Purpura", entity: "/m/04c2m8", alias: null }, { name: "Pus", entity: "/m/01s2ly", alias: null }, { name: "Pustule", entity: "/m/01fxyp", alias: null }, { name: "Pyelonephritis", entity: "/m/04_rt_", alias: null }, { name: "Pyoderma gangrenosum", entity: "/m/08s9h0", alias: null }, { name: "Pyuria", entity: "/m/08bp74", alias: null }, { name: "Q fever", entity: "/m/0fm4r", alias: null }, { name: "Rabies", entity: "/m/0fsd1", alias: null }, { name: "Radiculopathy", entity: "/m/02pfkpc", alias: null }, { name: "Raynaud syndrome", entity: "/m/02v2jk", alias: null }, { name: "Rectal discharge", entity: "/m/0dl9s9j", alias: null }, { name: "Rectal pain", entity: "/m/0b74tbc", alias: null }, { name: "Rectal prolapse", entity: "/m/03080q", alias: null }, { name: "Rectal tenesmus", entity: "/m/04yfk_", alias: null }, { name: "Red eye", entity: "/m/04pxm5", alias: null }, { name: "Reduced affect display", entity: "/m/08z6vk", alias: null }, { name: "Regurgitation", entity: "/m/0fv217", alias: null }, { name: "Renal colic", entity: "/m/06phzx", alias: null }, { name: "Renal cyst", entity: "/m/0b77v22", alias: null }, { name: "Respiratory acidosis", entity: "/m/04tkvk", alias: null }, { name: "Respiratory arrest", entity: "/m/037c4l", alias: null }, { name: "Respiratory distress", entity: "/m/0jwzzd9", alias: null }, { name: "Respiratory failure", entity: "/m/019dmc", alias: null }, { name: "Respiratory tract infection", entity: "/m/0117wzhd", alias: null }, { name: "Restless legs syndrome", entity: "/m/01jyld", alias: null }, { name: "Retching", entity: "/m/02rjt8c", alias: null }, { name: "Retrograde amnesia", entity: "/m/040z8c", alias: null }, { name: "Rheum", entity: "/m/02p1kqs", alias: null }, { name: "Rheumatoid arthritis", entity: "/m/06g7c", alias: null }, { name: "Rhinitis", entity: "/m/02mdz9", alias: null }, { name: "Rhinophyma", entity: "/m/0dyhxj", alias: null }, { name: "Rhinorrhea", entity: "/m/06p_bp", alias: null }, { name: "Rhonchi", entity: "/m/09jv3z", alias: null }, { name: "Ringworm", entity: "/m/023yjf", alias: null }, { name: "Rubella", entity: "/m/0175qw", alias: null }, { name: "Rumination", entity: "/m/04grp19", alias: null }, { name: "Running amok", entity: "/m/014sp", alias: null }, { name: "Salmonella", entity: "/m/0bkwm", alias: null }, { name: "Scabies", entity: "/m/074kq", alias: null }, { name: "Scarlet Fever", entity: "/m/0mzt3", alias: null }, { name: "Schistosomiasis", entity: "/m/01b4_7", alias: null }, { name: "Sciatica", entity: "/m/01_wxr", alias: null }, { name: "Scleritis", entity: "/m/08gppk", alias: null }, { name: "Scleroderma", entity: "/m/05m_zv2", alias: null }, { name: "Scoliosis", entity: "/m/0yvgr", alias: null }, { name: "Scotoma", entity: "/m/03gzmf", alias: null }, { name: "Seasonal affective disorder", entity: "/m/0hmdd", alias: null }, { name: "Seborrheic dermatitis", entity: "/m/02cvvl", alias: null }, { name: "Second-degree atrioventricular block", entity: "/m/031s_5", alias: null }, { name: "Self-destructive behaviour", entity: "/m/026qvtc", alias: null }, { name: "Self-harm", entity: "/m/013cc9", alias: null }, { name: "Sensorineural hearing loss", entity: "/m/04fmz1", alias: null }, { name: "Sepsis", entity: "/m/014w_8", alias: null }, { name: "Septic shock", entity: "/m/029mr9", alias: null }, { name: "Serotonin syndrome", entity: "/m/079hg", alias: null }, { name: "Sexual addiction", entity: "/m/05xsp8", alias: null }, { name: "Sexual dysfunction", entity: "/m/0255qr", alias: null }, { name: "Shallow breathing", entity: "/m/08wqjw", alias: null }, { name: "Shigellosis", entity: "/m/0mzxc", alias: null }, { name: "Shingles", entity: "/m/029577", alias: null }, { name: "Shivering", entity: "/m/04fv7w", alias: null }, { name: "Shock", entity: "/m/012n6d", alias: null }, { name: "Short bowel syndrome", entity: "/m/04mr0d", alias: null }, { name: "Short stature", entity: "/m/06y96j", alias: null }, { name: "Shortness of breath", entity: "/m/01cdt5", alias: null }, { name: "Shyness", entity: "/m/01dl7h", alias: null }, { name: "Single transverse palmar crease", entity: "/m/04fl9l", alias: null }, { name: "Sinus bradycardia", entity: "/m/06rsk8", alias: null }, { name: "Sinus tachycardia", entity: "/m/06rsny", alias: null }, { name: "Sinusitis", entity: "/m/072hv", alias: null }, { name: "Skin fissure", entity: "/m/0gmcs4z", alias: null }, { name: "Skin infection", entity: "/m/05m_2vv", alias: null }, { name: "Skin rash", entity: "/m/0v4rnx", alias: null }, { name: "Skin tag", entity: "/m/0fktd", alias: null }, { name: "Sleep apnea", entity: "/m/071d3", alias: null }, { name: "Sleep deprivation", entity: "/m/017tfz", alias: null }, { name: "Sleep disorder", entity: "/m/0cnmb", alias: null }, { name: "Sleep paralysis", entity: "/m/01jb2q", alias: null }, { name: "Slipped capital femoral epiphysis", entity: "/m/07bztx", alias: null }, { name: "Smallpox", entity: "/m/06vr2", alias: null }, { name: "Sneeze", entity: "/m/01hsr_", alias: null }, { name: "Snoring", entity: "/m/01d3sd", alias: null }, { name: "Somnolence", entity: "/m/0311pr", alias: null }, { name: "Sore throat", entity: "/m/0b76bty", alias: null }, { name: "Spasm", entity: "/m/04zjnsf", alias: null }, { name: "Spasmodic dysphonia", entity: "/m/07d0js", alias: null }, { name: "Spasticity", entity: "/m/0p9n0", alias: null }, { name: "Speech delay", entity: "/m/0726rf", alias: null }, { name: "Speech disorder", entity: "/m/0133cx", alias: null }, { name: "Spider angioma", entity: "/m/090j35", alias: null }, { name: "Spinal tumor", entity: "/m/03znrn", alias: null }, { name: "Splenomegaly", entity: "/m/03zqp2", alias: null }, { name: "Splitting", entity: "/m/02q48gs", alias: null }, { name: "Sputum", entity: "/m/01jmfg", alias: null }, { name: "Stage fright", entity: "/m/02v58l", alias: null }, { name: "Starvation", entity: "/m/01flyj", alias: null }, { name: "Stasis dermatitis", entity: "/m/04q_81", alias: null }, { name: "Status epilepticus", entity: "/m/06382k", alias: null }, { name: "Steatorrhea", entity: "/m/03_7qy", alias: null }, { name: "Stenosis", entity: "/m/032llx", alias: null }, { name: "Stereotypy", entity: "/m/0dg_lc", alias: null }, { name: "Stertor", entity: "/m/0d4b5s", alias: null }, { name: "Stiffness", entity: "/m/02dzkc", alias: null }, { name: "Stomach rumble", entity: "/m/01g90h", alias: null }, { name: "Stomatitis", entity: "/m/06jf34", alias: null }, { name: "Strabismus", entity: "/m/02s645", alias: null }, { name: "Stress", entity: "/m/012lyw", alias: null }, { name: "Stretch marks", entity: "/m/056g4k", alias: null }, { name: "Stridor", entity: "/m/05rtnw", alias: null }, { name: "Stroke", entity: "/m/02y0js", alias: null }, { name: "Stunted growth", entity: "/m/09g54b", alias: null }, { name: "Stupor", entity: "/m/08gxks", alias: null }, { name: "Stuttering", entity: "/m/070yw", alias: null }, { name: "Subcutaneous emphysema", entity: "/m/0464mv7", alias: null }, { name: "Substance abuse", entity: "/m/0p_cr", alias: null }, { name: "Substance dependence", entity: "/m/0466pc0", alias: null }, { name: "Sudden cardiac death", entity: "/m/0d_mn0", alias: null }, { name: "Sunburn", entity: "/m/015slp", alias: null }, { name: "Sundowning", entity: "/m/04jmkz7", alias: null }, { name: "Superior vena cava syndrome", entity: "/m/04tr95", alias: null }, { name: "Supraventricular tachycardia", entity: "/m/03k_qd", alias: null }, { name: "Swelling", entity: "/m/09bdp3", alias: null }, { name: "Swollen feet", entity: "/m/0dl9t52", alias: null }, { name: "Swollen lymph nodes", entity: "/m/03yzl6", alias: null }, { name: "Sydenham's chorea", entity: "/m/04jr23", alias: null }, { name: "Syncope", entity: "/m/04jpj9y", alias: null }, { name: "Syndrome of inappropriate antidiuretic hormone secretion", entity: "/m/03zzcc", alias: null }, { name: "Synechia", entity: "/m/037xdl", alias: null }, { name: "Synovitis", entity: "/m/07yqh1", alias: null }, { name: "systemic lupus erythematosus", entity: "/m/04nz3", alias: "Lupus" }, { name: "Systolic heart murmur", entity: "/m/05b5h0l", alias: null }, { name: "Tachycardia", entity: "/m/0156z4", alias: null }, { name: "Tachypnea", entity: "/m/03w94wq", alias: null }, { name: "Tanning dependence", entity: "/m/03crfch", alias: null }, { name: "Tardive dyskinesia", entity: "/m/01vl0h", alias: null }, { name: "Telangiectasia", entity: "/m/0500_3", alias: null }, { name: "Tenderness", entity: "/m/03m4j90", alias: null }, { name: "Tendinitis", entity: "/m/01kcp2", alias: null }, { name: "Tenosynovitis", entity: "/m/01nzjv", alias: null }, { name: "Teratospermia", entity: "/m/0523q1y", alias: null }, { name: "Testicular cancer", entity: "/m/01rt5h", alias: null }, { name: "Tetanic contraction", entity: "/m/026m6v", alias: null }, { name: "Tetanus", entity: "/m/0cfb2", alias: null }, { name: "Tetany", entity: "/m/02pnp2q", alias: null }, { name: "Tetralogy of Fallot", entity: "/m/01k4yc", alias: null }, { name: "Tetraplegia", entity: "/m/01bpld", alias: null }, { name: "Thirst", entity: "/m/02jx54", alias: null }, { name: "Thought disorder", entity: "/m/01p1zm", alias: null }, { name: "Throat irritation", entity: "/m/0b6kt_8", alias: null }, { name: "Thrombocytopenia", entity: "/m/02kgmg", alias: null }, { name: "Thrombocytosis", entity: "/m/03btxg", alias: null }, { name: "Thrombosis", entity: "/m/018_pw", alias: null }, { name: "Thyroid disease", entity: "/m/05n00c6", alias: null }, { name: "Thyroid nodule", entity: "/m/05l6q9", alias: null }, { name: "Tic", entity: "/m/02gpbb", alias: null }, { name: "Tinel's sign", entity: "/m/04bn2w", alias: null }, { name: "Tinnitus", entity: "/m/0pv6y", alias: null }, { name: "Tonsillitis", entity: "/m/03ng0t", alias: null }, { name: "Tooth decay", entity: "/m/025j63", alias: null }, { name: "Tooth loss", entity: "/m/02q28kg", alias: null }, { name: "Toothache", entity: "/m/045c85", alias: null }, { name: "Tophus", entity: "/m/04bm_r", alias: null }, { name: "Torticollis", entity: "/m/01q136", alias: null }, { name: "Tourette syndrome", entity: "/m/0fm5n", alias: null }, { name: "Transudate", entity: "/m/02wv9sp", alias: null }, { name: "Tremor", entity: "/m/09d28", alias: null }, { name: "Trichomoniasis", entity: "/m/0m72x", alias: null }, { name: "Trichoptilosis", entity: "/m/0269y8n", alias: null }, { name: "Trichotillomania", entity: "/m/0h_8y", alias: null }, { name: "Trismus", entity: "/m/01fgvy", alias: null }, { name: "Tuberculosis", entity: "/m/07jwr", alias: null }, { name: "Tunnel vision", entity: "/m/01z0b9", alias: null }, { name: "Type 2 diabetes", entity: "/m/0146bp", alias: null }, { name: "Typhoid fever", entity: "/m/07s4l", alias: null }, { name: "Typhus", entity: "/m/057xn02", alias: null }, { name: "Ulcerative colitis", entity: "/m/0h1r3", alias: null }, { name: "Unconsciousness", entity: "/m/04kfhc9", alias: null }, { name: "Underweight", entity: "/m/0844zv", alias: null }, { name: "Upper gastrointestinal bleeding", entity: "/m/02n2jh", alias: null }, { name: "Upper respiratory tract infection", entity: "/m/02wmyj", alias: null }, { name: "Uremia", entity: "/m/02f8hm", alias: null }, { name: "Urethritis", entity: "/m/07wvs", alias: null }, { name: "Urinary incontinence", entity: "/m/018h13", alias: null }, { name: "Urinary retention", entity: "/m/045y32", alias: null }, { name: "Urinary tract infection", entity: "/m/07x16", alias: null }, { name: "Urinary urgency", entity: "/m/0fvh3d", alias: null }, { name: "Uterine contraction", entity: "/m/02shy2", alias: null }, { name: "Uveitis", entity: "/m/040_ch", alias: null }, { name: "Vaginal bleeding", entity: "/m/055k6m", alias: null }, { name: "Vaginal discharge", entity: "/m/07k9rmb", alias: null }, { name: "Vaginal flatulence", entity: "/m/017ts5", alias: null }, { name: "Vaginitis", entity: "/m/01vcpr", alias: null }, { name: "Varicose veins", entity: "/m/081dp", alias: null }, { name: "Vascular occlusion", entity: "/m/0b6h30_", alias: null }, { name: "Vasculitis", entity: "/m/0317gc", alias: null }, { name: "Vasoconstriction", entity: "/m/02wv6ss", alias: null }, { name: "Vasodilation", entity: "/m/0fkcf", alias: null }, { name: "Vasovagal syncope", entity: "/m/039y0d", alias: null }, { name: "Vegetation", entity: "/m/04gp557", alias: null }, { name: "Vegetative-vascular dystonia", entity: "/m/0wbjrwb", alias: null }, { name: "Venous stasis", entity: "/m/04jj6yp", alias: null }, { name: "Ventricular septal defect", entity: "/m/03k28n", alias: null }, { name: "Ventricular tachycardia", entity: "/m/025v410", alias: null }, { name: "Vertigo", entity: "/m/07rwf2", alias: null }, { name: "Viral pneumonia", entity: "/m/07fn78", alias: null }, { name: "Virilization", entity: "/m/032zt5", alias: null }, { name: "Vision disorder", entity: "/m/04jmzm5", alias: null }, { name: "Visual acuity", entity: "/m/02_g1v", alias: null }, { name: "Visual snow", entity: "/m/0379jz", alias: null }, { name: "Vitamin B12 deficiency", entity: "/m/02x2xmj", alias: null }, { name: "Vitamin deficiency", entity: "/m/0q42v", alias: null }, { name: "Vitiligo", entity: "/m/0hg1d", alias: null }, { name: "Voice change", entity: "/m/0hzmhkt", alias: null }, { name: "Vomiting", entity: "/m/012qjw", alias: null }, { name: "Vulvar vestibulitis", entity: "/m/0h7q7v0", alias: null }, { name: "Vulvitis", entity: "/m/06qjbg", alias: null }, { name: "Vulvodynia", entity: "/m/08099", alias: null }, { name: "Wanderlust", entity: "/m/038ytw", alias: null }, { name: "Wart", entity: "/m/086hz", alias: null }, { name: "Water retention", entity: "/m/05s_d8r", alias: null }, { name: "Weakness", entity: "/m/0119nqlg", alias: null }, { name: "Wheeze", entity: "/m/07mzm6", alias: null }, { name: "Widow's peak", entity: "/m/03d23v", alias: null }, { name: "Winter vomiting bug", entity: "/m/015z6_", alias: null }, { name: "Wound", entity: "/m/01xrk2", alias: null }, { name: "Wrinkle", entity: "/m/02_x63", alias: null }, { name: "Xanthoma", entity: "/m/02gl_t", alias: null }, { name: "Xeroderma", entity: "/m/08xv95", alias: null }, { name: "Xerophthalmia", entity: "/m/0517c6", alias: null }, { name: "Xerostomia", entity: "/m/04d7y3", alias: null }, { name: "Yellow fever", entity: "/m/087z2", alias: null }, { name: "Zika virus", entity: "/m/080m_5j", alias: null }, { name: "Ebola epidemic", entity: "/m/0100__9q", alias: null }];
 
 /***/ }),
-/* 17 */
+/* 22 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -2015,26 +2213,7 @@
 	module.exports = [{ iso: "world", name: "the world" }, { iso: "AF", name: "Afghanistan" }, { iso: "AX", name: "Åland" }, { iso: "AL", name: "Albania" }, { iso: "DZ", name: "Algeria" }, { iso: "AS", name: "American Samoa" }, { iso: "AD", name: "Andorra" }, { iso: "AO", name: "Angola" }, { iso: "AI", name: "Anguilla" }, { iso: "AQ", name: "Antarctica" }, { iso: "AG", name: "Antigua and Barbuda" }, { iso: "AR", name: "Argentina" }, { iso: "AM", name: "Armenia" }, { iso: "AW", name: "Aruba" }, { iso: "AU", name: "Australia" }, { iso: "AT", name: "Austria" }, { iso: "AZ", name: "Azerbaijan" }, { iso: "BS", name: "Bahamas" }, { iso: "BH", name: "Bahrain" }, { iso: "BD", name: "Bangladesh" }, { iso: "BB", name: "Barbados" }, { iso: "BY", name: "Belarus" }, { iso: "BE", name: "Belgium" }, { iso: "BZ", name: "Belize" }, { iso: "BJ", name: "Benin" }, { iso: "BM", name: "Bermuda" }, { iso: "BT", name: "Bhutan" }, { iso: "BO", name: "Bolivia" }, { iso: "BQ", name: "Bonaire" }, { iso: "BA", name: "Bosnia and Herzegovina" }, { iso: "BW", name: "Botswana" }, { iso: "BV", name: "Bouvet Island" }, { iso: "BR", name: "Brazil" }, { iso: "IO", name: "British Indian Ocean Territory" }, { iso: "VG", name: "British Virgin Islands" }, { iso: "BN", name: "Brunei" }, { iso: "BG", name: "Bulgaria" }, { iso: "BF", name: "Burkina Faso" }, { iso: "BI", name: "Burundi" }, { iso: "KH", name: "Cambodia" }, { iso: "CM", name: "Cameroon" }, { iso: "CA", name: "Canada" }, { iso: "CV", name: "Cape Verde" }, { iso: "KY", name: "Cayman Islands" }, { iso: "CF", name: "Central African Republic" }, { iso: "TD", name: "Chad" }, { iso: "CL", name: "Chile" }, { iso: "CN", name: "China" }, { iso: "CX", name: "Christmas Island" }, { iso: "CC", name: "Cocos [Keeling] Islands" }, { iso: "CO", name: "Colombia" }, { iso: "KM", name: "Comoros" }, { iso: "CK", name: "Cook Islands" }, { iso: "CR", name: "Costa Rica" }, { iso: "HR", name: "Croatia" }, { iso: "CU", name: "Cuba" }, { iso: "CW", name: "Curacao" }, { iso: "CY", name: "Cyprus" }, { iso: "CZ", name: "Czechia" }, { iso: "CD", name: "Democratic Republic of the Congo" }, { iso: "DK", name: "Denmark" }, { iso: "DJ", name: "Djibouti" }, { iso: "DM", name: "Dominica" }, { iso: "DO", name: "Dominican Republic" }, { iso: "TL", name: "East Timor" }, { iso: "EC", name: "Ecuador" }, { iso: "EG", name: "Egypt" }, { iso: "SV", name: "El Salvador" }, { iso: "GQ", name: "Equatorial Guinea" }, { iso: "ER", name: "Eritrea" }, { iso: "EE", name: "Estonia" }, { iso: "ET", name: "Ethiopia" }, { iso: "FK", name: "Falkland Islands" }, { iso: "FO", name: "Faroe Islands" }, { iso: "FJ", name: "Fiji" }, { iso: "FI", name: "Finland" }, { iso: "FR", name: "France" }, { iso: "GF", name: "French Guiana" }, { iso: "PF", name: "French Polynesia" }, { iso: "TF", name: "French Southern Territories" }, { iso: "GA", name: "Gabon" }, { iso: "GM", name: "Gambia" }, { iso: "GE", name: "Georgia" }, { iso: "DE", name: "Germany" }, { iso: "GH", name: "Ghana" }, { iso: "GI", name: "Gibraltar" }, { iso: "GR", name: "Greece" }, { iso: "GL", name: "Greenland" }, { iso: "GD", name: "Grenada" }, { iso: "GP", name: "Guadeloupe" }, { iso: "GU", name: "Guam" }, { iso: "GT", name: "Guatemala" }, { iso: "GG", name: "Guernsey" }, { iso: "GN", name: "Guinea" }, { iso: "GW", name: "Guinea-Bissau" }, { iso: "GY", name: "Guyana" }, { iso: "HT", name: "Haiti" }, { iso: "HM", name: "Heard Island and McDonald Islands" }, { iso: "HN", name: "Honduras" }, { iso: "HK", name: "Hong Kong" }, { iso: "HU", name: "Hungary" }, { iso: "IS", name: "Iceland" }, { iso: "IN", name: "India" }, { iso: "ID", name: "Indonesia" }, { iso: "IR", name: "Iran" }, { iso: "IQ", name: "Iraq" }, { iso: "IE", name: "Ireland" }, { iso: "IM", name: "Isle of Man" }, { iso: "IL", name: "Israel" }, { iso: "IT", name: "Italy" }, { iso: "CI", name: "Ivory Coast" }, { iso: "JM", name: "Jamaica" }, { iso: "JP", name: "Japan" }, { iso: "JE", name: "Jersey" }, { iso: "JO", name: "Jordan" }, { iso: "KZ", name: "Kazakhstan" }, { iso: "KE", name: "Kenya" }, { iso: "KI", name: "Kiribati" }, { iso: "XK", name: "Kosovo" }, { iso: "KW", name: "Kuwait" }, { iso: "KG", name: "Kyrgyzstan" }, { iso: "LA", name: "Laos" }, { iso: "LV", name: "Latvia" }, { iso: "LB", name: "Lebanon" }, { iso: "LS", name: "Lesotho" }, { iso: "LR", name: "Liberia" }, { iso: "LY", name: "Libya" }, { iso: "LI", name: "Liechtenstein" }, { iso: "LT", name: "Lithuania" }, { iso: "LU", name: "Luxembourg" }, { iso: "MO", name: "Macao" }, { iso: "MK", name: "Macedonia" }, { iso: "MG", name: "Madagascar" }, { iso: "MW", name: "Malawi" }, { iso: "MY", name: "Malaysia" }, { iso: "MV", name: "Maldives" }, { iso: "ML", name: "Mali" }, { iso: "MT", name: "Malta" }, { iso: "MH", name: "Marshall Islands" }, { iso: "MQ", name: "Martinique" }, { iso: "MR", name: "Mauritania" }, { iso: "MU", name: "Mauritius" }, { iso: "YT", name: "Mayotte" }, { iso: "MX", name: "Mexico" }, { iso: "FM", name: "Micronesia" }, { iso: "MD", name: "Moldova" }, { iso: "MC", name: "Monaco" }, { iso: "MN", name: "Mongolia" }, { iso: "ME", name: "Montenegro" }, { iso: "MS", name: "Montserrat" }, { iso: "MA", name: "Morocco" }, { iso: "MZ", name: "Mozambique" }, { iso: "MM", name: "Myanmar [Burma]" }, { iso: "NA", name: "Namibia" }, { iso: "NR", name: "Nauru" }, { iso: "NP", name: "Nepal" }, { iso: "NL", name: "Netherlands" }, { iso: "AN", name: "Netherlands Antilles" }, { iso: "NC", name: "New Caledonia" }, { iso: "NZ", name: "New Zealand" }, { iso: "NI", name: "Nicaragua" }, { iso: "NE", name: "Niger" }, { iso: "NG", name: "Nigeria" }, { iso: "NU", name: "Niue" }, { iso: "NF", name: "Norfolk Island" }, { iso: "KP", name: "North Korea" }, { iso: "MP", name: "Northern Mariana Islands" }, { iso: "NO", name: "Norway" }, { iso: "OM", name: "Oman" }, { iso: "PK", name: "Pakistan" }, { iso: "PW", name: "Palau" }, { iso: "PS", name: "Palestine" }, { iso: "PA", name: "Panama" }, { iso: "PG", name: "Papua New Guinea" }, { iso: "PY", name: "Paraguay" }, { iso: "PE", name: "Peru" }, { iso: "PH", name: "Philippines" }, { iso: "PN", name: "Pitcairn Islands" }, { iso: "PL", name: "Poland" }, { iso: "PT", name: "Portugal" }, { iso: "PR", name: "Puerto Rico" }, { iso: "QA", name: "Qatar" }, { iso: "CG", name: "Republic of the Congo" }, { iso: "RE", name: "Réunion" }, { iso: "RO", name: "Romania" }, { iso: "RU", name: "Russia" }, { iso: "RW", name: "Rwanda" }, { iso: "BL", name: "Saint Barthélemy" }, { iso: "SH", name: "Saint Helena" }, { iso: "KN", name: "Saint Kitts and Nevis" }, { iso: "LC", name: "Saint Lucia" }, { iso: "MF", name: "Saint Martin" }, { iso: "PM", name: "Saint Pierre and Miquelon" }, { iso: "VC", name: "Saint Vincent and the Grenadines" }, { iso: "WS", name: "Samoa" }, { iso: "SM", name: "San Marino" }, { iso: "ST", name: "São Tomé and Príncipe" }, { iso: "SA", name: "Saudi Arabia" }, { iso: "SN", name: "Senegal" }, { iso: "RS", name: "Serbia" }, { iso: "CS", name: "Serbia and Montenegro" }, { iso: "SC", name: "Seychelles" }, { iso: "SL", name: "Sierra Leone" }, { iso: "SG", name: "Singapore" }, { iso: "SX", name: "Sint Maarten" }, { iso: "SK", name: "Slovakia" }, { iso: "SI", name: "Slovenia" }, { iso: "SB", name: "Solomon Islands" }, { iso: "SO", name: "Somalia" }, { iso: "ZA", name: "South Africa" }, { iso: "GS", name: "South Georgia and the South Sandwich Islands" }, { iso: "KR", name: "South Korea" }, { iso: "SS", name: "South Sudan" }, { iso: "ES", name: "Spain" }, { iso: "LK", name: "Sri Lanka" }, { iso: "SD", name: "Sudan" }, { iso: "SR", name: "Suriname" }, { iso: "SJ", name: "Svalbard and Jan Mayen" }, { iso: "SZ", name: "Swaziland" }, { iso: "SE", name: "Sweden" }, { iso: "CH", name: "Switzerland" }, { iso: "SY", name: "Syria" }, { iso: "TW", name: "Taiwan" }, { iso: "TJ", name: "Tajikistan" }, { iso: "TZ", name: "Tanzania" }, { iso: "TH", name: "Thailand" }, { iso: "TG", name: "Togo" }, { iso: "TK", name: "Tokelau" }, { iso: "TO", name: "Tonga" }, { iso: "TT", name: "Trinidad and Tobago" }, { iso: "TN", name: "Tunisia" }, { iso: "TR", name: "Turkey" }, { iso: "TM", name: "Turkmenistan" }, { iso: "TC", name: "Turks and Caicos Islands" }, { iso: "TV", name: "Tuvalu" }, { iso: "UM", name: "U.S. Minor Outlying Islands" }, { iso: "VI", name: "U.S. Virgin Islands" }, { iso: "UG", name: "Uganda" }, { iso: "UA", name: "Ukraine" }, { iso: "AE", name: "United Arab Emirates" }, { iso: "GB", name: "United Kingdom" }, { iso: "US", name: "the United States" }, { iso: "UY", name: "Uruguay" }, { iso: "UZ", name: "Uzbekistan" }, { iso: "VU", name: "Vanuatu" }, { iso: "VA", name: "Vatican City" }, { iso: "VE", name: "Venezuela" }, { iso: "VN", name: "Vietnam" }, { iso: "WF", name: "Wallis and Futuna" }, { iso: "EH", name: "Western Sahara" }, { iso: "YE", name: "Yemen" }, { iso: "ZM", name: "Zambia" }, { iso: "ZW", name: "Zimbabwe" }];
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  googleNewsLabLogo: __webpack_require__(19)
-	};
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-	module.exports = "<svg viewBox=\"0 0 579 74.5\"><path d=\"M57.1 31.8c0 7.8-2.4 14.2-7 18.9C44.9 56.2 37.9 59 29.3 59c-8.2 0-15.2-2.9-20.8-8.5C2.9 44.8 0 37.8 0 29.5c0-8.3 2.9-15.3 8.5-21C14.2 2.9 21.2 0 29.3 0c4.1 0 8.1 0.7 11.7 2.2 3.7 1.5 6.7 3.6 9.1 6.2l0.1 0.2 -5.5 5.5 -0.2-0.2c-1.7-2-3.9-3.7-6.6-4.8 -2.7-1.2-5.6-1.7-8.7-1.7 -6 0-11.2 2.1-15.3 6.3 -4.1 4.2-6.2 9.5-6.2 15.8 0 6.3 2.1 11.7 6.2 15.8 4.1 4.2 9.3 6.3 15.3 6.3 5.5 0 10.1-1.6 13.8-4.6 3.6-3 5.7-7.2 6.3-12.5H29.1v-7.2h27.6l0 0.2C57 29 57.1 30.4 57.1 31.8z\"></path><path d=\"M92.4 26.3c-3.4-3.6-7.9-5.4-13.1-5.4 -5.3 0-9.7 1.8-13.2 5.4 -3.4 3.6-5.2 8.2-5.2 13.6 0 5.5 1.7 10 5.2 13.6C69.6 57.2 74 59 79.3 59s9.7-1.8 13.1-5.4c3.5-3.5 5.3-8.1 5.3-13.6C97.7 34.5 95.9 29.9 92.4 26.3zM79.3 52.4c-3.2 0-5.9-1.2-8-3.5 -2.2-2.3-3.2-5.3-3.2-9 0-3.7 1.1-6.7 3.2-9 2.2-2.3 4.9-3.5 8-3.5 3.1 0 5.8 1.2 8 3.5 2.2 2.3 3.2 5.3 3.2 9 0 3.7-1.1 6.8-3.2 9C85.2 51.3 82.5 52.4 79.3 52.4z\"></path><path d=\"M134.5 26.3c-3.4-3.6-7.9-5.4-13.1-5.4 -5.3 0-9.7 1.8-13.2 5.4 -3.4 3.6-5.2 8.2-5.2 13.6 0 5.5 1.7 10 5.2 13.6 3.5 3.6 7.9 5.4 13.2 5.4 5.3 0 9.7-1.8 13.1-5.4 3.5-3.5 5.3-8.1 5.3-13.6C139.7 34.5 137.9 29.9 134.5 26.3zM129.3 49c-2.2 2.3-4.9 3.5-8 3.5 -3.2 0-5.9-1.2-8-3.5 -2.2-2.3-3.2-5.3-3.2-9 0-3.7 1.1-6.7 3.2-9 2.2-2.3 4.9-3.5 8-3.5s5.8 1.2 8 3.5c2.1 2.3 3.2 5.3 3.2 9C132.6 43.7 131.5 46.7 129.3 49z\"></path><path d=\"M173.1 22.1v4.8c-1.2-1.8-2.9-3.2-5-4.3 -2.2-1.1-4.5-1.6-7.1-1.6 -4.7 0-8.7 1.9-12.1 5.6 -3.3 3.7-5 8.2-5 13.5 0 5.3 1.7 9.8 5 13.6 3.3 3.6 7.4 5.5 12.1 5.5 2.5 0 4.9-0.5 7.1-1.7 2.1-1 3.8-2.5 5-4.3v3c0 3.7-1 6.6-3 8.8 -2 2.1-4.7 3.2-8.2 3.2 -2.3 0-4.3-0.6-6.1-1.8 -1.7-1.2-2.9-2.8-3.6-4.8l-0.1-0.2 -6.7 2.8 0.1 0.2c0.5 1.5 1.3 3 2.3 4.2 1 1.3 2.3 2.4 3.7 3.3 1.4 0.9 3 1.7 4.8 2.2 1.7 0.5 3.6 0.8 5.6 0.8 5.4 0 9.8-1.7 13.1-5 3.2-3.2 4.9-7.8 4.9-13.5v-34H173.1zM154.3 31c2.1-2.3 4.7-3.5 7.8-3.5 3.1 0 5.8 1.2 7.8 3.5 2.1 2.3 3.2 5.4 3.2 9 0 3.7-1.1 6.8-3.2 9 -2 2.3-4.6 3.4-7.8 3.4 -3.1 0-5.7-1.2-7.8-3.5 -2.1-2.3-3.2-5.3-3.2-9C151.1 36.3 152.2 33.3 154.3 31z\"></path><rect x=\"186.5\" y=\"1.5\" width=\"7.1\" height=\"56.3\"></rect><path d=\"M227.6 46.2c-1.1 2.3-3 4-5.5 5 -2.8 1.1-5.6 1.1-8.4 0 -2.7-1.1-4.7-3.2-6-6.1l25.8-10.2 -0.3-0.9c-2.2-5.7-5.5-9.6-9.7-11.6 -4.2-2-8.8-2.1-13.7-0.2 -4.8 1.9-8.1 5.2-9.8 9.7 -1.7 4.6-1.6 9.4 0.4 14.5 2 5.1 5.3 8.7 9.8 10.8 2.3 1.1 4.7 1.6 7.2 1.6 2.2 0 4.6-0.5 6.9-1.4 3.3-1.3 6-3.3 8.1-5.9 0.4-0.5 0.7-1 1.1-1.5l0.1-0.2 -5.8-3.8L227.6 46.2zM224.3 32.1l-18.3 7.2c-0.3-2.4 0-4.7 1.1-6.6 1.1-2 2.8-3.5 5-4.4 2.7-1.1 5.2-1.2 7.4-0.4C221.7 28.7 223.3 30.1 224.3 32.1z\"></path><path d=\"M271.2 57.6h-6.6V6h8.1l25.1 40.1h0.3l-0.3-9.9V6h6.6v51.6h-6.9l-26.2-42h-0.3l0.3 9.9V57.6z\"></path><path d=\"M331.4 58.7c-5.2 0-9.5-1.8-12.8-5.3 -3.4-3.6-5-8-5-13.5 0-5.4 1.6-9.9 4.9-13.4 3.3-3.6 7.4-5.4 12.5-5.4 5.2 0 9.4 1.7 12.5 5.1 3.1 3.4 4.6 8.1 4.6 14.2l-0.1 0.7h-27.7c0.1 3.5 1.2 6.2 3.5 8.4 2.2 2.1 4.8 3.2 7.9 3.2 4.2 0 7.5-2.1 9.9-6.3l5.9 2.9c-1.6 3-3.8 5.3-6.6 7C338.1 57.9 334.9 58.7 331.4 58.7zM320.8 35.7H341c-0.2-2.4-1.2-4.5-3-6.1 -1.8-1.6-4.2-2.4-7.2-2.4 -2.5 0-4.6 0.8-6.4 2.3C322.5 31 321.3 33.1 320.8 35.7z\"></path><path d=\"M406.1 22.3l-11.4 35.3h-6.8l-8.8-27.1 -8.7 27.1h-6.7l-11.4-35.3h6.9l7.8 26.6h0.1l8.7-26.6h6.8l8.7 26.6h0.1l7.8-26.6H406.1z\"></path><path d=\"M439.7 47.8c0 3.1-1.3 5.7-4 7.8 -2.7 2.1-6.1 3.2-10.2 3.2 -3.6 0-6.7-0.9-9.4-2.8 -2.7-1.8-4.6-4.3-5.8-7.3l5.9-2.5c0.9 2.1 2.1 3.8 3.8 4.9 1.7 1.2 3.5 1.8 5.4 1.8 2.1 0 3.9-0.5 5.3-1.4 1.4-0.9 2.1-2 2.1-3.2 0-2.3-1.7-3.9-5.2-5l-6-1.5c-6.9-1.7-10.3-5-10.3-9.9 0-3.2 1.3-5.8 3.9-7.7 2.6-1.9 6-2.9 10-2.9 3.1 0 5.9 0.7 8.5 2.2 2.5 1.5 4.3 3.5 5.3 6l-5.9 2.4c-0.7-1.5-1.8-2.7-3.3-3.5 -1.5-0.8-3.2-1.3-5.1-1.3 -1.7 0-3.3 0.4-4.6 1.3 -1.4 0.9-2.1 1.9-2.1 3.2 0 2 1.9 3.5 5.7 4.3l5.3 1.4C436.2 38.9 439.7 42.5 439.7 47.8z\"></path><path d=\"M494.1 57.6h-28.9V6h6.6v45.2h22.3V57.6z\"></path><path d=\"M516.7 21.2c4.9 0 8.8 1.3 11.6 3.9 2.8 2.6 4.2 6.2 4.2 10.8v21.7h-6.3v-4.9H526c-2.7 4-6.4 6-10.9 6 -3.9 0-7.1-1.2-9.8-3.5 -2.6-2.3-3.9-5.2-3.9-8.6 0-3.6 1.4-6.6 4.1-8.7 2.8-2.2 6.4-3.2 11.1-3.2 3.9 0 7.2 0.7 9.7 2.2v-1.5c0-2.3-0.9-4.3-2.7-5.9 -1.8-1.6-4-2.4-6.4-2.4 -3.7 0-6.6 1.6-8.8 4.7l-5.8-3.7C505.7 23.5 510.5 21.2 516.7 21.2zM508.2 46.8c0 1.7 0.7 3.2 2.2 4.3 1.5 1.2 3.2 1.7 5.1 1.7 2.8 0 5.3-1 7.5-3.1 2.2-2.1 3.3-4.5 3.3-7.3 -2.1-1.6-4.9-2.4-8.6-2.4 -2.7 0-4.9 0.6-6.7 1.9C509.1 43.3 508.2 44.9 508.2 46.8z\"></path><path d=\"M562.2 58.7c-2.6 0-5-0.6-7.1-1.7 -2.1-1.1-3.8-2.6-4.9-4.4h-0.3v4.9h-6.3V6h6.6v16.3l-0.3 4.9h0.3c1.2-1.8 2.8-3.3 4.9-4.4 2.1-1.1 4.5-1.7 7.1-1.7 4.7 0 8.6 1.8 11.8 5.5 3.3 3.7 5 8.1 5 13.3 0 5.2-1.7 9.7-5 13.3C570.8 56.9 566.8 58.7 562.2 58.7zM561.1 52.7c3.2 0 5.8-1.2 8-3.6 2.2-2.4 3.2-5.4 3.2-9.1 0-3.7-1.1-6.7-3.2-9.1 -2.2-2.4-4.8-3.6-8-3.6 -3.2 0-5.9 1.2-8.1 3.6 -2.1 2.4-3.2 5.4-3.2 9.1 0 3.7 1.1 6.8 3.2 9.2C555.2 51.5 557.9 52.7 561.1 52.7z\"></path></svg>"
-
-/***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org Version 4.8.0. Copyright 2017 Mike Bostock.
@@ -18713,7 +18892,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -28972,16 +29151,16 @@
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(23);
+	var content = __webpack_require__(26);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28998,21 +29177,21 @@
 	}
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#home.page {\n  background: linear-gradient(123deg, #FA8200 0%, #FD8B84 57%, #FD8B84 57%, #FE8B8C 61%, #FF91E6 100%, #FF91E6 100%, #FF91E6 100%);\n  text-align: left;\n  padding: 36px;\n  color: #4422B3;\n  height: 100vh; }\n  @media (max-width: 600px) {\n    #home.page {\n      padding: 12px; } }\n  #home.page .country-container {\n    border-bottom: 2px solid #4422B3;\n    display: inline-block; }\n    #home.page .country-container .disease-container, #home.page .country-container .country {\n      font-size: 14px;\n      line-height: 24px;\n      font-family: \"Inconsolata\", monospace;\n      font-weight: 400;\n      font-weight: 700; }\n  #home.page .top-queries-list {\n    position: absolute;\n    top: 50%;\n    left: 50%; }\n    #home.page .top-queries-list p {\n      position: absolute;\n      transform: translate(-50%, -50%);\n      white-space: nowrap; }\n  #home.page .title-container {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    width: 100%;\n    transform: translate(-50%, -50%);\n    padding: 36px;\n    text-align: center; }\n    @media (max-width: 600px) {\n      #home.page .title-container {\n        top: auto;\n        bottom: 5%;\n        padding: 12px; } }\n    #home.page .title-container h1 {\n      font-size: 10vw;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 900;\n      line-height: 8vw;\n      text-transform: uppercase;\n      letter-spacing: 1px; }\n      @media (max-width: 600px) {\n        #home.page .title-container h1 {\n          font-size: 12vw;\n          line-height: 10vw; } }\n    #home.page .title-container .logos-container {\n      display: flex;\n      flex-direction: row;\n      align-items: center;\n      justify-content: center; }\n      #home.page .title-container .logos-container .gabriel {\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 400;\n        font-size: 21px;\n        line-height: 36px; }\n        @media (max-width: 600px) {\n          #home.page .title-container .logos-container .gabriel {\n            font-size: 16px;\n            line-height: 24px;\n            font-family: \"Heebo\", sans-serif;\n            font-weight: 400; } }\n      #home.page .title-container .logos-container span {\n        margin: 0 24px; }\n      #home.page .title-container .logos-container .google-news-lab-logo {\n        width: 200px;\n        height: 36px; }\n        @media (max-width: 600px) {\n          #home.page .title-container .logos-container .google-news-lab-logo {\n            width: 40%; } }\n        #home.page .title-container .logos-container .google-news-lab-logo svg {\n          position: relative;\n          top: 50%;\n          transform: translateY(-50%);\n          fill: #4422B3; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#home.page {\n  background: linear-gradient(123deg, #FA8200 0%, #FD8B84 57%, #FD8B84 57%, #FE8B8C 61%, #FF91E6 100%, #FF91E6 100%, #FF91E6 100%);\n  text-align: left;\n  padding: 36px;\n  color: #4422B3;\n  height: 100vh; }\n  @media (max-width: 600px) {\n    #home.page {\n      padding: 18px; } }\n  #home.page .country-container {\n    border-bottom: 2px solid #4422B3;\n    display: inline-block; }\n    #home.page .country-container .disease-container, #home.page .country-container .country {\n      font-size: 14px;\n      line-height: 24px;\n      font-family: \"Inconsolata\", monospace;\n      font-weight: 400;\n      font-weight: 700; }\n      @media (max-width: 600px) {\n        #home.page .country-container .disease-container, #home.page .country-container .country {\n          line-height: 20.4px; } }\n      @media (max-width: 600px) {\n        #home.page .country-container .disease-container, #home.page .country-container .country {\n          line-height: 20.4px; } }\n  #home.page .top-queries-list {\n    position: absolute;\n    top: 50%;\n    left: 50%; }\n    #home.page .top-queries-list p {\n      position: absolute;\n      transform: translate(-50%, -50%);\n      white-space: nowrap; }\n  #home.page .title-container {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    width: 100%;\n    transform: translate(-50%, -50%);\n    padding: 36px;\n    text-align: center; }\n    @media (max-width: 600px) {\n      #home.page .title-container {\n        top: auto;\n        bottom: 5%;\n        padding: 18px; } }\n    #home.page .title-container h1 {\n      font-size: 10vw;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 900;\n      line-height: 8vw;\n      text-transform: uppercase;\n      letter-spacing: 1px; }\n      @media (max-width: 600px) {\n        #home.page .title-container h1 {\n          font-size: 12vw;\n          line-height: 10vw; } }\n    #home.page .title-container .logos-container {\n      display: flex;\n      flex-direction: row;\n      align-items: center;\n      justify-content: center; }\n      #home.page .title-container .logos-container .gabriel {\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 400;\n        font-size: 21px;\n        line-height: 36px; }\n        @media (max-width: 600px) {\n          #home.page .title-container .logos-container .gabriel {\n            font-size: 16px;\n            line-height: 24px;\n            font-family: \"Heebo\", sans-serif;\n            font-weight: 400; } }\n      #home.page .title-container .logos-container span {\n        margin: 0 24px; }\n      #home.page .title-container .logos-container .google-news-lab-logo {\n        width: 200px;\n        height: 36px; }\n        @media (max-width: 600px) {\n          #home.page .title-container .logos-container .google-news-lab-logo {\n            width: 40%; } }\n        #home.page .title-container .logos-container .google-news-lab-logo svg {\n          position: relative;\n          top: 50%;\n          transform: translateY(-50%);\n          fill: #4422B3; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports) {
 
 	/*
@@ -29068,7 +29247,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -29320,7 +29499,7 @@
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29331,27 +29510,33 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _FiltersMenu = __webpack_require__(27);
+	var _FiltersMenu = __webpack_require__(30);
 
 	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
 
-	var _LineChart = __webpack_require__(36);
+	var _LineChart = __webpack_require__(39);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
-	var _constants = __webpack_require__(37);
+	var _constants = __webpack_require__(40);
 
-	var _d = __webpack_require__(20);
+	var _introSlides = __webpack_require__(53);
+
+	var _introSlides2 = _interopRequireDefault(_introSlides);
+
+	var _util = __webpack_require__(36);
+
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _graphScroll = __webpack_require__(50);
+	var _graphScroll = __webpack_require__(54);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(51);
+	__webpack_require__(55);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -29376,41 +29561,6 @@
 	  }
 
 	  _createClass(Intro, [{
-	    key: 'createStoryBlock',
-	    value: function createStoryBlock(content) {
-	      var div = document.createElement('div');
-	      div.classList.add('slide');
-
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = content[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          div.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
-	      return div;
-	    }
-	  }, {
 	    key: 'createElements',
 	    value: function createElements(elementsContainer, chartData) {
 
@@ -29442,7 +29592,7 @@
 	      colLeft.classList.add('col-left');
 	      row.appendChild(colLeft);
 
-	      var filtersMenu = new _FiltersMenu2.default(colLeft, ['Influenza'], ['world'], 'world');
+	      var filtersMenu = new _FiltersMenu2.default(colLeft, ['Influenza'], ['world'], 'world', [2004, 2016]);
 
 	      var chartsContainer = document.createElement('div');
 	      chartsContainer.classList.add('charts-container');
@@ -29460,15 +29610,68 @@
 	      slidesContainer.classList.add('slides-container');
 	      row.appendChild(slidesContainer);
 
-	      slidesContainer.appendChild(this.createStoryBlock(['We can see some clear spikes in 2009, corresponding to the period of the Swine Flu epidemics. The rest of the graph has a lot of variation that could be due to a seasonal cycle, but it’s hard to tell on this view.']));
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
 
-	      slidesContainer.appendChild(this.createStoryBlock(['Taking a closer look on the chart year by year, it looks like a general pattern repeats over and over. In general, the interest is low during Spring and Summer, and starts rising as we approach the Fall.', 'Though the general curves are similar, the values vary a lot from one year to another — with 2009 being the obvious extreme of that.', 'Can we deduce a “normal” cycle for the influenza based on this data? Let’s step back to our 12-year period chart.']));
+	      try {
+	        for (var _iterator = _introSlides2.default[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var i = _step.value;
 
-	      slidesContainer.appendChild(this.createStoryBlock(['First, let’s draw what seems to be the variation independent of the spikes. This gives us the <b>trend over time.</b>', 'The counterpart of this data would be the variation independent of the trend:']));
+	          _loglevel2.default.info(i);
+	          var slide = document.createElement('div');
+	          slide.classList.add('slide');
+	          slidesContainer.appendChild(slide);
 
-	      slidesContainer.appendChild(this.createStoryBlock(['Say we flatten out the trend line, make it our baseline, and plot the remaining values relative to it.', 'Notice that we are still using a 100-point range scale, but now our values go from negative to positive because they are relative to our trend line, not to the actual search interest.', 'Now, some of this data is made of variations that don’t correspond to a yearly repetition.']));
+	          var content = document.createElement('div');
+	          content.classList.add('content');
+	          slide.appendChild(content);
 
-	      slidesContainer.appendChild(this.createStoryBlock(['To take that out, we combine all years into a single cycle, leaving what doesn’t seem to represent a seasonal pattern out. This gives us <b>seasonal interest per year</b> for influenza.']));
+	          var _title = document.createElement('h5');
+	          _title.innerHTML = i.title;
+	          content.appendChild(_title);
+
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
+
+	          try {
+	            for (var _iterator2 = i.copy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var c = _step2.value;
+
+	              var paragraph = document.createElement('p');
+	              paragraph.innerHTML = c;
+	              content.appendChild(paragraph);
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	              }
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
 
 	      var thisPage = d3.select(elementsContainer);
 	      var containerD3 = thisPage.select('.row');
@@ -29483,6 +29686,7 @@
 	          term: chartData[0].term,
 	          points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12)
 	        };
+	        _loglevel2.default.info(data);
 	        chart.updateData([data], type, title);
 	        if (yearlyLoopIndex < 12) {
 	          yearlyLoopIndex++;
@@ -29493,44 +29697,75 @@
 	      }
 
 	      (0, _graphScroll.graphScroll)().graph(colLeftD3).container(containerD3).sections(slidesD3).offset(window.innerHeight / 2).on('active', function (i) {
+
+	        clearInterval(yearlyLoop);
+	        chartsContainer.classList.remove('step-2');
+
 	        var title = void 0,
-	            type = void 0;
+	            type = void 0,
+	            range = void 0;
+	        var timeSeries = [];
+
 	        switch (i) {
+
 	          case 0:
 	            type = 'total';
+	            timeSeries = chartData.filter(function (d) {
+	              return d.data === 'total';
+	            });
+	            chart.updateData(timeSeries, type, title, range);
 	            break;
+
 	          case 1:
 	            type = 'mixed';
 	            title = 'Trend per year';
+	            yearlyLoop = setInterval(function () {
+	              loopThroughYears(type, title, range);
+	            }, 1000);
 	            break;
+
 	          case 2:
 	            type = 'trend';
+	            chartsContainer.classList.add('step-2');
+	            timeSeries = chartData.filter(function (d) {
+	              return d.data === 'total' || d.data === 'trend';
+	            });
+	            chart.updateData(timeSeries, type, title, range);
 	            break;
+
 	          case 3:
 	            type = 'seasonal';
 	            title = 'Seasonal over time';
+	            range = 100;
+	            timeSeries = chartData.filter(function (d) {
+	              return d.data === 'remainder';
+	            });
+	            chart.updateData(timeSeries, type, title, range);
 	            break;
-	          default:
+
+	          case 4:
 	            type = 'seasonal';
-	        }
-
-	        var index = i < 2 ? i : i - 1;
-
-	        chartsContainer.classList.remove('step-2');
-
-	        if (i === 1) {
-	          yearlyLoop = setInterval(function () {
-	            loopThroughYears(type, title);
-	          }, 1000);
-	        } else {
-	          clearInterval(yearlyLoop);
-	          if (i === 2) {
-	            chartsContainer.classList.add('step-2');
-	            chart.updateData([chartData[0], chartData[index]], type, title);
-	          } else {
-	            clearInterval(yearlyLoop);
-	            chart.updateData([chartData[index]], type, title);
-	          }
+	            range = 20;
+	            timeSeries = chartData.filter(function (d) {
+	              return d.data === 'seasonal';
+	            });
+	            chart.updateData(timeSeries, type, title, range);
+	          // const remainder = chartData.find(d => d.data === 'remainder');
+	          // const seasonal = chartData.find(d => d.data === 'seasonal');
+	          // log.info(remainder, seasonal);
+	          // for (let i = 0; i < remainder.points.length - 13; i += 12) {
+	          //   const thisYear = {
+	          //     term: 'Influenza',
+	          //     points: remainder.points.slice(i, i + 13)
+	          //   }
+	          //   for (let j = 0; j < thisYear.points.length; j++) {
+	          //     thisYear.points[j].date = seasonal.points[j%12].date;
+	          //   }
+	          //   timeSeries.push(thisYear);
+	          // }
+	          // timeSeries.push(seasonal);
+	          // log.info(timeSeries);
+	          // chart.updateData(timeSeries, type, title, range);
 	        }
 	      });
 	    }
@@ -29542,7 +29777,7 @@
 	exports.default = Intro;
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29553,38 +29788,38 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _StoriesLineCharts = __webpack_require__(28);
+	var _StoriesLineCharts = __webpack_require__(31);
 
 	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
 
-	var _Explore = __webpack_require__(40);
+	var _Explore = __webpack_require__(43);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
-	var _countries = __webpack_require__(17);
+	var _countries = __webpack_require__(22);
 
 	var _countries2 = _interopRequireDefault(_countries);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _selectize = __webpack_require__(43);
+	var _selectize = __webpack_require__(46);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
-	var _jquery = __webpack_require__(21);
+	var _jquery = __webpack_require__(24);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(46);
+	__webpack_require__(49);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var FiltersMenu = function () {
-	  function FiltersMenu(parentContainer, terms, geoList, geoIso, self, onGeoChange) {
+	  function FiltersMenu(parentContainer, terms, geoList, geoIso, years, self, onGeoChange) {
 	    _classCallCheck(this, FiltersMenu);
 
 	    var elementsContainer = void 0;
@@ -29598,16 +29833,16 @@
 	      if (parentContainer) parentContainer.appendChild(elementsContainer);
 	    }
 
-	    this.createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange);
+	    this.createElements(elementsContainer, terms, geoList, geoIso, years, self, onGeoChange);
 	    return elementsContainer;
 	  }
 
 	  _createClass(FiltersMenu, [{
 	    key: 'createElements',
-	    value: function createElements(elementsContainer, terms, geoList, geoIso, self, onGeoChange) {
+	    value: function createElements(elementsContainer, terms, geoList, geoIso, years, self, onGeoChange) {
 	      var text = document.createElement('span');
 	      text.classList.add('sentence');
-	      text.innerHTML = 'Search interest from 2004 to 2016 for <br>';
+	      text.innerHTML = 'Search interest from ' + years[0] + ' to ' + years[1] + ' for <br>';
 	      elementsContainer.appendChild(text);
 
 	      var termsList = document.createElement('span');
@@ -29690,7 +29925,7 @@
 	exports.default = FiltersMenu;
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29701,31 +29936,31 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _stories = __webpack_require__(29);
+	var _stories = __webpack_require__(32);
 
 	var _stories2 = _interopRequireDefault(_stories);
 
-	var _StoriesNavBar = __webpack_require__(30);
+	var _StoriesNavBar = __webpack_require__(33);
 
 	var _StoriesNavBar2 = _interopRequireDefault(_StoriesNavBar);
 
-	var _FiltersMenu = __webpack_require__(27);
+	var _FiltersMenu = __webpack_require__(30);
 
 	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
 
-	var _LineChart = __webpack_require__(36);
+	var _LineChart = __webpack_require__(39);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
-	var _jquery = __webpack_require__(21);
+	var _jquery = __webpack_require__(24);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _d = __webpack_require__(20);
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -29738,12 +29973,14 @@
 	// import '../../sass/stories.scss';
 
 	var StoriesLineCharts = function () {
-	  function StoriesLineCharts(parentContainer, storySection) {
+	  function StoriesLineCharts(parentContainer, storySection, range) {
 	    _classCallCheck(this, StoriesLineCharts);
 
 	    var self = this;
 	    var currCase = 0;
 	    var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	    var years = _stories2.default[storySection].cases[currCase].years;
+
 	    var path = _stories2.default[storySection].cases[currCase].data;
 	    var isLoading = false;
 
@@ -29752,7 +29989,7 @@
 	    parentContainer.appendChild(elementsContainer);
 
 	    d3.json(path, function (chartData) {
-	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso, isLoading: isLoading };
+	      self.data = { storySection: storySection, currCase: currCase, chartData: chartData, geoIso: geoIso, years: years, range: range, isLoading: isLoading };
 	      self.createElements(elementsContainer);
 	    });
 	  }
@@ -29764,6 +30001,8 @@
 
 	      var path = _stories2.default[storySection].cases[currCase].data;
 	      var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	      var years = _stories2.default[storySection].cases[currCase].years;
+
 	      var isLoading = true;
 	      self.updateData({ isLoading: isLoading });
 
@@ -29772,13 +30011,47 @@
 	      });
 	      d3.json(path, function (chartData) {
 	        isLoading = false;
-	        self.updateData({ currCase: currCase, chartData: chartData, geoIso: geoIso, isLoading: isLoading });
+	        self.updateData({ currCase: currCase, chartData: chartData, geoIso: geoIso, years: years, isLoading: isLoading });
 	      });
 	    }
 	  }, {
 	    key: 'changeGeo',
 	    value: function changeGeo(geoIso, self) {
 	      self.updateData({ geoIso: geoIso });
+	    }
+	  }, {
+	    key: 'newCopy',
+	    value: function newCopy(copyContainer, copyTitle, copy) {
+	      var copyTitleContainer = document.createElement('h5');
+	      copyTitleContainer.innerHTML = copyTitle;
+	      copyContainer.appendChild(copyTitleContainer);
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var c = _step.value;
+
+	          var p = document.createElement('p');
+	          p.innerHTML = c;
+	          copyContainer.appendChild(p);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
 	    }
 	  }, {
 	    key: 'updateData',
@@ -29795,11 +30068,14 @@
 	          storySection = _data.storySection,
 	          currCase = _data.currCase,
 	          chartData = _data.chartData,
-	          geoIso = _data.geoIso;
+	          geoIso = _data.geoIso,
+	          years = _data.years,
+	          range = _data.range;
 	      var _stories$storySection = _stories2.default[storySection].cases[currCase],
 	          terms = _stories$storySection.terms,
 	          geoList = _stories$storySection.geoList,
 	          chartType = _stories$storySection.chartType,
+	          copyTitle = _stories$storySection.copyTitle,
 	          copy = _stories$storySection.copy;
 
 
@@ -29840,7 +30116,7 @@
 	      colLeft.classList.add('col-left');
 	      row.appendChild(colLeft);
 
-	      this.filtersMenu = new _FiltersMenu2.default(colLeft, terms, geoList, geoIso, this, this.changeGeo);
+	      this.filtersMenu = new _FiltersMenu2.default(colLeft, terms, geoList, geoIso, years, this, this.changeGeo);
 
 	      var chartsContainer = document.createElement('div');
 	      chartsContainer.classList.add('charts-container');
@@ -29849,40 +30125,15 @@
 	      var chartItem = document.createElement('div');
 	      chartItem.classList.add('chart-item');
 	      chartsContainer.appendChild(chartItem);
-	      this.chart = new _LineChart2.default(chartItem, chartType);
+	      this.chart = new _LineChart2.default(chartItem, chartType, range);
 
 	      this.copyContainer = document.createElement('div');
 	      var copyContainer = this.copyContainer;
 
 	      copyContainer.classList.add('case-copy');
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
 	      row.appendChild(copyContainer);
+
+	      this.newCopy(copyContainer, copyTitle, copy);
 
 	      this.updateElements();
 	    }
@@ -29898,11 +30149,13 @@
 	          currCase = _data2.currCase,
 	          chartData = _data2.chartData,
 	          geoIso = _data2.geoIso,
+	          years = _data2.years,
 	          isLoading = _data2.isLoading;
 	      var _stories$storySection2 = _stories2.default[storySection].cases[currCase],
 	          terms = _stories$storySection2.terms,
 	          geoList = _stories$storySection2.geoList,
 	          chartType = _stories$storySection2.chartType,
+	          copyTitle = _stories$storySection2.copyTitle,
 	          copy = _stories$storySection2.copy;
 
 
@@ -29913,37 +30166,12 @@
 	      }
 
 	      var parent = filtersMenu.parentElement;
-	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, this, this.changeGeo);
+	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, years, this, this.changeGeo);
 
 	      chart.updateData(chartData[geoIso], chartType);
 
 	      copyContainer.innerHTML = '';
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
-
-	      try {
-	        for (var _iterator2 = copy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var c = _step2.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
-	          }
-	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
-	          }
-	        }
-	      }
+	      this.newCopy(copyContainer, copyTitle, copy);
 	    }
 	  }]);
 
@@ -29953,7 +30181,7 @@
 	exports.default = StoriesLineCharts;
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -29961,79 +30189,97 @@
 	module.exports = {
 	  seasonal: {
 	    title: "Seasons",
-	    intro: "See how environmental conditions affect your health. Switch between the US and Australia to see how North and Southern hemisphere experience opposite cycles.",
+	    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite throughout the year. Compare the data from US and Australia below to see how.",
 	    cases: [{
 	      title: "Spring",
 	      data: "./data/seasonal-spring.json",
 	      terms: ["Chickenpox", "Conjunctivitis", "Allergy"],
 	      geoList: ["US", "AU"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["The flower season is beautiful, but can become a nightmare for allergics. This happens because plants release pollen, a substance that causes varied reactions. In some cases, it triggers rhinitis. In others, it is responsible for conjunctivitis. The eye problem, by the way, can also be caused by viruses and bacteria, that are often transmitted in pools and gyms — interestingly, people start to visit these places more often when the weather starts to heat up. Finally, chickenpox virus has an increased activity and spreads more easily during spring."]
 	    }, {
 	      title: "Summer",
 	      data: "./data/seasonal-summer.json",
 	      terms: ["Candidiasis", "Skin rash", "Diarrhea"],
 	      geoList: ["US", "AU"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Summer is perfect for the fungus Candida albicans, that lives naturally in our organism: the use of wet bikinis and trunks for long periods allow a high proliferation of this specie in vagina and in penis, causing candidiasis. The heat is also ideal for the fast multiplication of bacteria that promotes diarrhea. The skin can suffer during this season for many motives. One of them is the block of sweat glands by lotions and beauty products. Without perspiration, skin rash, itchiness and red spots appear. "]
 	    }, {
 	      title: "Winter",
 	      data: "./data/seasonal-winter.json",
 	      terms: ["Bronchitis", "Raynaud syndrome", "Cold"],
 	      geoList: ["US", "AU"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about Winter. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }]
 	  },
 	  holidays: {
 	    title: "Holidays",
-	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    intro: "Not only the environment can affect your health. Major events help spread diseases by bringing too many people together — or simply by exposing your body to things it is not used to. Take a look into how these parties can threat your physical condition.",
 	    cases: [{
 	      title: "Diwali Festival",
 	      data: "./data/holidays-diwali-festival.json",
 	      terms: ["Burn", "Pain"],
 	      geoList: ["IN"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Diwali is one of the most important festivals for Hinduism. Celebrated during five days among October and November, people solemnize the victory of light over darkness, good over evil, knowledge over ignorance. It is usual that individuals light many candles on windows, all over their homes and in temples. Curiously, it is possible to notice during the days of the holiday an increase in the searches about burn and pain in India."]
 	    }, {
 	      title: "Brazilian Carnival",
 	      data: "./data/holidays-brazilian-carnival.json",
 	      terms: ["Mononucleosis"],
 	      geoList: ["BR"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Also known as “kissing disease”, mononucleosis becomes a common search in Brazil right after the Carnival on February. The popular festival, word-renowned for samba, creative costumes and happiness, is also a great opportunity to meet new people — and, eventually, kiss a lot. The problem is that Epstein-Barr virus, the villain of this infection, is transmitted by contact with someone else’s saliva. The disease can cause fever and swelling of lymph nodes on neck and armpit."]
 	    }, {
 	      title: "New Year",
 	      data: "./data/holidays-new-year.json",
 	      terms: ["Winter vomiting bug", "Chest pain"],
 	      geoList: ["world"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about New Year. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }]
 	  },
 	  media: {
 	    title: "Media",
-	    intro: "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.",
+	    intro: "A growing interest in a particular disease doesn't mean more people are getting sick. Advertisement, celebrities, and the news can boost searches for a term as well. See how the media can raise awareness — or concern — around health.",
 	    cases: [{
 	      title: "Campaigns",
 	      data: "./data/media-campaigns.json",
 	      terms: ["Down's syndrome", "Breast Cancer", "Autism"],
 	      geoList: ["world"],
+	      years: [2004, 2016],
 	      chartType: "seasonal",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Not every growth in searches is directly related with an increase in cases of a disease. Examples of that are the big campaigns of consciousness that happen during the year. Above, you can see three examples: Down’s Syndrome, which international day of awareness is always celebrated on March 21st, autism, remembered on April 2nd, and breast cancer, which movement occur during the entire month of October."]
 	    }, {
 	      title: "Pop Culture",
 	      data: "./data/media-pop-culture.json",
 	      terms: ["Lupus", "Amyotrophic lateral sclerosis"],
 	      geoList: ["world"],
+	      years: [2004, 2016],
 	      chartType: "trend",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Celebrities also play a major role in the popularity of certain health topics. That's what happened with lupus, an inflammatory disease that affects joints, skin and kidneys. The number of searches increased when the singer Selena Gomez canceled her shows to make treatments for this illness, on October 2015 and September 2016. Amyotrophic Lateral Sclerosis, a problem in the nervous system, has passed from anonymity to trending topic on the \"ice bucket challenge\" during July and August of 2014."]
 	    }, {
 	      title: "Anti-vaccine",
 	      data: "./data/media-anti-vaccine.json",
-	      terms: ["Vaccine", "Measles"],
-	      geoList: ["world"],
+	      terms: ["Measles"],
+	      geoList: ["US"],
+	      years: [2004, 2016],
 	      chartType: "trend",
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["In 1998, British researcher Andrew Wakefield published a paper claiming that vaccines cause autism in children. The idea gained popularity and had a boost when some celebrities, like Jim Carrey and Charlie Sheen, declared their support to the anti-immunization movement. Nowadays, it is well-known that there is no proven link between vaccines and autism — Wakefield also lost his medical registry. To make matters worse, unvaccinated children ended up triggering a measles epidemics in Ohio (2014) and California (2015). It is possible to notice a raise in web searches for the infection during these periods."]
 	    }]
 	  },
@@ -30046,13 +30292,8 @@
 	      chartData: "./data/epidemics-ebola-time-series.json",
 	      terms: ["Ebola"],
 	      geoList: ["world"],
-	      copy: ["Copy about Ebola. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
-	    }, {
-	      title: "Ebola epidemic",
-	      mapData: "./data/epidemics-ebola-epidemic.json",
-	      chartData: "./data/epidemics-ebola-epidemic-time-series.json",
-	      terms: ["Ebola"],
-	      geoList: ["world"],
+	      years: [2014, 2015],
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about Ebola Epidemic. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }, {
 	      title: "Zika",
@@ -30060,6 +30301,8 @@
 	      chartData: "./data/epidemics-zika-time-series.json",
 	      terms: ["Zika virus"],
 	      geoList: ["world"],
+	      years: [2015, 2016],
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about Zika virus. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }, {
 	      title: "MERS",
@@ -30067,6 +30310,8 @@
 	      chartData: "./data/epidemics-mers-time-series.json",
 	      terms: ["MERS"],
 	      geoList: ["world"],
+	      years: [2013, 2015],
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about MERS. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }, {
 	      title: "Yellow Fever",
@@ -30074,13 +30319,15 @@
 	      chartData: "./data/epidemics-yellow-fever-time-series.json",
 	      terms: ["Yellow fever"],
 	      geoList: ["world"],
+	      years: [2016, 2017],
+	      copyTitle: 'Lorem Ipsum',
 	      copy: ["Copy about Yellow Fever. More than one paragraph. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit.", "Lorem ipsum bibendum in. Aptent malesuada tempus Donec dolor. Luctus tempus In Donec dictum metus elit. Molestie. Pharetra a ultrices maximus vel amet, nisi nibh vel vitae. dictum metus elit."]
 	    }]
 	  }
 	};
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30091,15 +30338,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _StoriesLineCharts = __webpack_require__(28);
+	var _StoriesLineCharts = __webpack_require__(31);
 
 	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
 
-	var _StoriesEpidemics = __webpack_require__(31);
+	var _StoriesEpidemics = __webpack_require__(34);
 
 	var _StoriesEpidemics2 = _interopRequireDefault(_StoriesEpidemics);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -30146,7 +30393,7 @@
 	exports.default = StoriesNavBar;
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30157,35 +30404,35 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _stories = __webpack_require__(29);
+	var _stories = __webpack_require__(32);
 
 	var _stories2 = _interopRequireDefault(_stories);
 
-	var _StoriesNavBar = __webpack_require__(30);
+	var _StoriesNavBar = __webpack_require__(33);
 
 	var _StoriesNavBar2 = _interopRequireDefault(_StoriesNavBar);
 
-	var _FiltersMenu = __webpack_require__(27);
+	var _FiltersMenu = __webpack_require__(30);
 
 	var _FiltersMenu2 = _interopRequireDefault(_FiltersMenu);
 
-	var _WorldMap = __webpack_require__(32);
+	var _WorldMap = __webpack_require__(35);
 
 	var _WorldMap2 = _interopRequireDefault(_WorldMap);
 
-	var _LineChart = __webpack_require__(36);
+	var _LineChart = __webpack_require__(39);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
-	var _d = __webpack_require__(20);
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(38);
+	__webpack_require__(41);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -30200,6 +30447,8 @@
 	    var self = this;
 	    var currCase = 0;
 	    var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	    var years = _stories2.default[storySection].cases[currCase].years;
+
 	    var currMonth = 0;
 	    var isLoading = false;
 
@@ -30218,6 +30467,7 @@
 	          mapData: mapData,
 	          chartData: chartData,
 	          geoIso: geoIso,
+	          years: years,
 	          currMonth: currMonth,
 	          isLoading: isLoading
 	        };
@@ -30234,6 +30484,8 @@
 	      var mapDataPath = _stories2.default[storySection].cases[currCase].mapData;
 	      var chartDataPath = _stories2.default[storySection].cases[currCase].chartData;
 	      var geoIso = _stories2.default[storySection].cases[currCase].geoList[0];
+	      var years = _stories2.default[storySection].cases[currCase].years;
+
 	      var isLoading = true;
 	      self.updateData({ isLoading: isLoading });
 
@@ -30253,6 +30505,7 @@
 	            mapData: mapData,
 	            chartData: chartData,
 	            geoIso: geoIso,
+	            years: years,
 	            currMonth: currMonth,
 	            isLoading: isLoading
 	          });
@@ -30266,6 +30519,40 @@
 
 	      var currMonth = parseInt(value);
 	      self.updateData({ currMonth: currMonth });
+	    }
+	  }, {
+	    key: 'newCopy',
+	    value: function newCopy(copyContainer, copyTitle, copy) {
+	      var copyTitleContainer = document.createElement('h5');
+	      copyTitleContainer.innerHTML = copyTitle;
+	      copyContainer.appendChild(copyTitleContainer);
+
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var c = _step.value;
+
+	          var p = document.createElement('p');
+	          p.innerHTML = c;
+	          copyContainer.appendChild(p);
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
 	    }
 	  }, {
 	    key: 'updateData',
@@ -30286,10 +30573,12 @@
 	          mapData = _data.mapData,
 	          chartData = _data.chartData,
 	          geoIso = _data.geoIso,
+	          years = _data.years,
 	          currMonth = _data.currMonth;
 	      var _stories$storySection = _stories2.default[storySection].cases[currCase],
 	          terms = _stories$storySection.terms,
 	          geoList = _stories$storySection.geoList,
+	          copyTitle = _stories$storySection.copyTitle,
 	          copy = _stories$storySection.copy;
 
 
@@ -30330,13 +30619,18 @@
 	      colLeft.classList.add('col-left');
 	      row.appendChild(colLeft);
 
-	      this.filtersMenu = new _FiltersMenu2.default(colLeft, terms, geoList, geoIso);
+	      this.filtersMenu = new _FiltersMenu2.default(colLeft, terms, geoList, geoIso, years);
 
 	      var chartsContainer = document.createElement('div');
 	      chartsContainer.classList.add('charts-container');
 	      colLeft.appendChild(chartsContainer);
 
 	      var chartItem = document.createElement('div');
+	      chartItem.classList.add('chart-item');
+	      chartsContainer.appendChild(chartItem);
+	      this.worldMap = new _WorldMap2.default(chartItem, mapData[currMonth].regions);
+
+	      chartItem = document.createElement('div');
 	      chartItem.classList.add('chart-item');
 	      chartsContainer.appendChild(chartItem);
 	      this.lineChart = new _LineChart2.default(chartItem, 'mixed');
@@ -30354,43 +30648,13 @@
 	      slider.addEventListener('input', bindSliderChange);
 	      chartsContainer.appendChild(slider);
 
-	      chartItem = document.createElement('div');
-	      chartItem.classList.add('chart-item');
-	      chartsContainer.appendChild(chartItem);
-	      this.worldMap = new _WorldMap2.default(chartItem, mapData[currMonth].regions);
-
 	      this.copyContainer = document.createElement('div');
 	      var copyContainer = this.copyContainer;
 
 	      copyContainer.classList.add('case-copy');
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = copy[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var c = _step.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-
 	      row.appendChild(copyContainer);
+
+	      this.newCopy(copyContainer, copyTitle, copy);
 
 	      this.updateElements();
 	    }
@@ -30410,12 +30674,14 @@
 	          mapData = _self$data.mapData,
 	          chartData = _self$data.chartData,
 	          geoIso = _self$data.geoIso,
+	          years = _self$data.years,
 	          currMonth = _self$data.currMonth,
 	          isLoading = _self$data.isLoading;
 	      var _stories$storySection2 = _stories2.default[storySection].cases[currCase],
 	          terms = _stories$storySection2.terms,
 	          geoList = _stories$storySection2.geoList,
 	          chartType = _stories$storySection2.chartType,
+	          copyTitle = _stories$storySection2.copyTitle,
 	          copy = _stories$storySection2.copy;
 
 
@@ -30426,38 +30692,13 @@
 	      }
 
 	      var parent = filtersMenu.parentElement;
-	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso);
+	      filtersMenu = new _FiltersMenu2.default(filtersMenu.parentElement, terms, geoList, geoIso, years);
 
 	      if (worldMap.worldFeatures) worldMap.updateData(mapData[currMonth].regions);
 	      lineChart.updateData(chartData[geoIso]);
 
 	      copyContainer.innerHTML = '';
-	      var _iteratorNormalCompletion2 = true;
-	      var _didIteratorError2 = false;
-	      var _iteratorError2 = undefined;
-
-	      try {
-	        for (var _iterator2 = copy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	          var c = _step2.value;
-
-	          var p = document.createElement('p');
-	          p.innerHTML = c;
-	          copyContainer.appendChild(p);
-	        }
-	      } catch (err) {
-	        _didIteratorError2 = true;
-	        _iteratorError2 = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	            _iterator2.return();
-	          }
-	        } finally {
-	          if (_didIteratorError2) {
-	            throw _iteratorError2;
-	          }
-	        }
-	      }
+	      this.newCopy(copyContainer, copyTitle, copy);
 	    }
 	  }]);
 
@@ -30467,7 +30708,7 @@
 	exports.default = StoriesEpidemics;
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30478,25 +30719,25 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _StoriesEpidemics = __webpack_require__(31);
+	var _StoriesEpidemics = __webpack_require__(34);
 
 	var _StoriesEpidemics2 = _interopRequireDefault(_StoriesEpidemics);
 
-	var _util = __webpack_require__(33);
+	var _util = __webpack_require__(36);
 
-	var _d = __webpack_require__(20);
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _d3Tip = __webpack_require__(34);
+	var _d3Tip = __webpack_require__(37);
 
 	var _d3Tip2 = _interopRequireDefault(_d3Tip);
 
-	var _topojsonClient = __webpack_require__(35);
+	var _topojsonClient = __webpack_require__(38);
 
 	var topojson = _interopRequireWildcard(_topojsonClient);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -30627,16 +30868,17 @@
 	exports.default = WorldMap;
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.arrayIsEqual = arrayIsEqual;
 	exports.map = map;
+	exports.encodedStr = encodedStr;
 	function arrayIsEqual(array1, array2) {
 	  if (!array1 || !array2) return false;
 
@@ -30660,8 +30902,15 @@
 	  return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 
+	function encodedStr(rawStr) {
+	  var encoded = rawStr.replace(/[\u00A0-\u9999<>\&]/gim, function (i) {
+	    return '&#' + i.charCodeAt(0) + ';';
+	  });
+	  return encoded;
+	}
+
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// d3.tip
@@ -30672,7 +30921,7 @@
 	(function (root, factory) {
 	  if (true) {
 	    // AMD. Register as an anonymous module with d3 as a dependency.
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(20)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(23)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
 	  } else if (typeof module === 'object' && module.exports) {
 	    // CommonJS
 	    var d3 = require('d3')
@@ -30990,7 +31239,7 @@
 
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// https://github.com/topojson/topojson-client Version 3.0.0. Copyright 2017 Mike Bostock.
@@ -31501,7 +31750,7 @@
 
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31512,13 +31761,13 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _constants = __webpack_require__(37);
+	var _constants = __webpack_require__(40);
 
-	var _d = __webpack_require__(20);
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -31529,17 +31778,18 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var LineChart = function () {
-	  function LineChart(parentContainer, type) {
+	  function LineChart(parentContainer, type, range) {
 	    _classCallCheck(this, LineChart);
 
-	    this.data = [];
 	    this.parentContainer = parentContainer;
 	    if (type) this.type = type;
+	    if (range) this.range = range;
 	    this.title = this.getTitle(this.type);
-	    this.margin = { top: 36, right: 4, bottom: 30, left: 36 };
+	    this.margin = { top: 36, right: 4, bottom: 30, left: 42 };
 	    var size = this.getSize();
 	    this.width = size.width;
 	    this.height = size.height;
+	    this.data = this.createEmptyChart(this.type);
 	    this.createElements(parentContainer);
 	  }
 
@@ -31570,15 +31820,21 @@
 	      this.svg.attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom);
 	    }
 	  }, {
-	    key: 'updateData',
-	    value: function updateData(data, type, title) {
-	      this.data = this.parseDates(data);
-	      if (type && type !== this.type) {
-	        this.type = type;
-	        this.resizeChart();
+	    key: 'createEmptyChart',
+	    value: function createEmptyChart(type) {
+	      var data = void 0;
+	      if (type === 'seasonal') {
+	        data = [{
+	          term: "",
+	          points: [{ "date": "2003-12-31", "value": 0 }, { "date": "2004-12-31", "value": 0 }]
+	        }];
+	      } else {
+	        data = [{
+	          term: "",
+	          points: [{ "date": "2003-12-31", "value": 0 }, { "date": "2017-05-31", "value": 100 }]
+	        }];
 	      }
-	      this.title = title ? title : this.getTitle(this.type);
-	      this.updateElements();
+	      return this.parseDates(data);
 	    }
 	  }, {
 	    key: 'getTitle',
@@ -31610,6 +31866,22 @@
 	      });
 	    }
 	  }, {
+	    key: 'updateData',
+	    value: function updateData(data, type, title, range) {
+	      var svg = this.svg;
+
+	      svg.select('.line-chart .time-series').classed('empty', false);
+
+	      this.data = this.parseDates(data);
+	      if (range) this.range = range;
+	      if (type && type !== this.type) {
+	        this.type = type;
+	        this.resizeChart();
+	      }
+	      this.title = title ? title : this.getTitle(this.type);
+	      this.updateElements();
+	    }
+	  }, {
 	    key: 'createElements',
 	    value: function createElements(parentContainer) {
 	      var parentContainerSelection = d3.select(parentContainer);
@@ -31629,7 +31901,9 @@
 
 	      chart.append('g').attr('class', 'y axis').append('text').attr('class', 'title').attr('text-anchor', 'start').attr('x', -margin.left).attr('y', -margin.top / 2);
 
-	      chart.append('g').attr('class', 'time-series');
+	      chart.append('g').attr('class', 'time-series empty');
+
+	      this.updateElements();
 	    }
 	  }, {
 	    key: 'updateElements',
@@ -31640,7 +31914,8 @@
 	          margin = this.margin,
 	          svg = this.svg,
 	          title = this.title,
-	          type = this.type;
+	          type = this.type,
+	          range = this.range;
 
 	      var transitionDuration = 500;
 
@@ -31652,19 +31927,25 @@
 	          yMax = void 0;
 
 	      if (type === 'seasonal') {
-	        yMin = d3.min(data, function (d, i) {
-	          return d3.min(d.points, function (p) {
-	            return p.value;
+
+	        if (range) {
+	          yMin = -range;
+	          yMax = range;
+	        } else {
+	          yMin = d3.min(data, function (d, i) {
+	            return d3.min(d.points, function (p) {
+	              return p.value;
+	            });
 	          });
-	        });
-	        yMax = d3.max(data, function (d, i) {
-	          return d3.max(d.points, function (p) {
-	            return p.value;
+	          yMax = d3.max(data, function (d, i) {
+	            return d3.max(d.points, function (p) {
+	              return p.value;
+	            });
 	          });
-	        });
-	        var maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
-	        yMin = maxRange > 20 ? -maxRange : -20;
-	        yMax = maxRange > 20 ? maxRange : 20;
+	          var maxRange = Math.abs(yMin) > Math.abs(yMax) ? yMin : yMax;
+	          yMin = maxRange > 20 ? -maxRange : -20;
+	          yMax = maxRange > 20 ? maxRange : 20;
+	        }
 	      } else {
 	        yMin = 0;
 	        yMax = 100;
@@ -31724,7 +32005,7 @@
 	exports.default = LineChart;
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -31736,16 +32017,16 @@
 	var trendRatio = exports.trendRatio = window.innerWidth < 600 ? 0.6 : 0.4;
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(39);
+	var content = __webpack_require__(42);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -31762,21 +32043,21 @@
 	}
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page input[type=\"range\"] {\n  width: calc(100% - 32px);\n  margin-left: 32px; }\n\n#stories.page .selectize-input {\n  min-width: 180px; }\n\n#stories.page .page-body {\n  background-color: #341a88; }\n\n#stories.page .story-section .section-header {\n  color: white; }\n\n#stories.page .story-section .section-body .case-copy {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #stories.page .story-section .section-body .case-copy:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    #stories.page .story-section .section-body .case-copy {\n      width: 100%; }\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n#stories.page .story-section.ranking .slideshow {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: center; }\n  #stories.page .story-section.ranking .slideshow .bt-arrow {\n    width: 24px;\n    height: 24px;\n    border: none;\n    background-color: white;\n    cursor: pointer;\n    flex-shrink: 0; }\n    @media (max-width: 600px) {\n      #stories.page .story-section.ranking .slideshow .bt-arrow {\n        display: none; } }\n    #stories.page .story-section.ranking .slideshow .bt-arrow:disabled {\n      opacity: 0.24; }\n    #stories.page .story-section.ranking .slideshow .bt-arrow:after {\n      content: '';\n      display: block;\n      border-width: 2px 2px 0 0;\n      border-style: solid;\n      border-color: #4422B3;\n      width: 12px;\n      height: 12px; }\n    #stories.page .story-section.ranking .slideshow .bt-arrow.back {\n      margin-right: 12px; }\n      #stories.page .story-section.ranking .slideshow .bt-arrow.back:after {\n        transform: rotate(-135deg); }\n    #stories.page .story-section.ranking .slideshow .bt-arrow.forward {\n      margin-left: 12px; }\n      #stories.page .story-section.ranking .slideshow .bt-arrow.forward:after {\n        transform: rotate(45deg); }\n  #stories.page .story-section.ranking .slideshow .ranking-table-container {\n    overflow-x: hidden;\n    position: relative; }\n    @media (max-width: 600px) {\n      #stories.page .story-section.ranking .slideshow .ranking-table-container {\n        overflow-x: auto; } }\n    #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table {\n      position: relative;\n      left: 0;\n      white-space: nowrap;\n      transition: left 0.5s ease-out; }\n      @media (max-width: 600px) {\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table {\n          white-space: normal; } }\n      #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n        display: inline-block;\n        width: 12.5%;\n        padding-bottom: 24px; }\n        @media (max-width: 900px) {\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n            width: 20%; } }\n        @media (max-width: 600px) {\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n            width: 33%; } }\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header {\n          color: #4422B3;\n          font-size: 14px;\n          line-height: 24px;\n          font-family: \"Inconsolata\", monospace;\n          font-weight: 400;\n          font-weight: 700; }\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header span {\n            display: inline-block;\n            width: 100%;\n            padding: 0 6px;\n            border-bottom: 2px solid #4422B3; }\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul {\n          list-style: none;\n          padding-left: 0; }\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li {\n            cursor: pointer; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li.hover {\n              background-color: #ffbd75; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li.active {\n              background-color: #FA8200; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li span {\n              display: inline-block;\n              width: 100%;\n              padding: 0 6px;\n              border-bottom: 1px solid rgba(0, 0, 0, 0.24); }\n\n#stories.page .story-section.epidemics .map .country {\n  stroke: #A696DB;\n  stroke-width: 1px; }\n\n#stories.page .story-section .stories-nav-bar {\n  min-height: 48px;\n  margin: 0 auto;\n  background-color: white;\n  border-bottom: 2px solid #4422B3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  align-items: center;\n  padding: 6px 12px; }\n  @media (max-width: 600px) {\n    #stories.page .story-section .stories-nav-bar {\n      padding-left: 12px; } }\n  #stories.page .story-section .stories-nav-bar p {\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 900;\n    line-height: 12px;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    cursor: pointer;\n    display: inline-block;\n    padding: 6px;\n    margin: 3px 0;\n    color: #4422B3;\n    transition-property: background-color, color;\n    transition-duration: 0.25s; }\n    #stories.page .story-section .stories-nav-bar p:not(:last-child) {\n      margin-right: 12px; }\n    #stories.page .story-section .stories-nav-bar p:hover {\n      background-color: #dbd3f7; }\n    #stories.page .story-section .stories-nav-bar p.active {\n      background-color: #4422B3;\n      color: white; }\n\n/* Tooltip */\n.d3-tip {\n  max-width: 200px;\n  padding: 12px;\n  line-height: 18px;\n  background: white;\n  border: 1px solid #4422B3;\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  transform: translate(0, -10%); }\n  .d3-tip .country {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    line-height: 18px; }\n  .d3-tip .value {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700;\n    line-height: 18px;\n    padding-left: 12px;\n    color: #4422B3; }\n\n.legend text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\n.legend line {\n  stroke: #4422B3; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page input[type=\"range\"] {\n  width: calc(100% - 32px);\n  margin-left: 32px; }\n\n#stories.page .selectize-input {\n  min-width: 180px; }\n\n#stories.page .page-body {\n  background-color: #341a88; }\n\n#stories.page .story-section .section-header {\n  color: white; }\n\n#stories.page .story-section .section-body .case-copy {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #stories.page .story-section .section-body .case-copy:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    #stories.page .story-section .section-body .case-copy {\n      width: 100%; }\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n#stories.page .story-section.ranking .slideshow {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: center; }\n  #stories.page .story-section.ranking .slideshow .bt-arrow {\n    width: 24px;\n    height: 24px;\n    border: none;\n    background-color: white;\n    cursor: pointer;\n    flex-shrink: 0; }\n    @media (max-width: 600px) {\n      #stories.page .story-section.ranking .slideshow .bt-arrow {\n        display: none; } }\n    #stories.page .story-section.ranking .slideshow .bt-arrow:disabled {\n      opacity: 0.24; }\n    #stories.page .story-section.ranking .slideshow .bt-arrow:after {\n      content: '';\n      display: block;\n      border-width: 2px 2px 0 0;\n      border-style: solid;\n      border-color: #4422B3;\n      width: 12px;\n      height: 12px; }\n    #stories.page .story-section.ranking .slideshow .bt-arrow.back {\n      margin-right: 12px; }\n      #stories.page .story-section.ranking .slideshow .bt-arrow.back:after {\n        transform: rotate(-135deg); }\n    #stories.page .story-section.ranking .slideshow .bt-arrow.forward {\n      margin-left: 12px; }\n      #stories.page .story-section.ranking .slideshow .bt-arrow.forward:after {\n        transform: rotate(45deg); }\n  #stories.page .story-section.ranking .slideshow .ranking-table-container {\n    overflow-x: hidden;\n    position: relative; }\n    @media (max-width: 600px) {\n      #stories.page .story-section.ranking .slideshow .ranking-table-container {\n        overflow-x: auto; } }\n    #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table {\n      position: relative;\n      left: 0;\n      white-space: nowrap;\n      transition: left 0.5s ease-out; }\n      @media (max-width: 600px) {\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table {\n          white-space: normal; } }\n      #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n        display: inline-block;\n        width: 12.5%;\n        padding-bottom: 24px; }\n        @media (max-width: 900px) {\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n            width: 20%; } }\n        @media (max-width: 600px) {\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column {\n            width: 33%; } }\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header {\n          color: #4422B3;\n          font-size: 14px;\n          line-height: 24px;\n          font-family: \"Inconsolata\", monospace;\n          font-weight: 400;\n          font-weight: 700; }\n          @media (max-width: 600px) {\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header {\n              line-height: 20.4px; } }\n          @media (max-width: 600px) {\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header {\n              line-height: 20.4px; } }\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column .header span {\n            display: inline-block;\n            width: 100%;\n            padding: 0 6px;\n            border-bottom: 2px solid #4422B3; }\n        #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul {\n          list-style: none;\n          padding-left: 0; }\n          #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li {\n            cursor: pointer; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li.hover {\n              background-color: #ffbd75; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li.active {\n              background-color: #FA8200; }\n            #stories.page .story-section.ranking .slideshow .ranking-table-container .ranking-table .ranking-column ul li span {\n              display: inline-block;\n              width: 100%;\n              padding: 0 6px;\n              border-bottom: 1px solid rgba(0, 0, 0, 0.24); }\n\n#stories.page .story-section.epidemics .map .country {\n  stroke: #A696DB;\n  stroke-width: 1px; }\n\n#stories.page .story-section .stories-nav-bar {\n  min-height: 48px;\n  margin: 0 auto;\n  background-color: white;\n  border-bottom: 2px solid #4422B3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  align-items: center;\n  padding: 6px 12px; }\n  @media (max-width: 600px) {\n    #stories.page .story-section .stories-nav-bar {\n      padding-left: 12px; } }\n  #stories.page .story-section .stories-nav-bar p {\n    cursor: pointer;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 900;\n    line-height: 12px;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    display: inline-block;\n    padding: 6px;\n    margin: 3px 0;\n    color: #4422B3;\n    transition-property: background-color, color;\n    transition-duration: 0.25s; }\n    #stories.page .story-section .stories-nav-bar p:not(:last-child) {\n      margin-right: 12px; }\n    #stories.page .story-section .stories-nav-bar p:hover {\n      background-color: #dbd3f7; }\n    #stories.page .story-section .stories-nav-bar p.active {\n      background-color: #4422B3;\n      color: white; }\n\n/* Tooltip */\n.d3-tip {\n  max-width: 200px;\n  padding: 12px;\n  line-height: 18px;\n  background: white;\n  border: 1px solid #4422B3;\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  transform: translate(0, -10%); }\n  .d3-tip .country {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    line-height: 18px; }\n    @media (max-width: 600px) {\n      .d3-tip .country {\n        line-height: 20.4px; } }\n  .d3-tip .value {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700;\n    line-height: 18px;\n    padding-left: 12px;\n    color: #4422B3; }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n\n.legend text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\n.legend line {\n  stroke: #4422B3; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31804,45 +32085,45 @@
 	//Styles
 
 
-	var _LineChart = __webpack_require__(36);
+	var _LineChart = __webpack_require__(39);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
-	var _TrendsAPI = __webpack_require__(2);
+	var _TrendsAPI = __webpack_require__(8);
 
 	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
 
-	var _ShinyAPI = __webpack_require__(41);
+	var _ShinyAPI = __webpack_require__(44);
 
 	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
 
-	var _util = __webpack_require__(33);
+	var _util = __webpack_require__(36);
 
-	var _terms = __webpack_require__(16);
+	var _terms = __webpack_require__(21);
 
 	var _terms2 = _interopRequireDefault(_terms);
 
-	var _countries = __webpack_require__(17);
+	var _countries = __webpack_require__(22);
 
 	var _countries2 = _interopRequireDefault(_countries);
 
-	var _data4 = __webpack_require__(42);
+	var _data4 = __webpack_require__(45);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _selectize = __webpack_require__(43);
+	var _selectize = __webpack_require__(46);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
-	var _jquery = __webpack_require__(21);
+	var _jquery = __webpack_require__(24);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(46);
+	__webpack_require__(49);
 
-	__webpack_require__(48);
+	__webpack_require__(51);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31895,7 +32176,9 @@
 
 	            // Seasonal? Go get more data from Google Trends
 	          } else if (type === 'seasonal') {
-	            self.getTrendsAPIGraph('seasonal');
+	            setTimeout(function () {
+	              self.getTrendsAPIGraph('seasonal');
+	            }, 500);
 	          }
 
 	          // I'm done with this type!
@@ -31906,7 +32189,9 @@
 	            // Seasonal? Move on to load top queries
 	          } else if (type === 'seasonal') {
 	            self.updateData({ topQueries: [], isLoading: false });
-	            self.getTrendsAPITopQueries();
+	            setTimeout(function () {
+	              self.getTrendsAPITopQueries();
+	            }, 500);
 	          }
 	        }
 	      });
@@ -32045,7 +32330,9 @@
 	        topQueries = topQueries.concat(val);
 	        self.updateData({ topQueries: topQueries });
 	        if (topQueries.length < diseases.length) {
-	          self.getTrendsAPITopQueries();
+	          setTimeout(function () {
+	            self.getTrendsAPITopQueries();
+	          }, 500);
 	        }
 	      });
 	    }
@@ -32133,11 +32420,11 @@
 	      pageBody.appendChild(sectionHeader);
 
 	      var title = document.createElement('h3');
-	      title.innerHTML = 'Lorem Ipsum dolor';
+	      title.innerHTML = 'Your Turn';
 	      sectionHeader.appendChild(title);
 
 	      var intro = document.createElement('p');
-	      intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Pick up to 3 options from the list of most common diseases below and choose a location to explore.";
+	      intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Maybe something specific to your country? Pick up to 3 options from the list below and choose a location to start exploring.";
 	      sectionHeader.appendChild(intro);
 
 	      var sectionBody = document.createElement('div');
@@ -32368,7 +32655,7 @@
 	exports.default = Explore;
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32379,13 +32666,13 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _Explore = __webpack_require__(40);
+	var _Explore = __webpack_require__(43);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
-	var _util = __webpack_require__(33);
+	var _util = __webpack_require__(36);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -32489,7 +32776,7 @@
 	exports.default = ShinyAPI;
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -32523,7 +32810,7 @@
 	var averages = exports.averages = [];
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32547,7 +32834,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(21),__webpack_require__(44),__webpack_require__(45)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(24),__webpack_require__(47),__webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -35721,7 +36008,7 @@
 	}));
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -36225,7 +36512,7 @@
 
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -36365,16 +36652,16 @@
 	}));
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(47);
+	var content = __webpack_require__(50);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -36391,10 +36678,10 @@
 	}
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
@@ -36405,16 +36692,16 @@
 
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(49);
+	var content = __webpack_require__(52);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -36431,25 +36718,48 @@
 	}
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#explore.page .page-body {\n  background-color: #341a88; }\n\n#explore.page .section-header {\n  color: white; }\n\n#explore.page .top-queries-container {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #explore.page .top-queries-container:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #explore.page .top-queries-container:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    #explore.page .top-queries-container {\n      width: 100%; }\n      #explore.page .top-queries-container:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n  #explore.page .top-queries-container h4 {\n    border-bottom: 2px solid rgba(0, 0, 0, 0.24);\n    margin-bottom: 12px;\n    line-height: 48px; }\n  #explore.page .top-queries-container .list-container p {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n  #explore.page .top-queries-container .list-container ol {\n    padding-left: 0;\n    list-style-position: inside;\n    margin-top: 0; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#explore.page .page-body {\n  background-color: #ECECEC; }\n\n#explore.page .top-queries-container {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #explore.page .top-queries-container:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #explore.page .top-queries-container:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    #explore.page .top-queries-container {\n      width: 100%; }\n      #explore.page .top-queries-container:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n  #explore.page .top-queries-container h4 {\n    border-bottom: 2px solid rgba(0, 0, 0, 0.24);\n    margin-bottom: 12px;\n    line-height: 48px; }\n  #explore.page .top-queries-container .list-container p {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700; }\n    @media (max-width: 600px) {\n      #explore.page .top-queries-container .list-container p {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      #explore.page .top-queries-container .list-container p {\n        line-height: 20.4px; } }\n  #explore.page .top-queries-container .list-container ol {\n    padding-left: 0;\n    list-style-position: inside;\n    margin-top: 0; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 50 */
+/* 53 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	module.exports = [{
+	  title: 'Search Interest',
+	  copy: ['This is your usual <a href="https://trends.google.com/trends/explore?date=2004-01-01%202016-12-31&q=%2Fm%2F0cycc" target="_blank">Google Trends chart</a>. <span class="highlight">Search interest</span> is measured from 0 (no interest) to 100 (popularity peak) for a given term.', 'We can see the Swine Flu epidemics spikes in 2009, but it’s hard to tell from this view whether there’s any seasonality in the data']
+	}, {
+	  title: 'A Yearly Pattern',
+	  copy: ['Zooming into each year, we can see that the interest is in general lower in the middle of the year than it is in the final and first months.', 'The values vary a lot from one year to another though — with 2009 being an obvious outlier.', 'How can we find the <span class="highlight">“typical” yearly cycle</span> for the flu? Let’s step back to our 12-year chart.']
+	}, {
+	  title: 'Trend versus Total',
+	  copy: ['First, let’s draw what seems to be the <span class="highlight">variation independent of the spikes.</span> This gives us the trend over time.', 'The difference between these 2 lines is what we’ll use to determine the yearly cycle.']
+	}, {
+	  title: 'Total Minus Trend',
+	  copy: ['This is what we get by plotting the difference between trend and total.', 'Notice that some of the values in our scale are negative. That is because they are <span class="highlight">relative to the trend line,</span> not to the actual search interest.']
+	}, {
+	  title: 'Seasonal Interest',
+	  copy: ['Combining all the seasonal data from multiple years into a single cycle, we can determine the <span class="highlight">seasonal interest per year</span> for the flu.']
+	}];
+
+/***/ }),
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-		 true ? factory(exports, __webpack_require__(20)) :
+		 true ? factory(exports, __webpack_require__(23)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
 		(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3) { 'use strict';
@@ -36613,16 +36923,16 @@
 
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(52);
+	var content = __webpack_require__(56);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -36639,21 +36949,21 @@
 	}
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page .page-body {\n  padding-top: 96px;\n  background-color: #ECECEC; }\n\n#intro.page .section-body {\n  padding-top: 0; }\n  #intro.page .section-body .row {\n    position: relative;\n    max-width: 100%; }\n    #intro.page .section-body .row .col-left {\n      position: absolute;\n      top: 0;\n      padding-top: 36px;\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n      #intro.page .section-body .row .col-left:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #intro.page .section-body .row .col-left:not(:first-child) {\n            margin-left: 12px; } }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .col-left {\n          width: 100%; }\n          #intro.page .section-body .row .col-left:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .col-left {\n          top: 12px; } }\n      #intro.page .section-body .row .col-left .charts-container.step-2 svg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n        stroke: #FA8200;\n        opacity: 0.48; }\n      #intro.page .section-body .row .col-left .charts-container.step-2 svg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n        stroke: #FA8200; }\n    #intro.page .section-body .row.graph-scroll-fixed .col-left {\n      position: fixed;\n      width: calc((1200px - 36px*10) * 2/3 + 36px);\n      max-width: 100%; }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row.graph-scroll-fixed .col-left {\n          width: calc(100% - 12px*4); } }\n    #intro.page .section-body .row.graph-scroll-below .col-left {\n      position: absolute;\n      top: auto;\n      bottom: 0px; }\n    #intro.page .section-body .row .slides-container {\n      padding-top: 36px;\n      margin-left: calc((100% - 2*36px) * 2/3 + 2*36px);\n      width: calc((100% - 2*36px) * 1/3); }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .slides-container {\n          width: 100%;\n          position: relative;\n          margin: 0;\n          padding-top: 50vh;\n          z-index: 100; } }\n      #intro.page .section-body .row .slides-container .slide {\n        width: 100%;\n        padding-bottom: 50vh;\n        opacity: 0.3; }\n        #intro.page .section-body .row .slides-container .slide.graph-scroll-active {\n          opacity: 1; }\n        @media (max-width: 600px) {\n          #intro.page .section-body .row .slides-container .slide {\n            width: 100%; }\n            #intro.page .section-body .row .slides-container .slide p {\n              padding: 12px;\n              border: 1px solid black;\n              background-color: white; } }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#intro.page .page-body {\n  padding-top: 96px;\n  background-color: #ECECEC; }\n\n#intro.page .section-body {\n  padding-top: 0; }\n  #intro.page .section-body .row {\n    position: relative;\n    max-width: 100%; }\n    #intro.page .section-body .row .col-left {\n      position: absolute;\n      top: 0;\n      padding-top: 36px;\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n      #intro.page .section-body .row .col-left:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #intro.page .section-body .row .col-left:not(:first-child) {\n            margin-left: 18px; } }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .col-left {\n          width: 100%; }\n          #intro.page .section-body .row .col-left:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .col-left {\n          top: 18px; } }\n      #intro.page .section-body .row .col-left .charts-container.step-2 svg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n        stroke: #FA8200;\n        opacity: 0.48; }\n      #intro.page .section-body .row .col-left .charts-container.step-2 svg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n        stroke: #FA8200; }\n    #intro.page .section-body .row.graph-scroll-fixed .col-left {\n      position: fixed;\n      width: calc((1200px - 36px*10) * 2/3 + 36px);\n      max-width: 100%; }\n      @media (max-width: 1200px) {\n        #intro.page .section-body .row.graph-scroll-fixed .col-left {\n          width: calc((100% - 36px*8) * 2/3 + 36px); } }\n      @media (max-width: 900px) {\n        #intro.page .section-body .row.graph-scroll-fixed .col-left {\n          width: calc((100% - 36px*6) * 2/3 + 36px); } }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row.graph-scroll-fixed .col-left {\n          width: calc(100% - 18px*4); } }\n    #intro.page .section-body .row.graph-scroll-below .col-left {\n      position: absolute;\n      top: auto;\n      bottom: 0px; }\n    #intro.page .section-body .row .slides-container {\n      padding-top: 36px;\n      margin-left: calc((100% - 2*36px) * 2/3 + 2*36px);\n      width: calc((100% - 2*36px) * 1/3); }\n      @media (max-width: 600px) {\n        #intro.page .section-body .row .slides-container {\n          width: 100%;\n          position: relative;\n          margin: 0;\n          padding-top: 50vh;\n          z-index: 100; } }\n      #intro.page .section-body .row .slides-container .slide {\n        width: 100%;\n        padding-bottom: 50vh;\n        opacity: 0.3; }\n        @media (max-width: 600px) {\n          #intro.page .section-body .row .slides-container .slide {\n            opacity: 0.15; } }\n        #intro.page .section-body .row .slides-container .slide.graph-scroll-active {\n          opacity: 1; }\n        #intro.page .section-body .row .slides-container .slide .highlight {\n          padding: 1px 2px;\n          background-color: #ffbd75; }\n        @media (max-width: 600px) {\n          #intro.page .section-body .row .slides-container .slide {\n            width: 100%; }\n            #intro.page .section-body .row .slides-container .slide .content {\n              padding: 18px;\n              border: 1px solid black;\n              background-color: white; } }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36664,31 +36974,31 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _StoriesLineCharts = __webpack_require__(28);
+	var _StoriesLineCharts = __webpack_require__(31);
 
 	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
 
-	var _StoriesEpidemics = __webpack_require__(31);
+	var _StoriesEpidemics = __webpack_require__(34);
 
 	var _StoriesEpidemics2 = _interopRequireDefault(_StoriesEpidemics);
 
-	var _StoriesRanking = __webpack_require__(54);
+	var _StoriesRanking = __webpack_require__(58);
 
 	var _StoriesRanking2 = _interopRequireDefault(_StoriesRanking);
 
-	var _LineChart = __webpack_require__(36);
+	var _LineChart = __webpack_require__(39);
 
 	var _LineChart2 = _interopRequireDefault(_LineChart);
 
-	var _d = __webpack_require__(20);
+	var _d = __webpack_require__(23);
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(38);
+	__webpack_require__(41);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -36733,7 +37043,7 @@
 	      elementsContainer.appendChild(pageBody);
 
 	      var storiesSeasonal = new _StoriesLineCharts2.default(pageBody, 'seasonal');
-	      var storiesHolidays = new _StoriesLineCharts2.default(pageBody, 'holidays');
+	      var storiesHolidays = new _StoriesLineCharts2.default(pageBody, 'holidays', 15);
 	      var storiesMedia = new _StoriesLineCharts2.default(pageBody, 'media');
 	      var storiesEpidemics = new _StoriesEpidemics2.default(pageBody, 'epidemics');
 	      var storiesRanking = new _StoriesRanking2.default(pageBody);
@@ -36746,7 +37056,7 @@
 	exports.default = Stories;
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36757,11 +37067,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _ranking = __webpack_require__(55);
+	var _ranking = __webpack_require__(59);
 
 	var _ranking2 = _interopRequireDefault(_ranking);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -36987,7 +37297,7 @@
 	exports.default = StoriesRanking;
 
 /***/ }),
-/* 55 */
+/* 59 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -37034,7 +37344,7 @@
 	}];
 
 /***/ }),
-/* 56 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37045,11 +37355,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(57);
+	__webpack_require__(61);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37071,9 +37381,13 @@
 	      elementsContainer.classList.add('page');
 	      parentContainer.appendChild(elementsContainer);
 
+	      var sticky = document.createElement('div');
+	      sticky.classList.add('sticky');
+	      elementsContainer.appendChild(sticky);
+
 	      var pageHeader = document.createElement('div');
 	      pageHeader.classList.add('page-header');
-	      elementsContainer.appendChild(pageHeader);
+	      sticky.appendChild(pageHeader);
 
 	      var container = document.createElement('div');
 	      container.classList.add('container');
@@ -37208,16 +37522,16 @@
 	exports.default = About;
 
 /***/ }),
-/* 57 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(58);
+	var content = __webpack_require__(62);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -37234,21 +37548,21 @@
 	}
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#about.page {\n  height: 100vh; }\n  #about.page .page-body {\n    background-color: #ECECEC; }\n    #about.page .page-body .section-body h3 {\n      padding-bottom: 12px;\n      border-bottom: 2px solid rgba(0, 0, 0, 0.24); }\n    #about.page .page-body .section-body .col-body {\n      padding-top: 12px; }\n    #about.page .page-body .section-body .summary {\n      font-size: 21px;\n      line-height: 36px;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 400;\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .summary:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .summary:not(:first-child) {\n            margin-left: 12px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .summary {\n          width: 100%; }\n          #about.page .page-body .section-body .summary:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n    #about.page .page-body .section-body .about-data {\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .about-data:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .about-data:not(:first-child) {\n            margin-left: 12px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .about-data {\n          width: 100%; }\n          #about.page .page-body .section-body .about-data:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n    #about.page .page-body .section-body .about-team {\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .about-team:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .about-team:not(:first-child) {\n            margin-left: 12px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .about-team {\n          width: 100%; }\n          #about.page .page-body .section-body .about-team:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n      #about.page .page-body .section-body .about-team .subtitle {\n        font-size: 12px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 700;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #about.page .page-body .section-body .about-team .subtitle:not(:first-child) {\n          margin-top: 12px; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#about.page {\n  height: 100vh; }\n  #about.page .page-body {\n    background-color: #ECECEC; }\n    #about.page .page-body .section-body h3 {\n      padding-bottom: 12px;\n      border-bottom: 2px solid rgba(0, 0, 0, 0.24); }\n    #about.page .page-body .section-body .col-body {\n      padding-top: 12px; }\n    #about.page .page-body .section-body .summary {\n      font-size: 21px;\n      line-height: 36px;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 400;\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .summary:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .summary:not(:first-child) {\n            margin-left: 18px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .summary {\n          width: 100%; }\n          #about.page .page-body .section-body .summary:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n    #about.page .page-body .section-body .about-data {\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .about-data:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .about-data:not(:first-child) {\n            margin-left: 18px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .about-data {\n          width: 100%; }\n          #about.page .page-body .section-body .about-data:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n    #about.page .page-body .section-body .about-team {\n      display: inline-block;\n      vertical-align: top;\n      width: calc((100% - 2*36px) * 1/3); }\n      #about.page .page-body .section-body .about-team:not(:first-child) {\n        margin-left: 36px; }\n        @media (max-width: 600px) {\n          #about.page .page-body .section-body .about-team:not(:first-child) {\n            margin-left: 18px; } }\n      @media (max-width: 600px) {\n        #about.page .page-body .section-body .about-team {\n          width: 100%; }\n          #about.page .page-body .section-body .about-team:not(:first-child) {\n            margin-left: 0;\n            margin-top: 24px; } }\n      #about.page .page-body .section-body .about-team .subtitle {\n        font-size: 12px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 700;\n        text-transform: uppercase;\n        letter-spacing: 1px; }\n        #about.page .page-body .section-body .about-team .subtitle:not(:first-child) {\n          margin-top: 12px; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, exports) {
 
 	/*!
@@ -37727,16 +38041,16 @@
 	})
 
 /***/ }),
-/* 60 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(61);
+	var content = __webpack_require__(65);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(25)(content, {});
+	var update = __webpack_require__(28)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -37753,21 +38067,21 @@
 	}
 
 /***/ }),
-/* 61 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(24)();
+	exports = module.exports = __webpack_require__(27)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 12px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 12px 48px 12px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 12px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 12px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vh;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center; }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.main-nav {\n  position: fixed;\n  top: 0;\n  right: 0;\n  z-index: 1000; }\n  .main-nav .hamburger {\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    float: right;\n    position: absolute;\n    top: 36px;\n    right: 36px; }\n    @media (max-width: 600px) {\n      .main-nav .hamburger {\n        top: 18px;\n        right: 7px; } }\n    .main-nav .hamburger g {\n      transition: stroke 0.25s, top 0.25s ease-out; }\n    .main-nav .hamburger.negative {\n      top: 7px; }\n      .main-nav .hamburger.negative g {\n        stroke: white; }\n  .main-nav nav {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 180px;\n    height: 100vh;\n    transform: translateX(100%);\n    padding: 36px;\n    padding-right: 24px;\n    text-align: right;\n    background-color: #4422B3;\n    transition: transform 0.25s ease-out; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n    .main-nav nav.open {\n      transform: translateX(0);\n      box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n    .main-nav nav .close {\n      width: 100%;\n      margin-right: 12px;\n      margin-bottom: 24px;\n      float: right; }\n      .main-nav nav .close svg {\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right; }\n    .main-nav nav ul {\n      padding-left: 0;\n      list-style: none; }\n      .main-nav nav ul a {\n        font-size: 14px;\n        font-family: \"Heebo\", sans-serif;\n        font-weight: 900;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        cursor: pointer;\n        display: inline-block;\n        padding: 6px 12px;\n        margin: 3px 0;\n        color: white; }\n        .main-nav nav ul a:hover {\n          background-color: #5e39d9; }\n\n.main-container {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  text-align: left;\n  margin: auto; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0;\n  z-index: 100; }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n  .page .page-header {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .page .page-header {\n        padding: 0 18px; } }\n    .page .page-header:before, .page .page-header:after {\n      content: '';\n      display: table; }\n  .page .page-body {\n    padding: 48px 36px 96px 36px; }\n    @media (max-width: 600px) {\n      .page .page-body {\n        padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 62 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37778,19 +38092,19 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _TrendsAPI = __webpack_require__(2);
+	var _TrendsAPI = __webpack_require__(8);
 
 	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
 
-	var _terms = __webpack_require__(16);
+	var _terms = __webpack_require__(21);
 
 	var _terms2 = _interopRequireDefault(_terms);
 
-	var _countries = __webpack_require__(17);
+	var _countries = __webpack_require__(22);
 
 	var _countries2 = _interopRequireDefault(_countries);
 
-	var _loglevel = __webpack_require__(4);
+	var _loglevel = __webpack_require__(6);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
@@ -37832,11 +38146,11 @@
 	      terms: [_terms2.default.find(function (t) {
 	        return t.name === 'Yellow fever';
 	      })],
-	      startDate: '2016-11',
+	      startDate: '2007-11',
 	      endDate: '2017-05'
 	    }];
 	    this.trendsAPI = trendsAPI;
-	    this.callTrendsApi(this.filters[0], this.filters[0].startDate);
+	    this.callTrendsApi(this.filters[4], this.filters[4].startDate);
 	  }
 
 	  _createClass(GetMapData, [{
