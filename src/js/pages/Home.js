@@ -81,7 +81,7 @@ export default class Home {
       geo,
       startDate: self.getPrevMonth(),
     };
-    self.trendsAPI.getTopTopics(filter, function(val){
+    self.trendsAPI.getTopQueries(filter, function(val){
       log.info('From Google Trends: ', val);
       const { item } = val;
       if (item && item.length > 0) {
@@ -97,36 +97,21 @@ export default class Home {
     });
   }
 
-  randomTopicStyle(el: HTMLElement, i: number, type: string) {
+  showRandomTopic() {
+    const iconContainers = document.querySelectorAll('#home.page .top-topics-list .icon');
+    const randomIcon = iconContainers[Math.floor(Math.random()*iconContainers.length)];
 
-    const iX = d3.interpolateNumber(0, window.innerWidth*0.4);
-    const iY = d3.interpolateNumber(window.innerHeight*0.2, window.innerHeight*0.4);
+    let svg, p;
+    svg = randomIcon.querySelector('svg');
+    p = randomIcon.querySelector('p');
+    if (svg && p) {
+      svg.classList.add('flipped');
+      p.classList.add('flipped');
 
-    const upOrDown = i % 2 == 0 ? 1 : -1;
-    const leftOrRight = (i % 3) == 0 ? 1 : -1;
-    const posLeft = Math.round(leftOrRight * iX(Math.random())).toString() + 'px';
-    const posTop = Math.round(upOrDown * iY(Math.random())).toString() + 'px';
-    el.style.left = posLeft;
-    el.style.top = posTop;
-
-    const random = Math.random();
-
-    const opacity = random + 0.2;
-    el.style.opacity = opacity.toString();
-
-    const blur = random;
-    el.style.filter = `blur(${blur}px)`;
-
-    const min = type === 'text' ? 0.01 : 0.05;
-    const max = type === 'text' ? 0.03 : 0.1;
-    const iS = d3.interpolateNumber(window.innerWidth*min, window.innerWidth*max);
-    const size = Math.round(iS(random));
-
-    if (type === 'text') {
-      el.style.fontSize = `${size}px`;
-    } else if (type === 'icon') {
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
+      setTimeout(function() {
+        svg.classList.remove('flipped');
+        p.classList.remove('flipped');
+      }, 4000);
     }
   }
 
@@ -151,12 +136,14 @@ export default class Home {
     const title = document.createElement('h1');
     title.innerHTML = 'I\'m not<br>feeling well';
     titleContainer.appendChild(title);
+    setTimeout(function() {
+      titleContainer.classList.add('enter');
+    }, 1000);
 
     const projectDescription = document.createElement('p');
     projectDescription.id = 'project-description'
     projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.'
     titleContainer.appendChild(projectDescription);
-
 
     const logosContainer = document.createElement('div');
     logosContainer.classList.add('logos-container');
@@ -181,7 +168,7 @@ export default class Home {
     elementsContainer.appendChild(this.countryContainer);
 
     this.topTopicsList = document.createElement('div');
-    this.topTopicsList.classList.add('top-queries-list');
+    this.topTopicsList.classList.add('top-topics-list');
     elementsContainer.appendChild(this.topTopicsList);
   }
 
@@ -210,20 +197,6 @@ export default class Home {
       country.innerHTML = geo.name;
       countryContainer.appendChild(country);
 
-      // const diseaseIconsList = homeIconsList[disease.name];
-      // for (let i = 0; i < 200; i++) {
-      //   const iconContainer = document.createElement('div');
-      //   iconContainer.classList.add('icon');
-      //   // const n = Math.floor(Math.random()*diseaseIconsList.length);
-      //   const n = i % diseaseIconsList.length;
-      //   const iconName = diseaseIconsList[n];
-      //   log.info(iconName);
-      //   iconContainer.innerHTML = Icons[iconName];
-      //   iconContainer.style.top
-      //   topTopicsList.appendChild(iconContainer);
-      // }
-
-
       const diseaseIconsList = homeIconsList[disease.name];
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -237,7 +210,6 @@ export default class Home {
           const iconName = diseaseIconsList[n];
           const distToCenter = Math.abs(height/2 - y);
           const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
-          log.info(distToCenter, opacity);
           iconContainer.classList.add('icon');
           iconContainer.innerHTML = Icons[iconName];
           iconContainer.style.top = `${y}px`;
@@ -245,26 +217,17 @@ export default class Home {
           iconContainer.style.opacity = opacity;
           topTopicsList.appendChild(iconContainer);
 
+          const p = document.createElement('p');
+          const randomTopic = topTopics[Math.floor(Math.random()*topTopics.length)];
+          p.innerHTML = randomTopic.title;
+          iconContainer.appendChild(p);
+
           i++;
         }
         line++;
       }
-
-      // topTopics.forEach((t, i) => {
-      //   const p = document.createElement('p');
-      //   p.innerHTML = t.title;
-      //   topTopicsList.appendChild(p);
-      //   this.randomTopicStyle(p, i, 'text');
-      // });
-      //
-      // for (let i=0; i < 6; i++) {
-      //   const iconContainer = document.createElement('div');
-      //   iconContainer.classList.add('icon');
-      //   const iconName = homeIconsList[disease.name][i % 6];
-      //   iconContainer.innerHTML = Icons[iconName];
-      //   topTopicsList.appendChild(iconContainer);
-      //   this.randomTopicStyle(iconContainer, i, 'icon');
-      // }
     }
+
+    setInterval(this.showRandomTopic, 2000);
   }
 }

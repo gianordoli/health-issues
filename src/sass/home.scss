@@ -21,7 +21,7 @@
     }
   }
 
-  .top-queries-list {
+  .top-topics-list {
     position: fixed;
     z-index: 1;
     top: 0;
@@ -29,13 +29,51 @@
 
     .icon {
       position: absolute;
-      width: 80px;
-      height: 80px;
 
       @include for-phone-down {
         width: 35px;
         height: 35px;
       };
+
+      &:nth-child(1), &:nth-child(2) {
+        display: none;
+      }
+
+      svg, p {
+        position: absolute;
+        top: 0;
+        width: 80px;
+        height: 80px;
+        display: block;
+        transition-property: transform, opacity;
+        transition-duration: 1s;
+        transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+      }
+
+      svg {
+        &.flipped {
+          transform: translateY(200%);
+          opacity: 0;
+          path, polygon, circle, rect, ellipse, line {
+            stroke: white !important;
+          }
+        }
+      }
+
+      p {
+        font-size: 21px;
+        opacity: 0;
+        color: white;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        &.flipped {
+          opacity: 1;
+        }
+      }
     }
   }
 
@@ -45,9 +83,18 @@
     left: 50%;
     top: 50%;
     width: 100%;
-    transform: translate(-50%, -50%);
     padding: $col-gutter-large;
     text-align: center;
+    transform-style: preserve-3d;
+
+    transition: transform 2s ease-out, opacity 1s ease-out 1s;
+    transform: translate(-50%, 0) rotateX(50deg);
+    opacity: 0;
+
+    &.enter {
+      transform: translate(-50%, -50%) rotateX(0);
+      opacity: 1;
+    }
 
     @include for-phone-down {
       top: auto;
