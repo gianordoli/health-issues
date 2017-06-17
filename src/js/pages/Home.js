@@ -209,34 +209,39 @@ export default class Home {
       country.innerHTML = geo.name;
       countryContainer.appendChild(country);
 
-      const diseaseIconsList = homeIconsList[disease.name];
-      for (let i = 0; i < 200; i++) {
-        const iconContainer = document.createElement('div');
-        iconContainer.classList.add('icon');
-        // const n = Math.floor(Math.random()*diseaseIconsList.length);
-        const n = i % diseaseIconsList.length;
-        const iconName = diseaseIconsList[n];
-        log.info(iconName);
-        iconContainer.innerHTML = Icons[iconName];
-        iconContainer.style.top
-        topTopicsList.appendChild(iconContainer);
-      }
-
-
       // const diseaseIconsList = homeIconsList[disease.name];
-      // const spacing = 80;
-      // let i = 0;
-      // for (let x=0; x < window.innerWidth; x += spacing) {
-      //   for (let y=0; y < window.innerHeight; y += spacing) {
-      //     const iconContainer = document.createElement('div');
-      //     iconContainer.classList.add('icon');
-      //     const iconName = diseaseIconsList[i % diseaseIconsList.length];
-      //     iconContainer.innerHTML = Icons[iconName];
-      //     iconContainer.style.top
-      //     topTopicsList.appendChild(iconContainer);
-      //     i++;
-      //   }
+      // for (let i = 0; i < 200; i++) {
+      //   const iconContainer = document.createElement('div');
+      //   iconContainer.classList.add('icon');
+      //   // const n = Math.floor(Math.random()*diseaseIconsList.length);
+      //   const n = i % diseaseIconsList.length;
+      //   const iconName = diseaseIconsList[n];
+      //   log.info(iconName);
+      //   iconContainer.innerHTML = Icons[iconName];
+      //   iconContainer.style.top
+      //   topTopicsList.appendChild(iconContainer);
       // }
+
+
+      const diseaseIconsList = homeIconsList[disease.name];
+      const spacing = 140;
+      let i = 0;
+      let line = 0;
+      for (let y=0; y < window.innerHeight; y += spacing) {
+        for (let x = (line % 2 === 0) ? 0 : -spacing/2 ; x < window.innerWidth; x += spacing) {
+          const iconContainer = document.createElement('div');
+          iconContainer.classList.add('icon');
+          topTopicsList.appendChild(iconContainer);
+          const n = i % diseaseIconsList.length;
+          const iconName = diseaseIconsList[n];
+          iconContainer.innerHTML = Icons[iconName];
+          iconContainer.style.top = `${y}px`;
+          iconContainer.style.left = `${x}px`;
+
+          i++;
+        }
+        line++;
+      }
 
       // topTopics.forEach((t, i) => {
       //   const p = document.createElement('p');
