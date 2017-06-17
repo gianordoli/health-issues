@@ -38,12 +38,12 @@ export default class GetMapData {
       },
       {
         terms: [terms.find(t => t.name === 'Yellow fever')],
-        startDate: '2016-11',
+        startDate: '2007-11',
         endDate: '2017-05',
       },
     ]
     this.trendsAPI = trendsAPI;
-    this.callTrendsApi(this.filters[0], this.filters[0].startDate);
+    this.callTrendsApi(this.filters[4], this.filters[4].startDate);
   }
 
   nextMonth(date: string) {
