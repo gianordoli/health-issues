@@ -62,6 +62,7 @@ export default class Intro {
       ['Influenza'],
       ['world'],
       'world',
+      [2004, 2016],
     );
 
     const chartsContainer = document.createElement('div');

@@ -47,8 +47,7 @@ export default class FiltersMenu {
   ) {
     let text = document.createElement('span');
     text.classList.add('sentence');
-    const yearData = (years) ? years : [2004, 2016];
-    text.innerHTML = `Search interest from ${yearData[0]} to ${yearData[1]} for <br>`;
+    text.innerHTML = `Search interest from ${years[0]} to ${years[1]} for <br>`;
     elementsContainer.appendChild(text);
 
     const termsList = document.createElement('span');

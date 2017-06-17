@@ -15,6 +15,7 @@ export default class StoriesLineCharts {
     storySection: string,
     currCase: number,
     geoIso: string,
+    years: [number, number],
     chartData: {
       [key: string]: Array<TrendsAPIGraph>,
     },
@@ -30,6 +31,7 @@ export default class StoriesLineCharts {
     const self = this;
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const { years } = stories[storySection].cases[currCase];
     const path = stories[storySection].cases[currCase].data;
     const isLoading = false;
 
@@ -38,7 +40,7 @@ export default class StoriesLineCharts {
     parentContainer.appendChild(elementsContainer);
 
     d3.json(path, function(chartData) {
-      self.data = { storySection, currCase, chartData, geoIso, range, isLoading };
+      self.data = { storySection, currCase, chartData, geoIso, years, range, isLoading };
       self.createElements(elementsContainer);
     });
   }
@@ -52,6 +54,7 @@ export default class StoriesLineCharts {
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
+    const { years } = stories[storySection].cases[currCase];
     let isLoading = true;
     self.updateData({ isLoading });
 
@@ -60,7 +63,7 @@ export default class StoriesLineCharts {
     });
     d3.json(path, function(chartData) {
       isLoading = false;
-      self.updateData({ currCase, chartData, geoIso, isLoading });
+      self.updateData({ currCase, chartData, geoIso, years, isLoading });
     });
   }
 
@@ -87,7 +90,7 @@ export default class StoriesLineCharts {
   }
 
   createElements(elementsContainer: HTMLElement) {
-    const { storySection, currCase, chartData, geoIso, range } = this.data;
+    const { storySection, currCase, chartData, geoIso, years, range } = this.data;
     const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
     ];
@@ -136,8 +139,9 @@ export default class StoriesLineCharts {
       terms,
       geoList,
       geoIso,
+      years,
       this,
-      this.changeGeo
+      this.changeGeo,
     );
 
     const chartsContainer = document.createElement('div');
@@ -162,7 +166,7 @@ export default class StoriesLineCharts {
   updateElements() {
     let { filtersMenu } = this;
     const { chart, copyContainer, loaderContainer } = this;
-    const { storySection, currCase, chartData, geoIso, isLoading } = this.data;
+    const { storySection, currCase, chartData, geoIso, years, isLoading } = this.data;
     const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
     ];
@@ -179,6 +183,7 @@ export default class StoriesLineCharts {
       terms,
       geoList,
       geoIso,
+      years,
       this,
       this.changeGeo
     );

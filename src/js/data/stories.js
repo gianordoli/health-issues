@@ -8,6 +8,7 @@ module.exports = {
         data: "./data/seasonal-spring.json",
         terms: ["Chickenpox", "Conjunctivitis", "Allergy"],
         geoList: ["US", "AU"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -19,6 +20,7 @@ module.exports = {
         data: "./data/seasonal-summer.json",
         terms: ["Candidiasis", "Skin rash", "Diarrhea"],
         geoList: ["US", "AU"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -30,6 +32,7 @@ module.exports = {
         data: "./data/seasonal-winter.json",
         terms: ["Bronchitis", "Raynaud syndrome", "Cold"],
         geoList: ["US", "AU"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -48,6 +51,7 @@ module.exports = {
         data: "./data/holidays-diwali-festival.json",
         terms: ["Burn", "Pain"],
         geoList: ["IN"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -59,6 +63,7 @@ module.exports = {
         data: "./data/holidays-brazilian-carnival.json",
         terms: ["Mononucleosis"],
         geoList: ["BR"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -70,6 +75,7 @@ module.exports = {
         data: "./data/holidays-new-year.json",
         terms: ["Winter vomiting bug", "Chest pain"],
         geoList: ["world"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -88,6 +94,7 @@ module.exports = {
         data: "./data/media-campaigns.json",
         terms: ["Down's syndrome", "Breast Cancer", "Autism"],
         geoList: ["world"],
+        years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -99,6 +106,7 @@ module.exports = {
         data: "./data/media-pop-culture.json",
         terms: ["Lupus", "Amyotrophic lateral sclerosis"],
         geoList: ["world"],
+        years: [2004, 2016],
         chartType: "trend",
         copyTitle: 'Lorem Ipsum',
         copy: [
@@ -110,6 +118,7 @@ module.exports = {
         data: "./data/media-anti-vaccine.json",
         terms: ["Measles"],
         geoList: ["US"],
+        years: [2004, 2016],
         chartType: "trend",
         copyTitle: 'Lorem Ipsum',
         copy: [
