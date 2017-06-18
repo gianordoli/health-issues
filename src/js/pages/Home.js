@@ -81,7 +81,7 @@ export default class Home {
       geo,
       startDate: self.getPrevMonth(),
     };
-    self.trendsAPI.getTopQueries(filter, function(val){
+    self.trendsAPI.getTopTopics(filter, function(val){
       log.info('From Google Trends: ', val);
       const { item } = val;
       if (item && item.length > 0) {
