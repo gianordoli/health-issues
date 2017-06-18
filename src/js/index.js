@@ -64,11 +64,14 @@ app.main = (function (){
 
       const mainNav = new MainNav(body);
 
+      const header = document.createElement('header');
+      body.appendChild(header);
+      const home = new Home(header, trendsAPI);
+
       const mainContainer = document.createElement('div');
       mainContainer.classList.add('main-container');
       body.appendChild(mainContainer);
 
-      const home = new Home(mainContainer, trendsAPI);
       const intro = new Intro(mainContainer);
       const stories = new Stories(mainContainer);
       explore = new Explore(mainContainer, shinyAPI, trendsAPI);

@@ -1,8 +1,6 @@
 @import 'App';
 
 #home.page {
-  // background-color: darken($color-0, 10%);
-  // background: linear-gradient(123deg, #FA8200 0%, #FD8B84 57%, #FD8B84 57%, #FE8B8C 61%, #FF91E6 100%, #FF91E6 100%, #FF91E6 100%);
   background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
 
   text-align: left;
@@ -15,7 +13,6 @@
   };
 
   .country-container {
-    // border-bottom: 2px solid $color-0;
     border-bottom: 2px solid white;
     padding-bottom: $baseline-height;
     display: inline-block;
@@ -66,6 +63,7 @@
         transition-property: transform, opacity;
         transition-duration: 1s;
         transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        // animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
       }
 
       svg {
@@ -75,8 +73,8 @@
         &.flipped {
           transform: translateY(200%);
           opacity: 0;
+          animation: icon-drop 5s 1;
           path, polygon, circle, rect, ellipse, line {
-            // stroke: white !important;
             stroke: $color-2 !important;
           }
         }
@@ -85,7 +83,6 @@
       p {
         font-size: 21px;
         opacity: 0;
-        // color: white;
         color: $color-2;
         text-align: center;
         display: flex;
@@ -133,13 +130,9 @@
       line-height: 8vw;
       padding: $baseline-height*2;
       margin-bottom: $baseline-height;
-      // text-transform: uppercase;
       letter-spacing: 1px;
-      // color: $color-0;
       background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, $color-1), color-stop(0.8, $color-2));
       background-image: gradient(linear, left top, right bottom, color-stop(0, $color-1), color-stop(0.8, $color-2));
-      // background-image: -webkit-gradient( linear, left top, right bottom, color-stop(0, #FA8200), color-stop(0.57, #FD8B84), color-stop(0.61, #FE8B8C), color-stop(1, #FF91E6));
-      // background-image: gradient( linear, left top, right bottom, color-stop(0, #FA8200), color-stop(0.57, #FD8B84), color-stop(0.61, #FE8B8C), color-stop(1, #FF91E6));
       color:transparent;
       -webkit-background-clip: text;
       background-clip: text;
@@ -148,6 +141,12 @@
         font-size: 12vw;
         line-height: 10vw;
       };
+    }
+
+    .project-description {
+      font-size: 16px;
+      line-height: 21px;
+      margin-bottom: $baseline-height;     
     }
 
     .logos-container {
@@ -188,21 +187,33 @@
   }
 }
 
-@keyframes icon-drop{
-  0% {
-    transform: translateY(0%);
-    opacity: 1;
-  }
-  25% {
-    transform: translateY(200%);
-    opacity: 0;
-  }
-  75% {
-    transform: translateY(-200%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0%);
-    opacity: 1;
-  }
-}
+// @keyframes icon-drop{
+//   0% {
+//     transform: translateY(0%);
+//     opacity: 1;
+//     // path, polygon, circle, rect, ellipse, line {
+//     //   stroke: $color-2 !important;
+//     // }
+//   }
+//   20% {
+//     transform: translateY(200%);
+//     opacity: 0;
+//     // path, polygon, circle, rect, ellipse, line {
+//     //   stroke: $color-2 !important;
+//     // }
+//   }
+//   60% {
+//     transform: translateY(-200%);
+//     opacity: 0;
+//     // path, polygon, circle, rect, ellipse, line {
+//     //   stroke: darken($color-0, 24%) !important;
+//     // }
+//   }
+//   100% {
+//     transform: translateY(0%);
+//     opacity: 1;
+//     // path, polygon, circle, rect, ellipse, line {
+//     //   stroke: darken($color-0, 24%) !important;
+//     // }
+//   }
+// }

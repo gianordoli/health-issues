@@ -141,8 +141,8 @@ export default class Home {
     }, 1000);
 
     const projectDescription = document.createElement('p');
-    projectDescription.id = 'project-description'
-    projectDescription.innerHTML = 'Here goes a project projectDescription. no longer than 2 sentences.'
+    projectDescription.classList.add('project-description');
+    projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
     titleContainer.appendChild(projectDescription);
 
     const logosContainer = document.createElement('div');
