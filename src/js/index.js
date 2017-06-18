@@ -53,7 +53,18 @@ app.main = (function (){
     explore.confirmFilters(explore);
   }
 
-
+  let ticking = false;
+  let scrollY = 0;
+  function scrollTicker(evt: Event, stopAnimation: () => void, home: Home) {
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        ticking = false;
+        scrollY = window.scrollY;
+        stopAnimation(scrollY, home);
+      });
+    }
+    ticking = true;
+  }
 
   function render(shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
 
@@ -82,6 +93,9 @@ app.main = (function (){
       for (let i = stickyElements.length - 1; i >= 0  ; i--) {
         stickyfill.add(stickyElements[i]);
       }
+
+      const bindScrollListener = evt => scrollTicker(evt, home.stopAnimation, home);
+      window.addEventListener('scroll', bindScrollListener);
     }
   }
 

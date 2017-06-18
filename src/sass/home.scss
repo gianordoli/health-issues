@@ -6,7 +6,7 @@
   text-align: left;
   padding: $col-gutter-large;
   color: $color-0;
-  height: 100vh;
+  height: 150vh;
 
   @include for-phone-down {
     padding: $col-gutter-small;
@@ -146,7 +146,7 @@
     .project-description {
       font-size: 16px;
       line-height: 21px;
-      margin-bottom: $baseline-height;     
+      margin-bottom: $baseline-height;
     }
 
     .logos-container {

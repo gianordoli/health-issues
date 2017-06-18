@@ -22,6 +22,7 @@ export default class Home {
   trendsAPI: TrendsAPI;
   countryContainer: HTMLElement;
   topTopicsList: HTMLElement;
+  homeLoop: number;
 
   constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI) {
     const self = this;
@@ -115,6 +116,17 @@ export default class Home {
     }
   }
 
+  stopAnimation(scrollY: number, self: Home) {
+    const introPage= document.querySelector('#intro.page');
+    if (introPage) {
+      const introPageTop = introPage.getBoundingClientRect().top;
+      if (scrollY > introPageTop) {
+        clearInterval(self.homeLoop);
+        self.homeLoop = 0;
+      }
+    }
+  }
+
   updateData(obj) {
     const { data } = this;
     Object.assign(data, obj);
@@ -170,11 +182,20 @@ export default class Home {
     this.topTopicsList = document.createElement('div');
     this.topTopicsList.classList.add('top-topics-list');
     elementsContainer.appendChild(this.topTopicsList);
+
+    const introTextOverlay = document.createElement('div');
+    introTextOverlay.classList.add('intro-text-container');
+    elementsContainer.appendChild(introTextOverlay);
+
+    const introText = document.createElement('p');
+    introText.classList.add('intro-text');
+    introText.innerHTML = 'It begins at sunrise over growing crowds on the National Mall, peaks with the swearing-in and celebratory parade, and continues on to an evening of balls — the spectacle of the inauguration is a full day event that includes dissent in the form of sometimes violent protests. Journey through the inauguration of Donald J. Trump with this interactive video gallery.';
+    elementsContainer.appendChild(introText);
   }
 
   updateElements() {
     const { geo, disease, topTopics } = this.data;
-    const { countryContainer, topTopicsList } = this;
+    const { countryContainer, topTopicsList, homeLoop } = this;
     if (topTopics.length > 0) {
 
       let span = document.createElement('span');
@@ -227,7 +248,8 @@ export default class Home {
         line++;
       }
     }
-
-    setInterval(this.showRandomTopic, 2000);
+    if (!this.homeLoop) {
+      this.homeLoop = setInterval(this.showRandomTopic, 2000);
+    }
   }
 }
