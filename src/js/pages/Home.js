@@ -116,7 +116,7 @@ export default class Home {
     }
   }
 
-  stopAnimation(scrollY: number, self: Home) {
+  checkScroll(scrollY: number, self: Home) {
     const introPage= document.querySelector('#intro.page');
     if (introPage) {
       const introPageTop = introPage.getBoundingClientRect().top;
@@ -124,6 +124,11 @@ export default class Home {
         clearInterval(self.homeLoop);
         self.homeLoop = 0;
       }
+    }
+
+    const introOverlay = document.querySelector('#home.page .intro-overlay');
+    if (introOverlay) {
+      introOverlay.style.opacity = map(scrollY, 0, window.innerHeight, 0, 1);
     }
   }
 
@@ -152,10 +157,10 @@ export default class Home {
       titleContainer.classList.add('enter');
     }, 1000);
 
-    const projectDescription = document.createElement('p');
-    projectDescription.classList.add('project-description');
-    projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
-    titleContainer.appendChild(projectDescription);
+    // const projectDescription = document.createElement('p');
+    // projectDescription.classList.add('project-description');
+    // projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
+    // titleContainer.appendChild(projectDescription);
 
     const logosContainer = document.createElement('div');
     logosContainer.classList.add('logos-container');
@@ -183,14 +188,18 @@ export default class Home {
     this.topTopicsList.classList.add('top-topics-list');
     elementsContainer.appendChild(this.topTopicsList);
 
-    const introTextOverlay = document.createElement('div');
-    introTextOverlay.classList.add('intro-text-container');
-    elementsContainer.appendChild(introTextOverlay);
+    const introOverlay = document.createElement('div');
+    introOverlay.classList.add('intro-overlay');
+    elementsContainer.appendChild(introOverlay);
+
+    const introTextContainer = document.createElement('div');
+    introTextContainer.classList.add('intro-text-container');
+    elementsContainer.appendChild(introTextContainer);
 
     const introText = document.createElement('p');
     introText.classList.add('intro-text');
     introText.innerHTML = 'It begins at sunrise over growing crowds on the National Mall, peaks with the swearing-in and celebratory parade, and continues on to an evening of balls — the spectacle of the inauguration is a full day event that includes dissent in the form of sometimes violent protests. Journey through the inauguration of Donald J. Trump with this interactive video gallery.';
-    elementsContainer.appendChild(introText);
+    introTextContainer.appendChild(introText);
   }
 
   updateElements() {

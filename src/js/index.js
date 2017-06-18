@@ -55,12 +55,13 @@ app.main = (function (){
 
   let ticking = false;
   let scrollY = 0;
-  function scrollTicker(evt: Event, stopAnimation: () => void, home: Home) {
+  function scrollTicker(evt: Event, home: Home, mainNav: MainNav) {
     if (!ticking) {
       window.requestAnimationFrame(function() {
         ticking = false;
         scrollY = window.scrollY;
-        stopAnimation(scrollY, home);
+        home.checkScroll(scrollY, home);
+        mainNav.moveBurger(scrollY, mainNav);
       });
     }
     ticking = true;
@@ -94,7 +95,7 @@ app.main = (function (){
         stickyfill.add(stickyElements[i]);
       }
 
-      const bindScrollListener = evt => scrollTicker(evt, home.stopAnimation, home);
+      const bindScrollListener = evt => scrollTicker(evt, home, mainNav);
       window.addEventListener('scroll', bindScrollListener);
     }
   }

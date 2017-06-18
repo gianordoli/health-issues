@@ -281,21 +281,19 @@ a {
     position: absolute;
     top: $col-gutter-large;
     right: $col-gutter-large;
+    transition: top 0.25s ease-out;
 
     @include for-phone-down {
       top: $col-gutter-small;
       right: ($col-gutter-small*2 - 22px)/2;
     };
 
-    g {
-      transition: stroke 0.25s, top 0.25s ease-out;
+    &.moved {
+      top: 7px;
     }
 
-    &.negative {
-      top: 7px;
-      g {
-        stroke: white;
-      }
+    g {
+      stroke: $color-1;
     }
   }
 

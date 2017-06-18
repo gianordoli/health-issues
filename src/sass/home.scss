@@ -12,6 +12,43 @@
     padding: $col-gutter-small;
   };
 
+  .intro-overlay {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 150vh;
+    background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
+    opacity: 0;
+  }
+
+  .intro-text-container {
+    position: absolute;
+    z-index: 20;
+    top: 110vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: $font-mono;
+    font-size: 21px;
+    line-height: 34px;
+    color: white;
+
+    @include for-phone-down {
+      top: 100vh;
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    .intro-text {
+      width: 800px;
+      max-width: 100%;
+      margin: auto;
+      padding: 0 $col-gutter-large;
+    }
+  }
+
   .country-container {
     border-bottom: 2px solid white;
     padding-bottom: $baseline-height;
@@ -118,18 +155,16 @@
     }
 
     @include for-phone-down {
-      top: auto;
-      bottom: 5%;
       padding: $col-gutter-small;
     };
 
     h1 {
-      font-size: 10vw;
       font-family: $font-sans;
       font-weight: 900;
-      line-height: 8vw;
+      font-size: 12vw;
+      line-height: 10vw;
       padding: $baseline-height*2;
-      margin-bottom: $baseline-height;
+      margin-bottom: $baseline-height*2;
       letter-spacing: 1px;
       background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, $color-1), color-stop(0.8, $color-2));
       background-image: gradient(linear, left top, right bottom, color-stop(0, $color-1), color-stop(0.8, $color-2));
@@ -138,22 +173,29 @@
       background-clip: text;
 
       @include for-phone-down {
-        font-size: 12vw;
-        line-height: 10vw;
+        font-size: 21vw;
+        line-height: 18vw;
+        margin-bottom: 0;
       };
     }
 
-    .project-description {
-      font-size: 16px;
-      line-height: 21px;
-      margin-bottom: $baseline-height;
-    }
+    // .project-description {
+    //   @include type-intro;
+    //   font-weight: 300;
+    //   text-transform: uppercase;
+    //   letter-spacing: 1px;
+    //   margin-bottom: $baseline-height;
+    // }
 
     .logos-container {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
+
+      @include for-phone-down {
+        flex-direction: column;
+      };
 
       .gabriel {
         font-family: $font-sans;

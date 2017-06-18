@@ -19,37 +19,27 @@ export default class MainNav {
       introIsMounted: false,
       storiesOffsetTop: 0,
     }
-    const bindScrollListener = evt => this.checkScroll(evt, this);
-    window.addEventListener('scroll', bindScrollListener);
     this.createElements(parentContainer);
   }
 
-  checkScroll(evt: Event, self: MainNav) {
-    let { ticking, introIsMounted, storiesOffsetTop } = self.data;
+  moveBurger(scrollY: number, self: MainNav) {
     const { hamburger } = self;
+    let { introIsMounted, storiesOffsetTop } = self.data;
 
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        ticking = false;
+    if (!introIsMounted) {
+      const introPage = document.querySelector('#intro.page');
+      if (introPage) introIsMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
+      self.updateData({ introIsMounted });
 
-        if (!introIsMounted) {
-          const introPage = document.querySelector('#intro.page');
-          if (introPage) introIsMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
-          self.updateData({ introIsMounted });
-
-        } else if (storiesOffsetTop === 0) {
-          const storiesPage = document.querySelector('#stories.page');
-          if (storiesPage) storiesOffsetTop = storiesPage.getBoundingClientRect().top;
-          self.updateData({ storiesOffsetTop });
-        } else if (window.scrollY > storiesOffsetTop) {
-
-          hamburger.classList.add('negative');
-        } else {
-          hamburger.classList.remove('negative');
-        }
-      });
+    } else if (storiesOffsetTop === 0) {
+      const storiesPage = document.querySelector('#stories.page');
+      if (storiesPage) storiesOffsetTop = storiesPage.getBoundingClientRect().top;
+      self.updateData({ storiesOffsetTop });
+    } else if (scrollY > storiesOffsetTop) {
+      hamburger.classList.add('moved');
+    } else {
+      hamburger.classList.remove('moved');
     }
-    ticking = true;
   }
 
   hamburgerClick(evt: Event, self: MainNav) {
