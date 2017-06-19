@@ -30008,7 +30008,7 @@
 	            title = 'Trend per year';
 	            yearlyLoop = setInterval(function () {
 	              loopThroughYears(type, title, range);
-	            }, 1000);
+	            }, 2000);
 	            break;
 
 	          case 2:
@@ -30484,7 +30484,7 @@
 	module.exports = {
 	  seasonal: {
 	    title: "Seasons",
-	    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite throughout the year. Compare the data from US and Australia below to see how.",
+	    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite cycles throughout the year. Compare the data from US and Australia below to see how.",
 	    cases: [{
 	      title: "Winter",
 	      data: "./data/seasonal-winter.json",
@@ -32242,10 +32242,12 @@
 
 	      if (type === 'seasonal') {
 	        xAxis.tickFormat(d3.timeFormat('%b'));
+	        // .ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));;
 	      } else if (type === 'trend' || type === 'total') {
 	        xAxis.tickFormat(d3.timeFormat('%Y')).ticks(d3.timeYear.every(2));
 	      } else if (type === 'mixed') {
-	        xAxis.tickFormat(d3.timeFormat('%b %Y')).ticks(d3.timeMonth.every(3));
+	        xAxis.tickFormat(d3.timeFormat('%b %Y')).ticks(5);
+	        // .ticks(d3.timeMonth.every(3));
 	      }
 
 	      var yAxis = d3.axisLeft(y).tickSize(12).ticks(type === 'seasonal' ? 5 : 3);

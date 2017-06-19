@@ -1,7 +1,7 @@
 module.exports = {
   seasonal: {
     title: "Seasons",
-    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite throughout the year. Compare the data from US and Australia below to see how.",
+    intro: "The most obvious thing affecting seasonality in searches for diseases are... the seasons. Or rather, the impact of environmental conditions in our general health. Because of that, Northern and Southern hemispheres experience opposite cycles throughout the year. Compare the data from US and Australia below to see how.",
     cases: [
       {
         title: "Winter",

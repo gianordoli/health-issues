@@ -148,7 +148,7 @@ export default class Intro {
             title = 'Trend per year';
             yearlyLoop = setInterval(function(){
               loopThroughYears(type, title, range);
-            }, 1000);
+            }, 2000);
             break;
 
           case 2:

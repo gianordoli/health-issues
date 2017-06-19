@@ -190,6 +190,7 @@ export default class LineChart {
 
     if (type === 'seasonal') {
       xAxis.tickFormat(d3.timeFormat('%b'));
+      // .ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));;
 
     } else if (type === 'trend' || type === 'total')  {
       xAxis.tickFormat(d3.timeFormat('%Y'))
@@ -197,7 +198,8 @@ export default class LineChart {
 
     } else if (type === 'mixed') {
       xAxis.tickFormat(d3.timeFormat('%b %Y'))
-      .ticks(d3.timeMonth.every(3));
+      .ticks(5);
+      // .ticks(d3.timeMonth.every(3));
     }
 
     const yAxis = d3.axisLeft(y)
