@@ -31,6 +31,10 @@ export function encodedStr (rawStr: string) {
   return encoded;
 }
 
-export function highlightText (text: string) {
-  
+export function highlightText (terms: Array<string>, paragraph: string) {
+  let newParagraph = paragraph;
+  terms.forEach(function(t, i) {
+    newParagraph = newParagraph.split(terms[i]).join(`<span class="highlight term-${i+1}">${terms[i]}</span>`);
+  });
+  return newParagraph;
 }

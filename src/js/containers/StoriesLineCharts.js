@@ -5,6 +5,7 @@ import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
+import { highlightText } from '../util/util';
 import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -72,26 +73,19 @@ export default class StoriesLineCharts {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
+
+    const { storySection, currCase } = this.data;
+    const { terms } = stories[storySection].cases[currCase];
+
     const copyTitleContainer = document.createElement('h5');
     copyTitleContainer.innerHTML = copyTitle;
     copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');
-      // p.innerHTML = this.highlightText(c);
-      p.innerHTML = c;
+      p.innerHTML = highlightText(terms, c);
       copyContainer.appendChild(p);
     }
-  }
-
-  highlightText (paragraph: string) {
-    const { storySection, currCase } = this.data;
-    const { terms } = stories[storySection].cases[currCase];
-    const start = paragraph.indexOf(terms[0]);
-    const end = start + terms[0].length;
-    log.info(terms[0], start, end);
-    return paragraph;
-    // return `${paragraph.slice(0, start)}<span class="highlight">${terms[0]}</span>${paragraph.slice(end)}`;
   }
 
   updateData(obj) {
@@ -101,6 +95,7 @@ export default class StoriesLineCharts {
   }
 
   createElements(elementsContainer: HTMLElement) {
+    log.info('CREATE');
     const { storySection, currCase, chartData, geoIso, years, range } = this.data;
     const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
@@ -175,6 +170,7 @@ export default class StoriesLineCharts {
   }
 
   updateElements() {
+    log.info('UPDATE');
     let { filtersMenu } = this;
     const { chart, copyContainer, loaderContainer } = this;
     const { storySection, currCase, chartData, geoIso, years, isLoading } = this.data;

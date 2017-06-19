@@ -6,6 +6,7 @@ import FiltersMenu from '../components/FiltersMenu';
 import WorldMap from '../visualizations/WorldMap';
 import LineChart from '../visualizations/LineChart';
 import type { TrendsAPIRegionsList, TrendsAPIGraph } from '../util/types';
+import { highlightText } from '../util/util';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
@@ -107,13 +108,17 @@ export default class StoriesEpidemics {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
+
+    const { storySection, currCase } = this.data;
+    const { terms } = stories[storySection].cases[currCase];
+
     const copyTitleContainer = document.createElement('h5');
     copyTitleContainer.innerHTML = copyTitle;
     copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');
-      p.innerHTML = c;
+      p.innerHTML = highlightText(terms, c);
       copyContainer.appendChild(p);
     }
   }
