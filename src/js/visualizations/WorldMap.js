@@ -15,12 +15,29 @@ export default class WorldMap {
   worldFeatures;
   svg: () => {};
   tip: () => {};
+  colorScale: () => {};
 
   constructor(parentContainer: HTMLElement, data: Array<TrendsAPIRegion>) {
     const self = this;
     self.data = data;
     self.width = parentContainer.offsetWidth;
     self.height = self.width * 0.5;
+
+    self.colorScale = d3
+      .scaleThreshold()
+      .domain([10, 20, 30, 40, 50, 60, 70, 80, 90])
+      .range([
+        '#fff5eb',
+        '#fee6ce',
+        '#fdd0a2',
+        '#fdae6b',
+        '#fd8d3c',
+        '#f16913',
+        '#d94801',
+        '#a63603',
+        '#7f2704',
+      ]);
+
     d3.json(
       './data/world-topo.json',
       function(error, world) {
@@ -40,7 +57,7 @@ export default class WorldMap {
   createElements(parentContainer: HTMLElement) {
     log.info('createElements');
     const parentContainerSelection = d3.select(parentContainer);
-    const { width, height, worldFeatures } = this;
+    const { width, height, worldFeatures, colorScale } = this;
 
     this.svg = parentContainerSelection
       .append('svg')
@@ -73,21 +90,6 @@ export default class WorldMap {
       .attr('class', 'country')
       .attr('d', path);
 
-    var color = d3
-      .scaleThreshold()
-      .domain([10, 20, 30, 40, 50, 60, 70, 80, 90])
-      .range([
-        '#fff5eb',
-        '#fee6ce',
-        '#fdd0a2',
-        '#fdae6b',
-        '#fd8d3c',
-        '#f16913',
-        '#d94801',
-        '#a63603',
-        '#7f2704',
-      ]);
-
     // Legend
     const x = d3.scaleLinear()
       .domain([10, 90])
@@ -98,8 +100,8 @@ export default class WorldMap {
       .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
 
     legend.selectAll('rect')
-      .data(color.range().map(function(d) {
-        d = color.invertExtent(d);
+      .data(colorScale.range().map(function(d) {
+        d = colorScale.invertExtent(d);
         if (d[0] == null) d[0] = x.domain()[0];
         if (d[1] == null) d[1] = x.domain()[1];
         return d;
@@ -108,7 +110,7 @@ export default class WorldMap {
         .attr('height', 5)
         .attr('x', d => x(d[0]))
         .attr('width', d => x(d[1]) - x(d[0]))
-        .attr('fill', d => color(d[0]));
+        .attr('fill', d => colorScale(d[0]));
 
     legend.append('text')
       .attr('class', 'legend')
@@ -120,7 +122,7 @@ export default class WorldMap {
     legend.call(d3.axisBottom(x)
       .tickSize(9)
       .tickFormat(function(x, i) { return x })
-      .tickValues(color.domain()))
+      .tickValues(colorScale.domain()))
       .select('.domain')
       .remove();
 
@@ -128,7 +130,7 @@ export default class WorldMap {
   }
 
   updateElements() {
-    const { data, width, height, svg, tip, worldFeatures } = this;
+    const { data, width, height, svg, tip, colorScale, worldFeatures } = this;
 
     const valueByRegion = {};
     data.forEach(d => {
@@ -143,6 +145,11 @@ export default class WorldMap {
 
     const worldMap = svg.select('.map');
     worldMap.selectAll('.country')
+      // .attr('fill', d => {
+      //   let value = valueByRegion[d.properties.countryCode];
+      //   if (value === undefined) value = 0;
+      //   return colorScale(value);
+      // })
       .attr('fill', d => {
         const value = valueByRegion[d.properties.countryCode];
         const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
