@@ -10,7 +10,7 @@ module.exports = {
         geoList: ["US", "AU"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Winter",
         copy: [
           "The interest for these three topics starts on Fall and reaches its peak during Winter. Our respiratory system has trouble expelling invader under low temperatures. This vulnerability leads to the high number of cold cases, caused by several types of viruses.",
           "Bronchitis is an inflammation in the lungs, often triggered by the low humidity. It can be caused by the same viruses of a cold or flu, but also by mites found in blankets and sheets.",
@@ -24,7 +24,7 @@ module.exports = {
         geoList: ["US", "AU"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Spring",
         copy: [
           "The flower season is beautiful, but can become a nightmare for allergics. The pollen released by plants leads to various reactions, like rhinitis and conjunctivitis. The same thing happens in the beginning of the Fall.",
           "And as the temperature goes up and people start going to pools and gyms, they get more exposed to eye infections caused by viruses and bacteria.",
@@ -38,7 +38,7 @@ module.exports = {
         geoList: ["US", "AU"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Summer",
         copy: [
           "Summer presents the perfect conditions for the fungus Candida albicans. Wet bikinis and trunks ease its propagation in the genitalia, leading to candidiasis. The heat is also ideal for the multiplication of the bacteria that causes diarrhea.",
           "Many things can affect the the skin during this time of the year. Sunblock and lotions can block the sweat glands, leading to skin rashes, itchiness, and red spots.",
@@ -58,7 +58,7 @@ module.exports = {
         geoList: ["world"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "New Year",
         copy: [
           "A recent study from Melbourne University, Australia, shows that the risks of heart attack rise by 4% during the holidays season. Some possible reasons are emotional stress, alcohol abuse, and changes in people’s diet. Cardiac issues cause a notorious bump in searches for “chest pain” in the first months of the year.",
           "Another common problem during the period is the norovirus, aka Winter vomiting bug. It provokes gastrointestinal problems, such as diarrhea and vomiting. The infection is more active on Winter, rising in several countries of the Northern Hemisphere. But the food eaten during the festivities may also play a role for its spread.",
@@ -71,7 +71,7 @@ module.exports = {
         geoList: ["BR"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Brazilian Carnival",
         copy: [
           "Mononucleosis, aka “kissing disease”,  is a popular search term in Brazil in February. It is the end of the Carnival, the popular festival known for samba, parties, creative costumes — and hookups. It is also a great time for the Epstein-Barr virus, transmitted via saliva. The disease can cause fever and swelling of lymph nodes on neck and armpit."
         ],
@@ -83,7 +83,7 @@ module.exports = {
         geoList: ["IN"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Diwali Festival",
         copy: [
           "Diwali is one of the most important festivals for Hinduism. It happens during five days between October and November, celebrating the victory of light over darkness, good over evil, and knowledge over ignorance. Two common practices during that time are lighting candles and burning firecrackers. They end up leading to smaller fire incidents and hundreds of burn injuries every year.",
         ],
@@ -101,7 +101,7 @@ module.exports = {
         geoList: ["world"],
         years: [2004, 2016],
         chartType: "seasonal",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Campaigns",
         copy: [
           "Not every growth in searches is directly related with an increase in cases of a disease. Sometimes spikes are simply caused by media events such as annual awareness campaigns. One of the most popular ones happens in October, the Breast Cancer Awareness Month. Other examples are the World Down Syndrome Day, on March 21st, and the World Autism Awareness Day, on April 2nd.",
         ],
@@ -113,7 +113,7 @@ module.exports = {
         geoList: ["world"],
         years: [2004, 2016],
         chartType: "trend",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Pop Culture",
         copy: [
           "Celebrities also play a major role in the popularity of certain health topics. That’s the case for Selena Gomez and lupus, an inflammatory disease that affects joints, skin and kidneys. The singer canceled her shows on October 2015 and September 2016, to treat the disease.",
           "Famous people also helped boost the searches for Amyotrophic Lateral Sclerosis, aka ALS. A problem in the nervous system, the disease got a lot of media attention thanks to the “Ice Bucket Challenge” in 2014. Even former US President George W. Bush dumped cold water on his head, challenging Bill Clinton. Obama declined the challenge, but donated to the campaign.",
@@ -126,7 +126,7 @@ module.exports = {
         geoList: ["US"],
         years: [2004, 2016],
         chartType: "trend",
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Anti-vaccine",
         copy: [
           "In a 1998 paper, British researcher Andrew Wakefield claimed that vaccines cause autism in children. The idea started to gain traction in the 2000’s. Celebrities like Jim Carrey and Charlie Sheen, publicly supported the anti-vaccine movement.",
           "A link between vaccines and autism was never scientifically proved and Wakefield’s paper was declared a fraud. He ended up losing his medical registry in 2010.",
@@ -146,7 +146,7 @@ module.exports = {
         terms: ["Ebola"],
         geoList: ["world"],
         years: [2014, 2015],
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Ebola",
         copy: [
           "The disease frightened the world for its ease to spread and high mortality. There were 28,616 cases and 11,310 deaths in Liberia, Guinea and Sierra Leone during 2014 and 2015. The World Health Organization declared the West African outbreaks an international public health emergency in August 2014.",
           "The interest for the disease reached its peak with the first case confirmed in the US in October 2014.  Other cases were reported in Nigeria, Senegal, Spain, Mali, United Kingdom, and Italy.",
@@ -159,7 +159,7 @@ module.exports = {
         terms: ["Zika virus"],
         geoList: ["world"],
         years: [2015, 2016],
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Zika",
         copy: [
           "The first Zika cases reported in Brazil in 2015, were mistaken by dengue or chikungunya. Both diseases are also transmitted by the Aedes aegypti mosquito. But by mid-2015, the World Health Organization confirmed Zika infections in Brazil and Colombia. The cases were rapidly followed by outbreaks in Latin America and the Caribbean. Cape Verde had an outbreak by late 2015, raising concern in the African continent.",
           "In the beginning of 2016, scientists proved the relationship between Zika and microcephaly, a condition where a baby’s brain and skull doesn’t fully develop during pregnancy. The discovery added to the concerns about Brazil hosting the Olympics that year.",
@@ -172,7 +172,7 @@ module.exports = {
         terms: ["MERS"],
         geoList: ["world"],
         years: [2013, 2015],
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "MERS",
         copy: [
           "The first case of Middle East Respiratory Syndrome, caused by the MERS-CoV virus, was reported in Saudi Arabia in 2012. Researchers believe that the virus transferred from an animal to a human. 75% of camels in Saudi Arabia tested positive for the virus, which was also found in a bat.",
           "Beginning in the Spring of 2014, the country experienced a major MERS outbreak. From there, it spread to other countries in Sub-Saharan Africa, Middle East and Asia. In May 2015, confirmed cases in South Korea triggered a new peak in interest for the disease.",
@@ -186,7 +186,7 @@ module.exports = {
         terms: ["Yellow fever"],
         geoList: ["world"],
         years: [2016, 2017],
-        copyTitle: "Lorem Ipsum",
+        copyTitle: "Yellow Fever",
         copy: [
           "African countries have seen outbreaks of yellow fever for at least the past 30 years. In 2008, cases in Brazil and Paraguay raised worldwide concern about the infection.",
           "In 2016, China confirmed yellow fever cases, considered the first ever in Asia. The most accepted theory about the case is that Chinese workers returning home from Angola brought the virus to the country.",

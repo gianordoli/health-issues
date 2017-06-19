@@ -44,7 +44,7 @@ export default class Explore {
   geoSelect: selectize;
 
   loaderContainer: HTMLElement;
-  mergeButton: HTMLElement;
+  mergeButton: HTMLButtonElement;
   topQueriesList: HTMLElement;
 
   seasonalChart: LineChart;
@@ -352,7 +352,7 @@ export default class Explore {
       onChange: bindHandleChange,
       openOnFocus: false,
       closeAfterSelect: true,
-      placeholder: 'Select'
+      placeholder: 'Type'
     });
     self.diseaseSelect = diseaseSelectize[0].selectize;
 
@@ -407,6 +407,15 @@ export default class Explore {
     chartItem = document.createElement('div');
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
+
+    self.mergeButton = document.createElement('button');
+    const { mergeButton } = self;
+    const bindToggleChartMerge = evt => self.toggleChartMerge(evt, self);
+    mergeButton.classList.add('merge-button');
+    mergeButton.innerHTML = 'See Interest over time';
+    mergeButton.addEventListener('click', bindToggleChartMerge);
+    chartItem.appendChild(mergeButton);
+
     self.trendChart = new LineChart(chartItem, 'trend');
 
 
@@ -446,12 +455,12 @@ export default class Explore {
       diseaseSelect.setValue(diseases.map(d => d.entity), true);
     }
 
-    // mergeButton.innerHTML = isMerged ? 'Split Charts' : 'Merge Charts';
+    mergeButton.innerHTML = isMerged ? 'See Trend Over Time' : 'See Interest Over Time';
 
     // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
     if(!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
       seasonalChart.updateData(seasonal);
-      isMerged ? trendChart.updateData(total) : trendChart.updateData(trend);
+      isMerged ? trendChart.updateData(total, 'interest') : trendChart.updateData(trend, 'trend');
 
       if (topQueries.length > 0) {
 

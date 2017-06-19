@@ -258,7 +258,7 @@ export default class Home {
       }
     }
     if (!this.homeLoop) {
-      this.homeLoop = setInterval(this.showRandomTopic, 2000);
+      this.homeLoop = setInterval(this.showRandomTopic, 1500);
     }
   }
 }

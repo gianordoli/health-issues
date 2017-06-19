@@ -72,13 +72,14 @@ export default class StoriesLineCharts {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
-    // const copyTitleContainer = document.createElement('h5');
-    // copyTitleContainer.innerHTML = copyTitle;
-    // copyContainer.appendChild(copyTitleContainer);
+    const copyTitleContainer = document.createElement('h5');
+    copyTitleContainer.innerHTML = copyTitle;
+    copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');
-      p.innerHTML = this.highlightText(c);
+      // p.innerHTML = this.highlightText(c);
+      p.innerHTML = c;
       copyContainer.appendChild(p);
     }
   }

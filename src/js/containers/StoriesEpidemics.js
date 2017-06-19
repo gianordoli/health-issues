@@ -107,9 +107,9 @@ export default class StoriesEpidemics {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
-    // const copyTitleContainer = document.createElement('h5');
-    // copyTitleContainer.innerHTML = copyTitle;
-    // copyContainer.appendChild(copyTitleContainer);
+    const copyTitleContainer = document.createElement('h5');
+    copyTitleContainer.innerHTML = copyTitle;
+    copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');

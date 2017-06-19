@@ -81,7 +81,6 @@ export default class Intro {
     row.appendChild(slidesContainer);
 
     for (const i of introSlides) {
-      log.info(i);
       const slide = document.createElement('div');
       slide.classList.add('slide');
       slidesContainer.appendChild(slide);
@@ -114,7 +113,6 @@ export default class Intro {
         term: chartData[0].term,
         points: chartData[0].points.slice(yearlyLoopIndex * 12, yearlyLoopIndex * 12 + 12),
       }
-      log.info(data);
       chart.updateData([data], type, title);
       if (yearlyLoopIndex < 12) {
         yearlyLoopIndex ++;
