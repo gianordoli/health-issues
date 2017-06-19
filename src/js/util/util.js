@@ -30,3 +30,7 @@ export function encodedStr (rawStr: string) {
   });
   return encoded;
 }
+
+export function highlightText (text: string) {
+  
+}

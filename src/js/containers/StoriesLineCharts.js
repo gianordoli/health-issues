@@ -72,15 +72,25 @@ export default class StoriesLineCharts {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
-    const copyTitleContainer = document.createElement('h5');
-    copyTitleContainer.innerHTML = copyTitle;
-    copyContainer.appendChild(copyTitleContainer);
+    // const copyTitleContainer = document.createElement('h5');
+    // copyTitleContainer.innerHTML = copyTitle;
+    // copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');
-      p.innerHTML = c;
+      p.innerHTML = this.highlightText(c);
       copyContainer.appendChild(p);
     }
+  }
+
+  highlightText (paragraph: string) {
+    const { storySection, currCase } = this.data;
+    const { terms } = stories[storySection].cases[currCase];
+    const start = paragraph.indexOf(terms[0]);
+    const end = start + terms[0].length;
+    log.info(terms[0], start, end);
+    return paragraph;
+    // return `${paragraph.slice(0, start)}<span class="highlight">${terms[0]}</span>${paragraph.slice(end)}`;
   }
 
   updateData(obj) {

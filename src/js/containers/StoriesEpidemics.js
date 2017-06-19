@@ -107,9 +107,9 @@ export default class StoriesEpidemics {
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
-    const copyTitleContainer = document.createElement('h5');
-    copyTitleContainer.innerHTML = copyTitle;
-    copyContainer.appendChild(copyTitleContainer);
+    // const copyTitleContainer = document.createElement('h5');
+    // copyTitleContainer.innerHTML = copyTitle;
+    // copyContainer.appendChild(copyTitleContainer);
 
     for (const c of copy) {
       const p = document.createElement('p');
@@ -199,7 +199,7 @@ export default class StoriesEpidemics {
     slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
-    chartsContainer.appendChild(slider);    
+    chartsContainer.appendChild(slider);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;

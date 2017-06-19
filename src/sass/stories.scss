@@ -207,6 +207,7 @@
 
 /* Tooltip */
 .d3-tip {
+  z-index: 1000;
   max-width: 200px;
   padding: $elements-padding;
   line-height: $baseline-height*1.5;
