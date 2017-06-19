@@ -157,10 +157,10 @@ export default class Home {
       titleContainer.classList.add('enter');
     }, 1000);
 
-    // const projectDescription = document.createElement('p');
-    // projectDescription.classList.add('project-description');
-    // projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
-    // titleContainer.appendChild(projectDescription);
+    const projectDescription = document.createElement('p');
+    projectDescription.classList.add('project-description');
+    projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
+    titleContainer.appendChild(projectDescription);
 
     const logosContainer = document.createElement('div');
     logosContainer.classList.add('logos-container');
@@ -198,7 +198,7 @@ export default class Home {
 
     const introText = document.createElement('p');
     introText.classList.add('intro-text');
-    introText.innerHTML = 'It begins at sunrise over growing crowds on the National Mall, peaks with the swearing-in and celebratory parade, and continues on to an evening of balls — the spectacle of the inauguration is a full day event that includes dissent in the form of sometimes violent protests. Journey through the inauguration of Donald J. Trump with this interactive video gallery.';
+    introText.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us when and what people worry about when it comes to health, and tell us how epidemics spread through the world.';
     introTextContainer.appendChild(introText);
   }
 

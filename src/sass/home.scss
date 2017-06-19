@@ -12,67 +12,6 @@
     padding: $col-gutter-small;
   };
 
-  .intro-overlay {
-    position: absolute;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 150vh;
-    background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
-    opacity: 0;
-  }
-
-  .intro-text-container {
-    position: absolute;
-    z-index: 20;
-    top: 110vh;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-family: $font-mono;
-    font-size: 21px;
-    line-height: 34px;
-    color: white;
-
-    @include for-phone-down {
-      top: 100vh;
-      font-size: 16px;
-      line-height: 21px;
-    }
-
-    .intro-text {
-      width: 800px;
-      max-width: 100%;
-      margin: auto;
-      padding: 0 $col-gutter-large;
-    }
-  }
-
-  .country-container {
-    border-bottom: 2px solid white;
-    padding-bottom: $baseline-height;
-    display: inline-block;
-    color: white;
-    font-size: 16px;
-    line-height: 21px;
-
-    @include for-phone-down {
-      @include type-body-1;
-    };
-
-    .disease-container, .country {
-      font-weight: 700;
-      @include for-phone-down {
-        @include type-body-2;
-      };
-    }
-
-    .disease-container {
-      color: $color-1;
-    }
-  }
-
   .top-topics-list {
     position: fixed;
     z-index: 1;
@@ -134,9 +73,35 @@
     }
   }
 
+  .country-container {
+    position: relative;
+    z-index: 2;
+    border-bottom: 2px solid white;
+    padding-bottom: $baseline-height;
+    display: inline-block;
+    color: white;
+    font-size: 16px;
+    line-height: 21px;
+
+    @include for-phone-down {
+      @include type-body-1;
+    };
+
+    .disease-container, .country {
+      font-weight: 700;
+      @include for-phone-down {
+        @include type-body-2;
+      };
+    }
+
+    .disease-container {
+      color: $color-1;
+    }
+  }
+
   .title-container {
     position: absolute;
-    z-index: 10;
+    z-index: 3;
     left: 50%;
     top: 50%;
     width: 100%;
@@ -203,6 +168,7 @@
         font-size: 21px;
         line-height: $baseline-height*3;
         @include for-phone-down {
+          margin-top: $baseline-height;
           @include type-intro;
         };
       }
@@ -215,7 +181,8 @@
         width: 200px;
         height: $baseline-height*3;
         @include for-phone-down {
-          width: 40%;
+          width: 45%;
+          margin-top: -$baseline-height/2;
         }
 
         svg {
@@ -225,6 +192,43 @@
           fill: white;
         }
       }
+    }
+  }
+
+  .intro-overlay {
+    position: absolute;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 150vh;
+    background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
+    opacity: 0;
+  }
+
+  .intro-text-container {
+    position: absolute;
+    z-index: 5;
+    top: 110vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: $font-mono;
+    font-size: 21px;
+    line-height: 34px;
+    color: white;
+
+    @include for-phone-down {
+      top: 100vh;
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    .intro-text {
+      width: 800px;
+      max-width: 100%;
+      margin: auto;
+      padding: 0 $col-gutter-large;
     }
   }
 }
