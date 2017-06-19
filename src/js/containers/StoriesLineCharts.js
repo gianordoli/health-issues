@@ -95,7 +95,6 @@ export default class StoriesLineCharts {
   }
 
   createElements(elementsContainer: HTMLElement) {
-    log.info('CREATE');
     const { storySection, currCase, chartData, geoIso, years, range } = this.data;
     const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
@@ -170,7 +169,6 @@ export default class StoriesLineCharts {
   }
 
   updateElements() {
-    log.info('UPDATE');
     let { filtersMenu } = this;
     const { chart, copyContainer, loaderContainer } = this;
     const { storySection, currCase, chartData, geoIso, years, isLoading } = this.data;

@@ -23,6 +23,21 @@ export default class WorldMap {
     self.width = parentContainer.offsetWidth;
     self.height = self.width * 0.5;
 
+    // const rangeLenght = 10;
+    // const colorInterpolator = d3.interpolateRgb('rgb(255, 255, 255)', 'rgb(25, 130, 0)');
+    // let domain = [];
+    // let range = [];
+    // for (let i = 1; i <= rangeLenght; i++ ) {
+    //   domain.push(i*10);
+    //   log.info(i/10);
+    //   range.push(colorInterpolator(1/10));
+    // }
+    // log.info(domain, range);
+    // self.colorScale = d3
+    //   .scaleThreshold()
+    //   .domain(domain)
+    //   .range(range);
+
     self.colorScale = d3
       .scaleThreshold()
       .domain([10, 20, 30, 40, 50, 60, 70, 80, 90])
