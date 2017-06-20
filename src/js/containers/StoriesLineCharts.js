@@ -5,7 +5,7 @@ import StoriesNavBar from '../components/StoriesNavBar';
 import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
-import { highlightText } from '../util/util';
+import { encodedStr, highlightText } from '../util/util';
 import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -75,15 +75,16 @@ export default class StoriesLineCharts {
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
 
     const { storySection, currCase } = this.data;
-    const { terms } = stories[storySection].cases[currCase];
+    let { terms } = stories[storySection].cases[currCase];
 
     const copyTitleContainer = document.createElement('h5');
     copyTitleContainer.innerHTML = copyTitle;
     copyContainer.appendChild(copyTitleContainer);
 
+    terms = terms.map(h => encodedStr(h));
     for (const c of copy) {
       const p = document.createElement('p');
-      p.innerHTML = highlightText(terms, c);
+      p.innerHTML = highlightText(terms, encodedStr(c));
       copyContainer.appendChild(p);
     }
   }
