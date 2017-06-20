@@ -122,10 +122,10 @@ export default class Home {
   }
 
   checkScroll(scrollY: number, self: Home) {
-    const introPage= document.querySelector('#intro.page');
-    if (introPage) {
-      const introPageTop = introPage.getBoundingClientRect().top;
-      if (scrollY > introPageTop) {
+    const mainContainer= document.querySelector('.main-container');
+    if (mainContainer) {
+      const mainContainerTop = mainContainer.offsetTop;
+      if (scrollY > mainContainerTop) {
         clearInterval(self.homeLoop);
         self.homeLoop = 0;
       }
