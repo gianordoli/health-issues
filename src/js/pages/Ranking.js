@@ -1,9 +1,10 @@
 // @flow weak
 
-import ranking from '../data/ranking';
+import diseasesRanking from '../data/diseasesRanking';
 import log from 'loglevel';
+import '../../sass/ranking.scss';
 
-export default class StoriesRanking {
+export default class Ranking {
 
   constructor(parentContainer: HTMLElement) {
     this.createElements(parentContainer);
@@ -69,12 +70,33 @@ export default class StoriesRanking {
   createElements(parentContainer: HTMLElement) {
 
     const elementsContainer = document.createElement('div');
-    elementsContainer.classList.add('story-section', 'ranking');
+    elementsContainer.id = 'ranking';
+    elementsContainer.classList.add('page');
     parentContainer.appendChild(elementsContainer);
+
+    const sticky = document.createElement('div');
+    sticky.classList.add('sticky');
+    elementsContainer.appendChild(sticky);
+
+    const pageHeader = document.createElement('div');
+    pageHeader.classList.add('page-header');
+    sticky.appendChild(pageHeader);
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    pageHeader.appendChild(container);
+
+    const pageName = document.createElement('p');
+    pageName.innerHTML = "Ranking";
+    container.appendChild(pageName);
+
+    const pageBody = document.createElement('div');
+    pageBody.classList.add('page-body');
+    elementsContainer.appendChild(pageBody);
 
     const sectionHeader = document.createElement('div');
     sectionHeader.classList.add('section-header', 'container');
-    elementsContainer.appendChild(sectionHeader);
+    pageBody.appendChild(sectionHeader);
 
     const headerContent = document.createElement('div');
     headerContent.classList.add('header-content');
@@ -90,7 +112,7 @@ export default class StoriesRanking {
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body', 'container');
-    elementsContainer.appendChild(sectionBody);
+    pageBody.appendChild(sectionBody);
 
     const slideshow = document.createElement('div');
     slideshow.classList.add('slideshow');
@@ -111,7 +133,7 @@ export default class StoriesRanking {
     rankingTable.classList.add('ranking-table');
     rankingTableContainer.appendChild(rankingTable);
 
-    for(const r of ranking) {
+    for(const r of diseasesRanking) {
       const rankingColumn = document.createElement('div');
       rankingColumn.classList.add('ranking-column');
       rankingTable.appendChild(rankingColumn);

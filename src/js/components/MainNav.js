@@ -91,7 +91,7 @@ export default class MainNav {
     const linksContainer = document.createElement('ul');
     nav.appendChild(linksContainer);
 
-    const links = ['home', 'intro', 'explore', 'about'];
+    const links = ['home', 'intro', 'explore', 'ranking', 'about'];
     for (const l of links) {
       const li = document.createElement('li');
       linksContainer.appendChild(li);

@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Intro from './pages/Intro';
 import Stories from './pages/Stories';
 import Explore from './pages/Explore';
+import Ranking from './pages/Ranking';
 import About from './pages/About';
 import ShinyAPI from './api/ShinyAPI';
 import TrendsAPI from './api/TrendsAPI';
@@ -87,6 +88,7 @@ app.main = (function (){
       const intro = new Intro(mainContainer);
       const stories = new Stories(mainContainer);
       explore = new Explore(mainContainer, shinyAPI, trendsAPI);
+      const ranking = new Ranking(mainContainer);
       const about = new About(mainContainer);
 
       stickyfill.init();

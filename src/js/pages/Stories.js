@@ -2,7 +2,6 @@
 
 import StoriesLineCharts from '../containers/StoriesLineCharts';
 import StoriesEpidemics from '../containers/StoriesEpidemics';
-import StoriesRanking from '../containers/StoriesRanking';
 import LineChart from '../visualizations/LineChart';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -45,6 +44,5 @@ export default class Stories {
     const storiesHolidays = new StoriesLineCharts(pageBody, 'holidays', 15);
     const storiesMedia = new StoriesLineCharts(pageBody, 'media');
     const storiesEpidemics = new StoriesEpidemics(pageBody, 'epidemics');
-    const storiesRanking = new StoriesRanking(pageBody);
   }
 }
