@@ -37,7 +37,8 @@ export default class Explore {
     topQueries: TrendsAPITopQueries[],
     isMerged: boolean,
     isChanging: boolean,
-    isLoading: boolean
+    isLoading: boolean,
+    isInitialized: boolean,
   };
 
   diseaseSelect: selectize;
@@ -67,6 +68,7 @@ export default class Explore {
       isMerged: false,
       isChanging: false,
       isLoading: false,
+      isInitialized: false,
     }
     const self = this;
     self.trendsAPI = trendsAPI;
@@ -118,6 +120,31 @@ export default class Explore {
     }
 
     self.createElements(parentContainer);
+  }
+
+  checkScroll(scrollY: number, self: Explore) {
+    const { isInitialized } = self.data;
+    if (!isInitialized) {
+      const mainContainer = document.querySelector('.main-container');
+      const storiesPage = document.querySelector('#stories.page');
+      if (mainContainer && storiesPage) {
+        const storiesPageTop = mainContainer.offsetTop + storiesPage.offsetTop;
+        if (scrollY > storiesPageTop) {
+          self.initializeExplore(self);
+        }
+      }
+    }
+  }
+
+  initializeExplore(self: Explore) {
+    log.info('initializeExplore');
+    const randomNames = ['Sunburn', 'Lyme disease', 'Dehydration'];
+    const random = randomNames[Math.round(Math.random()*randomNames.length)];
+    const diseases = [terms.find(t => t.name === random)];
+    const geo = countries[0];
+    const isInitialized = true;
+    self.updateData({ diseases, geo, isInitialized });
+    self.confirmFilters(self);
   }
 
   handleSelectDiseaseChange(value: string[], self: Explore) {

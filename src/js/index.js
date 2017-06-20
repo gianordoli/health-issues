@@ -42,27 +42,16 @@ app.main = (function (){
     });
   }
 
-  function initializeExplore() {
-    log.info('initializeExplore');
-    const diseases = [
-      terms.find(t => t.name === 'Sunburn'),
-      // terms.find(t => t.name === 'Dehydration'),
-      // terms.find(t => t.name === 'Lyme disease'),
-    ];
-    const geo = countries[0];
-    explore.updateData({ diseases, geo });
-    explore.confirmFilters(explore);
-  }
-
   let ticking = false;
   let scrollY = 0;
-  function scrollTicker(evt: Event, home: Home, mainNav: MainNav) {
+  function scrollTicker(evt: Event, home: Home, mainNav: MainNav, explore: Explore) {
     if (!ticking) {
       window.requestAnimationFrame(function() {
         ticking = false;
         scrollY = window.scrollY;
         home.checkScroll(scrollY, home);
         mainNav.moveBurger(scrollY, mainNav);
+        explore.checkScroll(scrollY, explore);
       });
     }
     ticking = true;
@@ -97,7 +86,7 @@ app.main = (function (){
         stickyfill.add(stickyElements[i]);
       }
 
-      const bindScrollListener = evt => scrollTicker(evt, home, mainNav);
+      const bindScrollListener = evt => scrollTicker(evt, home, mainNav, explore);
       window.addEventListener('scroll', bindScrollListener);
     }
   }
