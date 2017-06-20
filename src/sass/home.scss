@@ -159,6 +159,11 @@
       line-height: 26px;
       text-align: center;
 
+      @include for-tablet-portrait-down {
+          @include type-body-2;
+          width: 65vw;
+      }
+
       @include for-phone-down {
         @include type-body-1;
         margin-bottom: $baseline-height;
