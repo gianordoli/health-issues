@@ -301,13 +301,17 @@ export default class Explore {
     sectionHeader.classList.add('section-header', 'container');
     pageBody.appendChild(sectionHeader);
 
+    const headerContent = document.createElement('div');
+    headerContent.classList.add('header-content');
+    sectionHeader.appendChild(headerContent);
+
     const title = document.createElement('h3');
     title.innerHTML = 'Your Turn';
-    sectionHeader.appendChild(title);
+    headerContent.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Maybe something specific to your country? Pick up to 3 options from the list below and choose a location to start exploring.";
-    sectionHeader.appendChild(intro);
+    headerContent.appendChild(intro);
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body', 'container');

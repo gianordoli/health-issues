@@ -422,6 +422,18 @@ a {
 .section-header {
   margin: $baseline-height*2 auto;
 
+  .header-content {
+    width: (($container-max-width - $col-gutter-large*8)*2/3 + $col-gutter-large*4);
+
+    @include for-tablet-landscape-down {
+      width: calc((100% - #{$col-gutter-large}*4)*2/3 + #{$col-gutter-large}*2);
+    }
+
+    @include for-tablet-portrait-down {
+      width: 100%;
+    }
+  }
+
   p {
     @include type-intro;
   }

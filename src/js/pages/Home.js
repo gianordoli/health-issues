@@ -130,11 +130,6 @@ export default class Home {
         self.homeLoop = 0;
       }
     }
-
-    const introOverlay = document.querySelector('#home.page .intro-overlay');
-    if (introOverlay) {
-      introOverlay.style.opacity = map(scrollY, 0, window.innerHeight, 0, 1);
-    }
   }
 
   updateData(obj) {
@@ -164,7 +159,7 @@ export default class Home {
 
     const projectDescription = document.createElement('p');
     projectDescription.classList.add('project-description');
-    projectDescription.innerHTML = 'Search trends and patterns for health issues via Google searches';
+    projectDescription.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us when and what people worry about when it comes to health, and tell us how epidemics spread through the world.';
     titleContainer.appendChild(projectDescription);
 
     const logosContainer = document.createElement('div');
@@ -192,19 +187,6 @@ export default class Home {
     this.topTopicsList = document.createElement('div');
     this.topTopicsList.classList.add('top-topics-list');
     elementsContainer.appendChild(this.topTopicsList);
-
-    const introOverlay = document.createElement('div');
-    introOverlay.classList.add('intro-overlay');
-    elementsContainer.appendChild(introOverlay);
-
-    const introTextContainer = document.createElement('div');
-    introTextContainer.classList.add('intro-text-container');
-    elementsContainer.appendChild(introTextContainer);
-
-    const introText = document.createElement('p');
-    introText.classList.add('intro-text');
-    introText.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us when and what people worry about when it comes to health, and tell us how epidemics spread through the world.';
-    introTextContainer.appendChild(introText);
   }
 
   updateElements() {

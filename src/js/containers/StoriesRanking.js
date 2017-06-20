@@ -76,13 +76,17 @@ export default class StoriesRanking {
     sectionHeader.classList.add('section-header', 'container');
     elementsContainer.appendChild(sectionHeader);
 
+    const headerContent = document.createElement('div');
+    headerContent.classList.add('header-content');
+    sectionHeader.appendChild(headerContent);
+
     const title = document.createElement('h3');
     title.innerHTML = 'Top 10';
-    sectionHeader.appendChild(title);
+    headerContent.appendChild(title);
 
     const intro = document.createElement('p');
     intro.innerHTML = "These are the main health-related worries in the world, by year.";
-    sectionHeader.appendChild(intro);
+    headerContent.appendChild(intro);
 
     const sectionBody = document.createElement('div');
     sectionBody.classList.add('section-body', 'container');
