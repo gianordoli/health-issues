@@ -9,7 +9,7 @@ import ShinyAPI from '../api/ShinyAPI';
 import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../util/types';
 
 // Data and Utils
-import { arrayIsEqual } from '../util/util';
+import { arrayIsEqual, pickRandomIndex } from '../util/util';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import { dummyData } from '../scripts/data';
@@ -139,7 +139,8 @@ export default class Explore {
   initializeExplore(self: Explore) {
     log.info('initializeExplore');
     const randomNames = ['Sunburn', 'Lyme disease', 'Dehydration'];
-    const random = randomNames[Math.round(Math.random()*randomNames.length)];
+    const random = randomNames[pickRandomIndex(randomNames.length)];
+    log.info(random);
     const diseases = [terms.find(t => t.name === random)];
     const geo = countries[0];
     const isInitialized = true;

@@ -38,3 +38,8 @@ export function highlightText (terms: Array<string>, paragraph: string) {
   });
   return newParagraph;
 }
+
+export function pickRandomIndex(max: number) {
+  let i = Math.round(Math.random()*max);
+  return Math.min(Math.max(parseInt(i), 0), max);
+}

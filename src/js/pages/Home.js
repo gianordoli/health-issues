@@ -5,7 +5,7 @@ import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import Icons from '../util/icons';
-import { map } from '../util/util';
+import { map, pickRandomIndex } from '../util/util';
 import homeIconsList from '../data/homeIconsList';
 import * as d3 from 'd3';
 import $ from 'jquery';
@@ -105,19 +105,21 @@ export default class Home {
 
   showRandomTopic() {
     const iconContainers = document.querySelectorAll('#home.page .top-topics-list .icon');
-    const randomIcon = iconContainers[Math.floor(Math.random()*iconContainers.length)];
+    if(iconContainers.length > 0) {
+      const i = Math.floor(Math.random()*iconContainers.length);
+      const randomIcon = iconContainers[pickRandomIndex(iconContainers.length)];
+      let svg, p;
+      svg = randomIcon.querySelector('svg');
+      p = randomIcon.querySelector('p');
+      if (svg && p) {
+        svg.classList.add('flipped');
+        p.classList.add('flipped');
 
-    let svg, p;
-    svg = randomIcon.querySelector('svg');
-    p = randomIcon.querySelector('p');
-    if (svg && p) {
-      svg.classList.add('flipped');
-      p.classList.add('flipped');
-
-      setTimeout(function() {
-        svg.classList.remove('flipped');
-        p.classList.remove('flipped');
-      }, 4000);
+        setTimeout(function() {
+          svg.classList.remove('flipped');
+          p.classList.remove('flipped');
+        }, 4000);
+      }
     }
   }
 

@@ -30,9 +30,12 @@ export default class StoriesEpidemics {
   slider: HTMLInputElement;
   copyContainer: HTMLElement;
   loaderContainer: HTMLElement;
+  playLoop: number;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
     const self = this;
+    self.playLoop = 0;
+
     const currCase = 0;
     const geoIso = stories[storySection].cases[currCase].geoList[0];
     const { years } = stories[storySection].cases[currCase];
@@ -104,7 +107,39 @@ export default class StoriesEpidemics {
   handleSliderChange(event, self: StoriesEpidemics) {
     const { value } = event.target;
     const currMonth = parseInt(value);
+    clearInterval(self.playLoop);
+    self.playLoop = 0;
     self.updateData({ currMonth });
+  }
+
+  startPlayback(event: Event, self: StoriesEpidemics) {
+    log.info('startPlayback');
+    const { slider } = self;
+    const maxVal = parseInt(slider.max);
+    const totalTime = 5000;
+    const interval = totalTime/maxVal;
+    log.info(self.playLoop)
+    if (self.playLoop === 0) {
+      self.playLoop = setInterval(function(){
+        self.play(self);
+      }, interval);
+    }
+  }
+
+  play(self: StoriesEpidemics) {
+    log.info('play');
+    const { slider } = self;
+    const curVal = parseInt(slider.value);
+    const maxVal = parseInt(slider.max);
+    if (curVal < maxVal) {
+      const newVal = curVal + 1;
+      const currMonth = newVal;
+      slider.value = newVal.toString();
+      self.updateData({ currMonth });
+    } else {
+      clearInterval(self.playLoop);
+      self.playLoop = 0;
+    }
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
@@ -201,6 +236,12 @@ export default class StoriesEpidemics {
     chartItem.classList.add('chart-item');
     chartsContainer.appendChild(chartItem);
     this.lineChart = new LineChart(chartItem, 'mixed');
+
+    const playButton = document.createElement('button');
+    playButton.innerHTML = '';
+    const bindStartPlayback = evt => this.startPlayback(evt, this);
+    playButton.addEventListener('click', bindStartPlayback);
+    chartsContainer.appendChild(playButton);
 
     this.slider = document.createElement('input');
     const { slider } = this;
