@@ -4,7 +4,7 @@ import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import { seasonalRatio } from '../util/constants';
 import introSlides from '../data/introSlides';
-import { encodedStr } from '../util/util';
+import { encodedStr, highlightText } from '../util/util';
 import * as d3 from 'd3';
 import { graphScroll } from 'graph-scroll';
 import log from 'loglevel';
@@ -97,9 +97,10 @@ export default class Intro {
       title.innerHTML = i.title;
       content.appendChild(title);
 
+      const terms = i.highlights.map(h => encodedStr(h));
       for (const c of i.copy) {
         const paragraph = document.createElement('p');
-        paragraph.innerHTML = c;
+        paragraph.innerHTML = highlightText(terms, encodedStr(c));
         content.appendChild(paragraph);
       }
     }
