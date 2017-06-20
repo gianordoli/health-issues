@@ -46,7 +46,7 @@ export default class About {
 
     const summary = document.createElement('div');
     summary.classList.add('summary');
-    summary.innerHTML = "SearchMD is a collaboration between <a href='https://newslab.withgoogle.com/' target='_blank'>Google News Lab</a> and <a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a>. It uses Google Search Trends to identify patterns in health-related searches.";
+    summary.innerHTML = "imnotfeelingwell.com is a collaboration between <a href='https://newslab.withgoogle.com/' target='_blank'>Google News Lab</a> and <a href='http://gianordoli.com' target='_blank'>Gabriel Gianordoli</a>. It uses Google Search Trends to identify patterns in health-related searches.";
     row.appendChild(summary);
 
     const aboutData = document.createElement('div');
