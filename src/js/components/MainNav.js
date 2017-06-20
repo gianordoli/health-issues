@@ -1,6 +1,6 @@
 // @flow weak
 
-import Icons from '../util/icons';
+import icons from '../util/icons';
 import log from 'loglevel';
 
 export default class MainNav {
@@ -70,7 +70,7 @@ export default class MainNav {
     this.hamburger = document.createElement('div');
     const { hamburger } = this;
     hamburger.classList.add('hamburger');
-    hamburger.innerHTML = Icons.hamburgerMenu;
+    hamburger.innerHTML = icons.hamburgerMenu;
     const bindHamburgerClick = evt => this.hamburgerClick(evt, this);
     hamburger.addEventListener('click', bindHamburgerClick);
     mainNavContainer.appendChild(hamburger);
@@ -83,7 +83,7 @@ export default class MainNav {
 
     const close = document.createElement('div');
     close.classList.add('close');
-    close.innerHTML = Icons.close;
+    close.innerHTML = icons.close;
     const bindCloseClick = evt => this.closeClick(evt, this);
     close.addEventListener('click', bindCloseClick);
     nav.appendChild(close);

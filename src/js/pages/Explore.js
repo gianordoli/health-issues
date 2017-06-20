@@ -444,7 +444,7 @@ export default class Explore {
     const { mergeButton } = self;
     const bindToggleChartMerge = evt => self.toggleChartMerge(evt, self);
     mergeButton.classList.add('merge-button');
-    mergeButton.innerHTML = 'See Interest over time';
+    mergeButton.innerHTML = 'See Total Interest';
     mergeButton.addEventListener('click', bindToggleChartMerge);
     chartItem.appendChild(mergeButton);
 
@@ -487,7 +487,7 @@ export default class Explore {
       diseaseSelect.setValue(diseases.map(d => d.entity), true);
     }
 
-    mergeButton.innerHTML = isMerged ? 'See Trend Over Time' : 'See Interest Over Time';
+    mergeButton.innerHTML = isMerged ? 'See Trend' : 'See Total Interest';
 
     // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
     if(!isChanging && !isLoading && trend.length > 0 && total.length > 0) {

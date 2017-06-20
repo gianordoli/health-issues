@@ -4,7 +4,7 @@ import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
-import Icons from '../util/icons';
+import icons from '../util/icons';
 import { map, pickRandomIndex } from '../util/util';
 import homeIconsList from '../data/homeIconsList';
 import * as d3 from 'd3';
@@ -179,7 +179,7 @@ export default class Home {
 
     const gnl = document.createElement('div');
     gnl.classList.add('google-news-lab-logo');
-    gnl.innerHTML = Icons.googleNewsLabLogo;
+    gnl.innerHTML = icons.googleNewsLabLogo;
     logosContainer.appendChild(gnl);
 
     this.countryContainer = document.createElement('div');
@@ -230,7 +230,7 @@ export default class Home {
           const distToCenter = Math.abs(height/2 - y);
           const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
           iconContainer.classList.add('icon');
-          iconContainer.innerHTML = Icons[iconName];
+          iconContainer.innerHTML = icons[iconName];
           iconContainer.style.top = `${y}px`;
           iconContainer.style.left = `${x}px`;
           iconContainer.style.opacity = opacity;

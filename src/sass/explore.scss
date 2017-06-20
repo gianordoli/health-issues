@@ -17,10 +17,12 @@
     left: 100%;
     transform: translateX(-100%);
     padding: 2px 4px;
-    transition-property: background-color, color;
-    transition-duration: 0.25s;
 
     &:hover {
+      background-color: lighten($color-0, 52%);
+    }
+
+    &:active {
       background-color: lighten($color-0, 48%);
     }
   }

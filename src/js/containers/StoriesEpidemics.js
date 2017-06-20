@@ -7,6 +7,7 @@ import WorldMap from '../visualizations/WorldMap';
 import LineChart from '../visualizations/LineChart';
 import type { TrendsAPIRegionsList, TrendsAPIGraph } from '../util/types';
 import { encodedStr, highlightText } from '../util/util';
+import icons from '../util/icons';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
@@ -237,11 +238,16 @@ export default class StoriesEpidemics {
     chartsContainer.appendChild(chartItem);
     this.lineChart = new LineChart(chartItem, 'mixed');
 
-    const playButton = document.createElement('button');
-    playButton.innerHTML = '';
+    const controls = document.createElement('div');
+    controls.classList.add('controls');
+    chartsContainer.appendChild(controls);
+
+    const playButton = document.createElement('div');
+    playButton.classList.add('play-button');
+    playButton.innerHTML = icons.play;
     const bindStartPlayback = evt => this.startPlayback(evt, this);
     playButton.addEventListener('click', bindStartPlayback);
-    chartsContainer.appendChild(playButton);
+    controls.appendChild(playButton);
 
     this.slider = document.createElement('input');
     const { slider } = this;
@@ -251,7 +257,7 @@ export default class StoriesEpidemics {
     slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
-    chartsContainer.appendChild(slider);
+    controls.appendChild(slider);
 
     this.copyContainer = document.createElement('div');
     const { copyContainer } = this;

@@ -23,4 +23,5 @@ export default {
   medicine: require('../../images/medicine.svg'),
   virus: require('../../images/virus.svg'),
   dizziness: require('../../images/dizziness.svg'),
+  play: require('../../images/play.svg'),
 }
