@@ -67,10 +67,15 @@ export default class Home {
     log.info('getUserCountry');
     const self = this;
     $.get("https://ipinfo.io", function(response) {
-      const { country } = response;
-      const geo = self.countryToGeo(country);
-      callback(geo);
-    }, 'jsonp');
+      if (response) {
+        const { country } = response;
+        const geo = self.countryToGeo(country);
+        callback(geo);
+      }
+    }, 'jsonp')
+    .fail(function() {
+      callback('US');
+    });
   }
 
   getTrendsAPITopTopics(){
