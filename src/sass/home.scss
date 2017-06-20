@@ -112,16 +112,22 @@
 
     transition: transform 2s ease-out, opacity 1s ease-out 1s;
     transform: translate(-50%, 0) rotateX(50deg);
+    perspective: 200px;
+    perspective-origin: 0 0;
+    transform-origin: left;
     opacity: 0;
-
-    &.enter {
-      transform: translate(-50%, -50%) rotateX(0);
-      opacity: 1;
-    }
 
     @include for-phone-down {
       padding: $col-gutter-small;
     };
+
+    &.enter {
+      transform: translate(-50%, -50%) rotateX(0);
+      opacity: 1;
+      @include for-phone-down {
+        transform: translate(-50%, -40%) rotateX(0);
+      }
+    }
 
     h1 {
       font-family: $font-sans;
@@ -144,13 +150,20 @@
       };
     }
 
-    // .project-description {
-    //   @include type-intro;
-    //   font-weight: 300;
-    //   text-transform: uppercase;
-    //   letter-spacing: 1px;
-    //   margin-bottom: $baseline-height;
-    // }
+    .project-description {
+      width: 940px;
+      max-width: 100%;
+      margin-bottom: $baseline-height*3;
+      font-family: $font-mono;
+      font-size: 18px;
+      line-height: 26px;
+      text-align: center;
+
+      @include for-phone-down {
+        @include type-body-1;
+        margin-bottom: $baseline-height;
+      };
+    }
 
     .logos-container {
       display: flex;
@@ -195,42 +208,42 @@
     }
   }
 
-  .intro-overlay {
-    position: absolute;
-    z-index: 4;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 150vh;
-    background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
-    opacity: 0;
-  }
-
-  .intro-text-container {
-    position: absolute;
-    z-index: 5;
-    top: 110vh;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-family: $font-mono;
-    font-size: 21px;
-    line-height: 34px;
-    color: white;
-
-    @include for-phone-down {
-      top: 100vh;
-      font-size: 16px;
-      line-height: 21px;
-    }
-
-    .intro-text {
-      width: 700px;
-      max-width: 100%;
-      margin: auto;
-      padding: 0 $col-gutter-large;
-    }
-  }
+  // .intro-overlay {
+  //   position: absolute;
+  //   z-index: 4;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 150vh;
+  //   background: linear-gradient(123deg, darken($color-0, 10%) 0%, $color-0 100%);
+  //   opacity: 0;
+  // }
+  //
+  // .intro-text-container {
+  //   position: absolute;
+  //   z-index: 5;
+  //   top: 110vh;
+  //   left: 0;
+  //   width: 100%;
+  //   text-align: center;
+  //   font-family: $font-mono;
+  //   font-size: 21px;
+  //   line-height: 34px;
+  //   color: white;
+  //
+  //   @include for-phone-down {
+  //     top: 100vh;
+  //     font-size: 16px;
+  //     line-height: 21px;
+  //   }
+  //
+  //   .intro-text {
+  //     width: 700px;
+  //     max-width: 100%;
+  //     margin: auto;
+  //     padding: 0 $col-gutter-large;
+  //   }
+  // }
 }
 
 // @keyframes icon-drop{

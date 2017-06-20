@@ -158,7 +158,7 @@ export default class Home {
     }, 1000);
 
     const projectDescription = document.createElement('p');
-    projectDescription.classList.add('project-description');
+    projectDescription.classList.add('project-description', 'container');
     projectDescription.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us when and what people worry about when it comes to health, and tell us how epidemics spread through the world.';
     titleContainer.appendChild(projectDescription);
 
