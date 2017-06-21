@@ -67,6 +67,12 @@ export default class StoriesEpidemics {
     });
   }
 
+  resizeCharts(self: StoriesEpidemics) {
+    const { worldMap, lineChart } = self;
+    worldMap.resizeChart();
+    lineChart.resizeChart();
+  }
+
   loadNewCase(
     event: Event,
     self: StoriesEpidemics,

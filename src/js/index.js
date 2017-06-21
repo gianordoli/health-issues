@@ -59,7 +59,7 @@ app.main = (function (){
 
   let resizeTimer;
   let width = window.innerWidth;
-  function resizeListener(evt: Event, home: Home, intro: Intro, explore: Explore) {
+  function resizeListener(evt: Event, home: Home, intro: Intro, stories: Stories, explore: Explore) {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function() {
       const newWidth = window.innerWidth;
@@ -67,6 +67,7 @@ app.main = (function (){
         width = newWidth;
         home.createBgIcons(home);
         intro.resizeLineChart(intro);
+        stories.resizeAllCharts(stories);
         explore.resizeLineCharts(explore);
       }
     }, 1000);
@@ -104,7 +105,7 @@ app.main = (function (){
 
       const bindScrollListener = evt => scrollTicker(evt, home, mainNav, explore);
       window.addEventListener('scroll', bindScrollListener);
-      const bindResizeListener = evt => resizeListener(evt, home, intro, explore);
+      const bindResizeListener = evt => resizeListener(evt, home, intro, stories, explore);
       window.addEventListener('resize', bindResizeListener);
     }
   }

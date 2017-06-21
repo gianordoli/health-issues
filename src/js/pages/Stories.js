@@ -9,8 +9,21 @@ import '../../sass/stories.scss';
 
 export default class Stories {
 
+  storiesSeasonal: StoriesLineCharts;
+  storiesHolidays: StoriesLineCharts;
+  storiesMedia: StoriesLineCharts;
+  storiesEpidemics: StoriesEpidemics;
+
   constructor(parentContainer: HTMLElement) {
     this.createElements(parentContainer);
+  }
+
+  resizeAllCharts(self: Stories) {
+    const { storiesSeasonal, storiesHolidays, storiesMedia, storiesEpidemics } = self;
+    storiesSeasonal.resizeLineChart(storiesSeasonal);
+    storiesHolidays.resizeLineChart(storiesHolidays);
+    storiesMedia.resizeLineChart(storiesMedia);
+    storiesEpidemics.resizeCharts(storiesEpidemics);
   }
 
   createElements(parentContainer: HTMLElement) {
@@ -40,9 +53,9 @@ export default class Stories {
     pageBody.classList.add('page-body');
     elementsContainer.appendChild(pageBody);
 
-    const storiesSeasonal = new StoriesLineCharts(pageBody, 'seasonal');
-    const storiesHolidays = new StoriesLineCharts(pageBody, 'holidays', 15);
-    const storiesMedia = new StoriesLineCharts(pageBody, 'media');
-    const storiesEpidemics = new StoriesEpidemics(pageBody, 'epidemics');
+    this.storiesSeasonal = new StoriesLineCharts(pageBody, 'seasonal');
+    this.storiesHolidays = new StoriesLineCharts(pageBody, 'holidays', 15);
+    this.storiesMedia = new StoriesLineCharts(pageBody, 'media');
+    this.storiesEpidemics = new StoriesEpidemics(pageBody, 'epidemics');
   }
 }

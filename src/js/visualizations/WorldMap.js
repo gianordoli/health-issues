@@ -63,6 +63,10 @@ export default class WorldMap {
     );
   }
 
+  resizeChart() {
+    
+  }
+
   updateData(data) {
     this.data = data;
     // console.log('D3 ->', this.data);

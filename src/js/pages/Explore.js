@@ -122,7 +122,7 @@ export default class Explore {
     self.createElements(parentContainer);
   }
 
-  resizeLineCharts(self: Intro) {
+  resizeLineCharts(self: Explore) {
     const { seasonalChart, trendChart } = self;
     seasonalChart.resizeChart();
     trendChart.resizeChart();
