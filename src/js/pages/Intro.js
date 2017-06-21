@@ -82,11 +82,13 @@ export default class Intro {
 
     const slidesContainer = document.createElement('div');
     slidesContainer.classList.add('slides-container');
+    if (window.innerWidth < 600) slidesContainer.style.paddingTop = `${window.innerHeight*0.5}px`;
     row.appendChild(slidesContainer);
 
     for (const i of introSlides) {
       const slide = document.createElement('div');
       slide.classList.add('slide');
+      slide.style.paddingBottom = `${window.innerHeight*0.5}px`;
       slidesContainer.appendChild(slide);
 
       const content = document.createElement('div');

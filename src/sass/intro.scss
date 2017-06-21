@@ -69,12 +69,12 @@
           width: 100%;
           position: relative;
           margin: 0;
-          padding-top: 50vh;
+          // padding-top: 50vh;
           z-index: 100;
         }
         .slide {
           width: 100%;
-          padding-bottom: 50vh;
+          // padding-bottom: 50vh;
           opacity: 0.3;
 
           @include for-phone-down {
