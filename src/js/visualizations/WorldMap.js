@@ -87,13 +87,13 @@ export default class WorldMap {
   appendCountries() {
     const { svg, width, height, worldFeatures } = this;
 
-    svg.selectAll("*").remove();
-
     const projection = d3.geoEquirectangular()
       .scale((width - 3) / (2 * Math.PI))
       .translate([width * 0.5, height * 0.5]);
 
     const path = d3.geoPath().projection(projection);
+
+    svg.selectAll('.map').remove();
 
     const worldMap = svg.append('g')
       .attr('class', 'map');
@@ -134,45 +134,43 @@ export default class WorldMap {
 
     svg.call(this.tip);
 
-    this.appendCountries();
+    // Legend
+    const x = d3.scaleLinear()
+      .domain([10, 90])
+      .rangeRound([height, width]);
 
-    // // Legend
-    // const x = d3.scaleLinear()
-    //   .domain([10, 90])
-    //   .rangeRound([height, width]);
-    //
-    // const legend = svg.append('g')
-    //   .attr('class', 'legend')
-    //   .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
-    //
-    // legend.selectAll('rect')
-    //   .data(colorScale.range().map(function(d) {
-    //     d = colorScale.invertExtent(d);
-    //     if (d[0] == null) d[0] = x.domain()[0];
-    //     if (d[1] == null) d[1] = x.domain()[1];
-    //     return d;
-    //   }))
-    //   .enter().append('rect')
-    //     .attr('height', 5)
-    //     .attr('x', d => x(d[0]))
-    //     .attr('width', d => x(d[1]) - x(d[0]))
-    //     .attr('fill', d => colorScale(d[0]));
-    //
-    // legend.append('text')
-    //   .attr('class', 'legend')
-    //   .attr('x', x.range()[0])
-    //   .attr('y', -6)
-    //   .attr('text-anchor', 'start')
-    //   .text('Search amount:');
-    //
-    // legend.call(d3.axisBottom(x)
-    //   .tickSize(9)
-    //   .tickFormat(function(x, i) { return x })
-    //   .tickValues(colorScale.domain()))
-    //   .select('.domain')
-    //   .remove();
-    //
-    // this.updateElements();
+    const legend = svg.append('g')
+      .attr('class', 'legend')
+      .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
+
+    legend.selectAll('rect')
+      .data(colorScale.range().map(function(d) {
+        d = colorScale.invertExtent(d);
+        if (d[0] == null) d[0] = x.domain()[0];
+        if (d[1] == null) d[1] = x.domain()[1];
+        return d;
+      }))
+      .enter().append('rect')
+        .attr('height', 5)
+        .attr('x', d => x(d[0]))
+        .attr('width', d => x(d[1]) - x(d[0]))
+        .attr('fill', d => colorScale(d[0]));
+
+    legend.append('text')
+      .attr('class', 'legend')
+      .attr('x', x.range()[0])
+      .attr('y', -6)
+      .attr('text-anchor', 'start')
+      .text('Search amount:');
+
+    legend.call(d3.axisBottom(x)
+      .tickSize(9)
+      .tickFormat(function(x, i) { return x })
+      .tickValues(colorScale.domain()))
+      .select('.domain')
+      .remove();
+
+    this.appendCountries();
   }
 
   updateElements() {
