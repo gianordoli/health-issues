@@ -373,7 +373,7 @@ export default class Explore {
       const option = document.createElement('option');
       option.setAttribute('value', d.entity);
       option.setAttribute('key', i);
-      option.innerHTML = d.alias ? d.alias : d.name;
+      option.innerHTML = d.name;
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);

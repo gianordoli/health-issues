@@ -156,13 +156,13 @@ module.exports = {
         title: "Zika",
         mapData: "./data/epidemics-zika.json",
         chartData: "./data/epidemics-zika-time-series.json",
-        terms: ["Zika virus"],
+        terms: ["Zika"],
         geoList: ["world"],
         years: [2015, 2016],
         copyTitle: "Zika",
         copy: [
           "The first Zika cases reported in Brazil in 2015, were mistaken by dengue or chikungunya. Both diseases are also transmitted by the Aedes aegypti mosquito. But by mid-2015, the World Health Organization confirmed zika infections in Brazil and Colombia. The cases were rapidly followed by outbreaks in Latin America and the Caribbean. Cape Verde had an outbreak by late 2015, raising concern in the African continent.",
-          "In the beginning of 2016, scientists proved the relationship between the Zika virus and microcephaly, a condition where a baby’s brain and skull doesn’t fully develop during pregnancy. The discovery added to the concerns about Brazil hosting the Olympics that year.",
+          "In the beginning of 2016, scientists proved the relationship between the zika virus and microcephaly, a condition where a baby’s brain and skull doesn’t fully develop during pregnancy. The discovery added to the concerns about Brazil hosting the Olympics that year.",
         ],
       },
       {

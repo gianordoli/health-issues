@@ -3,7 +3,6 @@
 export type Term = {
   entity: string,
   name: string,
-  alias: string | null,
 }
 
 export type Geo = {

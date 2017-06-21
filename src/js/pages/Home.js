@@ -28,7 +28,7 @@ export default class Home {
     const self = this;
     self.data ={
       geo: { iso: '', name: ''},
-      disease: { name: '', entity: '', alias: ''},
+      disease: { name: '', entity: ''},
       topTopics: [],
     }
     self.trendsAPI = trendsAPI;``
