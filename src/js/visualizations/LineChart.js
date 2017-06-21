@@ -50,6 +50,7 @@ export default class LineChart {
     this.svg
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom);
+    this.updateElements();
   }
 
   createEmptyChart(type: string) {
@@ -154,6 +155,8 @@ export default class LineChart {
   updateElements() {
     const { data, width, height, margin, svg, title, type, range } = this;
     const transitionDuration = 500;
+
+    log.info(width);
 
     const x = d3.scaleTime()
       .range([0, width])

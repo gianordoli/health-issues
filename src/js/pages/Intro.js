@@ -26,6 +26,11 @@ export default class Intro {
     });
   }
 
+  resizeLineChart(self: Intro) {
+    const { chart } = self;
+    chart.resizeChart();
+  }
+
   createElements(elementsContainer: HTMLElement, chartData) {
 
     const pageBody = document.createElement('div');
