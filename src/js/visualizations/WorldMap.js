@@ -137,34 +137,28 @@ export default class WorldMap {
 
     const thresholdScale = d3.scaleThreshold()
         .domain([1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+        // .range([
+        //   d3.hsl(-100, 0.95, 0.52),
+        //   d3.hsl(  80, 1.15, 0.62),
+        //   d3.hsl( 0, 0.55, 0.52)]
+        // );
         .range(d3.range(11).map(function(i) {
-          return "q" + i + "-9";
+          return 'q' + i + '-10';
         }));
 
-    svg.append("g")
-      .attr("class", "legendThreshold")
-      .attr("transform", "translate(20,20)");
+    svg.append('g')
+      .attr('class', 'legendThreshold')
+      .attr('transform', 'translate(20,20)');
 
     const colorLegend = legend.legendColor()
-        // .labelFormat(d3.format(".2f"))
-        // .labels(legend.legendHelpers.thresholdLabels)
         .labels(function({ i, genLength, generatedLabels, domain }){
           return domain[i];
-          // if (i === 0 ){
-          //   return generatedLabels[i]
-          //     .replace('NaN to', 'Less than')
-          // } else if (i === genLength - 1) {
-          //   return `More than
-          //     ${generatedLabels[genLength - 1]
-          //     .replace(' to NaN', '')}`
-          // }
-          // return generatedLabels[i]
         })
         .orient('horizontal')
         .useClass(true)
         .scale(thresholdScale)
 
-    svg.select(".legendThreshold")
+    svg.select('.legendThreshold')
       .call(colorLegend);
 
     // // Legend
@@ -220,24 +214,33 @@ export default class WorldMap {
         : (d.value = 0);
     });
 
+    var generator = d3.scaleLinear()
+      .domain([0,50,100])
+      .range([
+        d3.hsl(-100, 0.95, 0.52),
+        d3.hsl(  80, 1.15, 0.62),
+        d3.hsl( 0, 0.55, 0.52)]
+      )
+      .interpolate(d3.interpolateCubehelix);
+
     const worldMap = svg.select('.map');
     worldMap.selectAll('.country')
-      // .attr('fill', d => {
-      //   let value = valueByRegion[d.properties.countryCode];
-      //   if (value === undefined) value = 0;
-      //   return colorScale(value);
-      // })
       .attr('fill', d => {
-        const value = valueByRegion[d.properties.countryCode];
-        const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
-        return `rgba(250, 130, 0, ${alpha})`
+        let value = valueByRegion[d.properties.countryCode];
+        if (value === undefined) value = 0;
+        return generator(value);
       })
+      // .attr('fill', d => {
+      //   const value = valueByRegion[d.properties.countryCode];
+      //   const alpha = value === undefined || value === 0 ? 0 : map(value, 0, 100, 0.1, 1);
+      //   return `rgba(250, 130, 0, ${alpha})`
+      // })
       .style('cursor', d => valueByRegion[d.properties.countryCode] ? 'pointer' : 'auto')
       .on('mouseover', function(d) {
         const val = valueByRegion[d.properties.countryCode];
         if (val) {
-          const tooltipHed = `<span class="country">${d.properties.name}:</span>`;
-          const tooltipVal = `<span class="value">${valueByRegion[d.properties.countryCode]}</span>`;
+          const tooltipHed = `<span class='country'>${d.properties.name}:</span>`;
+          const tooltipVal = `<span class='value'>${valueByRegion[d.properties.countryCode]}</span>`;
           tip.show(tooltipHed + tooltipVal);
         }
       })
