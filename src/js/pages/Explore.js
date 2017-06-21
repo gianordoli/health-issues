@@ -122,6 +122,12 @@ export default class Explore {
     self.createElements(parentContainer);
   }
 
+  resizeLineCharts(self: Intro) {
+    const { seasonalChart, trendChart } = self;
+    seasonalChart.resizeChart();
+    trendChart.resizeChart();
+  }
+
   checkScroll(scrollY: number, self: Explore) {
     const { isInitialized } = self.data;
     if (!isInitialized) {

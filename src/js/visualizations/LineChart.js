@@ -156,8 +156,6 @@ export default class LineChart {
     const { data, width, height, margin, svg, title, type, range } = this;
     const transitionDuration = 500;
 
-    log.info(width);
-
     const x = d3.scaleTime()
       .range([0, width])
       .domain( d3.extent(data[0].points, function(p) { return p.date }) );
