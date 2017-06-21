@@ -26,6 +26,7 @@ export default class Home {
 
   constructor(parentContainer: HTMLElement, trendsAPI: TrendsAPI) {
     const self = this;
+    self.homeLoop = 0;
     self.data ={
       geo: { iso: '', name: ''},
       disease: { name: '', entity: ''},
@@ -101,6 +102,46 @@ export default class Home {
         self.getTrendsAPITopTopics();
       }
     });
+  }
+
+  createBgIcons(self: Home) {
+    const { disease, topTopics } = self.data;
+    const { topTopicsList, homeLoop } = self;
+    const diseaseIconsList = homeIconsList[disease.name];
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const spacing = width < 600 ? 70 : 140;
+    let i = 0;
+    let line = 0;
+    if (topTopics.length > 0) {
+      topTopicsList.innerHTML = '';
+      for (let y=0; y < height; y += spacing) {
+        for (let x = (line % 2 === 0) ? 0 : -spacing/2 ; x < width; x += spacing) {
+          const iconContainer = document.createElement('div');
+          const n = i % diseaseIconsList.length;
+          const iconName = diseaseIconsList[n];
+          const distToCenter = Math.abs(height/2 - y);
+          const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
+          iconContainer.classList.add('icon');
+          iconContainer.innerHTML = icons[iconName];
+          iconContainer.style.top = `${y}px`;
+          iconContainer.style.left = `${x}px`;
+          iconContainer.style.opacity = opacity;
+          topTopicsList.appendChild(iconContainer);
+
+          const p = document.createElement('p');
+          const randomTopic = topTopics[Math.floor(Math.random()*topTopics.length)];
+          p.innerHTML = randomTopic.title;
+          iconContainer.appendChild(p);
+
+          i++;
+        }
+        line++;
+      }
+      clearInterval(self.homeLoop);
+      self.homeLoop = 0;
+      self.homeLoop = setInterval(this.showRandomTopic, 1500);
+    }
   }
 
   showRandomTopic() {
@@ -216,38 +257,7 @@ export default class Home {
       country.innerHTML = geo.name;
       countryContainer.appendChild(country);
 
-      const diseaseIconsList = homeIconsList[disease.name];
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const spacing = width < 600 ? 70 : 140;
-      let i = 0;
-      let line = 0;
-      for (let y=0; y < height; y += spacing) {
-        for (let x = (line % 2 === 0) ? 0 : -spacing/2 ; x < width; x += spacing) {
-          const iconContainer = document.createElement('div');
-          const n = i % diseaseIconsList.length;
-          const iconName = diseaseIconsList[n];
-          const distToCenter = Math.abs(height/2 - y);
-          const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
-          iconContainer.classList.add('icon');
-          iconContainer.innerHTML = icons[iconName];
-          iconContainer.style.top = `${y}px`;
-          iconContainer.style.left = `${x}px`;
-          iconContainer.style.opacity = opacity;
-          topTopicsList.appendChild(iconContainer);
-
-          const p = document.createElement('p');
-          const randomTopic = topTopics[Math.floor(Math.random()*topTopics.length)];
-          p.innerHTML = randomTopic.title;
-          iconContainer.appendChild(p);
-
-          i++;
-        }
-        line++;
-      }
-    }
-    if (!this.homeLoop) {
-      this.homeLoop = setInterval(this.showRandomTopic, 1500);
+      this.createBgIcons(this);
     }
   }
 }

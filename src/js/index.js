@@ -57,6 +57,20 @@ app.main = (function (){
     ticking = true;
   }
 
+  let resizeTimer;
+  let width = window.innerWidth;
+  function resizeListener(evt: Event, home: Home) {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      const newWidth = window.innerWidth;
+      if (newWidth !== width) {
+        width = newWidth;
+        home.createBgIcons(home);
+      }
+    }, 1000);
+  }
+
+
   function render(shinyAPI: ?ShinyAPI, trendsAPI: TrendsAPI) {
 
     log.info('render');
@@ -88,6 +102,8 @@ app.main = (function (){
 
       const bindScrollListener = evt => scrollTicker(evt, home, mainNav, explore);
       window.addEventListener('scroll', bindScrollListener);
+      const bindResizeListener = evt => resizeListener(evt, home);
+      window.addEventListener('resize', bindResizeListener);
     }
   }
 
