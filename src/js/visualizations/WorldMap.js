@@ -4,6 +4,7 @@ import StoriesEpidemics from '../containers/StoriesEpidemics';
 import { map } from '../util/util';
 import type { TrendsAPIRegion } from '../util/types';
 import * as d3 from 'd3';
+import legend from 'd3-svg-legend';
 import d3tip from 'd3-tip';
 import * as topojson from 'topojson-client';
 import log from 'loglevel';
@@ -134,41 +135,73 @@ export default class WorldMap {
 
     svg.call(this.tip);
 
-    // Legend
-    const x = d3.scaleLinear()
-      .domain([10, 90])
-      .rangeRound([height, width]);
+    const thresholdScale = d3.scaleThreshold()
+        .domain([1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+        .range(d3.range(11).map(function(i) {
+          return "q" + i + "-9";
+        }));
 
-    const legend = svg.append('g')
-      .attr('class', 'legend')
-      .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
+    svg.append("g")
+      .attr("class", "legendThreshold")
+      .attr("transform", "translate(20,20)");
 
-    legend.selectAll('rect')
-      .data(colorScale.range().map(function(d) {
-        d = colorScale.invertExtent(d);
-        if (d[0] == null) d[0] = x.domain()[0];
-        if (d[1] == null) d[1] = x.domain()[1];
-        return d;
-      }))
-      .enter().append('rect')
-        .attr('height', 5)
-        .attr('x', d => x(d[0]))
-        .attr('width', d => x(d[1]) - x(d[0]))
-        .attr('fill', d => colorScale(d[0]));
+    const colorLegend = legend.legendColor()
+        // .labelFormat(d3.format(".2f"))
+        // .labels(legend.legendHelpers.thresholdLabels)
+        .labels(function({ i, genLength, generatedLabels, domain }){
+          return domain[i];
+          // if (i === 0 ){
+          //   return generatedLabels[i]
+          //     .replace('NaN to', 'Less than')
+          // } else if (i === genLength - 1) {
+          //   return `More than
+          //     ${generatedLabels[genLength - 1]
+          //     .replace(' to NaN', '')}`
+          // }
+          // return generatedLabels[i]
+        })
+        .orient('horizontal')
+        .useClass(true)
+        .scale(thresholdScale)
 
-    legend.append('text')
-      .attr('class', 'legend')
-      .attr('x', x.range()[0])
-      .attr('y', -6)
-      .attr('text-anchor', 'start')
-      .text('Search amount:');
+    svg.select(".legendThreshold")
+      .call(colorLegend);
 
-    legend.call(d3.axisBottom(x)
-      .tickSize(9)
-      .tickFormat(function(x, i) { return x })
-      .tickValues(colorScale.domain()))
-      .select('.domain')
-      .remove();
+    // // Legend
+    // const x = d3.scaleLinear()
+    //   .domain([10, 90])
+    //   .rangeRound([height, width]);
+    //
+    // const legend = svg.append('g')
+    //   .attr('class', 'legend')
+    //   .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
+    //
+    // legend.selectAll('rect')
+    //   .data(colorScale.range().map(function(d) {
+    //     d = colorScale.invertExtent(d);
+    //     if (d[0] == null) d[0] = x.domain()[0];
+    //     if (d[1] == null) d[1] = x.domain()[1];
+    //     return d;
+    //   }))
+    //   .enter().append('rect')
+    //     .attr('height', 5)
+    //     .attr('x', d => x(d[0]))
+    //     .attr('width', d => x(d[1]) - x(d[0]))
+    //     .attr('fill', d => colorScale(d[0]));
+    //
+    // legend.append('text')
+    //   .attr('class', 'legend')
+    //   .attr('x', x.range()[0])
+    //   .attr('y', -6)
+    //   .attr('text-anchor', 'start')
+    //   .text('Search amount:');
+    //
+    // legend.call(d3.axisBottom(x)
+    //   .tickSize(9)
+    //   .tickFormat(function(x, i) { return x })
+    //   .tickValues(colorScale.domain()))
+    //   .select('.domain')
+    //   .remove();
 
     this.appendCountries();
   }
