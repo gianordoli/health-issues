@@ -187,6 +187,7 @@ export default class Home {
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'home';
     elementsContainer.classList.add('page');
+    elementsContainer.style.height = `${window.innerHeight*1.5}px`;
     parentContainer.appendChild(elementsContainer);
 
     const titleContainer = document.createElement('div');
