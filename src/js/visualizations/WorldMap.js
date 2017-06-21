@@ -10,6 +10,7 @@ import log from 'loglevel';
 
 export default class WorldMap {
   data: Array<TrendsAPIRegion>;
+  parentContainer: HTMLElement;
   width: number;
   height: number;
   worldFeatures;
@@ -20,8 +21,10 @@ export default class WorldMap {
   constructor(parentContainer: HTMLElement, data: Array<TrendsAPIRegion>) {
     const self = this;
     self.data = data;
-    self.width = parentContainer.offsetWidth;
-    self.height = self.width * 0.5;
+    self.parentContainer = parentContainer;
+    const size = this.getSize();
+    this.width = size.width;
+    this.height = size.height;
 
     // const rangeLenght = 10;
     // const colorInterpolator = d3.interpolateRgb('rgb(255, 255, 255)', 'rgb(25, 130, 0)');
@@ -63,8 +66,46 @@ export default class WorldMap {
     );
   }
 
+  getSize() {
+    const { parentContainer } = this;
+    const width = parentContainer.offsetWidth;
+    const height = width*0.5;
+    return { width, height };
+  }
+
   resizeChart() {
-    
+    const size = this.getSize();
+    const { width, height } = size;
+    this.width = width;
+    this.height = height;
+    this.svg
+      .attr('width', width)
+      .attr('height', height);
+    this.appendCountries();
+  }
+
+  appendCountries() {
+    const { svg, width, height, worldFeatures } = this;
+
+    svg.selectAll("*").remove();
+
+    const projection = d3.geoEquirectangular()
+      .scale((width - 3) / (2 * Math.PI))
+      .translate([width * 0.5, height * 0.5]);
+
+    const path = d3.geoPath().projection(projection);
+
+    const worldMap = svg.append('g')
+      .attr('class', 'map');
+
+    const countries = worldMap.selectAll('.country')
+      .data(worldFeatures)
+      .enter()
+      .append('path')
+      .attr('class', 'country')
+      .attr('d', path);
+
+    this.updateElements();
   }
 
   updateData(data) {
@@ -93,59 +134,45 @@ export default class WorldMap {
 
     svg.call(this.tip);
 
-    const projection = d3.geoEquirectangular()
-      .scale((width - 3) / (2 * Math.PI))
-      .translate([width * 0.5, height * 0.5]);
+    this.appendCountries();
 
-    const path = d3.geoPath().projection(projection);
-
-    const worldMap = svg.append('g')
-      .attr('class', 'map');
-
-    const countries = worldMap.selectAll('.country')
-      .data(worldFeatures)
-      .enter()
-      .append('path')
-      .attr('class', 'country')
-      .attr('d', path);
-
-    // Legend
-    const x = d3.scaleLinear()
-      .domain([10, 90])
-      .rangeRound([height, width]);
-
-    const legend = svg.append('g')
-      .attr('class', 'legend')
-      .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
-
-    legend.selectAll('rect')
-      .data(colorScale.range().map(function(d) {
-        d = colorScale.invertExtent(d);
-        if (d[0] == null) d[0] = x.domain()[0];
-        if (d[1] == null) d[1] = x.domain()[1];
-        return d;
-      }))
-      .enter().append('rect')
-        .attr('height', 5)
-        .attr('x', d => x(d[0]))
-        .attr('width', d => x(d[1]) - x(d[0]))
-        .attr('fill', d => colorScale(d[0]));
-
-    legend.append('text')
-      .attr('class', 'legend')
-      .attr('x', x.range()[0])
-      .attr('y', -6)
-      .attr('text-anchor', 'start')
-      .text('Search amount:');
-
-    legend.call(d3.axisBottom(x)
-      .tickSize(9)
-      .tickFormat(function(x, i) { return x })
-      .tickValues(colorScale.domain()))
-      .select('.domain')
-      .remove();
-
-    this.updateElements();
+    // // Legend
+    // const x = d3.scaleLinear()
+    //   .domain([10, 90])
+    //   .rangeRound([height, width]);
+    //
+    // const legend = svg.append('g')
+    //   .attr('class', 'legend')
+    //   .attr('transform', 'translate(' + -30 + ',' + (height-30) + ')');
+    //
+    // legend.selectAll('rect')
+    //   .data(colorScale.range().map(function(d) {
+    //     d = colorScale.invertExtent(d);
+    //     if (d[0] == null) d[0] = x.domain()[0];
+    //     if (d[1] == null) d[1] = x.domain()[1];
+    //     return d;
+    //   }))
+    //   .enter().append('rect')
+    //     .attr('height', 5)
+    //     .attr('x', d => x(d[0]))
+    //     .attr('width', d => x(d[1]) - x(d[0]))
+    //     .attr('fill', d => colorScale(d[0]));
+    //
+    // legend.append('text')
+    //   .attr('class', 'legend')
+    //   .attr('x', x.range()[0])
+    //   .attr('y', -6)
+    //   .attr('text-anchor', 'start')
+    //   .text('Search amount:');
+    //
+    // legend.call(d3.axisBottom(x)
+    //   .tickSize(9)
+    //   .tickFormat(function(x, i) { return x })
+    //   .tickValues(colorScale.domain()))
+    //   .select('.domain')
+    //   .remove();
+    //
+    // this.updateElements();
   }
 
   updateElements() {

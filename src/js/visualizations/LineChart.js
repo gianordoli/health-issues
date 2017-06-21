@@ -42,7 +42,7 @@ export default class LineChart {
   }
 
   resizeChart() {
-    const { margin, parentContainer } = this;
+    const { margin } = this;
     const size = this.getSize();
     const { width, height } = size;
     this.width = width;
