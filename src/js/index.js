@@ -7,6 +7,7 @@ import Stories from './pages/Stories';
 import Explore from './pages/Explore';
 import Ranking from './pages/Ranking';
 import About from './pages/About';
+import Footer from './pages/Footer';
 import ShinyAPI from './api/ShinyAPI';
 import TrendsAPI from './api/TrendsAPI';
 import terms from './data/terms';
@@ -91,11 +92,13 @@ app.main = (function (){
       mainContainer.classList.add('main-container');
       body.appendChild(mainContainer);
 
-      const intro = new Intro(mainContainer);
-      const stories = new Stories(mainContainer);
-      explore = new Explore(mainContainer, shinyAPI, trendsAPI);
-      const ranking = new Ranking(mainContainer);
-      const about = new About(mainContainer);
+        const intro = new Intro(mainContainer);
+        const stories = new Stories(mainContainer);
+        explore = new Explore(mainContainer, shinyAPI, trendsAPI);
+        const ranking = new Ranking(mainContainer);
+        const about = new About(mainContainer);
+
+      const footer = new Footer(body);
 
       stickyfill.init();
       var stickyElements = document.getElementsByClassName('sticky');

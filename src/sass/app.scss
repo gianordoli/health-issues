@@ -673,6 +673,12 @@ svg.chart-canvas {
   }
 }
 
+footer {
+  min-height: $baseline-height*4;
+  background-color: $color-0;
+  color: white;
+}
+
 /*-------------------- LOADER --------------------*/
 .loader-container{
   position: absolute;
