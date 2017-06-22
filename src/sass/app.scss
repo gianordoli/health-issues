@@ -678,6 +678,11 @@ svg.chart-canvas {
 footer {
 
   color: white;
+  padding: 0 $col-gutter-large;
+
+  @include for-phone-down {
+    padding: 0 $col-gutter-small;
+  };
 
   .container {
     position: relative;
@@ -687,6 +692,12 @@ footer {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
+
+    @include for-phone-down {
+      flex-direction: column;
+      justify-content: center;
+    };
 
     .website-url {
       font-size: 14px;
@@ -694,11 +705,23 @@ footer {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-right: $elements-margin;
+      margin-right: $elements-margin*2;
+
+      @include for-phone-down {
+        margin-right: 0;
+        margin-bottom: $baseline-height*2;
+      };
     }
 
-    .twitter-share-button, .fb-share-button {
-      margin-left: $elements-margin;
+    .social-media {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+
+      .fb-share-button {
+        margin-left: $elements-margin;
+      }
     }
   }
 }

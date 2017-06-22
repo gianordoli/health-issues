@@ -58,13 +58,17 @@ export default class Footer {
     websiteUrl.innerHTML = 'imnotfeelingwell.com';
     container.appendChild(websiteUrl);
 
+    const socialMedia = document.createElement('div');
+    socialMedia.classList.add('social-media');
+    container.appendChild(socialMedia);
+
     const twitterShareButton = document.createElement('a');
     twitterShareButton.classList.add('twitter-share-button');
     const url = 'https://twitter.com/intent/tweet';
     const text = encodeURIComponent('Search trends and patterns for health issues via Google searches');
     twitterShareButton.setAttribute('href', `${url}?text=${text}`);
     twitterShareButton.setAttribute('data-size', 'large');
-    container.appendChild(twitterShareButton);
+    socialMedia.appendChild(twitterShareButton);
 
     const fbShareButton = document.createElement('div');
     fbShareButton.classList.add('fb-share-button');
@@ -72,7 +76,7 @@ export default class Footer {
     fbShareButton.setAttribute('data-layout', 'button');
     fbShareButton.setAttribute('data-size', 'large');
     fbShareButton.setAttribute('data-mobile-iframe', 'true');
-    container.appendChild(fbShareButton);
+    socialMedia.appendChild(fbShareButton);
 
     const fbLink = document.createElement('a');
     fbLink.classList.add('fb-xfbml-parse-ignore');
