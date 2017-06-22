@@ -61,7 +61,7 @@ export default class WorldMap {
       .attr('transform', `scale(${width/originalWidth}, ${height/originalHeight})`);
 
     svg.select('.legendThreshold')
-      .attr('transform', `translate(${width-180},${height-30})`);
+      .attr('transform', `translate(${width-220},${height-30})`);
   }
 
   updateData(data) {

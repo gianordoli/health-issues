@@ -38,7 +38,7 @@ export default class Footer {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId=1585802058353665";
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId=1409691509112381";
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
     }
@@ -49,8 +49,14 @@ export default class Footer {
     const elementsContainer = document.createElement('footer');
     parentContainer.appendChild(elementsContainer);
 
-    const shareContainer = document.createElement('div');
-    elementsContainer.appendChild(shareContainer);
+    const container = document.createElement('div');
+    container.classList.add('container');
+    elementsContainer.appendChild(container);
+
+    const websiteUrl = document.createElement('p');
+    websiteUrl.classList.add('website-url');
+    websiteUrl.innerHTML = 'imnotfeelingwell.com';
+    container.appendChild(websiteUrl);
 
     const twitterShareButton = document.createElement('a');
     twitterShareButton.classList.add('twitter-share-button');
@@ -58,7 +64,7 @@ export default class Footer {
     const text = encodeURIComponent('Search trends and patterns for health issues via Google searches');
     twitterShareButton.setAttribute('href', `${url}?text=${text}`);
     twitterShareButton.setAttribute('data-size', 'large');
-    shareContainer.appendChild(twitterShareButton);
+    container.appendChild(twitterShareButton);
 
     const fbShareButton = document.createElement('div');
     fbShareButton.classList.add('fb-share-button');
@@ -66,7 +72,7 @@ export default class Footer {
     fbShareButton.setAttribute('data-layout', 'button');
     fbShareButton.setAttribute('data-size', 'large');
     fbShareButton.setAttribute('data-mobile-iframe', 'true');
-    shareContainer.appendChild(fbShareButton);
+    container.appendChild(fbShareButton);
 
     const fbLink = document.createElement('a');
     fbLink.classList.add('fb-xfbml-parse-ignore');
