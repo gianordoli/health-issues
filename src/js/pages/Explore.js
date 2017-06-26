@@ -502,7 +502,7 @@ export default class Explore {
     // if(!isChanging && !isLoading && seasonal.length > 0 && trend.length > 0 && total.length > 0) {
     if(!isChanging && !isLoading && trend.length > 0 && total.length > 0) {
       seasonalChart.updateData(seasonal);
-      isMerged ? trendChart.updateData(total, 'interest') : trendChart.updateData(trend, 'trend');
+      isMerged ? trendChart.updateData(total, 'total') : trendChart.updateData(trend, 'trend');
 
       if (topQueries.length > 0) {
 
