@@ -195,13 +195,15 @@
         padding-left: $elements-padding
       };
 
-      p {
+      button {
         cursor: pointer;
         @include type-button;
         display: inline-block;
         padding: $elements-padding/2;
         margin: $elements-margin/4 0;
         color: $color-0;
+        border: none;
+        background-color: white;
         transition-property: background-color, color;
         transition-duration: 0.25s;
         &:not(:last-child) {

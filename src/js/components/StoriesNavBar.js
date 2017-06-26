@@ -36,11 +36,12 @@ export default class StoriesNavBar {
     parentContainer.appendChild(elementsContainer);
 
     for (let i = 0; i < cases.length; i++) {
-      const tab = document.createElement('p');
+      const tab = document.createElement('button');
       if (i === 0) tab.classList.add('active');
       tab.innerHTML = cases[i];
       const bindClick = evt => onChange(evt, self, elementsContainer, i);
       tab.addEventListener('click', bindClick);
+      tab.addEventListener('touchend', bindClick);
       elementsContainer.appendChild(tab);
     }
   }

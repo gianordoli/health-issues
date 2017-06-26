@@ -452,6 +452,7 @@ export default class Explore {
     mergeButton.classList.add('merge-button');
     mergeButton.innerHTML = 'See Total Interest';
     mergeButton.addEventListener('click', bindToggleChartMerge);
+    mergeButton.addEventListener('touchend', bindToggleChartMerge);
     chartItem.appendChild(mergeButton);
 
     self.trendChart = new LineChart(chartItem, 'trend');

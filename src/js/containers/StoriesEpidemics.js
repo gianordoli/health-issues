@@ -87,7 +87,7 @@ export default class StoriesEpidemics {
     let isLoading = true;
     self.updateData({ isLoading });
 
-    elementsContainer.querySelectorAll('p').forEach((e, i) => {
+    elementsContainer.querySelectorAll('button').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
 
@@ -253,6 +253,7 @@ export default class StoriesEpidemics {
     playButton.innerHTML = icons.play;
     const bindStartPlayback = evt => this.startPlayback(evt, this);
     playButton.addEventListener('click', bindStartPlayback);
+    playButton.addEventListener('touchend', bindStartPlayback);
     controls.appendChild(playButton);
 
     this.slider = document.createElement('input');
@@ -263,6 +264,7 @@ export default class StoriesEpidemics {
     slider.value = '0';
     const bindSliderChange = evt => this.handleSliderChange(evt, this);
     slider.addEventListener('input', bindSliderChange);
+    slider.addEventListener('touchmove', bindSliderChange);
     controls.appendChild(slider);
 
     this.copyContainer = document.createElement('div');

@@ -99,6 +99,8 @@ export default class MainNav {
       const button = document.createElement('a');
       button.innerHTML = l;
       button.setAttribute('href', `#${l}`);
+      button.addEventListener('click', bindCloseClick);
+      button.addEventListener('touchend', bindCloseClick);
       li.appendChild(button);
     }
   }

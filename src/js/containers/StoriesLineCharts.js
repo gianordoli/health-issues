@@ -49,7 +49,7 @@ export default class StoriesLineCharts {
   resizeLineChart(self: StoriesLineCharts) {
     const { chart } = self;
     chart.resizeChart();
-  }  
+  }
 
   loadNewCase(
     event: Event,
@@ -64,7 +64,7 @@ export default class StoriesLineCharts {
     let isLoading = true;
     self.updateData({ isLoading });
 
-    elementsContainer.querySelectorAll('p').forEach((e, i) => {
+    elementsContainer.querySelectorAll('button').forEach((e, i) => {
       i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
     d3.json(path, function(chartData) {

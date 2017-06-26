@@ -123,6 +123,7 @@ export default class Ranking {
     btBack.disabled = true;
     let bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, btBack, btForward, 'back');
     btBack.addEventListener('click', bindClick);
+    btBack.addEventListener('touchend', bindClick);
     slideshow.appendChild(btBack);
 
     const rankingTableContainer = document.createElement('div');
@@ -158,6 +159,7 @@ export default class Ranking {
         const bindMouseOver = evt => this.itemMouseOver(evt, className, rankingTable);
         const bindMouseOut = evt => this.itemMouseOut(evt, className, rankingTable);
         item.addEventListener('click', bindClick);
+        item.addEventListener('touchend', bindClick);
         item.addEventListener('mouseover', bindMouseOver);
         item.addEventListener('mouseout', bindMouseOut);
         list.appendChild(item);
@@ -172,6 +174,7 @@ export default class Ranking {
     btForward.classList.add('bt-arrow', 'forward');
     bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, btBack, btForward, 'forward');
     btForward.addEventListener('click', bindClick);
+    btForward.addEventListener('touchend', bindClick);
     slideshow.appendChild(btForward);
 
     if (window.innerWidth > 600) {
