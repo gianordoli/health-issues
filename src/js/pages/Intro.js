@@ -142,7 +142,7 @@ export default class Intro {
       .on('active', function(i) {
 
         clearInterval(yearlyLoop);
-        chartsContainer.classList.remove('step-2');
+        chartsContainer.classList.remove('step-2', 'step-4');
 
         let title, type, range;
         let timeSeries = [];
@@ -181,24 +181,25 @@ export default class Intro {
           case 4:
             type = 'seasonal';
             range = 20;
+            chartsContainer.classList.add('step-4');
             timeSeries = chartData.filter(d => d.data === 'seasonal');
             chart.updateData(timeSeries, type, title, range);
-            // const remainder = chartData.find(d => d.data === 'remainder');
-            // const seasonal = chartData.find(d => d.data === 'seasonal');
-            // log.info(remainder, seasonal);
-            // for (let i = 0; i < remainder.points.length - 13; i += 12) {
-            //   const thisYear = {
-            //     term: 'Influenza',
-            //     points: remainder.points.slice(i, i + 13)
-            //   }
-            //   for (let j = 0; j < thisYear.points.length; j++) {
-            //     thisYear.points[j].date = seasonal.points[j%12].date;
-            //   }
-            //   timeSeries.push(thisYear);
-            // }
-            // timeSeries.push(seasonal);
-            // log.info(timeSeries);
-            // chart.updateData(timeSeries, type, title, range);
+            const remainder = chartData.find(d => d.data === 'remainder');
+            const seasonal = chartData.find(d => d.data === 'seasonal');
+            for (let i = 0; i < remainder.points.length - 13; i += 12) {
+              const thisYear = {
+                term: 'Influenza',
+                points: remainder.points.slice(i, i + 13)
+              }
+              thisYear.points = thisYear.points.map((p, j) => {
+                const { value } = p;
+                const date = seasonal.points[j].date;;
+                return { value, date };
+              });
+              log.info(thisYear);
+              timeSeries.push(thisYear);
+            }
+            chart.updateData(timeSeries, type, title, range);
         }
       });
   }

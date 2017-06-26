@@ -173,5 +173,14 @@ export default class Ranking {
     bindClick = evt => this.scroll(evt, rankingTable, rankingTableContainer, btBack, btForward, 'forward');
     btForward.addEventListener('click', bindClick);
     slideshow.appendChild(btForward);
+
+    if (window.innerWidth > 600) {
+      const parentWidth = rankingTableContainer.offsetWidth;
+      const parentScroll = rankingTableContainer.scrollWidth;
+      const offset = -(parentScroll - parentWidth);
+      rankingTable.style.left = `${(offset)}px`;
+      btBack.disabled = false;
+      btForward.disabled = true;
+    }
   }
 }

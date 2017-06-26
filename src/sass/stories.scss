@@ -46,6 +46,7 @@
       .legendThreshold .legendCells {
         text {
           @include type-chart-legend;
+          letter-spacing: normal;
         }
         .cell rect {
           stroke: #333;

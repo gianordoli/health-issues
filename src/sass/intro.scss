@@ -27,10 +27,18 @@
         }
 
         .charts-container.step-2 {
-          svg.chart-canvas .line-chart g.time-series {
-            path.line.disease {
-              &:nth-child(1) { stroke: $color-1; opacity: 0.48; }
-              &:nth-child(2) { stroke: $color-1; }
+          svg.chart-canvas .line-chart g.time-series path.line.disease {
+            &:nth-child(1) { stroke: $color-1; opacity: 0.48; }
+            &:nth-child(2) { stroke: $color-1; }
+          }
+        }
+
+        .charts-container.step-4 {
+          svg.chart-canvas .line-chart g.time-series path.line.disease {
+            stroke: rgba($color-1, 0.24);
+            &:nth-child(1) {
+              stroke: $color-1;
+              stroke-width: 3px;
             }
           }
         }
