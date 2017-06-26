@@ -38420,7 +38420,8 @@
 	          svg = this.svg,
 	          title = this.title,
 	          type = this.type,
-	          range = this.range;
+	          range = this.range,
+	          axisTransitionTimeout = this.axisTransitionTimeout;
 
 	      var transitionDuration = 500;
 
@@ -38486,15 +38487,16 @@
 
 	      chart.select('g.y').selectAll('.tick text');
 
-	      chart.select('g.x').transition().duration(transitionDuration).each(function () {
-	        var x = d3.select(this);
-	        var path = x.select('path');
-	        x.transition().duration(transitionDuration).style('transform', function () {
+	      chart.select('g.x').transition().duration(transitionDuration).call(xAxis);
+
+	      clearTimeout(axisTransitionTimeout);
+	      this.axisTransitionTimeout = setTimeout(function () {
+	        chart.select('g.x').transition().duration(transitionDuration).style('transform', function () {
 	          return 'translate(0px, ' + height + 'px)';
 	        }).select('path').style('transform', function () {
 	          if (type === 'seasonal') return 'translate(0, ' + -height / 2 + 'px)';
 	        });
-	      }).call(xAxis);
+	      }, transitionDuration);
 
 	      var timeSeries = chart.selectAll('.time-series');
 
