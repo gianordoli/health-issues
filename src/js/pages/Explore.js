@@ -344,7 +344,7 @@ export default class Explore {
     headerContent.appendChild(title);
 
     const intro = document.createElement('p');
-    intro.innerHTML = "Can you find any other seasonal patterns or interesting trends? Maybe something specific to your country? Pick up to 3 options from the list below and choose a location to start exploring.";
+    intro.innerHTML = "Can you find other seasonal patterns or interesting trends? Maybe something specific to your country? Pick up to three options from the list below and choose a location to start exploring.";
     headerContent.appendChild(intro);
 
     const sectionBody = document.createElement('div');

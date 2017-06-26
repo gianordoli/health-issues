@@ -203,7 +203,7 @@ export default class Home {
 
     const projectDescription = document.createElement('p');
     projectDescription.classList.add('project-description', 'container');
-    projectDescription.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us when and what people worry about when it comes to health, and tell us how epidemics spread through the world.';
+    projectDescription.innerHTML = 'To everything there is a season, and diseases are no different. Google search patterns show us what health issues people worry about, when they worry about them, and how epidemics spread through the world.';
     titleContainer.appendChild(projectDescription);
 
     const logosContainer = document.createElement('div');

@@ -51,7 +51,7 @@ export default class Intro {
 
     const intro = document.createElement('p');
     intro.innerHTML =
-      'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but we might need to split its data into 2 different formats first. Let’s take a look into the searches for the flu in the world to see how.';
+      'Is the search interest for a given disease increasing? Are there different times of the year when people search for a particular health issue? We can answer both questions using Google Trends, but first we&#x2019;ll need to look at its data in two different formats. Let&#x2019;s take a look at global searches for the flu as an example.';
     headerContent.appendChild(intro);
 
     const sectionBody = document.createElement('div');
