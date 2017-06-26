@@ -189,10 +189,11 @@ export default class LineChart {
       .tickPadding(18);
 
     const isYear = d3.select(svg.node().parentNode.parentNode).classed('step-3') ? true : false;
+    const isMobile = window.innerWidth < 600;
 
     if (type === 'seasonal' && !isYear) {
       xAxis.tickFormat(d3.timeFormat('%b'))
-        .ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));
+        .ticks(d3.timeMonth.every(isMobile ? 2 : 1));
 
     } else if (type === 'trend' || type === 'total' || isYear)  {
       xAxis.tickFormat(d3.timeFormat('%Y'))
@@ -200,7 +201,7 @@ export default class LineChart {
 
     } else if (type === 'mixed') {
       xAxis.tickFormat(d3.timeFormat('%b %Y'))
-        .ticks(window.innerWidth < 600 ? 3 : 5);
+        .ticks(isMobile ? 3 : 5);
     }
 
     const yAxis = d3.axisLeft(y)
@@ -224,21 +225,13 @@ export default class LineChart {
     chart.select('g.y')
       .selectAll('.tick text');
 
-    const xAxisSelection = chart.select('g.x')
-      .transition()
-      .duration(transitionDuration)
-      .style('transform', `translate(0px, ${height}px)`)
+    let xAxisSelection = chart.select('g.x');
+    if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
+    xAxisSelection.style('transform', `translate(0px, ${height}px)`)
       .call(xAxis);
 
-    const path = xAxisSelection.select('path').node();
-    const currTransform = path.style.transform;
-    const transform = `translate(0px, ${-height/2}px)`;
-    const axisTransition = d3.select(path).transition().duration(transitionDuration);
-    if (transform !== currTransform && type === 'seasonal') {
-      axisTransition.style('transform', transform);
-    } else if (type !== 'seasonal') {
-      axisTransition.style('transform', 'none');
-    }
+    xAxisSelection.select('path')
+      .style('transform', type === 'seasonal' ? `translate(0px, ${-height/2}px)` : 'none');
 
     const timeSeries = chart.selectAll('.time-series');
 

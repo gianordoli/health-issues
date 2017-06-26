@@ -38461,13 +38461,14 @@
 	      var xAxis = d3.axisBottom(x).tickSize(0).tickPadding(18);
 
 	      var isYear = d3.select(svg.node().parentNode.parentNode).classed('step-3') ? true : false;
+	      var isMobile = window.innerWidth < 600;
 
 	      if (type === 'seasonal' && !isYear) {
-	        xAxis.tickFormat(d3.timeFormat('%b')).ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));
+	        xAxis.tickFormat(d3.timeFormat('%b')).ticks(d3.timeMonth.every(isMobile ? 2 : 1));
 	      } else if (type === 'trend' || type === 'total' || isYear) {
 	        xAxis.tickFormat(d3.timeFormat('%Y')).ticks(d3.timeYear.every(2));
 	      } else if (type === 'mixed') {
-	        xAxis.tickFormat(d3.timeFormat('%b %Y')).ticks(window.innerWidth < 600 ? 3 : 5);
+	        xAxis.tickFormat(d3.timeFormat('%b %Y')).ticks(isMobile ? 3 : 5);
 	      }
 
 	      var yAxis = d3.axisLeft(y).tickSize(12).ticks(type === 'seasonal' ? 5 : 3);
@@ -38486,17 +38487,11 @@
 
 	      chart.select('g.y').selectAll('.tick text');
 
-	      var xAxisSelection = chart.select('g.x').transition().duration(transitionDuration).style('transform', 'translate(0px, ' + height + 'px)').call(xAxis);
+	      var xAxisSelection = chart.select('g.x');
+	      if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
+	      xAxisSelection.style('transform', 'translate(0px, ' + height + 'px)').call(xAxis);
 
-	      var path = xAxisSelection.select('path').node();
-	      var currTransform = path.style.transform;
-	      var transform = 'translate(0px, ' + -height / 2 + 'px)';
-	      var axisTransition = d3.select(path).transition().duration(transitionDuration);
-	      if (transform !== currTransform && type === 'seasonal') {
-	        axisTransition.style('transform', transform);
-	      } else if (type !== 'seasonal') {
-	        axisTransition.style('transform', 'none');
-	      }
+	      xAxisSelection.select('path').style('transform', type === 'seasonal' ? 'translate(0px, ' + -height / 2 + 'px)' : 'none');
 
 	      var timeSeries = chart.selectAll('.time-series');
 
