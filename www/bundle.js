@@ -215,7 +215,7 @@
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("STAGING"));
+	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
 	    loadShinyAPI();
 	  };
 
@@ -1186,7 +1186,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (false) {
+	          if (true) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -30358,6 +30358,7 @@
 	  }, {
 	    key: 'loadNewCase',
 	    value: function loadNewCase(event, self, elementsContainer, currCase) {
+	      event.preventDefault();
 	      var storySection = self.data.storySection;
 
 	      var path = _stories2.default[storySection].cases[currCase].data;
@@ -30873,6 +30874,7 @@
 	  }, {
 	    key: 'loadNewCase',
 	    value: function loadNewCase(event, self, elementsContainer, currCase) {
+	      event.preventDefault();
 	      var storySection = self.data.storySection;
 
 	      var mapDataPath = _stories2.default[storySection].cases[currCase].mapData;
@@ -30920,6 +30922,7 @@
 	    key: 'startPlayback',
 	    value: function startPlayback(event, self) {
 	      _loglevel2.default.info('startPlayback');
+	      event.preventDefault();
 	      var slider = self.slider;
 
 	      var maxVal = parseInt(slider.max);
@@ -38807,6 +38810,7 @@
 	  }, {
 	    key: 'toggleChartMerge',
 	    value: function toggleChartMerge(event, self) {
+	      event.preventDefault();
 	      var isMerged = self.data.isMerged;
 
 	      isMerged = isMerged ? false : true;
@@ -43668,6 +43672,7 @@
 	  _createClass(Ranking, [{
 	    key: 'itemClick',
 	    value: function itemClick(event, className, parent) {
+	      event.preventDefault();
 	      var allItems = parent.querySelectorAll('li');
 	      if (allItems) {
 	        allItems.forEach(function (i) {
@@ -43684,6 +43689,7 @@
 	  }, {
 	    key: 'itemMouseOut',
 	    value: function itemMouseOut(event, className, parent) {
+	      event.preventDefault();
 	      var items = parent.querySelectorAll('.' + className);
 	      if (items) {
 	        items.forEach(function (i) {
@@ -43694,6 +43700,7 @@
 	  }, {
 	    key: 'itemMouseOver',
 	    value: function itemMouseOver(event, className, parent) {
+	      event.preventDefault();
 	      var items = parent.querySelectorAll('.' + className);
 	      if (items) {
 	        items.forEach(function (i) {
@@ -43704,6 +43711,7 @@
 	  }, {
 	    key: 'scroll',
 	    value: function scroll(event, element, parent, btBack, btForward, direction) {
+	      event.preventDefault();
 	      var target = event.target;
 
 	      var currPos = element.offsetLeft;

@@ -58,6 +58,7 @@ export default class StoriesLineCharts {
     elementsContainer: HTMLElement,
     currCase: number
   ) {
+    event.preventDefault();
     const { storySection } = self.data;
     const path = stories[storySection].cases[currCase].data;
     const geoIso = stories[storySection].cases[currCase].geoList[0];

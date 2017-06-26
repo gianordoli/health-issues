@@ -127,7 +127,7 @@ export default class Explore {
     seasonalChart.resizeChart();
     trendChart.resizeChart();
     seasonalChart.updateElements();
-    trendChart.updateElements();    
+    trendChart.updateElements();
   }
 
   checkScroll(scrollY: number, self: Explore) {
@@ -199,6 +199,7 @@ export default class Explore {
   }
 
   toggleChartMerge(event, self) {
+    event.preventDefault();
     let { isMerged } = self.data;
     isMerged = isMerged ? false : true;
     this.updateData({ isMerged, type: 'total' });

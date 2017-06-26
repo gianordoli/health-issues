@@ -11,6 +11,7 @@ export default class Ranking {
   }
 
   itemClick(event: Event, className: string, parent: HTMLElement) {
+    event.preventDefault();
     const allItems = parent.querySelectorAll('li');
     if (allItems) {
       allItems.forEach(function(i) {
@@ -26,6 +27,7 @@ export default class Ranking {
   }
 
   itemMouseOut(event: Event, className: string, parent: HTMLElement) {
+    event.preventDefault();
     const items = parent.querySelectorAll(`.${className}`);
     if (items) {
       items.forEach(function(i) {
@@ -35,6 +37,7 @@ export default class Ranking {
   }
 
   itemMouseOver(event: Event, className: string, parent: HTMLElement) {
+    event.preventDefault();
     const items = parent.querySelectorAll(`.${className}`);
     if (items) {
       items.forEach(function(i) {
@@ -44,6 +47,7 @@ export default class Ranking {
   }
 
   scroll(event: Event, element: HTMLElement, parent: HTMLElement, btBack: HTMLButtonElement, btForward: HTMLButtonElement, direction: string) {
+    event.preventDefault();
     const { target } = event;
     const currPos = element.offsetLeft;
 

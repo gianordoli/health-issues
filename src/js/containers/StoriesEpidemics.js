@@ -81,6 +81,7 @@ export default class StoriesEpidemics {
     elementsContainer: HTMLElement,
     currCase: number
   ) {
+    event.preventDefault();
     const { storySection } = self.data;
     const mapDataPath = stories[storySection].cases[currCase].mapData;
     const chartDataPath = stories[storySection].cases[currCase].chartData;
@@ -123,6 +124,7 @@ export default class StoriesEpidemics {
 
   startPlayback(event: Event, self: StoriesEpidemics) {
     log.info('startPlayback');
+    event.preventDefault();
     const { slider } = self;
     const maxVal = parseInt(slider.max);
     const totalTime = 5000;
