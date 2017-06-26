@@ -71,6 +71,8 @@ export default class StoriesEpidemics {
     const { worldMap, lineChart } = self;
     worldMap.resizeChart();
     lineChart.resizeChart();
+    worldMap.updateElements();
+    lineChart.updateElements();
   }
 
   loadNewCase(
@@ -311,7 +313,7 @@ export default class StoriesEpidemics {
     );
 
     if (worldMap.worldFeatures) worldMap.updateData(mapData[currMonth].regions);
-    lineChart.updateData(chartData[geoIso]);
+    lineChart.updateData(chartData[geoIso], 'mixed');
 
     copyContainer.innerHTML = '';
     this.newCopy(copyContainer, copyTitle, copy);

@@ -29,6 +29,7 @@ export default class Intro {
   resizeLineChart(self: Intro) {
     const { chart } = self;
     chart.resizeChart();
+    chart.updateElements();
   }
 
   createElements(elementsContainer: HTMLElement, chartData) {
@@ -142,7 +143,7 @@ export default class Intro {
       .on('active', function(i) {
 
         clearInterval(yearlyLoop);
-        chartsContainer.classList.remove('step-2', 'step-4');
+        chartsContainer.classList.remove('step-2', 'step-3', 'step-4');
 
         let title, type, range;
         let timeSeries = [];
@@ -171,6 +172,7 @@ export default class Intro {
             break;
 
           case 3:
+            chartsContainer.classList.add('step-3');
             type = 'seasonal';
             title = 'Seasonal over time';
             range = 100;
@@ -196,7 +198,6 @@ export default class Intro {
                 const date = seasonal.points[j].date;;
                 return { value, date };
               });
-              log.info(thisYear);
               timeSeries.push(thisYear);
             }
             chart.updateData(timeSeries, type, title, range);

@@ -49,6 +49,7 @@ export default class StoriesLineCharts {
   resizeLineChart(self: StoriesLineCharts) {
     const { chart } = self;
     chart.resizeChart();
+    chart.updateElements();
   }
 
   loadNewCase(

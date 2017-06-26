@@ -50,7 +50,6 @@ export default class LineChart {
     this.svg
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom);
-    this.updateElements();
   }
 
   createEmptyChart(type: string) {
@@ -189,18 +188,19 @@ export default class LineChart {
       .tickSize(0)
       .tickPadding(18);
 
-    if (type === 'seasonal') {
-      xAxis.tickFormat(d3.timeFormat('%b'));
-      // .ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));;
+    const isYear = d3.select(svg.node().parentNode.parentNode).classed('step-3') ? true : false;
 
-    } else if (type === 'trend' || type === 'total')  {
+    if (type === 'seasonal' && !isYear) {
+      xAxis.tickFormat(d3.timeFormat('%b'))
+        .ticks(d3.timeMonth.every(window.innerWidth < 600 ? 2 : 1));
+
+    } else if (type === 'trend' || type === 'total' || isYear)  {
       xAxis.tickFormat(d3.timeFormat('%Y'))
         .ticks(d3.timeYear.every(2));
 
     } else if (type === 'mixed') {
       xAxis.tickFormat(d3.timeFormat('%b %Y'))
-      .ticks(5);
-      // .ticks(d3.timeMonth.every(3));
+        .ticks(window.innerWidth < 600 ? 3 : 5);
     }
 
     const yAxis = d3.axisLeft(y)
@@ -227,20 +227,17 @@ export default class LineChart {
     chart.select('g.x')
       .transition()
       .duration(transitionDuration)
-      .attr('transform', 'translate(0,' + height + ')')
+      // .style('transform', type !== 'seasonal' ? `translate(0, ${height}px)` : 'none')
+      .each(function() {
+        const x = d3.select(this);
+        const path = x.select('path');
+        x.transition()
+          .duration(transitionDuration)
+          .style('transform', `translate(0, ${height}px)`)
+          .select('path')
+          .style('transform', type === 'seasonal' ? `translate(0, ${-height/2}px)` : 'none');
+      })
       .call(xAxis);
-
-    if (type === 'seasonal') {
-      chart.select('g.x path')
-        .transition()
-        .duration(transitionDuration)
-        .style('transform', 'translate(0, -'+height/2+'px)');
-    } else {
-      chart.select('g.x path')
-      .transition()
-      .duration(transitionDuration)
-      .style('transform', 'none');
-    }
 
     const timeSeries = chart.selectAll('.time-series');
 

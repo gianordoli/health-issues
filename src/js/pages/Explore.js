@@ -126,6 +126,8 @@ export default class Explore {
     const { seasonalChart, trendChart } = self;
     seasonalChart.resizeChart();
     trendChart.resizeChart();
+    seasonalChart.updateElements();
+    trendChart.updateElements();    
   }
 
   checkScroll(scrollY: number, self: Explore) {
