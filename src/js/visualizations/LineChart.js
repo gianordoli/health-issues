@@ -19,7 +19,6 @@ export default class LineChart {
   height: number;
   margin: { top: number, left: number, bottom: number, right: number };
   svg: () => {};
-  axisTransitionTimeout;
 
   constructor(parentContainer: HTMLElement, type?: string, range?: number) {
     this.parentContainer = parentContainer;
@@ -153,7 +152,7 @@ export default class LineChart {
   }
 
   updateElements() {
-    const { data, width, height, margin, svg, title, type, range, axisTransitionTimeout } = this;
+    const { data, width, height, margin, svg, title, type, range } = this;
     const transitionDuration = 500;
 
     const x = d3.scaleTime()
@@ -225,23 +224,21 @@ export default class LineChart {
     chart.select('g.y')
       .selectAll('.tick text');
 
-    chart.select('g.x')
+    const xAxisSelection = chart.select('g.x')
       .transition()
       .duration(transitionDuration)
+      .style('transform', `translate(0px, ${height}px)`)
       .call(xAxis);
 
-    clearTimeout(axisTransitionTimeout);
-    this.axisTransitionTimeout = setTimeout(function() {
-      chart.select('g.x').transition()
-        .duration(transitionDuration)
-        .style('transform', function() {
-            return `translate(0px, ${height}px)`;
-        })
-        .select('path')
-        .style('transform', function() {
-          if (type === 'seasonal') return `translate(0, ${-height/2}px)`;
-        });
-    }, transitionDuration);
+    const path = xAxisSelection.select('path').node();
+    const currTransform = path.style.transform;
+    const transform = `translate(0px, ${-height/2}px)`;
+    const axisTransition = d3.select(path).transition().duration(transitionDuration);
+    if (transform !== currTransform && type === 'seasonal') {
+      axisTransition.style('transform', transform);
+    } else if (type !== 'seasonal') {
+      axisTransition.style('transform', 'none');
+    }
 
     const timeSeries = chart.selectAll('.time-series');
 
