@@ -12,7 +12,7 @@ module.exports = {
         chartType: "seasonal",
         copyTitle: "Winter",
         copy: [
-          "The interest for these three topics starts in fall and reaches its peak during winter. Our respiratory system has trouble expelling invaders under low temperatures. This vulnerability leads to the high number of cold cases, caused by several types of viruses.",
+          "The interest for these three topics starts in fall and reaches its peak during winter. Our respiratory system has trouble expelling invaders under low temperatures. This vulnerability leads to the high number of Cold cases, caused by several types of viruses.",
           "Bronchitis is an inflammation in the lungs, often triggered by the season’s low humidity. It can be caused by the same viruses as a cold or flu, but also by mites found in blankets and sheets.",
           "Low temperatures can also constrict smaller arteries on one’s fingers, toes, nose, and ears. The resulting numbness is called Raynaud syndrome, and can also occur due to stress.",
         ],
@@ -26,21 +26,21 @@ module.exports = {
         chartType: "seasonal",
         copyTitle: "Spring",
         copy: [
-          "The flower season is beautiful, but can become a nightmare for allergy sufferers. The pollen released by plants leads to various types of allergies, like rhinitis and conjunctivitis. The same thing happens in the beginning of the fall.",
+          "The flower season is beautiful, but can become a nightmare for Allergy sufferers. The pollen released by plants leads to various types of allergies, like rhinitis and Conjunctivitis. The same thing happens in the beginning of the fall.",
           "As the temperature goes up and people start going to pools and gyms, they’re exposed to eye infections caused by viruses and bacteria. Another virus that signals spring has sprung? Chickenpox. The contagious virus common among children spreads more easily at this time of year.",
         ],
       },
       {
         title: "Summer",
         data: "./data/seasonal-summer.json",
-        terms: ["Candidiasis", "Skin rash", "Diarrhea"],
+        terms: ["Candidiasis", "Skin rashes", "Diarrhea"],
         geoList: ["US", "AU"],
         years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: "Summer",
         copy: [
-          "Summer presents the perfect conditions for the fungus, Candida albicans. Wet bikinis and swim trunks ease its propagation in the genitalia, leading to candidiasis. The heat is also ideal for the multiplication of the bacteria that causes diarrhea.",
-          "Many things can affect the the skin during this time of the year. For example, sunblock and lotions can block the sweat glands — leading to skin rashes, itchiness, and red spots.",
+          "Summer presents the perfect conditions for the fungus, Candida albicans. Wet bikinis and swim trunks ease its propagation in the genitalia, leading to Candidiasis. The heat is also ideal for the multiplication of the bacteria that causes Diarrhea.",
+          "Many things can affect the the skin during this time of the year. For example, sunblock and lotions can block the sweat glands — leading to Skin rashes, itchiness, and red spots.",
         ],
       },
     ],
@@ -58,8 +58,8 @@ module.exports = {
         chartType: "seasonal",
         copyTitle: "New Year",
         copy: [
-          "A recent study from Melbourne University, Australia, shows that the risks of heart attack rise by 4% during the holiday season. Some possible reasons are emotional stress, alcohol abuse, and changes in diet. Cardiac issues cause a notorious bump in searches for “chest pain” in the first months of the year.",
-          "Another common problem during the period is the norovirus, aka winter vomiting bug. It provokes gastrointestinal problems, such as diarrhea and vomiting. The infection is more active in winter, spreading in several countries in the Northern Hemisphere, but the food eaten during holiday festivities may also play a role.",
+          "A recent study from Melbourne University, Australia, shows that the risks of heart attack rise by 4% during the holiday season. Some possible reasons are emotional stress, alcohol abuse, and changes in diet. Cardiac issues cause a notorious bump in searches for “Chest pain” in the first months of the year.",
+          "Another common problem during the period is the norovirus, aka Winter vomiting bug. It provokes gastrointestinal problems, such as diarrhea and vomiting. The infection is more active in winter, spreading in several countries in the Northern Hemisphere, but the food eaten during holiday festivities may also play a role.",
         ],
       },
       {
@@ -83,7 +83,7 @@ module.exports = {
         chartType: "seasonal",
         copyTitle: "Diwali Festival",
         copy: [
-          "Diwali is one of the most important festivals for Hinduism. It happens over five days between October and November, celebrating the victory of light over darkness, good over evil, and knowledge over ignorance. Lighting candles and burning firecrackers are two common practices during this time, leading to smaller fire incidents and hundreds of burn injuries every year. Searches for “burn” and “pain” are high during the celebrations.",
+          "Diwali is one of the most important festivals for Hinduism. It happens over five days between October and November, celebrating the victory of light over darkness, good over evil, and knowledge over ignorance. Lighting candles and burning firecrackers are two common practices during this time, leading to smaller fire incidents and hundreds of burn injuries every year. Searches for “Burn” and “Pain” are high during the celebrations.",
         ],
       },
     ],
@@ -95,13 +95,13 @@ module.exports = {
       {
         title: "Campaigns",
         data: "./data/media-campaigns.json",
-        terms: ["Down's syndrome", "Breast cancer", "Autism"],
+        terms: ["Down syndrome", "Breast cancer", "Autism"],
         geoList: ["world"],
         years: [2004, 2016],
         chartType: "seasonal",
         copyTitle: "Campaigns",
         copy: [
-          "Not every increase in searches is directly related to a rise in cases of a disease. Sometimes spikes are caused by media events, such as annual awareness campaigns. One of the most popular campaigns occurs every October, Breast Cancer Awareness Month. Other examples include World Down Syndrome Day on March 21st, and World Autism Awareness Day on April 2nd.",
+          "Not every increase in searches is directly related to a rise in cases of a disease. Sometimes spikes are caused by media events, such as annual awareness campaigns. One of the most popular campaigns occurs every October, Breast cancer Awareness Month. Other examples include World Down syndrome Day on March 21st, and World Autism Awareness Day on April 2nd.",
         ],
       },
       {
@@ -113,7 +113,8 @@ module.exports = {
         chartType: "trend",
         copyTitle: "Pop Culture",
         copy: [
-          "Celebrities also play a major role in the popularity of certain health topics. Selena Gomez brought increased attention to lupus, an inflammatory disease that affects joints, skin, and kidneys. The singer canceled her shows on October 2015 and September 2016 to be treated for the disease. Famous people also helped boost the searches for amyotrophic lateral sclerosis, aka ALS, a problem in the nervous system. The disease got a lot of media attention thanks to the “Ice Bucket Challenge” in 2014. Even former U.S. President George W. Bush dumped cold water on his head, challenging Bill Clinton. President Obama declined the challenge, but donated to the campaign.",
+          "Celebrities also play a major role in the popularity of certain health topics. Selena Gomez brought increased attention to Lupus, an inflammatory disease that affects joints, skin, and kidneys. The singer canceled her shows on October 2015 and September 2016 to be treated for the disease.",
+          "Famous people also helped boost the searches for Amyotrophic lateral sclerosis, aka ALS, a problem in the nervous system. The disease got a lot of media attention thanks to the “Ice Bucket Challenge” in 2014. Even former U.S. President George W. Bush dumped cold water on his head, challenging Bill Clinton. President Obama declined the challenge, but donated to the campaign.",
         ],
       },
       {
@@ -127,7 +128,7 @@ module.exports = {
         copy: [
           "In a 1998 paper, British researcher Andrew Wakefield claimed that vaccines cause autism in children. The idea started to gain traction in the 2000’s. Celebrities like Jim Carrey and Charlie Sheen publicly supported the anti-vaccine movement.",
           "A link between vaccines and autism was never scientifically proven and Wakefield’s paper was declared a fraud. He ended up losing his medical registry in 2010.",
-          "However, his ideas were widespread by that time. Unvaccinated children ended up triggering a measles epidemics in Ohio in 2014 and California in 2015.",
+          "However, his ideas were widespread by that time. Unvaccinated children ended up triggering a Measles epidemics in Ohio in 2014 and California in 2015.",
         ],
       },
     ],
@@ -158,8 +159,8 @@ module.exports = {
         years: [2015, 2016],
         copyTitle: "Zika",
         copy: [
-          "The first Zika cases reported in Brazil in 2015 were mistaken for dengue or chikungunya. Both diseases are also transmitted by the Aedes aegypti mosquito. By mid-2015, however, the World Health Organization confirmed Zika infections in Brazil and Colombia. The cases were rapidly followed by outbreaks in Latin America and the Caribbean. Cape Verde had an outbreak in late 2015, raising concern on the African continent.",
-          "In the beginning of 2016, scientists proved the relationship between the Zika virus and microcephaly, a condition where a baby’s brain and skull doesn’t fully develop during pregnancy. The discovery added to the concerns about Brazil hosting the Olympics that year.",
+          "The first Zika cases reported in Brazil in 2015 were mistaken for dengue or chikungunya. Both diseases are also transmitted by the Aedes aegypti mosquito. By mid-2015, however, the World Health Organization confirmed zika infections in Brazil and Colombia. The cases were rapidly followed by outbreaks in Latin America and the Caribbean. Cape Verde had an outbreak in late 2015, raising concern on the African continent.",
+          "In the beginning of 2016, scientists proved the relationship between the zika virus and microcephaly, a condition where a baby’s brain and skull doesn’t fully develop during pregnancy. The discovery added to the concerns about Brazil hosting the Olympics that year.",
         ],
       },
       {
@@ -185,7 +186,7 @@ module.exports = {
         years: [2016, 2017],
         copyTitle: "Yellow Fever",
         copy: [
-          "African countries have seen outbreaks of yellow fever for at least the past 30 years. In 2008, cases in Brazil and Paraguay raised worldwide concern about the infection.",
+          "African countries have seen outbreaks of Yellow fever for at least the past 30 years. In 2008, cases in Brazil and Paraguay raised worldwide concern about the infection.",
           "In 2016, China confirmed cases of the disease, previously absent in Asia. The most accepted theory about the case is that Chinese workers returning home from Angola brought the virus to the country.",
           "In the first months of 2017, there was an increase in cases of the disease in urban areas of Brazil. The surge generated a huge wave of concern not only in Latin America, but throughout the world.",
         ],
