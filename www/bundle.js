@@ -38486,12 +38486,14 @@
 
 	      chart.select('g.y').selectAll('.tick text');
 
-	      chart.select('g.x').transition().duration(transitionDuration)
-	      // .style('transform', type !== 'seasonal' ? `translate(0, ${height}px)` : 'none')
-	      .each(function () {
+	      chart.select('g.x').transition().duration(transitionDuration).each(function () {
 	        var x = d3.select(this);
 	        var path = x.select('path');
-	        x.transition().duration(transitionDuration).style('transform', 'translate(0, ' + height + 'px)').select('path').style('transform', type === 'seasonal' ? 'translate(0, ' + -height / 2 + 'px)' : 'none');
+	        x.transition().duration(transitionDuration).style('transform', function () {
+	          return 'translate(0px, ' + height + 'px)';
+	        }).select('path').style('transform', function () {
+	          if (type === 'seasonal') return 'translate(0, ' + -height / 2 + 'px)';
+	        });
 	      }).call(xAxis);
 
 	      var timeSeries = chart.selectAll('.time-series');

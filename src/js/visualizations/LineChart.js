@@ -227,15 +227,18 @@ export default class LineChart {
     chart.select('g.x')
       .transition()
       .duration(transitionDuration)
-      // .style('transform', type !== 'seasonal' ? `translate(0, ${height}px)` : 'none')
       .each(function() {
         const x = d3.select(this);
         const path = x.select('path');
         x.transition()
           .duration(transitionDuration)
-          .style('transform', `translate(0, ${height}px)`)
+          .style('transform', function() {
+              return `translate(0px, ${height}px)`;
+          })
           .select('path')
-          .style('transform', type === 'seasonal' ? `translate(0, ${-height/2}px)` : 'none');
+          .style('transform', function() {
+            if (type === 'seasonal') return `translate(0, ${-height/2}px)`;
+          })
       })
       .call(xAxis);
 
