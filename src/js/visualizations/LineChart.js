@@ -230,7 +230,7 @@ export default class LineChart {
     xAxisSelection.style('transform', `translate(0px, ${height}px)`)
       .call(xAxis)
       .select('path')
-      .style('transform', type === 'seasonal' ? `translate(0px, ${-height/2}px)` : 'none');
+      .style('transform', type === 'seasonal' ? `translate(0px, ${-height/2}px)` : `translate(0px, 0px)`);
 
     const timeSeries = chart.selectAll('.time-series');
 

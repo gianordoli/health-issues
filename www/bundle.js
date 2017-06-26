@@ -215,7 +215,7 @@
 	  var init = function init() {
 	    _loglevel2.default.enableAll();
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
+	    _loglevel2.default.info('ENV: ' + ("STAGING"));
 	    loadShinyAPI();
 	  };
 
@@ -1186,7 +1186,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (true) {
+	          if (false) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -38489,7 +38489,7 @@
 
 	      var xAxisSelection = chart.select('g.x');
 	      if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
-	      xAxisSelection.style('transform', 'translate(0px, ' + height + 'px)').call(xAxis).select('path').style('transform', type === 'seasonal' ? 'translate(0px, ' + -height / 2 + 'px)' : 'none');
+	      xAxisSelection.style('transform', 'translate(0px, ' + height + 'px)').call(xAxis).select('path').style('transform', type === 'seasonal' ? 'translate(0px, ' + -height / 2 + 'px)' : 'translate(0px, 0px)');
 
 	      var timeSeries = chart.selectAll('.time-series');
 
