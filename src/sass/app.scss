@@ -694,7 +694,7 @@ footer {
     justify-content: flex-start;
     flex-wrap: wrap;
 
-    @include for-phone-down {
+    @include for-tablet-portrait-down {
       flex-direction: column;
       justify-content: center;
     };
@@ -707,7 +707,7 @@ footer {
       letter-spacing: 2px;
       margin-right: $elements-margin*2;
 
-      @include for-phone-down {
+      @include for-tablet-portrait-down {
         margin-right: 0;
         margin-bottom: $baseline-height*2;
       };

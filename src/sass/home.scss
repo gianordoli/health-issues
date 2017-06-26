@@ -165,6 +165,7 @@
       @include for-phone-down {
         @include type-body-1;
         margin-bottom: $baseline-height;
+        width: 100%;
       };
     }
 
