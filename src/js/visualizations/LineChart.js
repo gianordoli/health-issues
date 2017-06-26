@@ -228,9 +228,8 @@ export default class LineChart {
     let xAxisSelection = chart.select('g.x');
     if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
     xAxisSelection.style('transform', `translate(0px, ${height}px)`)
-      .call(xAxis);
-
-    xAxisSelection.select('path')
+      .call(xAxis)
+      .select('path')
       .style('transform', type === 'seasonal' ? `translate(0px, ${-height/2}px)` : 'none');
 
     const timeSeries = chart.selectAll('.time-series');

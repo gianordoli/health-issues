@@ -38489,9 +38489,7 @@
 
 	      var xAxisSelection = chart.select('g.x');
 	      if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
-	      xAxisSelection.style('transform', 'translate(0px, ' + height + 'px)').call(xAxis);
-
-	      xAxisSelection.select('path').style('transform', type === 'seasonal' ? 'translate(0px, ' + -height / 2 + 'px)' : 'none');
+	      xAxisSelection.style('transform', 'translate(0px, ' + height + 'px)').call(xAxis).select('path').style('transform', type === 'seasonal' ? 'translate(0px, ' + -height / 2 + 'px)' : 'none');
 
 	      var timeSeries = chart.selectAll('.time-series');
 
