@@ -7,6 +7,7 @@ import log from 'loglevel';
 export default class TrendsAPI {
 
   gapi: () => {};
+  delay: number;
 
   constructor() {
     log.info('TrendsAPI');
@@ -14,6 +15,7 @@ export default class TrendsAPI {
 
   setup(callback) {
     const self = this;
+    self.delay = 0;
     require( 'google-client-api' )()
       .then( function( gapi ) {
         log.info('GoogleAPI library loaded');
@@ -45,6 +47,7 @@ export default class TrendsAPI {
   }
 
   executeCall(path: string, callback) {
+    const self = this;
     this.gapi.client.request({
       'path': path
     })
@@ -52,7 +55,13 @@ export default class TrendsAPI {
         callback(response.result);
       }, function(reason) {
         log.info('Error: ' + reason.result.error.message);
-      });
+        if (reason.result.error.code === 429 && self.delay < 8) {
+          setTimeout(function() {
+            self.executeCall(path, callback);
+          }, (self.delay = Math.max(self.delay *= 2, 1)) * 1000);
+        }
+      }
+    );
   }
 
   appendRestrictions(filter: Filter, path: string) {
