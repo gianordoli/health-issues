@@ -199,7 +199,7 @@ export default class Home {
     titleContainer.appendChild(title);
     setTimeout(function() {
       titleContainer.classList.add('enter');
-    }, 1000);
+    }, 500);
 
     const projectDescription = document.createElement('p');
     projectDescription.classList.add('project-description', 'container');
