@@ -108,11 +108,11 @@
     transform-style: preserve-3d;
     color: white;
 
-    transition: transform 2s ease-out, opacity 1s ease-out 1s;
-    transform: translate(-50%, 0) rotateX(50deg);
-    perspective: 200px;
-    perspective-origin: 0 0;
-    transform-origin: left;
+    transition: transform 2s ease-out, opacity 1.25s ease-out 0.75s;
+    transform: translate3d(-50%, 0, 1000px) rotateX(50deg);
+    // perspective: 200px;
+    // perspective-origin: 0 0;
+    // transform-origin: left;
     opacity: 0;
 
     @include for-phone-down {
@@ -120,10 +120,10 @@
     };
 
     &.enter {
-      transform: translate(-50%, -50%) rotateX(0);
+      transform: translate3d(-50%, -50%, 200px) rotateX(0);
       opacity: 1;
       @include for-phone-down {
-        transform: translate(-50%, -40%) rotateX(0);
+        transform: translate3d(-50%, -40%, 200px) rotateX(0);
       }
     }
 

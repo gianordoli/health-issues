@@ -187,7 +187,7 @@ export default class Home {
     const elementsContainer = document.createElement('div');
     elementsContainer.id = 'home';
     elementsContainer.classList.add('page');
-    elementsContainer.style.height = `${window.innerHeight*1.25}px`;
+    elementsContainer.style.height = `${window.innerHeight*1.3}px`;
     parentContainer.appendChild(elementsContainer);
 
     const titleContainer = document.createElement('div');
@@ -226,7 +226,7 @@ export default class Home {
 
     const menuContainer = document.createElement('div');
     menuContainer.classList.add('menu-container');
-    menuContainer.style.height = `${window.innerHeight*1.25}px`;
+    menuContainer.style.height = `${window.innerHeight*1.3}px`;
     elementsContainer.appendChild(menuContainer);
 
     const container = document.createElement('div');
