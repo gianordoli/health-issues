@@ -224,6 +224,36 @@ export default class Home {
     gnl.innerHTML = icons.googleNewsLabLogo;
     logosContainer.appendChild(gnl);
 
+    const menuContainer = document.createElement('div');
+    menuContainer.classList.add('menu-container');
+    menuContainer.style.height = `${window.innerHeight*1.5}px`;
+    elementsContainer.appendChild(menuContainer);
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    menuContainer.appendChild(container);
+
+    const menu = document.createElement('div');
+    menu.classList.add('menu');
+    container.appendChild(menu);
+
+    const menuTitle = document.createElement('p');
+    menuTitle.innerHTML = 'Jump to:';
+    menu.appendChild(menuTitle);
+
+    const linksContainer = document.createElement('ul');
+    menu.appendChild(linksContainer);
+
+    const links = ['stories', 'explore', 'ranking', 'about'];
+    for (const l of links) {
+      const li = document.createElement('li');
+      linksContainer.appendChild(li);
+      const button = document.createElement('a');
+      button.innerHTML = l;
+      button.setAttribute('href', `#${l}`);
+      li.appendChild(button);
+    }
+
     this.countryContainer = document.createElement('div');
     this.countryContainer.classList.add('country-container');
     elementsContainer.appendChild(this.countryContainer);
