@@ -57,20 +57,20 @@ export default class LineChart {
     if (type === 'seasonal') {
       data = [
         {
-          term:"",
+          term:'',
           points:[
-            {"date":"2003-12-31","value":0},
-            {"date":"2004-12-31","value":0}
+            {'date':'2003-12-31','value':0},
+            {'date':'2004-12-31','value':0}
           ]
         }
       ]
     } else {
       data = [
         {
-            term:"",
+            term:'',
             points:[
-            {"date":"2003-12-31","value":0},
-            {"date":"2017-05-31","value":100},
+            {'date':'2003-12-31','value':0},
+            {'date':'2017-05-31','value':100},
           ]
         }
       ]
@@ -190,6 +190,8 @@ export default class LineChart {
 
     const isYear = d3.select(svg.node().parentNode.parentNode).classed('step-3') ? true : false;
     const isMobile = window.innerWidth < 600;
+    const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]'; })(!window['safari'] || safari.pushNotification);
+
 
     if (type === 'seasonal' && !isYear) {
       xAxis.tickFormat(d3.timeFormat('%b'))
@@ -226,7 +228,7 @@ export default class LineChart {
       .selectAll('.tick text');
 
     let xAxisSelection = chart.select('g.x');
-    if (!isMobile) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
+    if (!isMobile && !isSafari) xAxisSelection = xAxisSelection.transition().duration(transitionDuration);
     xAxisSelection.style('transform', `translate(0px, ${height}px)`)
       .call(xAxis)
       .select('path')
