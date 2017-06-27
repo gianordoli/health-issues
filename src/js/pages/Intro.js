@@ -143,7 +143,7 @@ export default class Intro {
       .on('active', function(i) {
 
         clearInterval(yearlyLoop);
-        chartsContainer.classList.remove('step-2', 'step-3', 'step-4');
+        chartsContainer.classList.remove('step-1', 'step-2', 'step-3', 'step-4');
 
         let title, type, range;
         let timeSeries = [];
@@ -159,6 +159,7 @@ export default class Intro {
           case 1:
             type = 'mixed';
             title = 'Trend per year';
+            chartsContainer.classList.add('step-1');
             yearlyLoop = setInterval(function(){
               loopThroughYears(type, title, range);
             }, 2000);

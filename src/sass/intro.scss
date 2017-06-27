@@ -26,6 +26,12 @@
           top: $col-gutter-small;
         }
 
+        .charts-container.step-1 {
+          svg.chart-canvas .line-chart g.time-series path.line.disease {
+            &:nth-child(1) { stroke: $color-1; }
+            &:nth-child(2) { stroke: $color-1; opacity: 0.48; }
+          }
+        }
         .charts-container.step-2 {
           svg.chart-canvas .line-chart g.time-series path.line.disease {
             &:nth-child(1) { stroke: $color-1; opacity: 0.48; }
