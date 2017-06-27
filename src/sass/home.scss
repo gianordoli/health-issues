@@ -244,19 +244,20 @@
       margin-top: $baseline-height;
 
       li {
+        border-bottom: 1px solid white;
         display: inline-block;
+        margin: 0 $elements-margin/2;
       }
 
       a {
-        font-family: $font-sans;
+        @include type-h4;
         font-size: 18px;
-        font-weight: 400;
-        letter-spacing: 2px;
-        text-transform: uppercase;
+        color: white;
+
+        display: inline-block;
         cursor: pointer;
         display: inline-block;
-        padding: $elements-padding/2  $elements-padding;
-        color: white;
+        padding: $elements-padding/4  $elements-padding/2;
 
         &:hover {
           background-color: lighten($color-0, 12%);
