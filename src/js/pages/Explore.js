@@ -524,8 +524,12 @@ export default class Explore {
 
             for(const q of topQueries[i].item) {
               const listItem = document.createElement('li');
-              listItem.innerHTML = q.title;
               list.appendChild(listItem);
+              const link = document.createElement('a');
+              link.innerHTML = q.title;
+              link.setAttribute('href', `https://www.google.com/#q=${encodeURIComponent(q.title)}`);
+              link.setAttribute('target', '_blank');
+              listItem.appendChild(link);
             }
           }
         }
