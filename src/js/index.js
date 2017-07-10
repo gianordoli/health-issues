@@ -51,7 +51,7 @@ app.main = (function (){
         ticking = false;
         scrollY = window.scrollY;
         home.checkScroll(scrollY, home);
-        mainNav.moveBurger(scrollY, mainNav);
+        mainNav.checkScroll(scrollY, mainNav);
         explore.checkScroll(scrollY, explore);
       });
     }

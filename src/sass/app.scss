@@ -382,18 +382,9 @@ a {
       height: 22px;
       float: right;
       position: absolute;
-      top: $col-gutter-large;
-      right: $col-gutter-large;
+      top: 7px;
+      right: ($col-gutter-small*2 - 22px)/2;
       transition: top 0.25s ease-out;
-
-      @include for-phone-down {
-        top: $col-gutter-small;
-        right: ($col-gutter-small*2 - 22px)/2;
-      };
-
-      &.moved {
-        top: 7px;
-      }
 
       g {
         stroke: $color-1;

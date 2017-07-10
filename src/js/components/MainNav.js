@@ -22,25 +22,37 @@ export default class MainNav {
     this.createElements(parentContainer);
   }
 
-  moveBurger(scrollY: number, self: MainNav) {
-    const { hamburger } = self;
-    let { introIsMounted, storiesOffsetTop } = self.data;
-
-    if (!introIsMounted) {
-      const introPage = document.querySelector('#intro.page');
-      if (introPage) introIsMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
-      self.updateData({ introIsMounted });
-
-    } else if (storiesOffsetTop === 0) {
-      const storiesPage = document.querySelector('#stories.page');
-      if (storiesPage) storiesOffsetTop = storiesPage.getBoundingClientRect().top;
-      self.updateData({ storiesOffsetTop });
-    } else if (scrollY > storiesOffsetTop) {
-      hamburger.classList.add('moved');
+  checkScroll(scrollY: number, self: MainNav) {
+    if (window.innerWidth <= 600) {
+      self.moveBurger(scrollY, self);
     } else {
-      hamburger.classList.remove('moved');
+
     }
   }
+
+  highlightPage(scrollY: number, self: MainNav) {
+
+  }
+
+  // moveBurger(scrollY: number, self: MainNav) {
+  //   const { hamburger } = self;
+  //   let { introIsMounted, storiesOffsetTop } = self.data;
+  //
+  //   if (!introIsMounted) {
+  //     const introPage = document.querySelector('#intro.page');
+  //     if (introPage) introIsMounted = introPage.getBoundingClientRect().height === 0 ? false : true;
+  //     self.updateData({ introIsMounted });
+  //
+  //   } else if (storiesOffsetTop === 0) {
+  //     const storiesPage = document.querySelector('#stories.page');
+  //     if (storiesPage) storiesOffsetTop = storiesPage.getBoundingClientRect().top;
+  //     self.updateData({ storiesOffsetTop });
+  //   } else if (scrollY > storiesOffsetTop) {
+  //     hamburger.classList.add('moved');
+  //   } else {
+  //     hamburger.classList.remove('moved');
+  //   }
+  // }
 
   hamburgerClick(evt: Event, self: MainNav) {
     const { nav } = self;
