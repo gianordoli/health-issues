@@ -49,13 +49,11 @@ export default class MainNav {
     let { offsetTops } = self.data;
     if (!pagesMounted) {
       const pagesMounted = self.checkPagesMounted();
-      log.info(pagesMounted);
       self.updateData({ pagesMounted });
     } else if (offsetTops.find(obj => obj.top === 0)) {
-      offsetTops = self.getOffsetTops(offsetTops);
-      self.updateData({ offsetTops });
+      self.getOffsetTops(self);
     } else {
-      const pages = offsetTops.filter(obj => scrollY >= obj.top);
+      const pages = offsetTops.filter(obj => scrollY >= obj.top - 36);
       const activePageIndex = pages.length-1;
       if (activePageIndex > -1 && activePageIndex !== self.data.activePageIndex) {
         const links = self.nav.querySelectorAll('a');
@@ -77,14 +75,28 @@ export default class MainNav {
     return pagesMounted;
   }
 
-  getOffsetTops(offsetTops) {
+  getOffsetTops(self: MainNav) {
+    let { offsetTops } = self.data;
     const pages = document.querySelectorAll('.page');
     for (const p of pages) {
-      const { id } = p;
-      const obj = offsetTops.find( obj => obj.id === id);
-      if (obj) obj.top = p.getBoundingClientRect().top;
+      const obj = offsetTops.find( obj => obj.id === p.id);
+      // if (obj) obj.top = p.getBoundingClientRect().top;
+      if (obj) {
+        obj.top = self.getOffsetTop(p);
+        log.info(obj.top);
+      }
     }
-    return offsetTops;
+    self.updateData({ offsetTops });
+  }
+
+  getOffsetTop( elem ) {
+    let offsetTop = 0;
+    do {
+      if ( !isNaN( elem.offsetTop ) ) {
+      offsetTop += elem.offsetTop;
+      }
+    } while( elem = elem.offsetParent );
+    return offsetTop;
   }
 
   // moveBurger(scrollY: number, self: MainNav) {

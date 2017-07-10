@@ -4,7 +4,7 @@ module.exports = [
     highlights: ['Search interest'],
     copy: [
       'This is your usual Google Trends chart. Search interest is measured from 0 (no interest) to 100 (popularity peak) for a given term.',
-      'We can see swine flu epidemics spikes in 2009, but it’s hard to tell from this view whether there’s any seasonality in the data.',
+      'We can see that the swine flu epidemics spiked in 2009, but it’s hard to tell from this view whether there’s any seasonality in the data.',
     ]
   },
   {

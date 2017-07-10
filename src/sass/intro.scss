@@ -24,6 +24,7 @@
 
         @include for-phone-down {
           top: $col-gutter-small;
+          padding-top: $col-gutter-small;
         }
 
         .charts-container.step-1 {
