@@ -19,7 +19,7 @@
       .col-left {
         position: absolute;
         top: 0;
-        padding-top: $col-gutter-large;
+        padding-top: $col-gutter-large + $baseline-height*3;
         @include columns(2);
 
         @include for-phone-down {
@@ -52,6 +52,7 @@
 
       &.graph-scroll-fixed .col-left {
         position: fixed;
+
         width: calc((#{$container-max-width} - #{$col-gutter-large}*10) * 2/3 + #{$col-gutter-large});
         max-width: 100%;
 
@@ -75,7 +76,7 @@
       }
 
       .slides-container {
-        padding-top: $col-gutter-large;
+        padding-top: $col-gutter-large + $baseline-height*3;
         margin-left: calc((100% - 2*#{$col-gutter-large}) * 2/3 + 2*#{$col-gutter-large});
         width: calc((100% - 2*#{$col-gutter-large}) * 1/3);
 
