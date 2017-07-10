@@ -283,7 +283,7 @@ a {
 
 .main-nav {
 
-  top: 0;
+  top: -1px;
   left: 0;
 
   .hamburger, .close {
@@ -505,7 +505,7 @@ a {
 }
 
 .page-body {
-  padding: $baseline-height*4 $col-gutter-large $baseline-height*8 $col-gutter-large;
+  padding: ($baseline-height*4 + $baseline-height*3) $col-gutter-large $baseline-height*8 $col-gutter-large;
   @include for-phone-down {
     padding: $baseline-height*2 $col-gutter-small $baseline-height*4 $col-gutter-small;
   };
