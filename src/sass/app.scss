@@ -412,6 +412,9 @@ a {
       text-align: right;
       background-color: $color-0;
       transition: transform 0.25s ease-out;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
 
       @include for-phone-down {
         padding: $col-gutter-small;
@@ -440,6 +443,15 @@ a {
       ul {
         padding-left: 0;
         list-style: none;
+        height: inherit;
+        text-align: right;
+
+        li {
+          display: block;
+          &:not(:last-child) {
+            margin-right: 0;
+          }
+        }
 
         a {
 
