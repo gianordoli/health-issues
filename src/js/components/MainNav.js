@@ -65,6 +65,7 @@ export default class MainNav {
   createElements(parentContainer: HTMLElement) {
     const mainNavContainer = document.createElement('div');
     mainNavContainer.classList.add('main-nav');
+    if (window.innerWidth > 600) mainNavContainer.classList.add('sticky');
     parentContainer.appendChild(mainNavContainer);
 
     this.hamburger = document.createElement('div');
