@@ -269,90 +269,95 @@ a {
 }
 
 .main-nav {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1000;
 
-  .hamburger {
-    cursor: pointer;
-    width: 22px;
-    height: 22px;
-    float: right;
-    position: absolute;
-    top: $col-gutter-large;
-    right: $col-gutter-large;
-    transition: top 0.25s ease-out;
+  // position: sticky;
 
-    @include for-phone-down {
-      top: $col-gutter-small;
-      right: ($col-gutter-small*2 - 22px)/2;
-    };
-
-    &.moved {
-      top: 7px;
-    }
-
-    g {
-      stroke: $color-1;
-    }
-  }
-
-  nav {
-    position: absolute;
+  @include for-phone-down {
+    position: fixed;
     top: 0;
     right: 0;
-    width: 180px;
-    height: 100vh;
-    transform: translateX(100%);
-    padding: $col-gutter-large;
-    padding-right: $col-gutter-large - $elements-padding;
-    text-align: right;
-    background-color: $color-0;
-    transition: transform 0.25s ease-out;
+    z-index: 1000;
 
-    @include for-phone-down {
-      padding: $col-gutter-small;
-    };
-
-    &.open {
-      transform: translateX(0);
-      box-shadow: -4px 0 rgba(0, 0, 0, 0.18);
-    }
-
-    .close {
-      width: 100%;
-      margin-right: $elements-padding;
-      margin-bottom: $elements-padding*2;
+    .hamburger {
+      cursor: pointer;
+      width: 22px;
+      height: 22px;
       float: right;
+      position: absolute;
+      top: $col-gutter-large;
+      right: $col-gutter-large;
+      transition: top 0.25s ease-out;
 
-      svg {
-        cursor: pointer;
-        width: 22px;
-        height: 22px;
-        float: right
+      @include for-phone-down {
+        top: $col-gutter-small;
+        right: ($col-gutter-small*2 - 22px)/2;
+      };
+
+      &.moved {
+        top: 7px;
+      }
+
+      g {
+        stroke: $color-1;
       }
     }
 
-    ul {
-      padding-left: 0;
-      list-style: none;
+    nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 180px;
+      height: 100vh;
+      transform: translateX(100%);
+      padding: $col-gutter-large;
+      padding-right: $col-gutter-large - $elements-padding;
+      text-align: right;
+      background-color: $color-0;
+      transition: transform 0.25s ease-out;
 
-      a {
+      @include for-phone-down {
+        padding: $col-gutter-small;
+      };
 
-        @include type-h4;
-        cursor: pointer;
-        display: inline-block;
-        padding: $elements-padding/2  $elements-padding;
-        margin: $elements-margin/4 0;
-        color: white;
+      &.open {
+        transform: translateX(0);
+        box-shadow: -4px 0 rgba(0, 0, 0, 0.18);
+      }
 
-        &:hover {
-          background-color: lighten($color-0, 12%);
+      .close {
+        width: 100%;
+        margin-right: $elements-padding;
+        margin-bottom: $elements-padding*2;
+        float: right;
+
+        svg {
+          cursor: pointer;
+          width: 22px;
+          height: 22px;
+          float: right
+        }
+      }
+
+      ul {
+        padding-left: 0;
+        list-style: none;
+
+        a {
+
+          @include type-h4;
+          cursor: pointer;
+          display: inline-block;
+          padding: $elements-padding/2  $elements-padding;
+          margin: $elements-margin/4 0;
+          color: white;
+
+          &:hover {
+            background-color: lighten($color-0, 12%);
+          }
         }
       }
     }
-  }
+  };
 }
 
 .main-container {

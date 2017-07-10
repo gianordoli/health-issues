@@ -82,8 +82,6 @@ app.main = (function (){
 
     if (body) {
 
-      const mainNav = new MainNav(body);
-
       const header = document.createElement('header');
       body.appendChild(header);
       const home = new Home(header, trendsAPI);
@@ -92,6 +90,7 @@ app.main = (function (){
       mainContainer.classList.add('main-container');
       body.appendChild(mainContainer);
 
+        const mainNav = new MainNav(mainContainer);
         const intro = new Intro(mainContainer);
         const stories = new Stories(mainContainer);
         explore = new Explore(mainContainer, shinyAPI, trendsAPI);
