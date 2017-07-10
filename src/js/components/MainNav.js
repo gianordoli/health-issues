@@ -7,8 +7,12 @@ export default class MainNav {
 
   data: {
     ticking: boolean,
-    introIsMounted: boolean,
-    storiesOffsetTop: number,
+    pagesMounted: boolean,
+    offsetTops: Array<{
+      id: string,
+      top: number,
+    }>,
+    activePageIndex: number,
   };
   hamburger: HTMLElement;
   nav: HTMLElement;
@@ -16,22 +20,71 @@ export default class MainNav {
   constructor(parentContainer: HTMLElement) {
     this.data = {
       ticking: false,
-      introIsMounted: false,
-      storiesOffsetTop: 0,
+      pagesMounted: false,
+      offsetTops: [
+        { id: 'intro',
+          top: 0 },
+        { id: 'stories',
+          top: 0 },
+        { id: 'explore',
+          top: 0 },
+        { id: 'ranking',
+            top: 0 },
+        { id: 'about',
+          top: 0 },
+      ],
+      activePageIndex: -1,
     }
     this.createElements(parentContainer);
   }
 
   checkScroll(scrollY: number, self: MainNav) {
-    if (window.innerWidth <= 600) {
-      self.moveBurger(scrollY, self);
-    } else {
-
+    if (window.innerWidth > 600) {
+      self.highlightPage(scrollY, self);
     }
   }
 
   highlightPage(scrollY: number, self: MainNav) {
+    const { pagesMounted } = self.data;
+    let { offsetTops } = self.data;
+    if (!pagesMounted) {
+      const pagesMounted = self.checkPagesMounted();
+      log.info(pagesMounted);
+      self.updateData({ pagesMounted });
+    } else if (offsetTops.find(obj => obj.top === 0)) {
+      offsetTops = self.getOffsetTops(offsetTops);
+      self.updateData({ offsetTops });
+    } else {
+      const pages = offsetTops.filter(obj => scrollY >= obj.top);
+      const activePageIndex = pages.length-1;
+      if (activePageIndex > -1 && activePageIndex !== self.data.activePageIndex) {
+        const links = self.nav.querySelectorAll('a');
+        for (const l of links) {
+          l.classList.remove('active');
+        }
+        links[activePageIndex].classList.add('active');
+        self.updateData({ activePageIndex });
+      }
+    }
+  }
 
+  checkPagesMounted() {
+    const pages = document.querySelectorAll('.page');
+    let pagesMounted = true;
+    for (const p of pages) {
+      pagesMounted = p.getBoundingClientRect().height === 0 ? false : true;
+    }
+    return pagesMounted;
+  }
+
+  getOffsetTops(offsetTops) {
+    const pages = document.querySelectorAll('.page');
+    for (const p of pages) {
+      const { id } = p;
+      const obj = offsetTops.find( obj => obj.id === id);
+      if (obj) obj.top = p.getBoundingClientRect().top;
+    }
+    return offsetTops;
   }
 
   // moveBurger(scrollY: number, self: MainNav) {

@@ -342,27 +342,25 @@ a {
           background-color: inherit;
           margin: 0 $elements-margin/2;
 
-          &:first-child &::after {
+          &::after {
             content: '';
             display: block;
             background-color: white;
             height: 2px;
             position: relative;
             bottom: 4px;
-            left: 0;
-            width: 100%;
-            // left: 50%;
-            // width: 0;
+            left: 50%;
+            width: 0;
             transition-property: width, left;
             transition-duration: 0.25s;
           }
 
-          // &.active {
-          //   &::after {
-          //     width: 100%;
-          //     left: 0;
-          //   }
-          // }
+          &.active {
+            &::after {
+              width: 100%;
+              left: 0;
+            }
+          }
         }
       }
     }
