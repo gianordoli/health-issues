@@ -79,7 +79,7 @@ export default class Ranking {
     parentContainer.appendChild(elementsContainer);
 
     const sticky = document.createElement('div');
-    sticky.classList.add('sticky');
+    sticky.classList.add('sticky', 'header');
     elementsContainer.appendChild(sticky);
 
     const pageHeader = document.createElement('div');
