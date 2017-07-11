@@ -121,10 +121,10 @@
     };
 
     &.enter {
-      transform: translate3d(-50%, -50%, 200px) rotateX(0);
+      transform: translate3d(-50%, -50%, 0) rotateX(0);
       opacity: 1;
       @include for-phone-down {
-        transform: translate3d(-50%, -40%, 200px) rotateX(0);
+        transform: translate3d(-50%, -40%, 0) rotateX(0);
       }
     }
 
