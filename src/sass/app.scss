@@ -585,6 +585,9 @@ svg.chart-canvas {
       }
 
       &.x {
+        text {
+          letter-spacing: 0;
+        }
         path {
           stroke: $color-0;
           stroke-opacity: 0.24;
