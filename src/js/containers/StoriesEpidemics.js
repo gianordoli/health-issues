@@ -7,7 +7,6 @@ import WorldMap from '../visualizations/WorldMap';
 import LineChart from '../visualizations/LineChart';
 import type { TrendsAPIRegionsList, TrendsAPIGraph } from '../util/types';
 import { encodedStr, highlightText } from '../util/util';
-import icons from '../util/icons';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
@@ -254,7 +253,6 @@ export default class StoriesEpidemics {
 
     const playButton = document.createElement('div');
     playButton.classList.add('play-button');
-    playButton.innerHTML = icons.play;
     const bindStartPlayback = evt => this.startPlayback(evt, this);
     playButton.addEventListener('click', bindStartPlayback);
     playButton.addEventListener('touchend', bindStartPlayback);

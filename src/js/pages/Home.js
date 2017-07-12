@@ -4,7 +4,6 @@ import TrendsAPI from '../api/TrendsAPI';
 import type { Term, Geo, Filter, TrendsAPITopTopics } from '../util/types';
 import terms from '../data/terms';
 import countries from '../data/countries';
-import icons from '../util/icons';
 import { map, pickRandomIndex } from '../util/util';
 import homeIconsList from '../data/homeIconsList';
 import * as d3 from 'd3';
@@ -32,7 +31,7 @@ export default class Home {
       disease: { name: '', entity: ''},
       topTopics: [],
     }
-    self.trendsAPI = trendsAPI;``
+    self.trendsAPI = trendsAPI;
     const disease = self.getRandomDisease();
     const country = self.getUserCountry(function(geo) {
       self.updateData({ disease, geo });

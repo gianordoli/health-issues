@@ -383,6 +383,9 @@ a {
       top: 7px;
       right: ($col-gutter-small*2 - 22px)/2;
       transition: top 0.25s ease-out;
+      background-image: url('../images/hamburger-menu.svg?fill=#FA8200');
+      background-repeat: no-repeat;
+      background-position: center;
 
       g {
         stroke: $color-1;
@@ -418,16 +421,15 @@ a {
       .close {
         display: block;
         width: 100%;
+        cursor: pointer;
+        width: 22px;
+        height: 22px;
         margin-right: $elements-padding;
         margin-bottom: $elements-padding*2;
         float: right;
-
-        svg {
-          cursor: pointer;
-          width: 22px;
-          height: 22px;
-          float: right
-        }
+        background-image: url('../images/close.svg');
+        background-repeat: no-repeat;
+        background-position: center;
       }
 
       ul {

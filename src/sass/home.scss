@@ -45,6 +45,7 @@
 
         background-repeat: no-repeat;
         background-position: center;
+        background-size: 65px 65px;
 
         &.cough { background-image: url('../images/cough.svg'); }
         &.skinrash { background-image: url('../images/skinrash.svg'); }
@@ -73,9 +74,30 @@
           transform: translateY(200%);
           opacity: 0;
           animation: icon-drop 5s 1;
-          // path, polygon, circle, rect, ellipse, line {
-          //   stroke: $color-2 !important;
-          // }
+
+          &.cough { background-image: url('../images/cough.svg?fill=#FF91E6'); }
+          &.skinrash { background-image: url('../images/skinrash.svg?fill=#FF91E6'); }
+          &.lung { background-image: url('../images/lung.svg?fill=#FF91E6'); }
+          &.heart { background-image: url('../images/heart.svg?fill=#FF91E6'); }
+          &.brain { background-image: url('../images/brain.svg?fill=#FF91E6'); }
+          &.cell { background-image: url('../images/cell.svg?fill=#FF91E6'); }
+          &.vaccine { background-image: url('../images/vaccine.svg?fill=#FF91E6'); }
+          &.temperature { background-image: url('../images/temperature.svg?fill=#FF91E6'); }
+          &.soap { background-image: url('../images/soap.svg?fill=#FF91E6'); }
+          &.acne { background-image: url('../images/acne.svg?fill=#FF91E6'); }
+          &.cream { background-image: url('../images/cream.svg?fill=#FF91E6'); }
+          &.tea { background-image: url('../images/tea.svg?fill=#FF91E6'); }
+          &.headache { background-image: url('../images/headache.svg?fill=#FF91E6'); }
+          &.blood { background-image: url('../images/blood.svg?fill=#FF91E6'); }
+          &.bacteria { background-image: url('../images/bacteria.svg?fill=#FF91E6'); }
+          &.hormone { background-image: url('../images/hormone.svg?fill=#FF91E6'); }
+          &.polen { background-image: url('../images/polen.svg?fill=#FF91E6'); }
+          &.itch { background-image: url('../images/itch.svg?fill=#FF91E6'); }
+          &.medicine { background-image: url('../images/medicine.svg?fill=#FF91E6'); }
+          &.virus { background-image: url('../images/virus.svg?fill=#FF91E6'); }
+          &.dizziness { background-image: url('../images/dizziness.svg?fill=#FF91E6'); }
+          &.play { background-image: url('../images/play.svg?fill=#FF91E6'); }
+
         }
       }
 
