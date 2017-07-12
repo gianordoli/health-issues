@@ -47,6 +47,10 @@
         background-position: center;
         background-size: 65px 65px;
 
+        @include for-phone-down {
+          background-size: 50px 50px;
+        };
+
         &.cough { background-image: url('../images/cough.svg'); }
         &.skinrash { background-image: url('../images/skinrash.svg'); }
         &.lung { background-image: url('../images/lung.svg'); }
@@ -135,8 +139,10 @@
   .country-container {
     position: relative;
     z-index: 2;
-    border-bottom: 2px solid white;
-    padding-bottom: $baseline-height;
+    border-width: 2px 0;
+    border-color: darken($color-0, 24%);
+    border-style: solid;
+    padding: $baseline-height;
     display: inline-block;
     color: white;
     font-size: 16px;
@@ -154,7 +160,7 @@
     }
 
     .disease-container {
-      color: $color-1;
+      color: $color-2;
     }
   }
 

@@ -406,7 +406,7 @@ a {
       background-color: $color-0;
       transition: transform 0.25s ease-out;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: flex-end;
       justify-content: flex-start;
 
       @include for-phone-down {
