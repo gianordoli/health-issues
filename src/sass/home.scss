@@ -104,20 +104,6 @@
         }
       }
 
-      // svg {
-      //   path, polygon, circle, rect, ellipse, line {
-      //     stroke: darken($color-0, 24%) !important;
-      //   }
-      //   &.flipped {
-      //     transform: translateY(200%);
-      //     opacity: 0;
-      //     animation: icon-drop 5s 1;
-      //     path, polygon, circle, rect, ellipse, line {
-      //       stroke: $color-2 !important;
-      //     }
-      //   }
-      // }
-
       p {
         font-size: 21px;
         opacity: 0;
@@ -183,14 +169,12 @@
 
     @include for-phone-down {
       padding: $col-gutter-small;
+      top: 40%;
     };
 
     &.enter {
       transform: translate3d(-50%, -50%, 0) rotateX(0);
       opacity: 1;
-      @include for-phone-down {
-        transform: translate3d(-50%, -40%, 0) rotateX(0);
-      }
     }
 
     h1 {
