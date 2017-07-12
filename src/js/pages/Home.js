@@ -125,8 +125,7 @@ export default class Home {
           iconContainer.classList.add('icon-container');
 
           const icon = document.createElement('div');
-          // icon.style.backgroundImage = `url(../../images/${iconName})`;
-          icon.classList.add('icon', 'acne');
+          icon.classList.add('icon', iconName);
           iconContainer.appendChild(icon);
 
           iconContainer.style.top = `${y}px`;
@@ -150,19 +149,19 @@ export default class Home {
   }
 
   showRandomTopic() {
-    const iconContainers = document.querySelectorAll('#home.page .top-topics-list .icon');
+    const iconContainers = document.querySelectorAll('#home.page .top-topics-list .icon-container');
     if(iconContainers.length > 0) {
       const i = Math.floor(Math.random()*iconContainers.length);
       const randomIcon = iconContainers[pickRandomIndex(iconContainers.length)];
-      let svg, p;
-      svg = randomIcon.querySelector('svg');
+      let icon, p;
+      icon = randomIcon.querySelector('.icon');
       p = randomIcon.querySelector('p');
-      if (svg && p) {
-        svg.classList.add('flipped');
+      if (icon && p) {
+        icon.classList.add('flipped');
         p.classList.add('flipped');
 
         setTimeout(function() {
-          svg.classList.remove('flipped');
+          icon.classList.remove('flipped');
           p.classList.remove('flipped');
         }, 4000);
       }
