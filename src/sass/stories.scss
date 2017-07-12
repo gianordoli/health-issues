@@ -79,6 +79,9 @@
           height: 22px;
           display: inline-block;
           margin-right: 20px;
+          background-image: url('../images/play.svg');
+          background-repeat: no-repeat;
+          background-position: center;
 
           &:hover {
             background-color: lighten($color-0, 52%);

@@ -28,15 +28,15 @@ module.exports = {
 			},
 			{
 				test: /\.(scss|css)$/,
-				loader: 'style-loader!css-loader!sass-loader'
+				loader: 'style-loader!css-loader!svg-fill/encodeSharp!sass-loader'
 			},
 			{
 		    test: /\.(png|jpg)$/,
 		    loader: 'url-loader?limit=10000'
 			},
 			{
-				test: /\.svg$/,
-				loader: 'svg-inline-loader?classPrefix'
+				test: /\.svg((\?.*)?|$)/,
+				loader: 'svg-url-loader!svg-fill-loader',
 	    }
 		]
 	}
