@@ -122,8 +122,13 @@ export default class Home {
           const iconName = diseaseIconsList[n];
           const distToCenter = Math.abs(height/2 - y);
           const opacity = map(distToCenter, 0, height/2, 0.24, 0.8);
-          iconContainer.classList.add('icon');
-          iconContainer.innerHTML = icons[iconName];
+          iconContainer.classList.add('icon-container');
+
+          const icon = document.createElement('div');
+          // icon.style.backgroundImage = `url(../../images/${iconName})`;
+          icon.classList.add('icon', 'acne');
+          iconContainer.appendChild(icon);
+
           iconContainer.style.top = `${y}px`;
           iconContainer.style.left = `${x}px`;
           iconContainer.style.opacity = opacity;
@@ -221,7 +226,6 @@ export default class Home {
 
     const gnl = document.createElement('div');
     gnl.classList.add('google-news-lab-logo');
-    gnl.innerHTML = icons.googleNewsLabLogo;
     logosContainer.appendChild(gnl);
 
     // const menuContainer = document.createElement('div');

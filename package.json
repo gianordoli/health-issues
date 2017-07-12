@@ -47,6 +47,7 @@
     "npm": "^5.0.3",
     "selectize": "^0.12.4",
     "stickyfill": "^1.1.1",
+    "svg-fill-loader": "0.0.8",
     "topojson-client": "^3.0.0"
   }
 }

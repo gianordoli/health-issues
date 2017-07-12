@@ -17,7 +17,7 @@
     top: 0;
     left: 0;
 
-    .icon {
+    .icon-container {
       position: absolute;
 
       @include for-phone-down {
@@ -29,7 +29,7 @@
         display: none;
       }
 
-      svg, p {
+      .icon, p {
         position: absolute;
         top: 0;
         width: 80px;
@@ -41,19 +41,25 @@
         // animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
       }
 
-      svg {
-        path, polygon, circle, rect, ellipse, line {
-          stroke: darken($color-0, 24%) !important;
-        }
-        &.flipped {
-          transform: translateY(200%);
-          opacity: 0;
-          animation: icon-drop 5s 1;
-          path, polygon, circle, rect, ellipse, line {
-            stroke: $color-2 !important;
-          }
-        }
+      .icon {
+        background-image: url('../images/acne.svg');
+        background-repeat: no-repeat;
+        background-position: center;
       }
+
+      // svg {
+      //   path, polygon, circle, rect, ellipse, line {
+      //     stroke: darken($color-0, 24%) !important;
+      //   }
+      //   &.flipped {
+      //     transform: translateY(200%);
+      //     opacity: 0;
+      //     animation: icon-drop 5s 1;
+      //     path, polygon, circle, rect, ellipse, line {
+      //       stroke: $color-2 !important;
+      //     }
+      //   }
+      // }
 
       p {
         font-size: 21px;
@@ -198,6 +204,8 @@
       .google-news-lab-logo {
         width: 200px;
         height: $baseline-height*3;
+        background-image: url('../images/google-news-lab-logo.svg?fill=white') no-repeat center;
+
         @include for-phone-down {
           width: 45%;
           margin-top: -$baseline-height/2;
