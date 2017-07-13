@@ -123,6 +123,8 @@ export default class StoriesEpidemics {
 
   startPlayback(event: Event, self: StoriesEpidemics) {
     log.info('startPlayback');
+    const playButton = event.target;
+    playButton.classList.add('clicked');
     event.preventDefault();
     const { slider } = self;
     const maxVal = parseInt(slider.max);
@@ -133,6 +135,8 @@ export default class StoriesEpidemics {
       self.playLoop = setInterval(function(){
         self.play(self);
       }, interval);
+    } else {
+      self.pause(self);
     }
   }
 
@@ -147,9 +151,21 @@ export default class StoriesEpidemics {
       slider.value = newVal.toString();
       self.updateData({ currMonth });
     } else {
-      clearInterval(self.playLoop);
-      self.playLoop = 0;
+      self.stop(self);
     }
+  }
+
+  stop(self: StoriesEpidemics) {
+    const { slider } = self;
+    slider.value = (0).toString();
+    self.pause(self);
+  }
+
+  pause(self: StoriesEpidemics) {
+    clearInterval(self.playLoop);
+    self.playLoop = 0;
+    const playButton = document.querySelector('#stories.page .play-button');
+    if (playButton) playButton.classList.remove('clicked');
   }
 
   newCopy(copyContainer: HTMLElement, copyTitle: string, copy: string) {
@@ -264,9 +280,12 @@ export default class StoriesEpidemics {
     slider.setAttribute('min', '0');
     slider.setAttribute('max', (mapData.length - 1).toString());
     slider.value = '0';
-    const bindSliderChange = evt => this.handleSliderChange(evt, this);
-    slider.addEventListener('input', bindSliderChange);
-    slider.addEventListener('touchmove', bindSliderChange);
+      const bindSliderChange = evt => this.handleSliderChange(evt, this);
+    if (window.innerWidth > 600) {
+      slider.addEventListener('input', bindSliderChange);
+    } else {
+      slider.addEventListener('touchmove', bindSliderChange);
+    }
     controls.appendChild(slider);
 
     this.copyContainer = document.createElement('div');

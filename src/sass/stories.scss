@@ -90,6 +90,10 @@
           &:active {
             background-color: lighten($color-0, 48%);
           }
+
+          &.clicked {
+            background-image: url('../images/pause.svg');
+          }
         }
 
         input[type="range"] {

@@ -58,27 +58,27 @@
 
 	var _Intro2 = _interopRequireDefault(_Intro);
 
-	var _Stories = __webpack_require__(112);
+	var _Stories = __webpack_require__(113);
 
 	var _Stories2 = _interopRequireDefault(_Stories);
 
-	var _Explore = __webpack_require__(98);
+	var _Explore = __webpack_require__(99);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
-	var _Ranking = __webpack_require__(113);
+	var _Ranking = __webpack_require__(114);
 
 	var _Ranking2 = _interopRequireDefault(_Ranking);
 
-	var _About = __webpack_require__(117);
+	var _About = __webpack_require__(118);
 
 	var _About2 = _interopRequireDefault(_About);
 
-	var _Footer = __webpack_require__(120);
+	var _Footer = __webpack_require__(121);
 
 	var _Footer2 = _interopRequireDefault(_Footer);
 
-	var _ShinyAPI = __webpack_require__(99);
+	var _ShinyAPI = __webpack_require__(100);
 
 	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
 
@@ -98,13 +98,13 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _stickyfill = __webpack_require__(121);
+	var _stickyfill = __webpack_require__(122);
 
 	var _stickyfill2 = _interopRequireDefault(_stickyfill);
 
-	__webpack_require__(122);
+	__webpack_require__(123);
 
-	var _GetMapData = __webpack_require__(124);
+	var _GetMapData = __webpack_require__(125);
 
 	var _GetMapData2 = _interopRequireDefault(_GetMapData);
 
@@ -30121,7 +30121,7 @@
 
 	var _constants = __webpack_require__(95);
 
-	var _introSlides = __webpack_require__(108);
+	var _introSlides = __webpack_require__(109);
 
 	var _introSlides2 = _interopRequireDefault(_introSlides);
 
@@ -30131,13 +30131,13 @@
 
 	var d3 = _interopRequireWildcard(_d);
 
-	var _graphScroll = __webpack_require__(109);
+	var _graphScroll = __webpack_require__(110);
 
 	var _loglevel = __webpack_require__(2);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(110);
+	__webpack_require__(111);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -30417,7 +30417,7 @@
 
 	var _StoriesLineCharts2 = _interopRequireDefault(_StoriesLineCharts);
 
-	var _Explore = __webpack_require__(98);
+	var _Explore = __webpack_require__(99);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
@@ -30429,7 +30429,7 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _selectize = __webpack_require__(101);
+	var _selectize = __webpack_require__(102);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
@@ -30437,7 +30437,7 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(104);
+	__webpack_require__(105);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31192,6 +31192,8 @@
 	    key: 'startPlayback',
 	    value: function startPlayback(event, self) {
 	      _loglevel2.default.info('startPlayback');
+	      var playButton = event.target;
+	      playButton.classList.add('clicked');
 	      event.preventDefault();
 	      var slider = self.slider;
 
@@ -31203,6 +31205,8 @@
 	        self.playLoop = setInterval(function () {
 	          self.play(self);
 	        }, interval);
+	      } else {
+	        self.pause(self);
 	      }
 	    }
 	  }, {
@@ -31219,9 +31223,24 @@
 	        slider.value = newVal.toString();
 	        self.updateData({ currMonth: _currMonth });
 	      } else {
-	        clearInterval(self.playLoop);
-	        self.playLoop = 0;
+	        self.stop(self);
 	      }
+	    }
+	  }, {
+	    key: 'stop',
+	    value: function stop(self) {
+	      var slider = self.slider;
+
+	      slider.value = 0 .toString();
+	      self.pause(self);
+	    }
+	  }, {
+	    key: 'pause',
+	    value: function pause(self) {
+	      clearInterval(self.playLoop);
+	      self.playLoop = 0;
+	      var playButton = document.querySelector('#stories.page .play-button');
+	      if (playButton) playButton.classList.remove('clicked');
 	    }
 	  }, {
 	    key: 'newCopy',
@@ -31375,8 +31394,11 @@
 	      var bindSliderChange = function bindSliderChange(evt) {
 	        return _this.handleSliderChange(evt, _this);
 	      };
-	      slider.addEventListener('input', bindSliderChange);
-	      slider.addEventListener('touchmove', bindSliderChange);
+	      if (window.innerWidth > 600) {
+	        slider.addEventListener('input', bindSliderChange);
+	      } else {
+	        slider.addEventListener('touchmove', bindSliderChange);
+	      }
 	      controls.appendChild(slider);
 
 	      this.copyContainer = document.createElement('div');
@@ -38830,13 +38852,19 @@
 
 
 	// module
-	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center;\n  background: linear-gradient(123deg, #341a88 0%, #4422B3 100%); }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: -1px;\n  z-index: 100; }\n  @media (min-width: 600px) {\n    .sticky.header {\n      display: none; } }\n\n.main-nav {\n  top: -1px;\n  left: 0; }\n  .main-nav .hamburger, .main-nav .close {\n    display: none; }\n  .main-nav nav {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 0 18px; } }\n    .main-nav nav:before, .main-nav nav:after {\n      content: '';\n      display: table; }\n    .main-nav nav ul {\n      width: 1200px;\n      max-width: 100%;\n      margin: auto;\n      text-align: left;\n      padding-left: 0;\n      list-style: none;\n      height: 36px; }\n      .main-nav nav ul li {\n        display: inline-block;\n        height: 36px;\n        padding-top: 6px; }\n        .main-nav nav ul li:not(:last-child) {\n          margin-right: 12px; }\n        .main-nav nav ul li a {\n          color: white;\n          background-color: inherit;\n          margin: 0 6px; }\n          .main-nav nav ul li a::after {\n            content: '';\n            display: block;\n            background-color: white;\n            height: 2px;\n            position: relative;\n            bottom: 4px;\n            left: 50%;\n            width: 0;\n            transition-property: width, left;\n            transition-duration: 0.25s; }\n          .main-nav nav ul li a.active::after {\n            width: 100%;\n            left: 0; }\n  @media (max-width: 600px) {\n    .main-nav {\n      position: fixed;\n      right: 0;\n      left: auto;\n      width: 100%;\n      z-index: 1000; }\n      .main-nav .hamburger {\n        display: block;\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right;\n        position: absolute;\n        top: 7px;\n        right: 7px;\n        transition: top 0.25s ease-out;\n        background-image: url(" + __webpack_require__(26) + ");\n        background-repeat: no-repeat;\n        background-position: center; }\n        .main-nav .hamburger g {\n          stroke: #FA8200; }\n      .main-nav nav {\n        position: absolute;\n        z-index: 10;\n        top: 0;\n        right: 0;\n        width: 180px;\n        height: 100vh;\n        transform: translateX(100%);\n        padding: 36px;\n        padding-right: 24px;\n        text-align: right;\n        background-color: #4422B3;\n        transition: transform 0.25s ease-out;\n        flex-direction: column;\n        align-items: flex-end;\n        justify-content: flex-start; } }\n    @media (max-width: 600px) and (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n  @media (max-width: 600px) {\n        .main-nav nav.open {\n          transform: translateX(0);\n          box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n        .main-nav nav .close {\n          display: block;\n          width: 100%;\n          cursor: pointer;\n          width: 22px;\n          height: 22px;\n          margin-right: 12px;\n          margin-bottom: 24px;\n          float: right;\n          background-image: url(" + __webpack_require__(27) + ");\n          background-repeat: no-repeat;\n          background-position: center; }\n        .main-nav nav ul {\n          padding-left: 0;\n          list-style: none;\n          height: inherit;\n          text-align: right; }\n          .main-nav nav ul li {\n            display: block; }\n            .main-nav nav ul li:not(:last-child) {\n              margin-right: 0; }\n          .main-nav nav ul a {\n            font-size: 14px;\n            font-family: \"Heebo\", sans-serif;\n            font-weight: 900;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            cursor: pointer;\n            display: inline-block;\n            padding: 6px 12px;\n            margin: 3px 0;\n            color: white; } }\n\n.main-container {\n  width: 100%;\n  position: relative;\n  background-color: white;\n  z-index: 10;\n  box-shadow: 0 8px rgba(0, 0, 0, 0.24); }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n\n.page-header {\n  background-color: #4422B3;\n  color: white;\n  width: 100%;\n  height: 36px;\n  padding: 0 36px;\n  text-align: center;\n  border-width: 1px 0;\n  border-style: solid;\n  border-color: rgba(0, 0, 0, 0.24);\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n  @media (max-width: 600px) {\n    .page-header {\n      padding: 0 18px; } }\n  .page-header:before, .page-header:after {\n    content: '';\n    display: table; }\n\n.page-body {\n  padding: 84px 36px 96px 36px; }\n  @media (max-width: 600px) {\n    .page-body {\n      padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header .header-content {\n    width: 752px; }\n    @media (max-width: 1200px) {\n      .section-header .header-content {\n        width: calc((100% - 36px*4)*2/3 + 36px*2); } }\n    @media (max-width: 900px) {\n      .section-header .header-content {\n        width: 100%; } }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x text {\n  letter-spacing: 0; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\nfooter {\n  color: white;\n  padding: 0 36px; }\n  @media (max-width: 600px) {\n    footer {\n      padding: 0 18px; } }\n  footer .container {\n    position: relative;\n    z-index: 1;\n    min-height: 192px;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: flex-start;\n    flex-wrap: wrap; }\n    @media (max-width: 900px) {\n      footer .container {\n        flex-direction: column;\n        justify-content: center; } }\n    footer .container .website-url {\n      font-size: 14px;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 700;\n      text-transform: uppercase;\n      letter-spacing: 2px;\n      margin-right: 24px; }\n      @media (max-width: 900px) {\n        footer .container .website-url {\n          margin-right: 0;\n          margin-bottom: 24px; } }\n    footer .container .social-media {\n      display: flex;\n      flex-direction: row;\n      align-items: center;\n      justify-content: flex-start; }\n      footer .container .social-media .fb-share-button {\n        margin-left: 12px; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page .selectize-input {\n  min-width: 180px; }\n\n#stories.page .page-body {\n  background-color: #341a88; }\n\n#stories.page .story-section .section-header {\n  color: white; }\n\n#stories.page .story-section .section-body .case-copy {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #stories.page .story-section .section-body .case-copy:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    #stories.page .story-section .section-body .case-copy {\n      width: 100%; }\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n#stories.page .story-section .section-body .highlight {\n  padding: 1px 2px; }\n  #stories.page .story-section .section-body .highlight.term-1 {\n    background-color: #ffbd75; }\n  #stories.page .story-section .section-body .highlight.term-2 {\n    background-color: #ffcef4; }\n  #stories.page .story-section .section-body .highlight.term-3 {\n    background-color: #72ccff; }\n\n#stories.page .story-section.epidemics .map .country {\n  stroke: #A696DB;\n  stroke-width: 1px; }\n\n#stories.page .story-section.epidemics .legendThreshold .legendCells text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  letter-spacing: normal; }\n\n#stories.page .story-section.epidemics .legendThreshold .legendCells .cell rect {\n  stroke: #333;\n  stroke-width: 0.5px; }\n\n#stories.page .story-section.epidemics .q0-10 {\n  fill: #ffffff; }\n\n#stories.page .story-section.epidemics .q1-10 {\n  fill: #fff5eb; }\n\n#stories.page .story-section.epidemics .q2-10 {\n  fill: #fee6ce; }\n\n#stories.page .story-section.epidemics .q3-10 {\n  fill: #fdd0a2; }\n\n#stories.page .story-section.epidemics .q4-10 {\n  fill: #fdae6b; }\n\n#stories.page .story-section.epidemics .q5-10 {\n  fill: #fd8d3c; }\n\n#stories.page .story-section.epidemics .q6-10 {\n  fill: #f16913; }\n\n#stories.page .story-section.epidemics .q7-10 {\n  fill: #d94801; }\n\n#stories.page .story-section.epidemics .q8-10 {\n  fill: #b24600; }\n\n#stories.page .story-section.epidemics .q9-10 {\n  fill: #a63603; }\n\n#stories.page .story-section.epidemics .q10-10 {\n  fill: #7f2704; }\n\n#stories.page .story-section.epidemics .controls {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center; }\n  #stories.page .story-section.epidemics .controls .play-button {\n    flex-shrink: 0;\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    display: inline-block;\n    margin-right: 20px;\n    background-image: url(" + __webpack_require__(49) + ");\n    background-repeat: no-repeat;\n    background-position: center; }\n    #stories.page .story-section.epidemics .controls .play-button:hover {\n      background-color: #e9e4fa; }\n    #stories.page .story-section.epidemics .controls .play-button:active {\n      background-color: #dbd3f7; }\n  #stories.page .story-section.epidemics .controls input[type=\"range\"] {\n    flex-grow: 1;\n    -webkit-appearance: none;\n    width: 100%;\n    margin: 9px 0; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus {\n    outline: none; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-webkit-slider-runnable-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0);\n    background: #d4ccee;\n    border-radius: 4px;\n    border: 0px solid transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-webkit-slider-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer;\n    -webkit-appearance: none;\n    margin-top: -9px; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-webkit-slider-runnable-track {\n    background: #e1dbf3; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-moz-range-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0);\n    background: #d4ccee;\n    border-radius: 4px;\n    border: 0px solid transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-moz-range-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    background: transparent;\n    border-color: transparent;\n    color: transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-fill-lower {\n    background: #c7bde9;\n    border: 0px solid transparent;\n    border-radius: 8px;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0); }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-fill-upper {\n    background: #d4ccee;\n    border: 0px solid transparent;\n    border-radius: 8px;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0); }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer;\n    height: 4px; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-ms-fill-lower {\n    background: #d4ccee; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-ms-fill-upper {\n    background: #e1dbf3; }\n\n#stories.page .story-section .stories-nav-bar {\n  min-height: 48px;\n  margin: 0 auto;\n  background-color: white;\n  border-bottom: 2px solid #4422B3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  align-items: center;\n  padding: 6px 12px; }\n  @media (max-width: 600px) {\n    #stories.page .story-section .stories-nav-bar {\n      padding-left: 12px; } }\n  #stories.page .story-section .stories-nav-bar button {\n    cursor: pointer;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 900;\n    line-height: 12px;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    display: inline-block;\n    padding: 6px;\n    margin: 3px 0;\n    color: #4422B3;\n    border: none;\n    background-color: white;\n    transition-property: background-color, color;\n    transition-duration: 0.25s; }\n    #stories.page .story-section .stories-nav-bar button:not(:last-child) {\n      margin-right: 12px; }\n    #stories.page .story-section .stories-nav-bar button:hover {\n      background-color: #dbd3f7; }\n    #stories.page .story-section .stories-nav-bar button.active {\n      background-color: #4422B3;\n      color: white; }\n\n/* Tooltip */\n.d3-tip {\n  z-index: 1000;\n  max-width: 200px;\n  padding: 12px;\n  line-height: 18px;\n  background: white;\n  border: 1px solid #4422B3;\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  transform: translate(0, -10%); }\n  .d3-tip .country {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    line-height: 18px; }\n    @media (max-width: 600px) {\n      .d3-tip .country {\n        line-height: 20.4px; } }\n  .d3-tip .value {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700;\n    line-height: 18px;\n    padding-left: 12px;\n    color: #4422B3; }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n\n.legend text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\n.legend line {\n  stroke: #4422B3; }\n", ""]);
+	exports.push([module.id, "/*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\nhtml {\n  line-height: 1.15;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers (opinionated).\n */\nbody {\n  margin: 0; }\n\n/**\n * Add the correct display in IE 9-.\n */\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block; }\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\nfigcaption,\nfigure,\nmain {\n  /* 1 */\n  display: block; }\n\n/**\n * Add the correct margin in IE 8.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box;\n  /* 1 */\n  height: 0;\n  /* 1 */\n  overflow: visible;\n  /* 2 */ }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\na {\n  background-color: transparent;\n  /* 1 */\n  -webkit-text-decoration-skip: objects;\n  /* 2 */ }\n\n/**\n * 1. Remove the bottom border in Chrome 57- and Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none;\n  /* 1 */\n  text-decoration: underline;\n  /* 2 */\n  text-decoration: underline dotted;\n  /* 2 */ }\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\nb,\nstrong {\n  font-weight: inherit; }\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder; }\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace;\n  /* 1 */\n  font-size: 1em;\n  /* 2 */ }\n\n/**\n * Add the correct font style in Android 4.3-.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Add the correct background and color in IE 9-.\n */\nmark {\n  background-color: #ff0;\n  color: #000; }\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\naudio,\nvideo {\n  display: inline-block; }\n\n/**\n * Add the correct display in iOS 4-7.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\nimg {\n  border-style: none; }\n\n/**\n * Hide the overflow in IE.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif;\n  /* 1 */\n  font-size: 100%;\n  /* 1 */\n  line-height: 1.15;\n  /* 1 */\n  margin: 0;\n  /* 2 */ }\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput {\n  /* 1 */\n  overflow: visible; }\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect {\n  /* 1 */\n  text-transform: none; }\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\nhtml [type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */ }\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em; }\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box;\n  /* 1 */\n  color: inherit;\n  /* 2 */\n  display: table;\n  /* 1 */\n  max-width: 100%;\n  /* 1 */\n  padding: 0;\n  /* 3 */\n  white-space: normal;\n  /* 1 */ }\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  outline-offset: -2px;\n  /* 2 */ }\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  /* 1 */\n  font: inherit;\n  /* 2 */ }\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\ndetails,\nmenu {\n  display: block; }\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item; }\n\n/* Scripting\n   ========================================================================== */\n/**\n * Add the correct display in IE 9-.\n */\ncanvas {\n  display: inline-block; }\n\n/**\n * Add the correct display in IE.\n */\ntemplate {\n  display: none; }\n\n/* Hidden\n   ========================================================================== */\n/**\n * Add the correct display in IE 10-.\n */\n[hidden] {\n  display: none; }\n\n.row {\n  width: 100%; }\n\nh1, h2, h3, h4, h5, h6, p, ul, li {\n  margin: 0; }\n\nh3 {\n  font-size: 21px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh4 {\n  font-size: 14px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nh5 {\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n\nhtml {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  -webkit-box-sizing: inherit;\n  -moz-box-sizing: inherit;\n  box-sizing: inherit; }\n\n#shiny-disconnected-overlay {\n  width: 0;\n  height: 0; }\n\nhtml, body {\n  width: 100%;\n  min-height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0; }\n\nbody {\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  text-align: center;\n  background: linear-gradient(123deg, #341a88 0%, #4422B3 100%); }\n  @media (max-width: 600px) {\n    body {\n      line-height: 20.4px; } }\n\nb {\n  font-size: 14px;\n  line-height: 24px;\n  font-family: \"Inconsolata\", monospace;\n  font-weight: 400;\n  font-weight: 700; }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n  @media (max-width: 600px) {\n    b {\n      line-height: 20.4px; } }\n\n*:focus {\n  outline: none; }\n\na {\n  text-decoration: none;\n  transition-property: color, background-color;\n  transition-duration: 0.25s;\n  padding: 0 1px; }\n  a:link, a:visited {\n    color: #4422B3; }\n  a:hover {\n    background-color: #dbd3f7; }\n  a:active {\n    background-color: #b2a0ed; }\n\n.hidden {\n  display: none; }\n\n.sticky {\n  position: -webkit-sticky;\n  position: sticky;\n  top: -1px;\n  z-index: 100; }\n  @media (min-width: 600px) {\n    .sticky.header {\n      display: none; } }\n\n.main-nav {\n  top: -1px;\n  left: 0; }\n  .main-nav .hamburger, .main-nav .close {\n    display: none; }\n  .main-nav nav {\n    background-color: #4422B3;\n    color: white;\n    width: 100%;\n    height: 36px;\n    padding: 0 36px;\n    text-align: center;\n    border-width: 1px 0;\n    border-style: solid;\n    border-color: rgba(0, 0, 0, 0.24);\n    box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 1px; }\n    @media (max-width: 600px) {\n      .main-nav nav {\n        padding: 0 18px; } }\n    .main-nav nav:before, .main-nav nav:after {\n      content: '';\n      display: table; }\n    .main-nav nav ul {\n      width: 1200px;\n      max-width: 100%;\n      margin: auto;\n      text-align: left;\n      padding-left: 0;\n      list-style: none;\n      height: 36px; }\n      .main-nav nav ul li {\n        display: inline-block;\n        height: 36px;\n        padding-top: 6px; }\n        .main-nav nav ul li:not(:last-child) {\n          margin-right: 12px; }\n        .main-nav nav ul li a {\n          color: white;\n          background-color: inherit;\n          margin: 0 6px; }\n          .main-nav nav ul li a::after {\n            content: '';\n            display: block;\n            background-color: white;\n            height: 2px;\n            position: relative;\n            bottom: 4px;\n            left: 50%;\n            width: 0;\n            transition-property: width, left;\n            transition-duration: 0.25s; }\n          .main-nav nav ul li a.active::after {\n            width: 100%;\n            left: 0; }\n  @media (max-width: 600px) {\n    .main-nav {\n      position: fixed;\n      right: 0;\n      left: auto;\n      width: 100%;\n      z-index: 1000; }\n      .main-nav .hamburger {\n        display: block;\n        cursor: pointer;\n        width: 22px;\n        height: 22px;\n        float: right;\n        position: absolute;\n        top: 7px;\n        right: 7px;\n        transition: top 0.25s ease-out;\n        background-image: url(" + __webpack_require__(26) + ");\n        background-repeat: no-repeat;\n        background-position: center; }\n        .main-nav .hamburger g {\n          stroke: #FA8200; }\n      .main-nav nav {\n        position: absolute;\n        z-index: 10;\n        top: 0;\n        right: 0;\n        width: 180px;\n        height: 100vh;\n        transform: translateX(100%);\n        padding: 36px;\n        padding-right: 24px;\n        text-align: right;\n        background-color: #4422B3;\n        transition: transform 0.25s ease-out;\n        flex-direction: column;\n        align-items: flex-end;\n        justify-content: flex-start; } }\n    @media (max-width: 600px) and (max-width: 600px) {\n      .main-nav nav {\n        padding: 18px; } }\n  @media (max-width: 600px) {\n        .main-nav nav.open {\n          transform: translateX(0);\n          box-shadow: -4px 0 rgba(0, 0, 0, 0.18); }\n        .main-nav nav .close {\n          display: block;\n          width: 100%;\n          cursor: pointer;\n          width: 22px;\n          height: 22px;\n          margin-right: 12px;\n          margin-bottom: 24px;\n          float: right;\n          background-image: url(" + __webpack_require__(27) + ");\n          background-repeat: no-repeat;\n          background-position: center; }\n        .main-nav nav ul {\n          padding-left: 0;\n          list-style: none;\n          height: inherit;\n          text-align: right; }\n          .main-nav nav ul li {\n            display: block; }\n            .main-nav nav ul li:not(:last-child) {\n              margin-right: 0; }\n          .main-nav nav ul a {\n            font-size: 14px;\n            font-family: \"Heebo\", sans-serif;\n            font-weight: 900;\n            text-transform: uppercase;\n            letter-spacing: 1px;\n            cursor: pointer;\n            display: inline-block;\n            padding: 6px 12px;\n            margin: 3px 0;\n            color: white; } }\n\n.main-container {\n  width: 100%;\n  position: relative;\n  background-color: white;\n  z-index: 10;\n  box-shadow: 0 8px rgba(0, 0, 0, 0.24); }\n\n.page {\n  width: 100%;\n  margin: 0;\n  border: 0;\n  text-align: center; }\n\n.page-header {\n  background-color: #4422B3;\n  color: white;\n  width: 100%;\n  height: 36px;\n  padding: 0 36px;\n  text-align: center;\n  border-width: 1px 0;\n  border-style: solid;\n  border-color: rgba(0, 0, 0, 0.24);\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  font-size: 12px;\n  font-family: \"Heebo\", sans-serif;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: 1px; }\n  @media (max-width: 600px) {\n    .page-header {\n      padding: 0 18px; } }\n  .page-header:before, .page-header:after {\n    content: '';\n    display: table; }\n\n.page-body {\n  padding: 84px 36px 96px 36px; }\n  @media (max-width: 600px) {\n    .page-body {\n      padding: 24px 18px 48px 18px; } }\n\n.container {\n  width: 1200px;\n  max-width: 100%;\n  margin: auto;\n  text-align: left; }\n\n.section-header {\n  margin: 24px auto; }\n  .section-header .header-content {\n    width: 752px; }\n    @media (max-width: 1200px) {\n      .section-header .header-content {\n        width: calc((100% - 36px*4)*2/3 + 36px*2); } }\n    @media (max-width: 900px) {\n      .section-header .header-content {\n        width: 100%; } }\n  .section-header p {\n    font-size: 16px;\n    line-height: 24px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 400; }\n\n.section-body {\n  background-color: white;\n  color: #333;\n  padding: 72px 144px;\n  margin: 0 auto 120px auto;\n  position: relative; }\n  @media (max-width: 1200px) {\n    .section-body {\n      padding: 72px; } }\n  @media (max-width: 900px) {\n    .section-body {\n      padding: 36px; } }\n  @media (max-width: 600px) {\n    .section-body {\n      padding: 18px;\n      margin: 0 auto 48px auto; } }\n\nsvg.chart-canvas .line-chart path {\n  fill: none; }\n\nsvg.chart-canvas .line-chart path, svg.chart-canvas .line-chart line {\n  stroke-width: 2px; }\n\nsvg.chart-canvas .line-chart g.axis text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis line {\n  stroke: #4422B3; }\n\nsvg.chart-canvas .line-chart g.axis.x text {\n  letter-spacing: 0; }\n\nsvg.chart-canvas .line-chart g.axis.x path {\n  stroke: #4422B3;\n  stroke-opacity: 0.24; }\n\nsvg.chart-canvas .line-chart g.axis.y path {\n  stroke-opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series.empty path.line.disease {\n  opacity: 0; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(1) {\n  stroke: #FA8200; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(2) {\n  stroke: #FF91E6; }\n\nsvg.chart-canvas .line-chart g.time-series path.line.disease:nth-child(3) {\n  stroke: #009DF7; }\n\n.col-left {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 2/3 + 1*36px); }\n  .col-left:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      .col-left:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    .col-left {\n      width: 100%; }\n      .col-left:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n.charts-container {\n  width: 100%;\n  display: inline-block; }\n  .charts-container .chart-item {\n    display: inline-block;\n    width: 100%; }\n    .charts-container .chart-item:not(:first-child) {\n      margin-top: 24px; }\n\n.filters-menu {\n  text-align: center;\n  display: block;\n  width: 100%;\n  margin-bottom: 24px;\n  font-size: 16px;\n  line-height: 36px; }\n  @media (max-width: 600px) {\n    .filters-menu {\n      font-size: 14px;\n      line-height: 24px; } }\n  .filters-menu span.sentence {\n    vertical-align: top;\n    line-height: 24px;\n    font-weight: 700; }\n  .filters-menu .selectize-control {\n    display: inline-block;\n    vertical-align: top;\n    font-size: 16px;\n    text-align: center;\n    min-height: 28px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-control {\n        font-size: 14px; } }\n    .filters-menu .selectize-control.multi .selectize-input {\n      padding: 0 36px 0 12px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control.multi .selectize-input {\n          padding-top: 0;\n          padding-bottom: 1px; } }\n    .filters-menu .selectize-control.multi .items .item {\n      font-weight: 700;\n      color: white; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(1) {\n        background-color: #FA8200; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(2) {\n        background-color: #FF91E6; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(3) {\n        background-color: #009DF7; }\n      .filters-menu .selectize-control.multi .items .item:nth-child(4) {\n        background-color: #333; }\n    .filters-menu .selectize-control.multi .items input {\n      min-width: 24px; }\n    .filters-menu .selectize-control .selectize-input {\n      border: 0;\n      box-shadow: none;\n      font-weight: 700;\n      border-bottom: 2px solid #4422B3;\n      border-radius: 0;\n      padding: 2px 36px 0 12px;\n      font-size: 16px;\n      min-height: 28px; }\n      @media (max-width: 600px) {\n        .filters-menu .selectize-control .selectize-input {\n          font-size: 14px;\n          padding-top: 3px;\n          padding-bottom: 1px; } }\n      .filters-menu .selectize-control .selectize-input:after {\n        border-color: #4422B3 transparent transparent transparent; }\n      .filters-menu .selectize-control .selectize-input.dropdown-active:after {\n        border-color: transparent transparent #4422B3 transparent; }\n      .filters-menu .selectize-control .selectize-input .item {\n        font-weight: 700;\n        color: #4422B3;\n        margin: 1px 3px 3px 0;\n        white-space: nowrap; }\n      .filters-menu .selectize-control .selectize-input input {\n        font-size: 16px; }\n        @media (max-width: 600px) {\n          .filters-menu .selectize-control .selectize-input input {\n            font-size: 14px; } }\n  .filters-menu .selectize-dropdown {\n    min-width: 300px;\n    max-width: 100vw;\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    text-align: left;\n    font-weight: 400;\n    color: #4422B3;\n    border-radius: 0;\n    border: 1px solid #4422B3;\n    box-shadow: 0 4px rgba(0, 0, 0, 0.24);\n    line-height: 16px; }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .filters-menu .selectize-dropdown {\n        line-height: 16px; } }\n    .filters-menu .selectize-dropdown .option {\n      padding: 12px; }\n      .filters-menu .selectize-dropdown .option.active {\n        color: #4422B3;\n        background-color: #dbd3f7; }\n  .filters-menu .terms-list span {\n    color: white;\n    padding: 2px 6px; }\n    .filters-menu .terms-list span:not(:first-child) {\n      margin-left: 6px; }\n    .filters-menu .terms-list span:nth-child(1) {\n      background-color: #FA8200; }\n    .filters-menu .terms-list span:nth-child(2) {\n      background-color: #FF91E6; }\n    .filters-menu .terms-list span:nth-child(3) {\n      background-color: #009DF7; }\n    .filters-menu .terms-list span:nth-child(4) {\n      background-color: #333; }\n  .filters-menu .geo {\n    font-weight: 700;\n    color: #4422B3; }\n\nfooter {\n  color: white;\n  padding: 0 36px; }\n  @media (max-width: 600px) {\n    footer {\n      padding: 0 18px; } }\n  footer .container {\n    position: relative;\n    z-index: 1;\n    min-height: 192px;\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: flex-start;\n    flex-wrap: wrap; }\n    @media (max-width: 900px) {\n      footer .container {\n        flex-direction: column;\n        justify-content: center; } }\n    footer .container .website-url {\n      font-size: 14px;\n      font-family: \"Heebo\", sans-serif;\n      font-weight: 700;\n      text-transform: uppercase;\n      letter-spacing: 2px;\n      margin-right: 24px; }\n      @media (max-width: 900px) {\n        footer .container .website-url {\n          margin-right: 0;\n          margin-bottom: 24px; } }\n    footer .container .social-media {\n      display: flex;\n      flex-direction: row;\n      align-items: center;\n      justify-content: flex-start; }\n      footer .container .social-media .fb-share-button {\n        margin-left: 12px; }\n\n/*-------------------- LOADER --------------------*/\n.loader-container {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  visibility: visible;\n  opacity: 1;\n  background-color: rgba(68, 34, 179, 0.24);\n  transition: visibility 0.5s, opacity 0.5s linear;\n  z-index: 10; }\n  .loader-container.hidden {\n    display: block;\n    visibility: hidden;\n    opacity: 0; }\n  .loader-container .loader {\n    position: relative;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    width: 40px;\n    height: 40px;\n    border: 3px solid black;\n    display: inline-block;\n    -webkit-animation: myfirst 1s;\n    /* Chrome, Safari, Opera */\n    animation: myfirst 1s;\n    -webkit-animation-iteration-count: infinite;\n    /* Chrome, Safari, Opera */\n    animation-iteration-count: infinite; }\n\n/* Chrome, Safari, Opera */\n@-webkit-keyframes myfirst {\n  from {\n    -ms-transform: rotate(0deg);\n    /* IE 9 */\n    -webkit-transform: rotate(0deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(0deg); }\n  to {\n    -ms-transform: rotate(90deg);\n    /* IE 9 */\n    -webkit-transform: rotate(90deg);\n    /* Chrome, Safari, Opera */\n    transform: rotate(90deg); } }\n\n/* Standard syntax */\n@keyframes myfirst {\n  from {\n    transform: rotate(0deg); }\n  to {\n    transform: rotate(90deg); } }\n\n#stories.page .selectize-input {\n  min-width: 180px; }\n\n#stories.page .page-body {\n  background-color: #341a88; }\n\n#stories.page .story-section .section-header {\n  color: white; }\n\n#stories.page .story-section .section-body .case-copy {\n  display: inline-block;\n  vertical-align: top;\n  width: calc((100% - 2*36px) * 1/3); }\n  #stories.page .story-section .section-body .case-copy:not(:first-child) {\n    margin-left: 36px; }\n    @media (max-width: 600px) {\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 18px; } }\n  @media (max-width: 600px) {\n    #stories.page .story-section .section-body .case-copy {\n      width: 100%; }\n      #stories.page .story-section .section-body .case-copy:not(:first-child) {\n        margin-left: 0;\n        margin-top: 24px; } }\n\n#stories.page .story-section .section-body .highlight {\n  padding: 1px 2px; }\n  #stories.page .story-section .section-body .highlight.term-1 {\n    background-color: #ffbd75; }\n  #stories.page .story-section .section-body .highlight.term-2 {\n    background-color: #ffcef4; }\n  #stories.page .story-section .section-body .highlight.term-3 {\n    background-color: #72ccff; }\n\n#stories.page .story-section.epidemics .map .country {\n  stroke: #A696DB;\n  stroke-width: 1px; }\n\n#stories.page .story-section.epidemics .legendThreshold .legendCells text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  letter-spacing: normal; }\n\n#stories.page .story-section.epidemics .legendThreshold .legendCells .cell rect {\n  stroke: #333;\n  stroke-width: 0.5px; }\n\n#stories.page .story-section.epidemics .q0-10 {\n  fill: #ffffff; }\n\n#stories.page .story-section.epidemics .q1-10 {\n  fill: #fff5eb; }\n\n#stories.page .story-section.epidemics .q2-10 {\n  fill: #fee6ce; }\n\n#stories.page .story-section.epidemics .q3-10 {\n  fill: #fdd0a2; }\n\n#stories.page .story-section.epidemics .q4-10 {\n  fill: #fdae6b; }\n\n#stories.page .story-section.epidemics .q5-10 {\n  fill: #fd8d3c; }\n\n#stories.page .story-section.epidemics .q6-10 {\n  fill: #f16913; }\n\n#stories.page .story-section.epidemics .q7-10 {\n  fill: #d94801; }\n\n#stories.page .story-section.epidemics .q8-10 {\n  fill: #b24600; }\n\n#stories.page .story-section.epidemics .q9-10 {\n  fill: #a63603; }\n\n#stories.page .story-section.epidemics .q10-10 {\n  fill: #7f2704; }\n\n#stories.page .story-section.epidemics .controls {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  align-items: center; }\n  #stories.page .story-section.epidemics .controls .play-button {\n    flex-shrink: 0;\n    cursor: pointer;\n    width: 22px;\n    height: 22px;\n    display: inline-block;\n    margin-right: 20px;\n    background-image: url(" + __webpack_require__(49) + ");\n    background-repeat: no-repeat;\n    background-position: center; }\n    #stories.page .story-section.epidemics .controls .play-button:hover {\n      background-color: #e9e4fa; }\n    #stories.page .story-section.epidemics .controls .play-button:active {\n      background-color: #dbd3f7; }\n    #stories.page .story-section.epidemics .controls .play-button.clicked {\n      background-image: url(" + __webpack_require__(98) + "); }\n  #stories.page .story-section.epidemics .controls input[type=\"range\"] {\n    flex-grow: 1;\n    -webkit-appearance: none;\n    width: 100%;\n    margin: 9px 0; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus {\n    outline: none; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-webkit-slider-runnable-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0);\n    background: #d4ccee;\n    border-radius: 4px;\n    border: 0px solid transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-webkit-slider-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer;\n    -webkit-appearance: none;\n    margin-top: -9px; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-webkit-slider-runnable-track {\n    background: #e1dbf3; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-moz-range-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0);\n    background: #d4ccee;\n    border-radius: 4px;\n    border: 0px solid transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-moz-range-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-track {\n    width: 100%;\n    height: 4px;\n    cursor: pointer;\n    background: transparent;\n    border-color: transparent;\n    color: transparent; }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-fill-lower {\n    background: #c7bde9;\n    border: 0px solid transparent;\n    border-radius: 8px;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0); }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-fill-upper {\n    background: #d4ccee;\n    border: 0px solid transparent;\n    border-radius: 8px;\n    box-shadow: 1px 1px 1px transparent, 0px 0px 1px rgba(13, 13, 13, 0); }\n  #stories.page .story-section.epidemics .controls input[type=range]::-ms-thumb {\n    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;\n    border: 0px solid transparent;\n    height: 22px;\n    width: 22px;\n    border-radius: 11px;\n    background: #4422b3;\n    cursor: pointer;\n    height: 4px; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-ms-fill-lower {\n    background: #d4ccee; }\n  #stories.page .story-section.epidemics .controls input[type=range]:focus::-ms-fill-upper {\n    background: #e1dbf3; }\n\n#stories.page .story-section .stories-nav-bar {\n  min-height: 48px;\n  margin: 0 auto;\n  background-color: white;\n  border-bottom: 2px solid #4422B3;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n  align-items: center;\n  padding: 6px 12px; }\n  @media (max-width: 600px) {\n    #stories.page .story-section .stories-nav-bar {\n      padding-left: 12px; } }\n  #stories.page .story-section .stories-nav-bar button {\n    cursor: pointer;\n    font-size: 12px;\n    font-family: \"Heebo\", sans-serif;\n    font-weight: 900;\n    line-height: 12px;\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    display: inline-block;\n    padding: 6px;\n    margin: 3px 0;\n    color: #4422B3;\n    border: none;\n    background-color: white;\n    transition-property: background-color, color;\n    transition-duration: 0.25s; }\n    #stories.page .story-section .stories-nav-bar button:not(:last-child) {\n      margin-right: 12px; }\n    #stories.page .story-section .stories-nav-bar button:hover {\n      background-color: #dbd3f7; }\n    #stories.page .story-section .stories-nav-bar button.active {\n      background-color: #4422B3;\n      color: white; }\n\n/* Tooltip */\n.d3-tip {\n  z-index: 1000;\n  max-width: 200px;\n  padding: 12px;\n  line-height: 18px;\n  background: white;\n  border: 1px solid #4422B3;\n  box-shadow: 0 4px rgba(0, 0, 0, 0.18);\n  transform: translate(0, -10%); }\n  .d3-tip .country {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    line-height: 18px; }\n    @media (max-width: 600px) {\n      .d3-tip .country {\n        line-height: 20.4px; } }\n  .d3-tip .value {\n    font-size: 14px;\n    line-height: 24px;\n    font-family: \"Inconsolata\", monospace;\n    font-weight: 400;\n    font-weight: 700;\n    line-height: 18px;\n    padding-left: 12px;\n    color: #4422B3; }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n    @media (max-width: 600px) {\n      .d3-tip .value {\n        line-height: 20.4px; } }\n\n.legend text {\n  font-family: \"Inconsolata\", monospace;\n  font-size: 12px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  fill: #4422B3;\n  text-transform: uppercase;\n  fill: #4422B3; }\n\n.legend line {\n  stroke: #4422B3; }\n", ""]);
 
 	// exports
 
 
 /***/ }),
 /* 98 */
+/***/ (function(module, exports) {
+
+	module.exports = "\"data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Ctitle%3Epause%3C/title%3E%3Cpath d='M22,22H0V0H22ZM1,21H21V1H1Z' fill='%234422b3'/%3E%3Crect x='7' y='5.47' width='2' height='11.06' fill='%234422b3'/%3E%3Crect x='13' y='5.47' width='2' height='11.06' fill='%234422b3'/%3E%3C/svg%3E\""
+
+/***/ }),
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38872,7 +38900,7 @@
 
 	var _TrendsAPI2 = _interopRequireDefault(_TrendsAPI);
 
-	var _ShinyAPI = __webpack_require__(99);
+	var _ShinyAPI = __webpack_require__(100);
 
 	var _ShinyAPI2 = _interopRequireDefault(_ShinyAPI);
 
@@ -38886,13 +38914,13 @@
 
 	var _countries2 = _interopRequireDefault(_countries);
 
-	var _data4 = __webpack_require__(100);
+	var _data4 = __webpack_require__(101);
 
 	var _loglevel = __webpack_require__(2);
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	var _selectize = __webpack_require__(101);
+	var _selectize = __webpack_require__(102);
 
 	var _selectize2 = _interopRequireDefault(_selectize);
 
@@ -38900,9 +38928,9 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	__webpack_require__(104);
+	__webpack_require__(105);
 
-	__webpack_require__(106);
+	__webpack_require__(107);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39499,7 +39527,7 @@
 	exports.default = Explore;
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39510,7 +39538,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _Explore = __webpack_require__(98);
+	var _Explore = __webpack_require__(99);
 
 	var _Explore2 = _interopRequireDefault(_Explore);
 
@@ -39620,7 +39648,7 @@
 	exports.default = ShinyAPI;
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -39654,7 +39682,7 @@
 	var averages = exports.averages = [];
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -39678,7 +39706,7 @@
 
 	(function(root, factory) {
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(22),__webpack_require__(102),__webpack_require__(103)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(22),__webpack_require__(103),__webpack_require__(104)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		} else if (typeof exports === 'object') {
 			module.exports = factory(require('jquery'), require('sifter'), require('microplugin'));
 		} else {
@@ -42852,7 +42880,7 @@
 	}));
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -43356,7 +43384,7 @@
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -43496,13 +43524,13 @@
 	}));
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(105);
+	var content = __webpack_require__(106);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -43522,7 +43550,7 @@
 	}
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -43536,13 +43564,13 @@
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(107);
+	var content = __webpack_require__(108);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -43562,7 +43590,7 @@
 	}
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -43576,7 +43604,7 @@
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -43604,7 +43632,7 @@
 	}];
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -43772,13 +43800,13 @@
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(111);
+	var content = __webpack_require__(112);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -43798,7 +43826,7 @@
 	}
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -43812,7 +43840,7 @@
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43913,7 +43941,7 @@
 	exports.default = Stories;
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43924,7 +43952,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //  weak
 
-	var _diseasesRanking = __webpack_require__(114);
+	var _diseasesRanking = __webpack_require__(115);
 
 	var _diseasesRanking2 = _interopRequireDefault(_diseasesRanking);
 
@@ -43932,7 +43960,7 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(115);
+	__webpack_require__(116);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44197,7 +44225,7 @@
 	exports.default = Ranking;
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -44244,13 +44272,13 @@
 	}];
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(116);
+	var content = __webpack_require__(117);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -44270,7 +44298,7 @@
 	}
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -44284,7 +44312,7 @@
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44299,7 +44327,7 @@
 
 	var _loglevel2 = _interopRequireDefault(_loglevel);
 
-	__webpack_require__(118);
+	__webpack_require__(119);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44462,13 +44490,13 @@
 	exports.default = About;
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(119);
+	var content = __webpack_require__(120);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -44488,7 +44516,7 @@
 	}
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -44502,7 +44530,7 @@
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44622,7 +44650,7 @@
 	exports.default = Footer;
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports) {
 
 	/*!
@@ -45101,13 +45129,13 @@
 	})
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(123);
+	var content = __webpack_require__(124);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(73)(content, {});
@@ -45127,7 +45155,7 @@
 	}
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(25)();
@@ -45141,7 +45169,7 @@
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
