@@ -159,9 +159,10 @@
     text-align: center;
     transform-style: preserve-3d;
     color: white;
-    transition: top 2s ease-out, transform 2s ease-out, opacity 1.25s ease-out 0.75s;
-
-    transform: translate3d(-50%, -50%, 200px) rotateX(50deg);
+    // transition: top 2s ease-out, transform 2s ease-out, opacity 1.25s ease-out 0.75s;
+    transition: top 2s ease-out, opacity 1.25s ease-out 0.75s;
+    transform: translate(-50%, -50%);
+    // transform: translate3d(-50%, -50%, 200px) rotateX(50deg);
     // transform: translateZ(200px) rotateX(50deg);
     opacity: 0;
 
@@ -170,7 +171,6 @@
     };
 
     &.enter {
-      transform: translate3d(-50%, -50%, 0) rotateX(0);
       opacity: 1;
       top: 50%;
       @include for-phone-down {
