@@ -170,7 +170,7 @@
     };
 
     &.enter {
-      transform: translate3d(-50%, -50%, 1) rotateX(0);
+      transform: translate3d(-50%, -50%, 1px) rotateX(0);
       opacity: 1;
     }
 
