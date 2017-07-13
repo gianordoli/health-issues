@@ -161,7 +161,7 @@
     color: white;
 
     transition: transform 2s ease-out, opacity 1.25s ease-out 0.75s;
-    transform: translate3d(-50%, 0, 1000px) rotateX(50deg);
+    transform: translate(-50%, 0) rotateX(50deg);
     // perspective: 200px;
     // perspective-origin: 0 0;
     // transform-origin: left;
@@ -173,7 +173,7 @@
     };
 
     &.enter {
-      transform: translate3d(-50%, -50%, 0) rotateX(0);
+      transform: translate(-50%, -50%) rotateX(0);
       opacity: 1;
     }
 
