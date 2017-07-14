@@ -7,6 +7,7 @@ import WorldMap from '../visualizations/WorldMap';
 import LineChart from '../visualizations/LineChart';
 import type { TrendsAPIRegionsList, TrendsAPIGraph } from '../util/types';
 import { encodedStr, highlightText } from '../util/util';
+import { LoadingAnimation } from '../util/loader';
 import * as d3 from 'd3';
 import log from 'loglevel';
 import '../../sass/stories.scss';
@@ -30,6 +31,7 @@ export default class StoriesEpidemics {
   slider: HTMLInputElement;
   copyContainer: HTMLElement;
   loaderContainer: HTMLElement;
+  loadingAnimation: LoadingAnimation;
   playLoop: number;
 
   constructor(parentContainer: HTMLElement, storySection: string) {
@@ -234,10 +236,8 @@ export default class StoriesEpidemics {
     this.loaderContainer = document.createElement('div');
     const { loaderContainer } = this;
     loaderContainer.classList.add('loader-container');
-    const loader = document.createElement('span');
-    loader.classList.add('loader');
-    loaderContainer.appendChild(loader);
     sectionBody.appendChild(loaderContainer);
+    this.loadingAnimation = new LoadingAnimation(loaderContainer);
 
     const row = document.createElement('div');
     row.classList.add('row');
@@ -301,7 +301,7 @@ export default class StoriesEpidemics {
   updateElements(self?: StoriesEpidemics) {
     if (!self) self = this;
     let { filtersMenu } = this;
-    const { worldMap, lineChart, copyContainer, loaderContainer } = self;
+    const { worldMap, lineChart, copyContainer, loaderContainer, loadingAnimation } = self;
     const {
       storySection,
       currCase,
@@ -318,8 +318,10 @@ export default class StoriesEpidemics {
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
+      loadingAnimation.start(loadingAnimation, 0);
     } else {
       loaderContainer.classList.add('hidden');
+      loadingAnimation.stop(loadingAnimation);
     }
 
     const parent = filtersMenu.parentElement;
