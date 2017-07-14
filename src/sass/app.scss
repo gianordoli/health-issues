@@ -860,14 +860,10 @@ footer {
     // height: 40px;
     // border: 3px solid black;
     display: inline-block;
-      -webkit-animation: myfirst 2s; /* Chrome, Safari, Opera */
-      animation: myfirst 2s;
-      -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
-      animation-iteration-count: infinite;
-
-    svg {
-      // transform: translate(-50%, -50%);
-    }
+    -webkit-animation: myfirst 2s; /* Chrome, Safari, Opera */
+    animation: myfirst 2s;
+    -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
+    animation-iteration-count: infinite;
   }
 }
 

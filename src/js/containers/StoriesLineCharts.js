@@ -6,7 +6,7 @@ import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import { encodedStr, highlightText } from '../util/util';
-import { svgLoader, LoadingAnimation } from '../util/loader';
+import { LoadingAnimation } from '../util/loader';
 import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -28,6 +28,7 @@ export default class StoriesLineCharts {
   chart: LineChart;
   copyContainer: HTMLElement;
   loaderContainer: HTMLElement;
+  loadingAnimation: LoadingAnimation;
 
   constructor(parentContainer: HTMLElement, storySection: string, range?: number) {
     const self = this;
@@ -71,7 +72,7 @@ export default class StoriesLineCharts {
       i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
     d3.json(path, function(chartData) {
-      // isLoading = false;
+      isLoading = false;
       self.updateData({ currCase, chartData, geoIso, years, isLoading });
     });
   }
@@ -139,12 +140,8 @@ export default class StoriesLineCharts {
     this.loaderContainer = document.createElement('div');
     const { loaderContainer } = this;
     loaderContainer.classList.add('loader-container');
-    const loader = document.createElement('span');
-    loader.classList.add('loader');
-    loader.innerHTML = svgLoader;
-    loaderContainer.appendChild(loader);
     sectionBody.appendChild(loaderContainer);
-    const loadingAnimation = new LoadingAnimation(loader);
+    this.loadingAnimation = new LoadingAnimation(loaderContainer);
 
     const row = document.createElement('div');
     row.classList.add('row');
@@ -185,7 +182,7 @@ export default class StoriesLineCharts {
 
   updateElements() {
     let { filtersMenu } = this;
-    const { chart, copyContainer, loaderContainer } = this;
+    const { chart, copyContainer, loaderContainer, loadingAnimation } = this;
     const { storySection, currCase, chartData, geoIso, years, isLoading } = this.data;
     const { terms, geoList, chartType, copyTitle, copy } = stories[storySection].cases[
       currCase
@@ -193,8 +190,10 @@ export default class StoriesLineCharts {
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
+      loadingAnimation.start(loadingAnimation, 0);
     } else {
       loaderContainer.classList.add('hidden');
+      loadingAnimation.stop(loadingAnimation);
     }
 
     const parent = filtersMenu.parentElement;
