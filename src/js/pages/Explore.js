@@ -10,6 +10,7 @@ import type { Term, Geo, Filter, TrendsAPIGraph, TrendsAPITopQueries } from '../
 
 // Data and Utils
 import { arrayIsEqual, pickRandomIndex } from '../util/util';
+import { LoadingAnimation } from '../util/loader';
 import terms from '../data/terms';
 import countries from '../data/countries';
 import { dummyData } from '../scripts/data';
@@ -45,6 +46,7 @@ export default class Explore {
   geoSelect: selectize;
 
   loaderContainer: HTMLElement;
+  loadingAnimation: LoadingAnimation;
   mergeButton: HTMLButtonElement;
   topQueriesList: HTMLElement;
 
@@ -358,11 +360,8 @@ export default class Explore {
     self.loaderContainer = document.createElement('div');
     const { loaderContainer } = self;
     loaderContainer.classList.add('loader-container');
-    const loader = document.createElement('span');
-    loader.classList.add('loader');
-    loaderContainer.appendChild(loader);
     sectionBody.appendChild(loaderContainer);
-
+    self.loadingAnimation = new LoadingAnimation(loaderContainer);
 
     // filtersMenu
     const filtersMenu = document.createElement('div');
@@ -480,15 +479,17 @@ export default class Explore {
 
   updateElements() {
     log.info('updateElements');
-    const { data, loaderContainer, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
+    const { data, loaderContainer, loadingAnimation, diseaseSelect, geoSelect, mergeButton, seasonalChart, trendChart, topQueriesList } = this;
     const { diseases, geo, seasonal, trend, total, topQueries, isMerged, isChanging, isLoading } = data;
 
     if (isLoading) {
       loaderContainer.classList.remove('hidden');
+      loadingAnimation.start(loadingAnimation, 0);
       diseaseSelect.disable();
       geoSelect.disable();
     } else {
       loaderContainer.classList.add('hidden');
+      loadingAnimation.stop(loadingAnimation);
       diseaseSelect.enable();
       geoSelect.enable();
     }
