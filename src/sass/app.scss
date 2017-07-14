@@ -855,16 +855,19 @@ footer {
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
 
-    width: 40px;
-    height: 40px;
-    border: 3px solid black;
+    // width: 40px;
+    // height: 40px;
+    // border: 3px solid black;
     display: inline-block;
-      -webkit-animation: myfirst 1s; /* Chrome, Safari, Opera */
-      animation: myfirst 1s;
+      -webkit-animation: myfirst 2s; /* Chrome, Safari, Opera */
+      animation: myfirst 2s;
       -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
       animation-iteration-count: infinite;
+
+    svg {
+      // transform: translate(-50%, -50%);
+    }
   }
 }
 
@@ -876,9 +879,9 @@ footer {
       transform: rotate(0deg);
     }
     to {
-        -ms-transform: rotate(90deg); /* IE 9 */
-      -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-      transform: rotate(90deg);
+        -ms-transform: rotate(360deg); /* IE 9 */
+      -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+      transform: rotate(360deg);
     }
 }
 /* Standard syntax */
@@ -887,6 +890,6 @@ footer {
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(90deg);
+      transform: rotate(360deg);
     }
 }

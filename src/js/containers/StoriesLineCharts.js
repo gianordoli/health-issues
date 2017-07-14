@@ -6,6 +6,7 @@ import FiltersMenu from '../components/FiltersMenu';
 import LineChart from '../visualizations/LineChart';
 import type { Term, Geo, TrendsAPIGraph } from '../util/types';
 import { encodedStr, highlightText } from '../util/util';
+import { svgLoader, LoadingAnimation } from '../util/loader';
 import $ from 'jquery';
 import * as d3 from 'd3';
 import log from 'loglevel';
@@ -70,7 +71,7 @@ export default class StoriesLineCharts {
       i === currCase ? e.classList.add('active') : e.classList.remove('active');
     });
     d3.json(path, function(chartData) {
-      isLoading = false;
+      // isLoading = false;
       self.updateData({ currCase, chartData, geoIso, years, isLoading });
     });
   }
@@ -140,8 +141,10 @@ export default class StoriesLineCharts {
     loaderContainer.classList.add('loader-container');
     const loader = document.createElement('span');
     loader.classList.add('loader');
+    loader.innerHTML = svgLoader;
     loaderContainer.appendChild(loader);
     sectionBody.appendChild(loaderContainer);
+    const loadingAnimation = new LoadingAnimation(loader);
 
     const row = document.createElement('div');
     row.classList.add('row');
