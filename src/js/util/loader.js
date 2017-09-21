@@ -23,7 +23,7 @@ export class LoadingAnimation {
   };
 
   play(self: LoadingAnimation, i: number) {
-    console.log('play');
+    log.info('play');
     const { isLooping, container, paths } = self;
     const shape = container.querySelector('svg.morph path.outline');
     anime({
@@ -44,10 +44,10 @@ export class LoadingAnimation {
   }
 
   start(self: LoadingAnimation, i: number) {
-    console.log('Start');
+    log.info('Start');
     const { container } = self;
     if (!self.isLooping) {
-      console.log('yeah');
+      log.info('yeah');
       const loader = document.createElement('span');
       loader.classList.add('loader');
       loader.innerHTML = svgLoader;
