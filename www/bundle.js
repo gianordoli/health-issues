@@ -38844,6 +38844,10 @@
 
 	var _animejs2 = _interopRequireDefault(_animejs);
 
+	var _loglevel = __webpack_require__(2);
+
+	var _loglevel2 = _interopRequireDefault(_loglevel);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38870,7 +38874,7 @@
 	  }, {
 	    key: 'play',
 	    value: function play(self, i) {
-	      log.info('play');
+	      _loglevel2.default.info('play');
 	      var isLooping = self.isLooping,
 	          container = self.container,
 	          paths = self.paths;
@@ -38895,11 +38899,11 @@
 	  }, {
 	    key: 'start',
 	    value: function start(self, i) {
-	      log.info('Start');
+	      _loglevel2.default.info('Start');
 	      var container = self.container;
 
 	      if (!self.isLooping) {
-	        log.info('yeah');
+	        _loglevel2.default.info('yeah');
 	        var loader = document.createElement('span');
 	        loader.classList.add('loader');
 	        loader.innerHTML = svgLoader;
