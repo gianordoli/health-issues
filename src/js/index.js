@@ -114,7 +114,11 @@ app.main = (function (){
   }
 
   const init = function(){
-    log.enableAll();
+    if (ENV === 'PRODUCTION') {
+      log.disableAll();
+    } else {
+      log.enableAll();
+    }
     log.info('Initializing app.');
     log.info('ENV: ' + ENV);
     loadShinyAPI();
