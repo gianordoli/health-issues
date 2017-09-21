@@ -38870,7 +38870,7 @@
 	  }, {
 	    key: 'play',
 	    value: function play(self, i) {
-	      console.log('play');
+	      log.info('play');
 	      var isLooping = self.isLooping,
 	          container = self.container,
 	          paths = self.paths;
@@ -38895,11 +38895,11 @@
 	  }, {
 	    key: 'start',
 	    value: function start(self, i) {
-	      console.log('Start');
+	      log.info('Start');
 	      var container = self.container;
 
 	      if (!self.isLooping) {
-	        console.log('yeah');
+	        log.info('yeah');
 	        var loader = document.createElement('span');
 	        loader.classList.add('loader');
 	        loader.innerHTML = svgLoader;
