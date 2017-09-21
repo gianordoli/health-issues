@@ -38601,6 +38601,7 @@
 	    this.height = size.height;
 	    this.data = this.createEmptyChart(this.type);
 	    this.createElements(parentContainer);
+	    _loglevel2.default.info(parentContainer, type, range);
 	  }
 
 	  _createClass(LineChart, [{
