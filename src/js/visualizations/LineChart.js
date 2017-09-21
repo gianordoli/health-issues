@@ -235,6 +235,11 @@ export default class LineChart {
       .select('path')
       .style('transform', type === 'seasonal' ? `translate(0px, ${-height/2}px)` : `translate(0px, 0px)`);
 
+    // Strange bug showing a second "JAN"... Let's make sure wee have only 12 labels
+    if (type === 'seasonal' && !isYear && !range) {
+      xAxisSelection.selectAll('g:nth-of-type(13)').attr('display', 'none');
+    }
+
     const timeSeries = chart.selectAll('.time-series');
 
     const diseases = timeSeries.selectAll('.disease').data(data);
