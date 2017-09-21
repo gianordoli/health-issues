@@ -28,9 +28,11 @@ export class LoadingAnimation {
     const shape = container.querySelector('svg.morph path.outline');
     anime({
       targets: shape,
-      duration: 750,
-      easing: 'easeOutElastic',
+      duration: 2000,
+      easing: 'linear',
+      // easing: 'easeOutElastic',
       elasticity: 200,
+      delay: 0,
       d: paths[i],
       complete: function() {
         if (isLooping) {

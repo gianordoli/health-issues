@@ -855,33 +855,36 @@ footer {
     position: relative;
     top: 50%;
     left: 50%;
+    transform-origin: 55% 41%;
 
     // width: 40px;
     // height: 40px;
     // border: 3px solid black;
     display: inline-block;
-    -webkit-animation: myfirst 2s; /* Chrome, Safari, Opera */
-    animation: myfirst 2s;
+    -webkit-animation: rotation 5s; /* Chrome, Safari, Opera */
+    animation: rotation 5s;
+    -webkit-animation-timing-function: linear; /* Chrome, Safari, Opera */
+    animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
     animation-iteration-count: infinite;
   }
 }
 
 /* Chrome, Safari, Opera */
-@-webkit-keyframes myfirst {
+@-webkit-keyframes rotation {
     from {
-        -ms-transform: rotate(0deg); /* IE 9 */
+      -ms-transform: rotate(0deg); /* IE 9 */
       -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
       transform: rotate(0deg);
     }
     to {
-        -ms-transform: rotate(360deg); /* IE 9 */
+      -ms-transform: rotate(360deg); /* IE 9 */
       -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
       transform: rotate(360deg);
     }
 }
 /* Standard syntax */
-@keyframes myfirst {
+@keyframes rotation {
     from {
       transform: rotate(0deg);
     }
