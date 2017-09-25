@@ -166,14 +166,27 @@ export default class Explore {
     }
   }
 
+  handleSelectDiseaseBlur(self: Explore) {
+    const { prevDiseases } = self.data;
+    this.updateData({diseases: prevDiseases});
+  }
+
   handleSelectGeoChange(value: string, self: Explore) {
+    const name = this.getCountryByIso(value).name;
+    this.updateData({geo: {iso: value, name: name}, isChanging: true});
+    self.confirmFilters(self);
+  }
+
+  handleSelectGeoFocus(self: Explore) {
+    const { geoSelect } = self;
+    geoSelect.setValue('', true);
+  }
+
+  handleSelectGeoBlur(self: Explore) {
+    const { geoSelect } = self;
     const { prevGeo } = self.data;
-    if (value) {
-      const name = this.getCountryByIso(value).name;
-      this.updateData({geo: {iso: value, name: name}, isChanging: true});
-      self.confirmFilters(self);
-    } else {
-      this.updateData({geo: '', isChanging: true});
+    if (geoSelect.getValue() === '') {
+      this.updateData({geo: prevGeo});
     }
   }
 
@@ -304,6 +317,7 @@ export default class Explore {
     const { data } = this;
     Object.assign(data, obj);
     log.info(this.data);
+    log.info('geo: ', data.geo.iso);
     this.updateElements();
   }
 
@@ -385,11 +399,13 @@ export default class Explore {
       diseaseSelect.appendChild(option);
     });
     let bindHandleChange = value => self.handleSelectDiseaseChange(value, self);
+    let bindHandleBlur = value => self.handleSelectDiseaseBlur(self);
     filtersMenu.appendChild(diseaseSelect);
     const diseaseSelectize = $(diseaseSelect).selectize({
       plugins: ['remove_button'],
       maxItems: 3,
       onChange: bindHandleChange,
+      onBlur: bindHandleBlur,
       openOnFocus: false,
       closeAfterSelect: true,
       placeholder: 'Type'
@@ -412,13 +428,14 @@ export default class Explore {
       geoSelect.appendChild(option);
     });
     bindHandleChange = value => self.handleSelectGeoChange(value, self);
+    let bindHandleFocus = value => self.handleSelectGeoFocus(self);
+    bindHandleBlur = value => self.handleSelectGeoBlur(self);
     filtersMenu.appendChild(geoSelect);
     const geoSelectize = $(geoSelect).selectize({
       maxItems: 1,
       onChange: bindHandleChange,
-      onFocus: function() {
-        this.setValue('');
-      },
+      onBlur: bindHandleBlur,
+      onFocus: bindHandleFocus,
       placeholder: 'Select'
     });
     self.geoSelect = geoSelectize[0].selectize;
@@ -496,6 +513,10 @@ export default class Explore {
 
     if (!arrayIsEqual(diseaseSelect.getValue(), diseases.map(d => d.entity))) {
       diseaseSelect.setValue(diseases.map(d => d.entity), true);
+    }
+
+    if (geoSelect.getValue() !== geo.iso) {
+      geoSelect.setValue(geo.iso, true);
     }
 
     mergeButton.innerHTML = isMerged ? 'See Trend' : 'See Total Interest';
