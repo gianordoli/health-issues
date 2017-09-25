@@ -68,7 +68,7 @@ export default class About {
         colBody.appendChild(content);
 
         content = document.createElement('p');
-        content.innerHTML = "The seasonal and trend values are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='' target='_blank'>Medium post</a> for more information.";
+        content.innerHTML = "The seasonal and trend values are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='https://medium.com/@gianordoli/visualizing-health-bb36c600a8e4' target='_blank'>Medium post</a> for more information.";
         colBody.appendChild(content);
 
     const aboutTeam = document.createElement('div');

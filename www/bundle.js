@@ -213,13 +213,13 @@
 	  }
 
 	  var init = function init() {
-	    if (false) {
+	    if (true) {
 	      _loglevel2.default.disableAll();
 	    } else {
 	      _loglevel2.default.enableAll();
 	    }
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("STAGING"));
+	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
 	    loadShinyAPI();
 	  };
 
@@ -1175,7 +1175,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (false) {
+	          if (true) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -44545,7 +44545,7 @@
 	      colBody.appendChild(content);
 
 	      content = document.createElement('p');
-	      content.innerHTML = "The seasonal and trend values are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='' target='_blank'>Medium post</a> for more information.";
+	      content.innerHTML = "The seasonal and trend values are generated using a statistical method called seasonal trend decomposition. Take a look into this <a href='https://medium.com/@gianordoli/visualizing-health-bb36c600a8e4' target='_blank'>Medium post</a> for more information.";
 	      colBody.appendChild(content);
 
 	      var aboutTeam = document.createElement('div');
