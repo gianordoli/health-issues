@@ -7,9 +7,10 @@ shinyServer(function(input, output, session) {
   
   observe({
     input$seasonal
-    print(typeof(input$seasonal))    
+    print(typeof(input$seasonal))
+    print(input$seasonal)
     if (!is.null(input$seasonal) && typeof(input$seasonal) == "character") {
-      # print(input$seasonal)
+      print("Input in")
       myTS <- vectorToTS(input$seasonal)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
@@ -22,15 +23,15 @@ shinyServer(function(input, output, session) {
   
   observe({
     input$trend
-    print(typeof(input$trend))    
+    print(typeof(input$trend))
+    print(input$trend)
     if (!is.null(input$trend) && typeof(input$trend) == "character") {
-      # print(input$trend)
+      print("Input in")
       myTS <- vectorToTS(input$trend)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
       response <-  paste('trend:', toString(mySTL.DF$trend), collapse = "")
       # response <-  paste('trend:', toString(mySTL.DF$trend))
-      print(response) 
       session$sendCustomMessage(type = "trendCallback", response)
     } else {
       errorMessage();
@@ -45,6 +46,7 @@ shinyServer(function(input, output, session) {
 })
 
 vectorToTS <- function(data) {
+  print("vectorToTs")
   ul <- unlist(strsplit(data,","))
   dataMatrix <- matrix(ul, length(data), 2, T)
   
@@ -59,6 +61,8 @@ vectorToTS <- function(data) {
   lastMonth <- as.integer(lastDate[[1]][2])
   
   values <-dataMatrix[,c(2)]
+  
+  print("data to time series")
   
   # Convert data to time series; using only second column (values)
   myTS <- ts(values, start=c(firstYear, firstMonth), end=c(lastYear, lastMonth), frequency=12)
