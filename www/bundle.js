@@ -213,13 +213,13 @@
 	  }
 
 	  var init = function init() {
-	    if (false) {
+	    if (true) {
 	      _loglevel2.default.disableAll();
 	    } else {
 	      _loglevel2.default.enableAll();
 	    }
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("STAGING"));
+	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
 	    loadShinyAPI();
 	  };
 
@@ -1175,7 +1175,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (false) {
+	          if (true) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
