@@ -13,7 +13,7 @@ shinyServer(function(input, output, session) {
       myTS <- vectorToTS(input$seasonal)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
-      response <-  paste('seasonal:', toString(mySTL.DF$seasonal))
+      response <-  paste('seasonal:', toString(mySTL.DF$seasonal), collapse = "")
       session$sendCustomMessage(type = "seasonalCallback", response)
     } else {
       errorMessage();
@@ -28,8 +28,9 @@ shinyServer(function(input, output, session) {
       myTS <- vectorToTS(input$trend)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
-      response <-  paste('trend:', toString(mySTL.DF$trend))
-      # print(response)
+      response <-  paste('trend:', toString(mySTL.DF$trend), collapse = "")
+      # response <-  paste('trend:', toString(mySTL.DF$trend))
+      print(response) 
       session$sendCustomMessage(type = "trendCallback", response)
     } else {
       errorMessage();
