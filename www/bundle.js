@@ -213,13 +213,13 @@
 	  }
 
 	  var init = function init() {
-	    if (true) {
+	    if (false) {
 	      _loglevel2.default.disableAll();
 	    } else {
 	      _loglevel2.default.enableAll();
 	    }
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
+	    _loglevel2.default.info('ENV: ' + ("STAGING"));
 	    loadShinyAPI();
 	  };
 
@@ -1175,7 +1175,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (true) {
+	          if (false) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -39176,6 +39176,11 @@
 	      }
 	    }
 	  }, {
+	    key: 'handleRError',
+	    value: function handleRError(self) {
+	      self.updateData({ isChanging: false, isLoading: false });
+	    }
+	  }, {
 	    key: 'initializeExplore',
 	    value: function initializeExplore(self) {
 	      _loglevel2.default.info('initializeExplore');
@@ -39202,16 +39207,34 @@
 	      }
 	    }
 	  }, {
+	    key: 'handleSelectDiseaseBlur',
+	    value: function handleSelectDiseaseBlur(self) {
+	      var prevDiseases = self.data.prevDiseases;
+
+	      this.updateData({ diseases: prevDiseases });
+	    }
+	  }, {
 	    key: 'handleSelectGeoChange',
 	    value: function handleSelectGeoChange(value, self) {
+	      var name = this.getCountryByIso(value).name;
+	      this.updateData({ geo: { iso: value, name: name }, isChanging: true });
+	      self.confirmFilters(self);
+	    }
+	  }, {
+	    key: 'handleSelectGeoFocus',
+	    value: function handleSelectGeoFocus(self) {
+	      var geoSelect = self.geoSelect;
+
+	      geoSelect.setValue('', true);
+	    }
+	  }, {
+	    key: 'handleSelectGeoBlur',
+	    value: function handleSelectGeoBlur(self) {
+	      var geoSelect = self.geoSelect;
 	      var prevGeo = self.data.prevGeo;
 
-	      if (value) {
-	        var name = this.getCountryByIso(value).name;
-	        this.updateData({ geo: { iso: value, name: name }, isChanging: true });
-	        self.confirmFilters(self);
-	      } else {
-	        this.updateData({ geo: '', isChanging: true });
+	      if (geoSelect.getValue() === '') {
+	        this.updateData({ geo: prevGeo });
 	      }
 	    }
 	  }, {
@@ -39373,6 +39396,7 @@
 
 	      Object.assign(data, obj);
 	      _loglevel2.default.info(this.data);
+	      _loglevel2.default.info('geo: ', data.geo.iso);
 	      this.updateElements();
 	    }
 	  }, {
@@ -39457,11 +39481,15 @@
 	      var bindHandleChange = function bindHandleChange(value) {
 	        return self.handleSelectDiseaseChange(value, self);
 	      };
+	      var bindHandleBlur = function bindHandleBlur(value) {
+	        return self.handleSelectDiseaseBlur(self);
+	      };
 	      filtersMenu.appendChild(diseaseSelect);
 	      var diseaseSelectize = (0, _jquery2.default)(diseaseSelect).selectize({
 	        plugins: ['remove_button'],
 	        maxItems: 3,
 	        onChange: bindHandleChange,
+	        onBlur: bindHandleBlur,
 	        openOnFocus: false,
 	        closeAfterSelect: true,
 	        placeholder: 'Type'
@@ -39486,13 +39514,18 @@
 	      bindHandleChange = function bindHandleChange(value) {
 	        return self.handleSelectGeoChange(value, self);
 	      };
+	      var bindHandleFocus = function bindHandleFocus(value) {
+	        return self.handleSelectGeoFocus(self);
+	      };
+	      bindHandleBlur = function bindHandleBlur(value) {
+	        return self.handleSelectGeoBlur(self);
+	      };
 	      filtersMenu.appendChild(geoSelect);
 	      var geoSelectize = (0, _jquery2.default)(geoSelect).selectize({
 	        maxItems: 1,
 	        onChange: bindHandleChange,
-	        onFocus: function onFocus() {
-	          this.setValue('');
-	        },
+	        onBlur: bindHandleBlur,
+	        onFocus: bindHandleFocus,
 	        placeholder: 'Select'
 	      });
 	      self.geoSelect = geoSelectize[0].selectize;
@@ -39594,6 +39627,10 @@
 	        diseaseSelect.setValue(diseases.map(function (d) {
 	          return d.entity;
 	        }), true);
+	      }
+
+	      if (geoSelect.getValue() !== geo.iso) {
+	        geoSelect.setValue(geo.iso, true);
 	      }
 
 	      mergeButton.innerHTML = isMerged ? 'See Trend' : 'See Total Interest';
@@ -39762,6 +39799,10 @@
 	        self.data.dataFromR.trend = dataFromR;
 	        _loglevel2.default.info(self.data);
 	        self.dataProcessingCallback(explore, dataFromR);
+	      });
+	      Shiny.addCustomMessageHandler('error', function (err) {
+	        _loglevel2.default.error(err);
+	        self.explore.handleRError(explore);
 	      });
 	    }
 	  }, {

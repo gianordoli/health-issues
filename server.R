@@ -7,19 +7,23 @@ shinyServer(function(input, output, session) {
   
   observe({
     input$seasonal
-    if (!is.null(input$seasonal)) {
+    print(typeof(input$seasonal))    
+    if (!is.null(input$seasonal) && typeof(input$seasonal) == "character") {
       # print(input$seasonal)
       myTS <- vectorToTS(input$seasonal)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
       mySTL.DF <- as.data.frame(mySTL$time.series)
       response <-  paste('seasonal:', toString(mySTL.DF$seasonal))
       session$sendCustomMessage(type = "seasonalCallback", response)
+    } else {
+      errorMessage();
     }
   })
   
   observe({
     input$trend
-    if (!is.null(input$trend)) {
+    print(typeof(input$trend))    
+    if (!is.null(input$trend) && typeof(input$trend) == "character") {
       # print(input$trend)
       myTS <- vectorToTS(input$trend)
       mySTL <- stl(myTS, t.window = NULL, s.window="periodic", robust=TRUE)
@@ -27,9 +31,16 @@ shinyServer(function(input, output, session) {
       response <-  paste('trend:', toString(mySTL.DF$trend))
       # print(response)
       session$sendCustomMessage(type = "trendCallback", response)
+    } else {
+      errorMessage();
     }
   })
   
+  errorMessage <- function() {
+    msg <- "Null or non-character input"
+    print(msg)
+    session$sendCustomMessage(type = "error", msg)    
+  }
 })
 
 vectorToTS <- function(data) {

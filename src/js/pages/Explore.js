@@ -146,6 +146,10 @@ export default class Explore {
     }
   }
 
+  handleRError(self: Explore) {
+    self.updateData({ isChanging: false, isLoading: false });
+  }
+
   initializeExplore(self: Explore) {
     log.info('initializeExplore');
     const randomNames = ['Sunburn', 'Lyme disease', 'Dehydration'];
