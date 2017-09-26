@@ -213,13 +213,13 @@
 	  }
 
 	  var init = function init() {
-	    if (true) {
+	    if (false) {
 	      _loglevel2.default.disableAll();
 	    } else {
 	      _loglevel2.default.enableAll();
 	    }
 	    _loglevel2.default.info('Initializing app.');
-	    _loglevel2.default.info('ENV: ' + ("PRODUCTION"));
+	    _loglevel2.default.info('ENV: ' + ("STAGING"));
 	    loadShinyAPI();
 	  };
 
@@ -1175,7 +1175,7 @@
 	        function start() {
 	          var apiKey = void 0,
 	              id = void 0;
-	          if (true) {
+	          if (false) {
 	            apiKey = _Keys.Keys['PRODUCTION'];
 	            id = 'diseases-production';
 	          } else {
@@ -39176,6 +39176,11 @@
 	      }
 	    }
 	  }, {
+	    key: 'handleRError',
+	    value: function handleRError(self) {
+	      self.updateData({ isChanging: false, isLoading: false });
+	    }
+	  }, {
 	    key: 'initializeExplore',
 	    value: function initializeExplore(self) {
 	      _loglevel2.default.info('initializeExplore');
@@ -39794,6 +39799,10 @@
 	        self.data.dataFromR.trend = dataFromR;
 	        _loglevel2.default.info(self.data);
 	        self.dataProcessingCallback(explore, dataFromR);
+	      });
+	      Shiny.addCustomMessageHandler('error', function (err) {
+	        _loglevel2.default.error(err);
+	        self.explore.handleRError(explore);
 	      });
 	    }
 	  }, {

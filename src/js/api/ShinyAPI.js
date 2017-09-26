@@ -86,6 +86,10 @@ export default class ShinyAPI {
       log.info(self.data);
       self.dataProcessingCallback(explore, dataFromR);
     });
+    Shiny.addCustomMessageHandler('error', function(err) {
+      log.error(err);
+      self.explore.handleRError(explore);
+    });
   }
 
   updateData(type: string, data) {
