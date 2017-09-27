@@ -3,7 +3,9 @@ library(stlplus)
 
 shinyServer(function(input, output, session) {
   
-  session$allowReconnect(TRUE);
+  print("Session started")
+  
+  session$allowReconnect(TRUE)
   
   observe({
     input$seasonal
@@ -17,7 +19,7 @@ shinyServer(function(input, output, session) {
       response <-  paste('seasonal:', toString(mySTL.DF$seasonal), collapse = "")
       session$sendCustomMessage(type = "seasonalCallback", response)
     } else {
-      errorMessage();
+      errorMessage()
     }
   })
   
