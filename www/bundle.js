@@ -44802,13 +44802,13 @@
 	      socialMedia.classList.add('social-media');
 	      container.appendChild(socialMedia);
 
-	      var twitterShareButton = document.createElement('a');
-	      twitterShareButton.classList.add('twitter-share-button');
-	      var url = 'https://twitter.com/intent/tweet';
-	      var text = encodeURIComponent('Search trends and patterns for health issues via Google searches');
-	      twitterShareButton.setAttribute('href', url + "?text=" + text);
-	      twitterShareButton.setAttribute('data-size', 'large');
-	      socialMedia.appendChild(twitterShareButton);
+	      // const twitterShareButton = document.createElement('a');
+	      // twitterShareButton.classList.add('twitter-share-button');
+	      // const url = 'https://twitter.com/intent/tweet';
+	      // const text = encodeURIComponent('Search trends and patterns for health issues via Google searches');
+	      // twitterShareButton.setAttribute('href', `${url}?text=${text}`);
+	      // twitterShareButton.setAttribute('data-size', 'large');
+	      // socialMedia.appendChild(twitterShareButton);
 
 	      var fbShareButton = document.createElement('div');
 	      fbShareButton.classList.add('fb-share-button');
@@ -44825,7 +44825,7 @@
 	      fbLink.innerHTML = 'Share';
 	      fbShareButton.appendChild(fbLink);
 
-	      this.injectTwitterCode();
+	      // this.injectTwitterCode();
 	      this.injectFBCode();
 	    }
 	  }]);
